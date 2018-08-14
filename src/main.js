@@ -3,10 +3,7 @@ const path = require('path');
 const url = require('url');
 const ace = require('@daisy/ace-core');
 const logger = require('@daisy/ace-logger');
-const DOMParser = require('xmldom-alpha').DOMParser;
-const XMLSerializer = require('xmldom-alpha').XMLSerializer;
 const fs = require('fs-extra');
-const xpath = require('xpath');
 const tmp = require('tmp');
 
 require('electron-debug')();
@@ -186,9 +183,13 @@ function enableMenuItem(id, isEnabled) {
 }
 
 // this was an attempt to make the jquery tabs work in electron
-// they show up but the content appears mangled
+// the result of this function they show up but the content appears mangled
+// without using this function, jQuery is not recognized at all by the browser window
 /*
 function dirtyhack(reportpath) {
+  const DOMParser = require('xmldom-alpha').DOMParser;
+  const XMLSerializer = require('xmldom-alpha').XMLSerializer;
+
   const content = fs.readFileSync(reportpath).toString();
   const doc = new DOMParser().parseFromString(content, 'application/xhtml');
   const elms = doc.getElementsByTagNameNS('http://www.w3.org/1999/xhtml', 'script');
@@ -196,4 +197,5 @@ function dirtyhack(reportpath) {
   elms[0].setAttribute("onload", "window.$ = window.jQuery = module.exports;");
   const modreport = new XMLSerializer().serializeToString(doc);
   fs.writeFileSync(reportpath, modreport);
-}*/
+}
+*/
