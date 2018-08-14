@@ -1,0 +1,16 @@
+{
+  "name": "Ace",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "dependencies": {
+    "@daisy/ace-core": "^1.0.2",
+    "@daisy/ace-logger": "^1.0.1",
+    "electron": "^2.0.2",
+    "electron-debug": "^2.0.0",
+    "fs-extra": "^7.0.0"
+  },
+  "scripts": {
+    "start": "electron ."
+  }
+}

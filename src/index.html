@@ -1,0 +1,142 @@
+<html>
+<head>
+  <title>Ace </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <style>
+
+  body {
+    margin: 5%;
+  }
+
+  #dropzone {
+    height: 30%;
+    border-radius: 10px;
+    border-width: 8px;
+    border-style: dashed;
+    border-color: gray;
+    color: gray;
+    text-align: center;
+    font-size: larger;
+    padding-top: 30px;
+  }
+
+  .drop-hover {
+    border-color: green !important;
+    border-style: solid !important;
+    transition: border-color 0.5s ease;
+  }
+
+  footer {
+    padding-top: 25%;
+    font-size: smaller;
+  }
+
+  #status {
+    margin-top: 20px;
+  }
+
+  </style>
+</head>
+<body id="body">
+
+  <div id="dropzone" class="waiting">
+    <p>Drag an EPUB file or folder here, or <a href="#" id="filebrowse">click to browse.</a></p>
+  </div>
+
+  <div id="status">
+    <p id="status-text">Ready</p>
+  </div>
+
+  <footer>
+    <p>Ace, by DAISY | EPUB Accessibility Checker</p>
+  </footer>
+
+  <script type="text/javascript" charset="utf-8">
+    const {ipcRenderer} = require('electron');
+    const fs = require('fs');
+    const path = require('path');
+
+    ipcRenderer.on('aceError', (event, arg) => {
+      setDropzoneStyle(false);
+      setStatus(`Error: ${arg}`);
+    });
+
+    ipcRenderer.on('requestToRunAce', (event, arg) => {
+      runAce(arg);
+    });
+
+    // run Ace and get a report path
+    function runAce(path) {
+      if (isAllowedInput(path)) {
+        setStatus(`Processing ${path}`);
+        ipcRenderer.send('epubFileReceived', path);
+      }
+      else {
+        setDropzoneStyle(false);
+        setStatus("Error: unsupported file");
+      }
+    }
+
+    // crude input file check
+    function isAllowedInput(filepath) {
+      // is it a folder?
+      if (fs.lstatSync(filepath).isDirectory()) return true;
+
+      // is it an EPUB?
+      if (path.extname(filepath).toLowerCase() == ".epub") return true;
+      
+      return false;
+    }
+
+    // update the message on screen
+    function setStatus(message) {
+      let statusElm = document.getElementById('status-text');
+      statusElm.innerText = message;
+    }
+    function setDropzoneStyle(activated) {
+      let classname = activated ? 'drop-hover' : '';
+      let dropElm = document.getElementById('dropzone');
+      dropElm.setAttribute('class', classname);
+    }
+    // set up file browse event (main process has to show the dialog)
+    let elm = document.getElementById('filebrowse');
+    elm.onclick = () => {
+      ipcRenderer.send('fileBrowseRequest');
+    };
+
+    // set up drop file events
+    elm = document.getElementById('dropzone');
+
+    elm.ondragover = (e) => {
+      setDropzoneStyle(true);
+    };
+
+    elm.ondragleave = () => {
+      setDropzoneStyle(false);
+      return false;
+    };
+
+    // TODO check filetype (or mime)
+    elm.ondrop = (e) => {
+      e.preventDefault();
+      runAce(e.dataTransfer.files[0].path);
+      return false;
+    };
+
+    // disables default behavior for dropping items
+    document.ondragover = (e) => {
+      return false;
+    }
+    document.ondragleave = (e) => {
+      return false;
+    }
+    document.ondrop = (e) => {
+      e.preventDefault();
+      return false;
+    }
+
+
+
+  </script>
+</body>
+</html>
