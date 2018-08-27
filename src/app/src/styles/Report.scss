@@ -1,0 +1,28 @@
+@import 'common';
+
+.ace-report {
+  margin-left: 20px;
+}
+#report-section-tabs {
+  > ul {
+    margin-top: 0;
+    padding: 0;
+  }
+  .pick-section-tab {
+    display: inline-block;
+    cursor: pointer;
+    list-style-type: none;
+    line-height: 1.5rem;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    padding: 5px;
+    background-color: $aceblue-pale;
+  }
+
+  .pick-section-tab.selected-tab {
+    border-bottom-width: thick;
+    border-bottom-style: solid;
+    border-bottom-color: $aceblue;
+  }
+}

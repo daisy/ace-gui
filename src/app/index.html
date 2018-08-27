@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Ace by DAISY</title>
+        <link rel="stylesheet" href="build/bundle.css">
+    </head>
+    <body>
+        <div id="react-root"></div>
+        <script src="build/bundle.js"></script>
+        <script type="text/javascript">
+          // disables default behavior for dropping items
+          document.ondragover = (e) => {
+            return false;
+          }
+          document.ondragleave = (e) => {
+            return false;
+          }
+          document.ondrop = (e) => {
+            e.preventDefault();
+            return false;
+          }
+      </script>
+    </body>
+</html>
