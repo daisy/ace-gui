@@ -1,0 +1,35 @@
+#report-view-tabs {
+  > ul {
+    background-color: darkgray;
+    margin-top: 0;
+    padding-left: 0;
+  }
+  .pick-report-tab {
+    display: inline-block;
+    cursor: pointer;
+    vertical-align: top;
+    list-style-type: none;
+    border: thin black solid;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    line-height: 1.5rem;
+    padding: 2px 10px 2px 10px;
+    opacity: .65;
+    background-color: white;
+
+    button {
+      background-color: inherit !important;
+      border: none;
+      margin-left: 10px;
+      border-radius: 3px;
+    }
+    button:hover {
+      background-color: gray !important;
+    }
+  }
+
+  .pick-report-tab.selected-tab {
+    opacity: 1;
+    border-bottom-color: white;
+  }
+}
