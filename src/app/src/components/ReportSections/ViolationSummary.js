@@ -2,10 +2,11 @@ import React from 'react';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import './../../styles/Report.scss';
 
+// the violations summary table in the report
 export default class ViolationSummary extends React.Component {
   render() {
   return (
-      <section className="violationSummary">
+      <section className="violation-summary report-section">
         <h2>Violation Summary</h2>
         <Table>
           <TableHead>

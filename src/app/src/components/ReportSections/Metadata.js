@@ -1,12 +1,10 @@
 import React from 'react';
-
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
-
 import './../../styles/Report.scss';
 
-// expects
-// data: {metadata: obj, links obj, a11ymeta: {present, missing, empty}}
+// the metadata table in the report
 export default class Metadata extends React.Component {
+  // expects props: {metadata: {..}, links {..}, a11ymeta: {present[], missing[], empty[]}}
   constructor(props) {
     super(props);
     let rows = [];
@@ -14,6 +12,7 @@ export default class Metadata extends React.Component {
       rows.push({"name": key, "value": this.props.metadata[key]});
     }
 
+    // conformsTo lives in ['links'] so we have to add it separately to the table
     if (this.props.links != {} && 'dcterms:conformsTo' in this.props.links) {
           rows.push({
             "name": "conformsTo",
@@ -24,14 +23,13 @@ export default class Metadata extends React.Component {
     this.state = {
       rows: rows
     };
-
   }
 
   render() {
     let hasMissingOrEmpty = this.props.a11ymetadata.missing.length > 0 || this.props.a11ymetadata.empty.length > 0;
 
     return (
-      <section className="metadata">
+      <section className="metadata report-section">
         <h2>Metadata</h2>
         <Table>
           <TableHead>
@@ -66,7 +64,7 @@ export default class Metadata extends React.Component {
 
         {hasMissingOrEmpty ?
                 <aside>
-                  <h2 id="a11y-metadata">Missing A11Y Metadata</h2>
+                  <h2>Missing A11Y Metadata</h2>
                   <ul>
                     {this.props.a11ymetadata.missing.map((data, idx) => {
                       return (<li key={idx}>{data}</li>);
