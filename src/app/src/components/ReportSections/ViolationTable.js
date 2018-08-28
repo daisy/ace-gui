@@ -2,44 +2,7 @@ import React from 'react';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import './../../styles/Report.scss';
 
-class RuleFormatter extends React.Component {
-  render() {
-    return (
-      <div>
-        <p>{this.props.value.rule}</p>
-        <p>{this.props.value.engine}</p>
-      </div>
-    );
-  }
-}
-
-class LocationFormatter extends React.Component {
-  render() {
-    return (
-      <div>
-      <p><code>{this.props.value.filename}</code></p>
-      <p>Snippet:</p>
-      <p><code>{this.props.value.html}</code></p>
-      </div>
-    );
-  }
-}
-
-class DetailsFormatter extends React.Component {
-  render() {
-    let lis = [];
-    for (let i in this.props.value.desc) {
-      lis.push(<li>{this.props.value.desc[i]}</li>);
-    }
-    return (
-      <div>
-      <ul>{lis}</ul>
-      <p><a href={this.props.value.kburl}>Learn more about {this.props.value.kbtitle}</a></p>
-      </div>
-    );
-  }
-}
-
+// the violation table in the report
 export default class ViolationTable extends React.Component {
   constructor(props) {
     super(props);
@@ -50,9 +13,8 @@ export default class ViolationTable extends React.Component {
   }
 
   render() {
-
     return (
-      <section className="violation-table">
+      <section className="violation-table report-section">
         <h2>Violations</h2>
         <Table>
           <TableHead>

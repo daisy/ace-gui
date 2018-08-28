@@ -1,7 +1,9 @@
 import React from 'react';
 import './../../styles/Report.scss';
 
-export default class Metadata extends React.Component {
+// the outlines section of the report
+export default class Outlines extends React.Component {
+
   constructor(props) {
     super(props);
   }
@@ -11,7 +13,7 @@ export default class Metadata extends React.Component {
     let reportStr = JSON.stringify(this.props.data, null, '  ');
 
     return (
-      <section className="outlines">
+      <section className="outlines report-section">
         <h2>Outlines</h2>
         {reportStr}
       </section>

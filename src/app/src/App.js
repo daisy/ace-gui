@@ -74,9 +74,11 @@ export default class App extends React.Component {
   addMessage(msg) {
     this.setState({messages: [...this.state.messages, msg]});
   }
+
+  // add to the recent files list
   addRecent(filepath) {
     let recents = this.state.recents.slice();
-    // don't add duplicates to recents
+    // don't add duplicates
     if (recents.indexOf(filepath) == -1) {
       recents.push(filepath);
       this.setState({recents: recents});
@@ -105,12 +107,10 @@ export default class App extends React.Component {
   // close report, add its filepath to recents
   closeReport(idx) {
     // TODO now would be the time to prompt to save it
-
     this.addMessage(`Closing report`);
     this.addRecent(this.state.report.filepath);
     this.setState({report: null});
     ipcRenderer.send("onCloseReport");
-
   }
 
   preferenceChanged(key, value) {
@@ -130,7 +130,7 @@ export default class App extends React.Component {
               recents={this.state.recents}
               onPreferenceChange={this.preferenceChanged}
               preferences={this.state.preferences}/>
-            {this.state.report === null ? <Splash/> : <Report report={this.state.report}/>}
+            {this.state.report === null ? <Splash/> : <Report report={this.state.report}/> } 
           </SplitterLayout>
           <Messages messages={this.state.messages}/>
         </SplitterLayout>

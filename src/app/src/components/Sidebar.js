@@ -4,7 +4,9 @@ const path = require('path');
 import './../styles/Sidebar.scss';
 import Preferences from './Preferences';
 
+// the sidebar
 export default class Sidebar extends React.Component {
+  // expects props: onDropFile fn, ready, recents[], preferences{}
   constructor(props) {
     super(props);
     this.state = {
@@ -62,7 +64,7 @@ export default class Sidebar extends React.Component {
 
     let dropzoneClasses = `dropzone ${this.state.fileHover ? 'dropzone-hover' : ''}`;
     return (
-      <aside id="sidebar">
+      <aside class="sidebar">
         <section className="drop-file">
           <h1>Run Ace</h1>
           <div className={dropzoneClasses}
