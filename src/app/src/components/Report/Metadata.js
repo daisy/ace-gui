@@ -1,92 +1,83 @@
 import React from 'react';
-const ReactDataGrid = require('react-data-grid');
+
+import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 
 import './../../styles/Report.scss';
 
 // expects
-// data: {metadata: obj, conformsTo: string, a11ymeta: []}
+// data: {metadata: obj, links obj, a11ymeta: {present, missing, empty}}
 export default class Metadata extends React.Component {
   constructor(props) {
     super(props);
-
-    this._columns = [
-      {
-        key: 'name',
-        name: 'Name',
-      },
-      {
-        key: 'value',
-        name: 'Value',
-      }
-    ];
-    this._rows = [];
-    for (var key in this.props.data) {
-      this._rows.push(Object.assign({}, {'name': key}, this.props.data[key]));
+    let rows = [];
+    for (let key in this.props.metadata) {
+      rows.push({"name": key, "value": this.props.metadata[key]});
     }
-    if (this.props.conformsTo != '') this._rows.push(Object.assign({}, {'name': 'conformsTo'}, this.props.conformsTo));
 
-    this.rowGetter = this.rowGetter.bind(this);
+    if (this.props.links != {} && 'dcterms:conformsTo' in this.props.links) {
+          rows.push({
+            "name": "conformsTo",
+            "value": report['earl:testSubject']['links']['dcterms:conformsTo']
+        });
+    }
 
-  }
+    this.state = {
+      rows: rows
+    };
 
-  rowGetter(i) {
-    if (this._rows.length > 0) return this._rows[i];
-    return null;
   }
 
   render() {
-    console.log("rendering metadata");
-    let reportStr = JSON.stringify(this.props.data, null, '  ');
+    let hasMissingOrEmpty = this.props.a11ymetadata.missing.length > 0 || this.props.a11ymetadata.empty.length > 0;
 
-    let a11ymetadata;
     return (
       <section className="metadata">
         <h2>Metadata</h2>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Value</TableCell>
+              <TableCell>A11Y</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.rows.map((row, idx) => {
+              return (
+                <TableRow key={idx}>
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell>{row.value instanceof Array ?
+                      <ul>{row.value.map((data, idx) => {
+                        return (
+                          <li key={idx}>{data}</li>
+                        );
+                      })}
+                      </ul>
+                      : row.value}
+                  </TableCell>
+                  <TableCell><span>{this.props.a11ymetadata.present.indexOf(row.name) != -1 ? "Yes" : ""}</span></TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
 
-        <ReactDataGrid
-          columns={this._columns}
-          rowGetter={this.rowGetter}
-          rowsCount={this._rows.length}
-          minHeight={500} />
-
-     <h2 id="a11y-metadata">Accessibility Metadata</h2>
-
+        {hasMissingOrEmpty ?
+                <aside>
+                  <h2 id="a11y-metadata">Missing A11Y Metadata</h2>
+                  <ul>
+                    {this.props.a11ymetadata.missing.map((data, idx) => {
+                      return (<li key={idx}>{data}</li>);
+                    })}
+                    {this.props.a11ymetadata.empty.map((data, idx) => {
+                      return (<li key={idx}>{data}</li>);
+                    })}
+                  </ul>
+                </aside>
+              : ''}
      </section>
-     /*
-     {{#if a11y-metadata.present}}
-       <p>The following accessibility metadata is present:
-       {{#each a11y-metadata.present}}
-         <span class="metadata-name">{{this}}</span>
-       {{/each}}
-       </p>
-     {{else}}
-       <p>No accessibility metadata was found.</p>
-     {{/if}}
-
-     {{!-- a little messy because handlebars templates have no logical operators --}}
-     {{#if a11y-metadata.missing }}
-       <p>The following accessibility metadata is missing:
-       {{#each a11y-metadata.missing}}
-<span class="metadata-name">{{this}}</span>
-       {{/each}}
-       {{#each a11y-metadata.empty}}
-         <span class="metadata-name">{{this}}</span>
-       {{/each}}
-       .
-       </p>
-     {{else}}
-       {{#if a11y-metadata.empty}}
-         <p>The following accessibility metadata is missing:
-           {{#each a11y-metadata.missing}}
-             <span class="metadata-name">{{this}}</span>
-           {{/each}}
-           .
-         </p>
-       {{/if}}
-     {{/if}}
-     <p class="pagenav">Go to <a href="#metadata">Top of section</a> | <a href="#navlist">Page navigation</a></p>
-   </div>
-*/
     );
   }
 }

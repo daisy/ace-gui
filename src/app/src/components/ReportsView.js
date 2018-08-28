@@ -1,63 +1,72 @@
-const {ipcRenderer} = require('electron');
 const fs = require('fs');
 const path = require('path');
 import React from 'react';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+//import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {Tabs, Tab} from '@material-ui/core';
+import TabContainer from './TabContainer';
 import Report from './Report';
 import './../styles/ReportsView.scss';
 
 // props are
-// reports, initial, onCloseTab, onChangeTab fn
+// reports, initialTabIndex, onCloseTab, onChangeTab fn
 export default class ReportsView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabIndex: this.props.initial
+      tabIndex: this.props.initialTabIndex
     };
-  }
-  componentDidMount() {
-    let thiz = this;
+    console.log(`ReportView constructor, ${this.props.tabIndex}`);
   }
 
-  onCloseTab(idx) {
-    this.props.onCloseTab(parseInt(idx)); // the tab index should get updated because button.onClick propagates up
+  onCloseTab(e, idx) {
+    this.props.onCloseTab(parseInt(idx));
+    e.stopPropagation();
   }
-  onSelectTab(idx) {
-    this.setState({tabIndex: parseInt(idx)});
+  onChange(e, idx) {
+    this.props.onChangeTab(idx);
+    this.setState({tabIndex: idx});
+    e.stopPropagation();
   }
-
 
   render() {
-    let tabs = [];
-    let tabPanes = [];
-    for (let idx in this.props.reports) {
-      let report = this.props.reports[idx];
-      let name = path.basename(report.data['earl:testSubject']['url']);
-      // rebinding every time on the close button isn't efficient but
-      // it's way easier to pass the index this way
-      tabs.push(
-        <Tab className="pick-report-tab" key={idx}>
-          <span>{name}</span>
-          <button onClick={this.onCloseTab.bind(this, idx)}>x</button>
-        </Tab>
-      );
-      tabPanes.push(
-        <TabPanel key={idx}>
-          <Report report={report}/>
-        </TabPanel>
-      );
-    }
+    console.log(`ReportView render, ${this.props.initialTabIndex}`);
+    let index = this.state.tabIndex;
     return (
-      <Tabs
-        id="report-view-tabs" selectedTabClassName="selected-tab"
-        selectedIndex={this.state.tabIndex}
-        onSelect={this.onSelectTab.bind(this)}>
-        <TabList>
-          {tabs}
-        </TabList>
-        {tabPanes}
-      </Tabs>
+      <div id="report-view-tabs">
+        <Tabs
+          value={index}
+          onChange={this.onChange.bind(this)}>
 
+          {this.props.reports.map((report, idx) => {
+            let name = path.basename(report.data['earl:testSubject']['url']);
+            return (
+              <Tab
+                className="pick-report-tab"
+                key={idx}
+                label={<div>
+                  <span>{name}</span>
+                  <a className='close-tab-button' onClick={(e) => this.onCloseTab(e, idx)}>x</a>
+                </div>}/>
+            );
+          })}
+        </Tabs>
+        <TabContainer><Report report={this.props.reports[index]}/></TabContainer>
+      </div>
     );
   }
 }
+/*
+{this.props.reports.map((report, idx) => {
+  return (
+    <TabContainer key={idx}>
+        <Report report={report}/>
+    </TabContainer>
+  );
+})}*/
+/*
+<div className="pick-report-tab">
+  <span>{name}</span>
+  <button onClick={this.onCloseTab.bind(this, idx)}>x</button>
+</div>
+
+      <Report report={report}/>*/

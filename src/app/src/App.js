@@ -17,6 +17,7 @@ import './styles/App.scss';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       ready: true, // false == processing file
       messages: [],
@@ -32,6 +33,8 @@ export default class App extends React.Component {
       }
     };
 
+    console.log(`App constructor, ${this.state.selectedReportIndex}`);
+
     this.removeReport = this.removeReport.bind(this);
     this.processInputFile = this.processInputFile.bind(this);
     this.preferenceChanged = this.preferenceChanged.bind(this);
@@ -46,7 +49,8 @@ export default class App extends React.Component {
       thiz.processInputFile(arg);
     });
     ipcRenderer.on('closeReport', (event, arg) => {
-      thiz.removeReport(thiz.state.selectedReportIndex);
+      console.log(`App ipc closeReport, ${this.state.selectedReportIndex}`);
+      thiz.removeReport(this.state.selectedReportIndex);
     });
     ipcRenderer.on('newMessage', (event, arg) => {
       thiz.addMessage(arg);
@@ -83,6 +87,7 @@ export default class App extends React.Component {
     let idx = this.findInReports(filepath);
     if (idx != -1) {
       this.addMessage(`Report already loaded ${filepath}`);
+      console.log(`App addReport:already loaded, ${idx}`);
       this.setState({selectedReportIndex: idx});
       return;
     }
@@ -91,7 +96,12 @@ export default class App extends React.Component {
     const data = fs.readFileSync(filepath);
     let newReport = {filepath: filepath, data: JSON.parse(data)};
     let nextIdx = this.state.reports.length; // the new report's index
+    console.log(`App addReport:loading, ${nextIdx}`);
     this.setState({reports: [...this.state.reports, newReport], selectedReportIndex: nextIdx});
+  }
+  selectedReportChanged(idx) {
+    console.log(`App selectedReportChanged, ${idx}`);
+    this.setState({selectedReportIndex: idx});
   }
   addRecent(filepath) {
     let recents = this.state.recents.slice();
@@ -112,6 +122,7 @@ export default class App extends React.Component {
     let reports = this.state.reports.slice();
     reports.splice(idx, 1);
     let selected = this.state.selectedReportIndex == 0 ? 0 : this.state.selectedReportIndex - 1;
+    console.log(`App removeReport at ${idx}; new selection is ${selected}`);
     this.setState({reports: reports, selectedReportIndex: selected});
   }
   preferenceChanged(key, value) {
@@ -120,13 +131,15 @@ export default class App extends React.Component {
     this.setState({preferences: prefs});
   }
   render() {
+    console.log(`App render, ${this.state.selectedReportIndex}`);
     ipcRenderer.send("onAppRender", this.state.reports.length);
 
     let body = this.state.reports.length > 0 ?
       <ReportsView
         reports={this.state.reports}
-        initial={this.state.selectedReportIndex}
-        onCloseTab={this.removeReport}/>
+        initialTabIndex={this.state.reports.length - 1}
+        onCloseTab={this.removeReport}
+        onChangeTab={this.selectedReportChanged.bind(this)}/>
         :
       <Splash/> ;
 
