@@ -5,10 +5,10 @@
   "main": "main.js",
   "scripts": {
     "bundle": "webpack",
-    "dev": "webpack --watch --mode development",
+    "dev": "webpack --mode development",
     "serve": "electron .",
     "start": "concurrently -r -k \"yarn bundle\" \"yarn serve\"",
-    "start-dev": "concurrently -r -k \"yarn dev\" \"yarn serve\""
+    "start-dev": "concurrently -r -k \"webpack --watch\" \"yarn serve\""
   },
   "author": "DAISY Consortium",
   "repository": "daisy/ace-gui",
@@ -17,7 +17,9 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-preset-react": "^6.24.1",
+    "concurrently": "^4.0.1",
     "css-loader": "^1.0.0",
+    "electron-react-devtools": "^0.5.3",
     "electron-reload": "^1.2.2",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^2.0.0",
@@ -29,15 +31,14 @@
   },
   "dependencies": {
     "@daisy/ace-core": "^1.0.2",
-    "concurrently": "^4.0.1",
+    "@material-ui/core": "^3.0.0",
+    "@material-ui/icons": "^3.0.0",
     "electron": "^2.0.7",
-    "electron-react-devtools": "^0.5.3",
     "prop-types": "^15.6.2",
     "react": "^16.2.0",
-    "react-data-grid": "^4.0.7",
     "react-dom": "^16.2.0",
     "react-splitter-layout": "^3.0.1",
-    "react-table": "^6.8.6",
-    "react-tabs": "^2.2.2"
+    "react-tabs": "^2.2.2",
+    "typeface-roboto": "^0.0.54"
   }
 }

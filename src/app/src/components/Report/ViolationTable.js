@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import './../../styles/Report.scss';
 
 class RuleFormatter extends React.Component {
@@ -43,58 +43,57 @@ class DetailsFormatter extends React.Component {
 export default class ViolationTable extends React.Component {
   constructor(props) {
     super(props);
-    this.setupTable();
-  }
-  setupTable() {
-    let data = this.createFlatListOfViolations(this.props.data);
-    this._columns = [
-      {
-        key: 'impact',
-        name: 'Impact'
-      },
-      {
-        key: 'ruleset',
-        name: 'Ruleset'
-      },
-      {
-        key: 'rule',
-        name: 'Rule',
-        formatter: RuleFormatter
-      },
-      {
-        key: 'location',
-        name: 'Location',
-        formatter: LocationFormatter
-      },
-      {
-        key: 'details',
-        name: 'Details',
-        formatter: DetailsFormatter
-      }
-    ];
-    this._rows = data;
-    this.rowGetter = this.rowGetter.bind(this);
+    this.state = {
+      rows: this.createFlatListOfViolations(this.props.data)
+    };
 
-  }
-
-  rowGetter(i) {
-    if (this._rows.length > 0) return this._rows[i];
-    return null;
   }
 
   render() {
-    console.log("rendering violation table");
-
-
 
     return (
       <section className="violation-table">
         <h2>Violations</h2>
-        <ReactDataGrid
-          columns={this._columns}
-          rowGetter={this.rowGetter}
-          rowsCount={this._rows.length}
-          minHeight={500} />
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Impact</TableCell>
+              <TableCell>Ruleset</TableCell>
+              <TableCell>Rule</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Details</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.rows.map((row, idx) => {
+              return (
+                <TableRow key={idx}>
+                  <TableCell component="th" scope="row">{row.impact}</TableCell>
+                  <TableCell>{row.rulesetTag}</TableCell>
+                  <TableCell>
+                    <p>{row.rule.rule}</p>
+                    <p>{row.rule.engine}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p><code>{row.location.filename}</code></p>
+                    <p>Snippet:</p>
+                    <p><code>{row.location.html}</code></p>
+                  </TableCell>
+                  <TableCell>
+                    <ul>
+                      {row.details.desc.map((txt, idx) => {
+                          return (
+                            <li key={idx}>{txt}</li>
+                          );
+                      })}
+                    </ul>
+                    <p><a href={row.kburl}>Learn more about {row.kbtitle}</a></p>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </section>
     );
   }
