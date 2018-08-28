@@ -5,7 +5,7 @@ const path = require('path');
 import React from 'react';
 import SplitterLayout from 'react-splitter-layout';
 
-import ReportsView from './components/ReportsView';
+import Report from './components/Report';
 import Messages from './components/Messages';
 import Sidebar from './components/Sidebar';
 import Splash from './components/Splash';
@@ -21,10 +21,8 @@ export default class App extends React.Component {
     this.state = {
       ready: true, // false == processing file
       messages: [],
-      reports: [],
+      report: null,
       recents: [],
-      showPreferences: false,
-      selectedReportIndex: 0, // use to force a report to display; not in sync with tabbed view
       preferences: {
         save: this.props.save,
         outdir: this.props.outdir,
@@ -33,9 +31,7 @@ export default class App extends React.Component {
       }
     };
 
-    console.log(`App constructor, ${this.state.selectedReportIndex}`);
-
-    this.removeReport = this.removeReport.bind(this);
+    this.closeReport = this.closeReport.bind(this);
     this.processInputFile = this.processInputFile.bind(this);
     this.preferenceChanged = this.preferenceChanged.bind(this);
   }
@@ -49,8 +45,7 @@ export default class App extends React.Component {
       thiz.processInputFile(arg);
     });
     ipcRenderer.on('closeReport', (event, arg) => {
-      console.log(`App ipc closeReport, ${this.state.selectedReportIndex}`);
-      thiz.removeReport(this.state.selectedReportIndex);
+      thiz.closeReport();
     });
     ipcRenderer.on('newMessage', (event, arg) => {
       thiz.addMessage(arg);
@@ -67,8 +62,7 @@ export default class App extends React.Component {
       ipcRenderer.send('epubFileReceived', arg, this.state.preferences);
     }
     else if (path.extname(arg) == '.json') {
-      // load a report from disk
-      this.addReport(arg);
+      this.openReport(arg);
     }
     else {
       this.addMessage(`Error: File type not supported ${arg}`);
@@ -80,29 +74,6 @@ export default class App extends React.Component {
   addMessage(msg) {
     this.setState({messages: [...this.state.messages, msg]});
   }
-
-  // load an Ace report from file
-  addReport(filepath) {
-    // if the report is already open, don't re-open it. just switch to its tab.
-    let idx = this.findInReports(filepath);
-    if (idx != -1) {
-      this.addMessage(`Report already loaded ${filepath}`);
-      console.log(`App addReport:already loaded, ${idx}`);
-      this.setState({selectedReportIndex: idx});
-      return;
-    }
-
-    this.addMessage(`Loading report ${filepath}`);
-    const data = fs.readFileSync(filepath);
-    let newReport = {filepath: filepath, data: JSON.parse(data)};
-    let nextIdx = this.state.reports.length; // the new report's index
-    console.log(`App addReport:loading, ${nextIdx}`);
-    this.setState({reports: [...this.state.reports, newReport], selectedReportIndex: nextIdx});
-  }
-  selectedReportChanged(idx) {
-    console.log(`App selectedReportChanged, ${idx}`);
-    this.setState({selectedReportIndex: idx});
-  }
   addRecent(filepath) {
     let recents = this.state.recents.slice();
     // don't add duplicates to recents
@@ -110,39 +81,45 @@ export default class App extends React.Component {
       recents.push(filepath);
       this.setState({recents: recents});
     }
-
   }
 
-  // remove report, add its filepath to recents, reset tab index
-  removeReport(idx) {
+  // load an Ace report from file
+  openReport(filepath) {
+    // if the report is already open, don't re-open it. just switch to its tab.
+    if (this.state.report != null) {
+      if (this.state.report.filepath == filepath) {
+        this.addMessage(`Report already loaded ${filepath}`);
+        return;
+      }
+      else {
+        this.closeReport();
+      }
+    }
+    this.addMessage(`Loading report ${filepath}`);
+    const data = fs.readFileSync(filepath);
+    let report = {filepath: filepath, data: JSON.parse(data)};
+    this.setState({report: report});
+    ipcRenderer.send("onOpenReport");
+  }
+
+  // close report, add its filepath to recents
+  closeReport(idx) {
     // TODO now would be the time to prompt to save it
 
     this.addMessage(`Closing report`);
-    this.addRecent(this.state.reports[idx].filepath);
-    let reports = this.state.reports.slice();
-    reports.splice(idx, 1);
-    let selected = this.state.selectedReportIndex == 0 ? 0 : this.state.selectedReportIndex - 1;
-    console.log(`App removeReport at ${idx}; new selection is ${selected}`);
-    this.setState({reports: reports, selectedReportIndex: selected});
+    this.addRecent(this.state.report.filepath);
+    this.setState({report: null});
+    ipcRenderer.send("onCloseReport");
+
   }
+
   preferenceChanged(key, value) {
     let prefs = this.state.preferences;
     prefs[key] = value;
     this.setState({preferences: prefs});
   }
+
   render() {
-    console.log(`App render, ${this.state.selectedReportIndex}`);
-    ipcRenderer.send("onAppRender", this.state.reports.length);
-
-    let body = this.state.reports.length > 0 ?
-      <ReportsView
-        reports={this.state.reports}
-        initialTabIndex={this.state.reports.length - 1}
-        onCloseTab={this.removeReport}
-        onChangeTab={this.selectedReportChanged.bind(this)}/>
-        :
-      <Splash/> ;
-
     return (
       <div>
         <SplitterLayout percentage vertical primaryMinSize={40} secondaryInitialSize={15}>
@@ -153,23 +130,11 @@ export default class App extends React.Component {
               recents={this.state.recents}
               onPreferenceChange={this.preferenceChanged}
               preferences={this.state.preferences}/>
-            {body}
+            {this.state.report === null ? <Splash/> : <Report report={this.state.report}/>}
           </SplitterLayout>
           <Messages messages={this.state.messages}/>
         </SplitterLayout>
       </div>
     );
-  }
-
-  // return -1 or the index of the report with the given filepath
-  findInReports(filepath) {
-    let found = -1;
-    for (let idx=0; idx < this.state.reports.length; idx++) {
-      if (this.state.reports[idx].filepath == filepath) {
-        found = idx;
-        break;
-      }
-    }
-    return found;
   }
 }

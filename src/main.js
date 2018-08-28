@@ -84,15 +84,11 @@ ipcMain.on('browseFileRequest', (event, arg) => {
     [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}]);
 });
 
-// this event fires whenever react renders Main
-// it's a little brute force to un/enable menu items each time
-// so .. TODO set up report add/close events
-// this could also help with adding a list of reports to a submenu at runtime
-// although electron doesn't have great ways of doing that
-ipcMain.on("onAppRender", (event, arg) => {
-  // arg is the number of open reports
-  arg == 0 ? menu.onSplashScreen() : menu.onReportScreen();
-
+ipcMain.on("onOpenReport", (event, arg) => {
+  menu.onReportScreen();
+});
+ipcMain.on("onCloseReport", (event, arg) => {
+  menu.onSplashScreen();
 });
 // use the standard OS dialog to browse for a file or folder
 function showFileOpenDialog(properties, filters) {
