@@ -8,7 +8,7 @@
     "dev": "webpack --mode development",
     "serve": "electron .",
     "start": "concurrently -r -k \"yarn bundle\" \"yarn serve\"",
-    "start-dev": "concurrently -r -k \"webpack --watch\" \"yarn serve\""
+    "start-dev": "concurrently -r -k \"webpack --mode development\" \"yarn serve\""
   },
   "author": "DAISY Consortium",
   "repository": "daisy/ace-gui",

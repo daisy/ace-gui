@@ -8,12 +8,12 @@ https://github.com/pastahito/electron-react-webpack
 * prompt to save report
 * add feature: given a report, run ace again
 * a11y review
+* more css
 * review dependencies
 
 # ARGH
 
-* Tabs causing too many re-renders
-* Report section tab doesn't change with document tab change
+* Report view not refreshing when a new file gets opened
 * Logo not showing on splash screen
 
 # Limitations
@@ -25,3 +25,8 @@ https://github.com/pastahito/electron-react-webpack
 
 * react-table: not accessible
 * react-data-grid: not accessible
+
+# questions
+
+* dev environment not always picking up changes
+* will material-ui tabs re-render each time and forget things like table sort? it seems likely (need to implement table sort to test it)

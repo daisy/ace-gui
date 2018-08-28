@@ -38,20 +38,20 @@ export default class Preferences extends React.Component {
       <h1>Options</h1>
       <ul>
         <li>
-          <label htmlFor="save">Save reports</label>
+          <label htmlFor="save">Save reports: </label>
           <input type="checkbox" id="save" checked={this.props.preferences.save} onChange={this.onChange}/>
         </li>
         <li>
-          <label htmlFor="outdir">Directory</label>
+          <label htmlFor="outdir">Directory: </label>
           <input type="text" id="outdir" value={this.props.preferences.outdir} onChange={this.onChange}/>
           <button onClick={this.onClick}>Browse</button>
         </li>
         <li>
-          <label htmlFor="organize">Keep reports organized</label>
+          <label htmlFor="organize">Keep reports organized: </label>
           <input type="checkbox" id="organize" checked={this.props.preferences.organize} onChange={this.onChange}/>
         </li>
         <li>
-          <label htmlFor="overwrite">Overwrite files without prompting</label>
+          <label htmlFor="overwrite">Overwrite files without prompting: </label>
           <input type="checkbox" id="overwrite" checked={this.props.preferences.overwrite} onChange={this.onChange}/>
         </li>
       </ul>
