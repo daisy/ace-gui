@@ -164,4 +164,10 @@ function runAce(filepath, preferences) {
   console.log(`Subdirs? ${preferences.organize}`);
   console.log(`Overwrite? ${preferences.overwrite}`);
   console.log(`Outdir ${preferences.outdir}`);
+  console.log('Pretending to run Ace...');
+  setTimeout(() => {
+    console.log("Done pretending to run Ace");
+    win.webContents.send('aceCheckComplete');
+  }, 3000);
+
 }

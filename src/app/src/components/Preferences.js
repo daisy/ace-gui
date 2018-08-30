@@ -1,11 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 const {dialog} = require('electron').remote;
 import "./../styles/Preferences.scss";
 
 // this could grow into a preferences dialog
 // for now, it's presented as an 'options' pane
 export default class Preferences extends React.Component {
-  // expects props: preferences{}, onPreferenceChange fn
+
+  static propTypes = {
+    preferences: PropTypes.object.isRequired,
+    onPreferenceChange: PropTypes.func
+  };
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
@@ -14,8 +19,8 @@ export default class Preferences extends React.Component {
 
   onChange(e) {
     let value = e.target.type == "checkbox" ?
-    e.target.checked : e.target.value;
-    this.props.onPreferenceChange([e.target.id], value);
+      e.target.checked : e.target.value;
+    if (this.props.onPreferenceChange) this.props.onPreferenceChange([e.target.id], value);
   }
 
   // browse directory button click
@@ -26,7 +31,7 @@ export default class Preferences extends React.Component {
       {title: "Select a folder", properties: ['openDirectory', 'createDirectory'], buttonLabel: "Save"},
       (filenames) => {
         if (filenames != undefined) {
-          thiz.setState({outdir: filenames[0]});
+          this.setState({outdir: filenames[0]});
         }
       }
     );

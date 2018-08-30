@@ -1,12 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 const {ipcRenderer} = require('electron');
 const path = require('path');
-import './../styles/Sidebar.scss';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Preferences from './Preferences';
+import './../styles/Sidebar.scss';
+
 
 // the sidebar
 export default class Sidebar extends React.Component {
-  // expects props: onDropFile fn, ready, recents[], preferences{}
+
+  static propTypes = {
+    onDropFile: PropTypes.func,
+    ready: PropTypes.bool.isRequired,
+    recents: PropTypes.array.isRequired,
+    preferences: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,7 +34,7 @@ export default class Sidebar extends React.Component {
     e.preventDefault();
     let filepath = e.dataTransfer.files[0].path;
     console.log(`File dropped ${filepath}`);
-    this.props.onDropFile(filepath);
+    if (this.props.onDropFile) this.props.onDropFile(filepath);
     this.setState({fileHover: false});
     return false;
   }
@@ -64,7 +74,7 @@ export default class Sidebar extends React.Component {
 
     let dropzoneClasses = `dropzone ${this.state.fileHover ? 'dropzone-hover' : ''}`;
     return (
-      <aside class="sidebar">
+      <aside className="sidebar">
         <section className="drop-file">
           <h1>Run Ace</h1>
           <div className={dropzoneClasses}
@@ -89,6 +99,7 @@ export default class Sidebar extends React.Component {
         <section className="status">
           <h1>Status</h1>
           <p>{status}</p>
+          {this.props.ready ?  '' : <CircularProgress /> }
         </section>
       </aside>
     );

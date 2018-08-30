@@ -37,21 +37,21 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    let thiz = this;
-
     // main process handlers; e.g. menu item selections
     ipcRenderer.on('fileSelected', (event, arg) => {
       this.setState({ready: false});
-      thiz.processInputFile(arg);
+      this.processInputFile(arg);
     });
     ipcRenderer.on('closeReport', (event, arg) => {
-      thiz.closeReport();
+      this.closeReport();
     });
     ipcRenderer.on('newMessage', (event, arg) => {
-      thiz.addMessage(arg);
+      this.addMessage(arg);
     });
     ipcRenderer.on('aceCheckComplete', (event, arg) => {
-      thiz.setState({ready: true});
+      this.addMessage("Ace check complete");
+      //this.openReport(arg);
+      this.setState({ready: true});
     });
   }
 
@@ -59,9 +59,11 @@ export default class App extends React.Component {
   processInputFile(arg) {
     // crude way to check filetype
     if (path.extname(arg) == '.epub') {
+      this.setState({ready: false});
       ipcRenderer.send('epubFileReceived', arg, this.state.preferences);
     }
     else if (path.extname(arg) == '.json') {
+      this.setState({ready: false});
       this.openReport(arg);
     }
     else {
@@ -100,7 +102,7 @@ export default class App extends React.Component {
     this.addMessage(`Loading report ${filepath}`);
     const data = fs.readFileSync(filepath);
     let report = {filepath: filepath, data: JSON.parse(data)};
-    this.setState({report: report});
+    this.setState({report: report, ready: true});
     ipcRenderer.send("onOpenReport");
   }
 
@@ -130,7 +132,7 @@ export default class App extends React.Component {
               recents={this.state.recents}
               onPreferenceChange={this.preferenceChanged}
               preferences={this.state.preferences}/>
-            {this.state.report === null ? <Splash/> : <Report report={this.state.report}/> } 
+            {this.state.report === null ? <Splash/> : <Report report={this.state.report}/> }
           </SplitterLayout>
           <Messages messages={this.state.messages}/>
         </SplitterLayout>

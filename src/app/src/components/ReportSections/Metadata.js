@@ -1,10 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
-import './../../styles/Report.scss';
 
 // the metadata table in the report
 export default class Metadata extends React.Component {
-  // expects props: {metadata: {..}, links {..}, a11ymeta: {present[], missing[], empty[]}}
+
+  static propTypes = {
+    metadata: PropTypes.object.isRequired,
+    links: PropTypes.object.isRequired,
+    a11ymetadata: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
     let rows = [];
@@ -29,7 +35,7 @@ export default class Metadata extends React.Component {
     let hasMissingOrEmpty = this.props.a11ymetadata.missing.length > 0 || this.props.a11ymetadata.empty.length > 0;
 
     return (
-      <section className="metadata report-section">
+      <section className="metadata">
         <h2>Metadata</h2>
         <Table>
           <TableHead>
