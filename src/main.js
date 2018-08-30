@@ -2,7 +2,7 @@ const { app, BrowserWindow, electron, ipcMain, dialog, shell} = require('electro
 const path = require('path');
 const menu = require('./menu');
 
-//const ace = require('@daisy/ace-core');
+const ace = require('@daisy/ace-core');
 
 let win;
 
@@ -71,7 +71,7 @@ app.on('activate', function () {
 
 // events from renderer
 ipcMain.on('epubFileReceived', (event, filepath, settings) => {
-  runAce(filepath, settings);
+  runAce(filepath, settings, event);
 });
 
 // arbitrary restriction, just open files (not dirs) on win/linux
@@ -156,9 +156,17 @@ function quit() {
 }
 
 // run Ace on an EPUB file or folder
-function runAce(filepath, preferences) {
-  let msg = `Pretending to run Ace on ${filepath}`;
+function runAce(filepath, preferences, event) {
+  let msg = `Running Ace on ${filepath}`;
+  let outdir = preferences.outdir;
   win.webContents.send('newMessage', msg);
+  ace(filepath, {outdir})
+  .then(()=>win.webContents.send('newMessage', 'Done.'))
+  .then(()=>{
+    event.sender.send('aceCheckComplete', outdir+'/report.json');
+  })
+  .catch(error=>console.log(error));
+
   console.log(msg);
   console.log(`Saving report? ${preferences.save}`);
   console.log(`Subdirs? ${preferences.organize}`);
