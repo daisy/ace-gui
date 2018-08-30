@@ -19,7 +19,7 @@ export default class Metadata extends React.Component {
     }
 
     // conformsTo lives in ['links'] so we have to add it separately to the table
-    if (this.props.links != {} && 'dcterms:conformsTo' in this.props.links) {
+    if (this.props.links != undefined && this.props.links != {} && 'dcterms:conformsTo' in this.props.links) {
           rows.push({
             "name": "conformsTo",
             "value": report['earl:testSubject']['links']['dcterms:conformsTo']

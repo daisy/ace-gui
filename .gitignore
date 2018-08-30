@@ -26,4 +26,3 @@ build
 .DS_Store
 ._*
 Thumbs.db
-src/app/src/components/ReportSections/Metadata.js
