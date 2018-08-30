@@ -30,6 +30,7 @@
     "webpack-cli": "^2.0.11"
   },
   "dependencies": {
+    "@daisy/ace-config": "^1.0.0",
     "@daisy/ace-core": "^1.0.2",
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^3.0.0",
@@ -40,6 +41,7 @@
     "react-dom": "^16.2.0",
     "react-splitter-layout": "^3.0.1",
     "react-tabs": "^2.2.2",
+    "tmp": "^0.0.33",
     "typeface-roboto": "^0.0.54"
   }
 }

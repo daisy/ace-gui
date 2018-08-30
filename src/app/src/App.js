@@ -50,8 +50,8 @@ export default class App extends React.Component {
     });
     ipcRenderer.on('aceCheckComplete', (event, arg) => {
       this.addMessage("Ace check complete");
-      //this.openReport(arg);
       this.setState({ready: true});
+      this.openReport(arg);
     });
   }
 
