@@ -8,23 +8,18 @@ https://github.com/pastahito/electron-react-webpack
 * prompt to save report
 * add feature: given a report, run ace again
 * a11y review
-* more css
-* review dependencies
+* table sort
+* small visual enhancements
 
 # ARGH
 
-* Report view not refreshing when a new file gets opened
+* Report view not refreshing when a new report is loaded
 * Logo not showing on splash screen
 
 # Limitations
 
 * Open file vs directory behavior: https://github.com/electron/electron/blob/master/docs/api/dialog.md#dialogshowopendialogbrowserwindow-options-callback
 * Dynamic menu support missing in electron (we could use it to list all open reports in a menu)
-
-# rejected UI components
-
-* react-table: not accessible
-* react-data-grid: not accessible
 
 # questions
 

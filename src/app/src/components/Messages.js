@@ -1,10 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './../styles/Messages.scss';
 
 // the messages list
-// expects props: messages[]
 export default class Messages extends React.Component {
 
+  static propTypes = {
+    messages: PropTypes.array.isRequired
+  };
   render() {
     let messages = this.props.messages.join("\n");
     return(<div className="messages">

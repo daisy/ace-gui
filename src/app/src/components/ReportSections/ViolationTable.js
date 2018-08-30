@@ -1,20 +1,31 @@
 import React from 'react';
+const {shell} = require('electron');
+import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
-import './../../styles/Report.scss';
+const helpers = require("./../../helpers.js");
 
 // the violation table in the report
 export default class ViolationTable extends React.Component {
+
+  static propTypes = {
+    data: PropTypes.array.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      rows: this.createFlatListOfViolations(this.props.data)
+      rows: helpers.createFlatListOfViolations(this.props.data)
     };
-
   }
+
+  onExternalLinkClick(url) {
+    shell.openExternal(url);
+  }
+
 
   render() {
     return (
-      <section className="violation-table report-section">
+      <section className="violation-table">
         <h2>Violations</h2>
         <Table>
           <TableHead>
@@ -30,80 +41,35 @@ export default class ViolationTable extends React.Component {
             {this.state.rows.map((row, idx) => {
               return (
                 <TableRow key={idx}>
-                  <TableCell component="th" scope="row">{row.impact}</TableCell>
-                  <TableCell>{row.rulesetTag}</TableCell>
-                  <TableCell>
+                  <TableCell className="impact"><span className={row.impact}>{row.impact}</span></TableCell>
+                  <TableCell className="ruleset">{row.rulesetTag}</TableCell>
+                  <TableCell className="rule">
                     <p>{row.rule.rule}</p>
-                    <p>{row.rule.engine}</p>
+                    <p className="violation-engine">{row.rule.engine}</p>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="location">
                     <p><code>{row.location.filename}</code></p>
-                    <p>Snippet:</p>
-                    <p><code>{row.location.html}</code></p>
+                    {row.location.snippet != '' ?
+                      <pre>{unescape(row.location.snippet)}</pre>
+                      : ''}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="details">
                     <ul>
                       {row.details.desc.map((txt, idx) => {
                           return (
-                            <li key={idx}>{txt}</li>
+                            <li key={idx}>{unescape(txt)}</li>
                           );
                       })}
                     </ul>
-                    <p><a href={row.kburl}>Learn more about {row.kbtitle}</a></p>
+                    <p><a className="external-link" onClick={this.onExternalLinkClick.bind(this, row.details.kburl)}>Learn about {row.details.kbtitle}</a></p>
                   </TableCell>
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
+        {this.state.rows.length == 0 ? <p>No violations reported.</p> : ''}
       </section>
     );
-  }
-
-  // copied from https://github.com/daisy/ace/blob/master/packages/ace-report/src/generate-html-report.js#L172
-  // TODO reduce duplication of code
-  createFlatListOfViolations(violations) {
-    let flatData = [];
-    let rulesetTags = ['wcag2a', 'wcag2aa', 'EPUB', 'best-practice']; // applicable ruleset tags
-
-    violations.forEach(function(assertion) {
-      let filename = assertion["earl:testSubject"]["url"];
-      let filetitle = assertion["earl:testSubject"]["dct:title"];
-      assertion.assertions.forEach(function(item) {
-        // each item may have multiple ruleset tags from the underlying html checker
-        // narrow it down to one, from our list above, or label as 'other'
-        let applicableRulesetTag = "other";
-        item["earl:test"]["rulesetTags"].forEach(function(tag) {
-          if (rulesetTags.indexOf(tag) != -1) {
-            applicableRulesetTag = tag;
-          }
-        });
-        let cfi = item["earl:result"]["earl:pointer"] ?
-          `#epubcfi(${item["earl:result"]["earl:pointer"]["cfi"]})` : '';
-        let html = item["earl:result"]["html"] ? escape(item["earl:result"]["html"]) : '';
-        let desc = escape(item["earl:result"]["dct:description"]);
-
-        let obj = {
-          "impact": item["earl:test"]["earl:impact"],
-          "rulesetTag": applicableRulesetTag,
-          "rule": {
-            "rule": item["earl:test"]["dct:title"],
-            "engine": item["earl:assertedBy"]
-          },
-          "location": {
-            "filename": `${filename}${cfi}`,
-            "snippet": html
-          },
-          "details": {
-            "kburl": item["earl:test"]["help"]["url"],
-            "kbtitle": item["earl:test"]["help"]["dct:title"],
-            "desc": desc.split("\n").filter(s => s.trim().length > 0)
-          }
-        };
-
-        flatData.push(obj);
-      });
-    });
-    return flatData;
   }
 }

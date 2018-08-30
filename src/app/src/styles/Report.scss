@@ -2,4 +2,93 @@
 
 .ace-report {
   margin-left: 20px;
+
+  .location {
+    pre {
+      white-space: pre-wrap;
+      background-color: lightyellow;
+      color: #905a5a;
+    }
+  }
+
+  .violation-table {
+
+    .violation-engine {
+      font-style: italic;
+    }
+
+    .violation-engine:before {
+      content: "Via ";
+    }
+
+    .external-link {
+      cursor: pointer;
+    }
+
+    .details {
+      ul {
+        padding: 0;
+      }
+    }
+
+    .impact {
+      span {
+        display:inline-block;
+        height:1.5em;
+        padding: .4em;
+        border-radius:4px;
+        font-family:monospace;
+        font-weight: bold;
+      }
+
+      span.critical {
+        background-color: #9c2b2e;
+        color: #fff;
+      }
+      span.serious {
+        background-color: #ffa500;
+        color: #000;
+      }
+      span.moderate {
+        background-color: #7b5000;
+        color: #fff;
+      }
+      span.minor {
+        background-color: #ffff7f;
+        color: #000;
+      }
+    }
+  }
+
+  .outlines {
+    .toc-h1:before,.toc-h2:before,.toc-h3:before,.toc-h4:before,.toc-h5:before,.toc-h6:before,.toc-missing{
+      display:inline-block;
+      height:1.5em;
+      padding:0 .4em;
+      background-color:#449d44;
+      border-radius:4px;
+      color:#fff;
+      font-size:.8em;
+      font-family:monospace;
+      margin:0 .5em 0 0;
+    }
+
+    .toc-h1:before{content:'h1'}
+    .toc-h2:before{content:'h2'}
+    .toc-h3:before{content:'h3'}
+    .toc-h4:before{content:'h4'}
+    .toc-h5:before{content:'h5'}
+    .toc-h6:before{content:'h6'}
+    .toc-missing{font-family:inherit;background-color:#c9302c}
+
+    ol {
+      list-style: disc;
+    }
+  }
+
+  .images {
+    img {
+      max-width: 200px;
+    }
+  }
 }

@@ -33,6 +33,7 @@
     "@daisy/ace-core": "^1.0.2",
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^3.0.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "electron": "^2.0.7",
     "prop-types": "^15.6.2",
     "react": "^16.2.0",
