@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
+import {Table, TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination} from '@material-ui/core';
 const path = require('path');
+import TablePaginationActionsWrapped from "./TablePaginationActions";
+
 
 // the images table in the report
 export default class Images extends React.Component {
@@ -10,11 +12,27 @@ export default class Images extends React.Component {
     images: PropTypes.array.isRequired,
     reportFilepath: PropTypes.string.isRequired
   };
+  constructor(props) {
+    super(props);
+    this.state = {
+      page: 0,
+      rowsPerPage: 5
+    };
+  }
+
+  onChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
+  onChangeRowsPerPage = event => {
+    this.setState({ rowsPerPage: event.target.value });
+  };
 
   render() {
-  return (
+    let {page, rowsPerPage} = this.state;
+    return (
       <section className="images">
-        <h2>Violation Summary</h2>
+        <h2>Images</h2>
         <Table>
           <TableHead>
             <TableRow>
@@ -27,7 +45,7 @@ export default class Images extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.props.images.map((image, idx) => {
+            {this.props.images.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((image, idx) => {
               return (
                 <TableRow key={idx}>
                   <TableCell><img src={path.resolve(this.props.reportFilepath, `../data/${image.src}`)}/></TableCell>
@@ -40,6 +58,19 @@ export default class Images extends React.Component {
               );
             })}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                colSpan={3}
+                count={this.props.images.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={this.onChangePage}
+                onChangeRowsPerPage={this.onChangeRowsPerPage}
+                ActionsComponent={TablePaginationActionsWrapped}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </section>
     );

@@ -1,8 +1,10 @@
 import React from 'react';
 const {shell} = require('electron');
 import PropTypes from 'prop-types';
-import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
+import {Table, TableBody, TableCell, TableHead, TableFooter, TableRow, TablePagination} from '@material-ui/core';
 const helpers = require("./../../helpers.js");
+import TablePaginationActionsWrapped from "./TablePaginationActions";
+
 
 // the violation table in the report
 export default class ViolationTable extends React.Component {
@@ -14,7 +16,9 @@ export default class ViolationTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rows: helpers.createFlatListOfViolations(this.props.data)
+      rows: helpers.createFlatListOfViolations(this.props.data),
+      page: 0,
+      rowsPerPage: 5
     };
   }
 
@@ -22,8 +26,16 @@ export default class ViolationTable extends React.Component {
     shell.openExternal(url);
   }
 
+  onChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
+  onChangeRowsPerPage = event => {
+    this.setState({ rowsPerPage: event.target.value });
+  };
 
   render() {
+    let {page, rowsPerPage, rows} = this.state;
     return (
       <section className="violation-table">
         <h2>Violations</h2>
@@ -38,7 +50,7 @@ export default class ViolationTable extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.state.rows.map((row, idx) => {
+          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => {
               return (
                 <TableRow key={idx}>
                   <TableCell className="impact"><span className={row.impact}>{row.impact}</span></TableCell>
@@ -67,8 +79,21 @@ export default class ViolationTable extends React.Component {
               );
             })}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                colSpan={3}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={this.onChangePage}
+                onChangeRowsPerPage={this.onChangeRowsPerPage}
+                ActionsComponent={TablePaginationActionsWrapped}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
-        {this.state.rows.length == 0 ? <p>No violations reported.</p> : ''}
+        {rows.length == 0 ? <p>No violations reported.</p> : ''}
       </section>
     );
   }
