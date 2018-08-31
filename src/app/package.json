@@ -1,0 +1,14 @@
+{
+  "name": "ace-gui",
+  "productName": "Ace by DAISY",
+  "version": "1.0.0-beta.0",
+  "description": "A desktop app for Ace, the EPUB accessibility checker by the DAISY Consortium",
+  "author": "DAISY Consortium",
+  "main": "./main.js",
+  "repository": "daisy/ace-gui",
+  "license": "MIT",
+  "dependencies": {
+    "@daisy/ace-config": "^1.0.0",
+    "@daisy/ace-core": "^1.0.2"
+  }
+}

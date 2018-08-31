@@ -9,6 +9,7 @@ yarn-error.log*
 # Build
 node_modules
 build
+dist
 
 # Optional npm cache directory
 .npm
