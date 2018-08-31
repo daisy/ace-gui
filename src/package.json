@@ -1,24 +1,26 @@
 {
-  "name": "ace-gui-experiment-2",
-  "version": "1.0.0",
-  "description": "Ace GUI",
-  "main": "main.js",
-  "scripts": {
-    "bundle": "webpack",
-    "dev": "webpack --mode development",
-    "serve": "electron .",
-    "start": "concurrently -r -k \"yarn bundle\" \"yarn serve\"",
-    "start-dev": "concurrently -r -k \"webpack --mode development\" \"yarn serve\""
-  },
+  "name": "ace-gui",
+  "productName": "Ace by DAISY",
+  "version": "1.0.0-beta.0",
+  "description": "A desktop app for Ace, the EPUB accessibility checker by the DAISY Consortium",
   "author": "DAISY Consortium",
+  "main": "./app/main.js",
   "repository": "daisy/ace-gui",
   "license": "MIT",
+  "build": {
+    "appId": "org.daisy.ace",
+    "mac": {
+      "category": "my.category"
+    }
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-preset-react": "^6.24.1",
     "concurrently": "^4.0.1",
     "css-loader": "^1.0.0",
+    "electron": "^2.0.7",
+    "electron-builder": "^20.28.3",
     "electron-react-devtools": "^0.5.3",
     "electron-reload": "^1.2.2",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
@@ -35,7 +37,6 @@
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^3.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "electron": "^2.0.7",
     "prop-types": "^15.6.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -43,5 +44,15 @@
     "react-tabs": "^2.2.2",
     "tmp": "^0.0.33",
     "typeface-roboto": "^0.0.54"
+  },
+  "scripts": {
+    "bundle": "webpack",
+    "dev": "webpack --mode development",
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps",
+    "serve": "electron .",
+    "start": "concurrently -r -k \"yarn bundle\" \"yarn serve\"",
+    "start-dev": "concurrently -r -k \"webpack --mode development\" \"yarn serve\""
   }
 }

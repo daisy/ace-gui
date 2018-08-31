@@ -43,7 +43,7 @@ function createWindow() {
     "quit": () => { quit(); }
   });
 
-  win.loadURL('file://' + process.cwd() + '/app/index.html');
+  win.loadURL('file://' + __dirname +'/index.html');
   win.webContents.openDevTools();
 
 
@@ -160,22 +160,13 @@ function runAce(filepath, preferences, event) {
   let msg = `Running Ace on ${filepath}`;
   let outdir = preferences.outdir;
   win.webContents.send('newMessage', msg);
+  win.webContents.send('newMessage', `prefs: ${preferences}`);
+  win.webContents.send('newMessage', `outdir: ${preferences.outdir}`);
   ace(filepath, {outdir})
   .then(()=>win.webContents.send('newMessage', 'Done.'))
   .then(()=>{
+    win.webContents.send('newMessage', `report: ${outdir+'/report.json'}`);
     event.sender.send('aceCheckComplete', outdir+'/report.json');
   })
-  .catch(error=>console.log(error));
-
-  console.log(msg);
-  console.log(`Saving report? ${preferences.save}`);
-  console.log(`Subdirs? ${preferences.organize}`);
-  console.log(`Overwrite? ${preferences.overwrite}`);
-  console.log(`Outdir ${preferences.outdir}`);
-  console.log('Pretending to run Ace...');
-  setTimeout(() => {
-    console.log("Done pretending to run Ace");
-    win.webContents.send('aceCheckComplete');
-  }, 3000);
-
+  .catch(error=>win.webContents.send('newMessage', `ERROR: ${JSON.stringify(error)}`));
 }
