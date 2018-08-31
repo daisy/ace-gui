@@ -23,6 +23,12 @@ export default class Report extends React.Component {
     };
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    // otherwise, the new report's tab doesn't change and, more significantly, the data doesn't re-render until you click some tabs
+    if (nextProps.report != this.props.report) {
+      this.setState({tabIndex: 0});
+    }
+  }
   // tab change
   onChange(e, idx) {
     this.setState({tabIndex: idx});

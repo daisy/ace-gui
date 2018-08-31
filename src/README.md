@@ -4,16 +4,13 @@ https://github.com/pastahito/electron-react-webpack
 #TODO
 
 * persist preferences
-* integrate ace
 * prompt to save report
-* add feature: given a report, run ace again
 * a11y review
 * table sort
 * small visual enhancements
 
 # ARGH
 
-* Report view not refreshing when a new report is loaded
 * Logo not showing on splash screen
 
 # Limitations

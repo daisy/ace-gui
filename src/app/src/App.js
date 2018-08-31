@@ -107,7 +107,7 @@ export default class App extends React.Component {
   }
 
   // close report, add its filepath to recents
-  closeReport(idx) {
+  closeReport() {
     // TODO now would be the time to prompt to save it
     this.addMessage(`Closing report`);
     this.addRecent(this.state.report.filepath);
