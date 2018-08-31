@@ -11,7 +11,9 @@
     "appId": "org.daisy.ace",
     "mac": {
       "category": "my.category"
-    }
+    },
+    "asar": "false"
+
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
