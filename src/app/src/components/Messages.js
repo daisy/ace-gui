@@ -8,6 +8,10 @@ export default class Messages extends React.Component {
   static propTypes = {
     messages: PropTypes.array.isRequired
   };
+  componentDidUpdate() {
+  //  this.scrollToBottom();
+  }
+
   render() {
     let messages = this.props.messages.join("\n");
     return(<div className="messages">

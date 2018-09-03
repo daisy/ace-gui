@@ -12,12 +12,12 @@ function init (appName, callbacks) {
 // enable or disable icons based on application state
 function onSplashScreen() {
   getMenuItem("checkEpub").enabled = true;
-  getMenuItem("saveReport").enabled = false;
+  //getMenuItem("saveReport").enabled = false;
   getMenuItem("closeReport").enabled = false;
 }
 function onReportScreen() {
   getMenuItem("checkEpub").enabled = true;
-  getMenuItem("saveReport").enabled = true;
+  //getMenuItem("saveReport").enabled = true;
   getMenuItem("closeReport").enabled = true;
 }
 function onToggleFullScreen(val) {
@@ -49,11 +49,11 @@ function getMenuTemplate(appName) {
           label: 'Open Report...',
           id: 'openReport',
         },
-        {
+        /*{
           label: 'Save Report...',
           id: 'saveReport',
           accelerator: 'CmdOrCtrl+S'
-        },
+        },*/
         {
           label: 'Close Report',
           id: 'closeReport',

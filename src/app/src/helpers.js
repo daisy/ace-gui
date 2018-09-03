@@ -1,3 +1,9 @@
+// helper functions
+const fs = require('fs');
+
+const PrefsPath = "/userprefs.json";
+
+
 // a flat list is easier to work with regarding visual presentation
 // copied and slightly modified from https://github.com/daisy/ace/blob/master/packages/ace-report/src/generate-html-report.js#L172
 // TODO reduce duplication of code between Ace and Ace-gui
@@ -90,8 +96,6 @@ var summarizeViolations = function(assertions) {
   let flatList = createFlatListOfViolations(assertions);
   return collectViolationStats(flatList);
 };
-
-
 module.exports = {
   createFlatListOfViolations,
   summarizeViolations

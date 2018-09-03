@@ -29,7 +29,6 @@ export default class Sidebar extends React.Component {
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onBrowseClick = this.onBrowseClick.bind(this);
   }
-
   onDrop(e) {
     e.preventDefault();
     let filepath = e.dataTransfer.files[0].path;
@@ -65,7 +64,7 @@ export default class Sidebar extends React.Component {
   }
 
   render() {
-    let status = this.props.ready ? "Ready" : "Not ready";
+    let status = this.props.ready ? "Ready" : "Processing";
     let recentFiles = [];
     for (let idx=0; idx < this.props.recents.length; idx++) {
       let filepath = this.props.recents[idx];
