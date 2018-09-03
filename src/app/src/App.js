@@ -1,22 +1,19 @@
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
 const path = require('path');
-
+import tmp from 'tmp';
 import React from 'react';
 import SplitterLayout from 'react-splitter-layout';
-
 import Report from './components/Report';
 import Messages from './components/Messages';
 import Sidebar from './components/Sidebar';
 import Splash from './components/Splash';
-
 import './styles/App.scss';
-
-// TODO store prefs on disk
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    let queryStr = new URLSearchParams(window.location.search);
 
     this.state = {
       ready: true, // false == processing file
@@ -24,10 +21,9 @@ export default class App extends React.Component {
       report: null,
       recents: [],
       preferences: {
-        save: this.props.save,
-        outdir: this.props.outdir,
-        overwrite: this.props.overwrite,
-        organize: this.props.organize
+        outdir: queryStr.get('outdir'),
+        overwrite: queryStr.get('overwrite') == 'true',
+        organize: queryStr.get('organize') == 'true'
       }
     };
 
@@ -38,38 +34,27 @@ export default class App extends React.Component {
 
   componentDidMount() {
     // main process handlers; e.g. menu item selections
-    ipcRenderer.on('fileSelected', (event, arg) => {
-      this.setState({ready: false});
-      this.processInputFile(arg);
+    ipcRenderer.on('openReport', (event, arg) => {
+      this.setState({ready: true});
+      this.openReport(arg);
     });
     ipcRenderer.on('closeReport', (event, arg) => {
       this.closeReport();
+      this.setState({ready: true});
     });
-    ipcRenderer.on('newMessage', (event, arg) => {
+    ipcRenderer.on('message', (event, arg) => {
       this.addMessage(arg);
     });
-    ipcRenderer.on('aceCheckComplete', (event, arg) => {
-      this.addMessage("Ace check complete");
+    ipcRenderer.on('error', (event, arg) => {
+      this.addMessage(`ERROR: ${arg}`);
       this.setState({ready: true});
-      this.openReport(arg);
     });
   }
 
-  // decide what to do with a file. it may have been dragged, opened via menu, opened via recents
+  // pass input files onto the main process
   processInputFile(arg) {
-    // crude way to check filetype
-    if (path.extname(arg) == '.epub') {
-      this.setState({ready: false});
-      ipcRenderer.send('epubFileReceived', arg, this.state.preferences);
-    }
-    else if (path.extname(arg) == '.json') {
-      this.setState({ready: false});
-      this.openReport(arg);
-    }
-    else {
-      this.addMessage(`Error: File type not supported ${arg}`);
-      this.setState({ready: true});
-    }
+    this.setState({ready: false});
+    ipcRenderer.send('fileReceived', arg, this.state.preferences);
   }
 
   // add a message to the messages output
@@ -89,15 +74,8 @@ export default class App extends React.Component {
 
   // load an Ace report from file
   openReport(filepath) {
-    // if the report is already open, don't re-open it. just switch to its tab.
     if (this.state.report != null) {
-      if (this.state.report.filepath == filepath) {
-        this.addMessage(`Report already loaded ${filepath}`);
-        return;
-      }
-      else {
-        this.closeReport();
-      }
+      this.closeReport();
     }
     this.addMessage(`Loading report ${filepath}`);
     const data = fs.readFileSync(filepath);
@@ -108,7 +86,6 @@ export default class App extends React.Component {
 
   // close report, add its filepath to recents
   closeReport() {
-    // TODO now would be the time to prompt to save it
     this.addMessage(`Closing report`);
     this.addRecent(this.state.report.filepath);
     this.setState({report: null});
@@ -119,6 +96,9 @@ export default class App extends React.Component {
     let prefs = this.state.preferences;
     prefs[key] = value;
     this.setState({preferences: prefs});
+    // i'd rather save the preferences to disk on quit than continuously
+    // however, i'm not getting any unmount event to know that we're exiting
+    ipcRenderer.send('savePreferences', this.state.preferences);
   }
 
   render() {

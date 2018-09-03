@@ -27,3 +27,7 @@ dist
 .DS_Store
 ._*
 Thumbs.db
+
+dist
+src/package
+src/*.tgz

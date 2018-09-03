@@ -3,15 +3,15 @@ https://github.com/pastahito/electron-react-webpack
 
 #TODO
 
-* persist preferences
-* prompt to save report
 * a11y review
-* table sort
-* small visual enhancements
-
-# ARGH
-
-* Logo not showing on splash screen
+  - change messages window to be a list; make new items obvious
+  - have a command to copy contents of messages window
+  - use live regions
+* table sort + filter
+* include logo on splash screen and 'about' dialog
+* disable dropzone/open file while Ace is running
+* default prefs location + outdir should be app data dir
+* set min width on rule column of violations table
 
 # Limitations
 
@@ -22,3 +22,6 @@ https://github.com/pastahito/electron-react-webpack
 
 * dev environment not always picking up changes
 * will material-ui tabs re-render each time and forget things like table sort? it seems likely (need to implement table sort to test it)
+
+# future
+optionally write reports to disk, rather than always
