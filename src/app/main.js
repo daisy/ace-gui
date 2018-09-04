@@ -7,6 +7,7 @@ const tmp = require('tmp');
 const ace = require('@daisy/ace-core');
 const PrefsPath = "/userprefs.json";
 let win;
+let prefs;
 
 function createWindow() {
   win = new BrowserWindow({ show: false });
@@ -41,8 +42,7 @@ function createWindow() {
     "quit": () => { quit(); }
   });
 
-  // react can't use fs so read the prefs in the main process
-  let prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
+  prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
   if (prefs.outdir == "") prefs.outdir = tmp.dirSync({ unsafeCleanup: true }).name;
 
   // there are a few ways of sending properties over to react. using a query string is one.
@@ -61,9 +61,9 @@ app.on('ready', createWindow);
 app.on('window-all-closed', function () {
   // we could enable this typical macos behavior if we wanted but not sure it makes sense
   /*if (process.platform !== 'darwin') {
-      app.quit();
+      quit();
   }*/
-  app.quit();
+  quit();
 });
 
 app.on('activate', function () {
@@ -73,14 +73,12 @@ app.on('activate', function () {
 });
 
 // events from renderer
-ipcMain.on('fileReceived', (event, filepath, settings) => {
-  processInputFile(filepath, settings);
+ipcMain.on('fileReceived', (event, filepath) => {
+  processInputFile(filepath);
 });
 
-// arbitrary restriction, just open files (not dirs) on win/linux
-// otherwise we'd need a separate 'click to browse dir' item
-// since you can't have a dialog support both file and dir unless you're on mac
-// TODO test this
+// TODO: this is awkward because it only supports files, not directories, on non-mac systems
+// this should be changed to align with rest of Ace. do we add another link to the screen for opening folders?
 ipcMain.on('browseFileRequest', (event, arg) => {
   showFileOpenDialog(
     process.platform == 'darwin' ? ['openFile', 'openDirectory'] : ['openFile'],
@@ -95,18 +93,18 @@ ipcMain.on("onCloseReport", (event, arg) => {
   menu.onSplashScreen();
 });
 
-// the react app will ask to save its prefs before it exits
-ipcMain.on('savePreferences', (event, arg) => {
-  let data = JSON.stringify(arg);
+ipcMain.on('onPreferenceChange', (event, arg, value) => {
+  prefs[arg] = value;
   console.log("Saving prefs");
+  let data = JSON.stringify(prefs);
   console.log(data);
   fs.writeFileSync(__dirname + PrefsPath, data);
 });
 
-function processInputFile(filepath, settings) {
+function processInputFile(filepath) {
   // crude way to check filetype
   if (path.extname(filepath) == '.epub') {
-    runAce(filepath, settings);
+    runAce(filepath);
   }
   else if (path.extname(filepath) == '.json') {
     win.webContents.send('openReport', filepath);
@@ -118,7 +116,7 @@ function processInputFile(filepath, settings) {
     }
     // ...it might be an unpacked EPUB directory; let Ace decide
     else {
-      runAce(filepath, settings);
+      runAce(filepath);
     }
   }
 }
@@ -159,29 +157,31 @@ function launchWebpage(url) {
 }
 
 function quit() {
+  // TODO save prefs here instead of each time they change
+  // but this doesn't seem to be getting triggered
   app.quit();
 }
 
 // run Ace on an EPUB file or folder
-function runAce(filepath, preferences) {
-  let outdir = prepareOutdir(filepath, preferences);
+function runAce(filepath) {
+  let outdir = prepareOutdir(filepath);
   if (outdir == '') return;
-
+  menu.onProcessing();
   let msg = `Running Ace on ${filepath}`;
   win.webContents.send('message', msg);
-  win.webContents.send('message', `settings: ${JSON.stringify(preferences)}`);
+  win.webContents.send('message', `settings: ${JSON.stringify(prefs)}`);
   ace(filepath, {outdir})
-  .then(()=>win.webContents.send('message', 'Done.'))
-  .then(()=>win.webContents.send('openReport', outdir+'/report.json'))
-  .catch(error=>win.webContents.send('error', `${JSON.stringify(error)}`));
+  .then(() => win.webContents.send('message', 'Done.'))
+  .then(() => win.webContents.send('openReport', outdir+'/report.json'))
+  .catch(error => win.webContents.send('error', `${JSON.stringify(error)}`));
 }
 
-function prepareOutdir(filepath, preferences) {
-  let outdir = preferences.outdir;
-  if (preferences.organize) {
+function prepareOutdir(filepath) {
+  let outdir = prefs.outdir;
+  if (prefs.organize) {
     outdir = path.join(outdir, path.parse(filepath).name);
   }
-  if (!preferences.overwrite) {
+  if (!prefs.overwrite) {
     const overrides = ['report.json', 'report.html', 'data', 'js']
       .map(file => path.join(outdir, file))
       .filter(fs.existsSync);

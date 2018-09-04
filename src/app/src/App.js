@@ -54,7 +54,7 @@ export default class App extends React.Component {
   // pass input files onto the main process
   processInputFile(arg) {
     this.setState({ready: false});
-    ipcRenderer.send('fileReceived', arg, this.state.preferences);
+    ipcRenderer.send('fileReceived', arg);
   }
 
   // add a message to the messages output
@@ -96,9 +96,7 @@ export default class App extends React.Component {
     let prefs = this.state.preferences;
     prefs[key] = value;
     this.setState({preferences: prefs});
-    // i'd rather save the preferences to disk on quit than continuously
-    // however, i'm not getting any unmount event to know that we're exiting
-    ipcRenderer.send('savePreferences', this.state.preferences);
+    ipcRenderer.send('onPreferenceChange', key, value);
   }
 
   render() {

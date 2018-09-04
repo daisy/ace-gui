@@ -12,16 +12,21 @@ function init (appName, callbacks) {
 // enable or disable icons based on application state
 function onSplashScreen() {
   getMenuItem("checkEpub").enabled = true;
-  //getMenuItem("saveReport").enabled = false;
+  getMenuItem("openReport").enabled = true;
   getMenuItem("closeReport").enabled = false;
 }
 function onReportScreen() {
   getMenuItem("checkEpub").enabled = true;
-  //getMenuItem("saveReport").enabled = true;
+  getMenuItem("openReport").enabled = true;
   getMenuItem("closeReport").enabled = true;
 }
 function onToggleFullScreen(val) {
   getMenuItem("fullScreen").checked = val;
+}
+function onProcessing() {
+  getMenuItem("checkEpub").enabled = false;
+  getMenuItem("openReport").enabled = false;
+  getMenuItem("closeReport").enabled = false;
 }
 function getMenuItem(id) {
   let menu = Menu.getApplicationMenu();
@@ -216,5 +221,6 @@ module.exports = {
   init,
   onSplashScreen,
   onReportScreen,
-  onToggleFullScreen
+  onToggleFullScreen,
+  onProcessing
 };

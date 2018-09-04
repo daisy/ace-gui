@@ -43,16 +43,19 @@ export default class Preferences extends React.Component {
         <ul>
           <li>
             <label htmlFor="outdir">Save reports to: </label>
-            <input type="text" id="outdir" value={this.props.preferences.outdir} onChange={this.onChange}/>
-            <button onClick={this.onClick}>Browse</button>
+            <input type="text" id="outdir" value={this.props.preferences.outdir} onChange={this.onChange}
+            disabled={this.props.ready ? '' : 'disabled'}/>
+            <button onClick={this.onClick} disabled={this.props.ready ? '' : 'disabled'}>Browse</button>
           </li>
           <li>
             <label htmlFor="organize">Keep reports organized: </label>
-            <input type="checkbox" id="organize" checked={this.props.preferences.organize} onChange={this.onChange}/>
+            <input type="checkbox" id="organize" disabled={this.props.ready ? '' : 'disabled'}
+            checked={this.props.preferences.organize} onChange={this.onChange}/>
           </li>
           <li>
             <label htmlFor="overwrite">Overwrite files without prompting: </label>
-            <input type="checkbox" id="overwrite" checked={this.props.preferences.overwrite} onChange={this.onChange}/>
+            <input type="checkbox" id="overwrite" disabled={this.props.ready ? '' : 'disabled'}
+            checked={this.props.preferences.overwrite} onChange={this.onChange}/>
           </li>
         </ul>
       </section>

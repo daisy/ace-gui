@@ -57,7 +57,6 @@ var createFlatListOfViolations = function(violations) {
 // to support older Ace reports without a separate summary section
 // summarize the violation ruleset and impact data
 // copied and slightly modified from https://github.com/daisy/ace/blob/master/packages/ace-report/src/generate-html-report.js#L112
-// TODO reduce duplication of code between Ace and Ace-gui
 function collectViolationStats(flatListOfViolations) {
   var rulesetTags = ['wcag2a', 'wcag2aa', 'EPUB', 'best-practice'];
 
