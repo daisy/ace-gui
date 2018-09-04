@@ -39,7 +39,7 @@ export default class Report extends React.Component {
     let report = this.props.report.data;
     let violationSummary = "violationSummary" in report ?
       report.violationSummary : helpers.summarizeViolations(this.props.report.data.assertions);
-    // TODO images
+    
     return (
       <section className="ace-report">
         <h1>Report</h1>

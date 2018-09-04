@@ -12,6 +12,7 @@ https://github.com/pastahito/electron-react-webpack
 * disable dropzone/open file while Ace is running
 * default prefs location + outdir should be app data dir
 * set min width on rule column of violations table
+* add show-in-finder option for reports
 
 # Limitations
 

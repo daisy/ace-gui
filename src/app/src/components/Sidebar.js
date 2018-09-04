@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 const {ipcRenderer} = require('electron');
 const path = require('path');
-import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Preferences from './Preferences';
 import './../styles/Sidebar.scss';
 
@@ -68,10 +68,14 @@ export default class Sidebar extends React.Component {
     let recentFiles = [];
     for (let idx=0; idx < this.props.recents.length; idx++) {
       let filepath = this.props.recents[idx];
-      recentFiles.push(<li key={idx}><a onClick={this.onRecentsClick.bind(this, filepath)}>{filepath}</a></li>);
+      recentFiles.push(<li key={idx}>
+        {this.props.ready ?
+        <a onClick={this.onRecentsClick.bind(this, filepath)}>{filepath}</a>
+        : <span className="processing">{filepath}</span> }
+        </li>);
     }
 
-    let dropzoneClasses = `dropzone ${this.state.fileHover ? 'dropzone-hover' : ''}`;
+    let dropzoneClasses = `dropzone ${this.state.fileHover ? 'dropzone-hover' : ''} ${this.props.ready ? '' : 'processing'}`;
     return (
       <aside className="sidebar">
         <section className="drop-file">
@@ -83,22 +87,23 @@ export default class Sidebar extends React.Component {
             onDragEnd={this.onDragEnd}>
                 <p>Drag an EPUB file or folder here, or <a href="#" onClick={this.onBrowseClick}>click to browse.</a></p>
           </div>
+          {this.props.ready ? '' :
+            <div className='status'>
+              <LinearProgress />
+              <p>Processing...</p>
+            </div>
+          }
+
         </section>
 
         <section className="preferences">
-          <Preferences preferences={this.props.preferences} onPreferenceChange={this.props.onPreferenceChange}/>
+          <Preferences ready={this.props.ready} preferences={this.props.preferences} onPreferenceChange={this.props.onPreferenceChange}/>
         </section>
         <section className="recents">
           <h1>Recent</h1>
           <ul>
           {recentFiles}
           </ul>
-        </section>
-
-        <section className="status">
-          <h1>Status</h1>
-          <p>{status}</p>
-          {this.props.ready ?  '' : <CircularProgress /> }
         </section>
       </aside>
     );
