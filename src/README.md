@@ -8,8 +8,7 @@ https://github.com/pastahito/electron-react-webpack
   - have a command to copy contents of messages window
   - use live regions
 * table sort + filter
-* include logo on splash screen and 'about' dialog
-* disable dropzone/open file while Ace is running
+* include logo on 'about' dialog and in app tray
 * default prefs location + outdir should be app data dir
 * set min width on rule column of violations table
 * add show-in-finder option for reports
