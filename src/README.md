@@ -16,7 +16,7 @@ https://github.com/pastahito/electron-react-webpack
 # Limitations
 
 * Open file vs directory behavior: https://github.com/electron/electron/blob/master/docs/api/dialog.md#dialogshowopendialogbrowserwindow-options-callback
-* Dynamic menu support missing in electron (we could use it to list all open reports in a menu)
+* Dynamic menu support missing in electron 
 
 # questions
 

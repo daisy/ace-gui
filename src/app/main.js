@@ -8,6 +8,8 @@ const ace = require('@daisy/ace-core');
 const PrefsPath = "/userprefs.json";
 let win;
 let prefs;
+let isReportOpen = false;
+let reportFilepath = '';
 
 function createWindow() {
   win = new BrowserWindow({ show: false });
@@ -39,9 +41,15 @@ function createWindow() {
       {name: 'All Files', extensions: ['*']});
     },
     "about": () => { showAbout(); },
-    "quit": () => { quit(); }
+    "quit": () => { quit(); },
+    "gotoSummary": () => { win.webContents.send("goto", 0); },
+    "gotoViolations": () => { win.webContents.send("goto", 1); },
+    "gotoMetadata": () => { win.webContents.send("goto", 2); },
+    "gotoOutlines": () => { win.webContents.send("goto", 3); },
+    "gotoImages": () => { win.webContents.send("goto", 4); },
+    "showInFinder": () => { showInFinder(); }
   });
-
+  menu.onSplashScreen();
   prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
   if (prefs.outdir == "") prefs.outdir = tmp.dirSync({ unsafeCleanup: true }).name;
 
@@ -86,10 +94,12 @@ ipcMain.on('browseFileRequest', (event, arg) => {
 });
 
 ipcMain.on("onOpenReport", (event, arg) => {
+  isReportOpen = true;
   menu.onReportScreen();
 });
 
 ipcMain.on("onCloseReport", (event, arg) => {
+  isReportOpen = false;
   menu.onSplashScreen();
 });
 
@@ -104,6 +114,7 @@ ipcMain.on('onPreferenceChange', (event, arg, value) => {
 function processInputFile(filepath) {
   // crude way to check filetype
   if (path.extname(filepath) == '.epub') {
+    win.webContents.send('processing', filepath);
     runAce(filepath);
   }
   else if (path.extname(filepath) == '.json') {
@@ -151,6 +162,9 @@ function showAbout() {
   dialog.showMessageBox({"message": "Ace Beta", "detail": "DAISY Consortium 2018"});
 }
 
+function showInFinder() {
+    if (reportFilepath != '') shell.showItemInFolder(reportFilepath);
+}
 
 function launchWebpage(url) {
   shell.openExternal(url);
@@ -167,13 +181,15 @@ function runAce(filepath) {
   let outdir = prepareOutdir(filepath);
   if (outdir == '') return;
   menu.onProcessing();
-  let msg = `Running Ace on ${filepath}`;
-  win.webContents.send('message', msg);
-  win.webContents.send('message', `settings: ${JSON.stringify(prefs)}`);
+
   ace(filepath, {outdir})
   .then(() => win.webContents.send('message', 'Done.'))
+  .then(() => reportFilepath = outdir+'/report.json')
   .then(() => win.webContents.send('openReport', outdir+'/report.json'))
-  .catch(error => win.webContents.send('error', `${JSON.stringify(error)}`));
+  .catch(error => {
+    win.webContents.send('error', `${JSON.stringify(error)}`);
+    isReportOpen ? menu.onReportScreen() : menu.onSplashScreen();
+  });
 }
 
 function prepareOutdir(filepath) {

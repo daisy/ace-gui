@@ -27,7 +27,7 @@ export default class Preferences extends React.Component {
   onClick() {
     // use electron folder dialog, not html input element dialog (can't choose folders)
     dialog.showOpenDialog(
-      {title: "Select a folder", properties: ['openDirectory', 'createDirectory'], buttonLabel: "Save"},
+      {title: "Select a folder", properties: ['openDirectory', 'createDirectory'], buttonLabel: "Select"},
       (filenames) => {
         if (filenames != undefined) {
           this.setState({outdir: filenames[0]});

@@ -8,6 +8,7 @@ import Images from './ReportSections/Images';
 import {Tabs, Tab} from '@material-ui/core';
 const helpers = require('./../helpers.js');
 import './../styles/Report.scss';
+const {ipcRenderer} = require('electron');
 
 // the report view
 export default class Report extends React.Component {
@@ -21,6 +22,12 @@ export default class Report extends React.Component {
     this.state = {
       tabIndex: 0
     };
+  }
+
+  componentDidMount() {
+    ipcRenderer.on('goto', (event, arg) => {
+      this.setState({tabIndex: arg});
+    });
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -39,7 +46,7 @@ export default class Report extends React.Component {
     let report = this.props.report.data;
     let violationSummary = "violationSummary" in report ?
       report.violationSummary : helpers.summarizeViolations(this.props.report.data.assertions);
-    
+
     return (
       <section className="ace-report">
         <h1>Report</h1>
