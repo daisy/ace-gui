@@ -11,28 +11,37 @@ function init (appName, callbacks) {
 
 // enable or disable icons based on application state
 function onSplashScreen() {
-  getMenuItem("checkEpub").enabled = true;
-  getMenuItem("openReport").enabled = true;
-  getMenuItem("closeReport").enabled = false;
+  setMenuItemsEnabled(["checkEpub", "openReport"], true);
+  setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
+  "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], false);
 }
 function onReportScreen() {
-  getMenuItem("checkEpub").enabled = true;
-  getMenuItem("openReport").enabled = true;
-  getMenuItem("closeReport").enabled = true;
+  setMenuItemsEnabled(["checkEpub", "openReport"], true);
+  setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
+  "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], true);
 }
 function onToggleFullScreen(val) {
   getMenuItem("fullScreen").checked = val;
 }
 function onProcessing() {
-  getMenuItem("checkEpub").enabled = false;
-  getMenuItem("openReport").enabled = false;
-  getMenuItem("closeReport").enabled = false;
+  setMenuItemsEnabled(["checkEpub", "openReport"], false);
+  setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
+  "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], false);
 }
 function getMenuItem(id) {
   let menu = Menu.getApplicationMenu();
   return menu.getMenuItemById(id);
 }
-
+// set many menu items at once
+function setMenuItemsEnabled(ids, enabled) {
+  //console.log(`Setting menu items enabled=${enabled}`);
+  for (id of ids) {
+    if (getMenuItem(id)) {
+      //console.log(`\t-${id}`);
+      getMenuItem(id).enabled = enabled;
+    }
+  }
+}
 
 function getMenuTemplate(appName) {
   // the menu will apparently look correct in production mode
@@ -76,6 +85,42 @@ function getMenuTemplate(appName) {
           accelerator: process.platform === 'darwin'
             ? 'Ctrl+Command+F'
             : 'F11'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Go to Summary',
+          id: 'gotoSummary',
+          accelerator: 'CmdOrCtrl+Shift+S'
+        },
+        {
+          label: 'Go to Violations',
+          id: 'gotoViolations',
+          accelerator: 'CmdOrCtrl+Shift+V'
+        },
+        {
+          label: 'Go to Metadata',
+          id: 'gotoMetadata',
+          accelerator: 'CmdOrCtrl+Shift+M'
+        },
+        {
+          label: 'Go to Outlines',
+          id: 'gotoOutlines',
+          accelerator: 'CmdOrCtrl+Shift+O'
+        },
+        {
+          label: 'Go to Images',
+          id: 'gotoImages',
+          accelerator: 'CmdOrCtrl+Shift+I'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: process.platform == 'darwin' ? 'Show in Finder' : 'Show in Explorer',
+          id: 'showInFinder',
+          accelerator: 'CmdOrCtrl+Shift+F'
         }
       ]
     },

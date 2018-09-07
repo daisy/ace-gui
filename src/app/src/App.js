@@ -49,11 +49,14 @@ export default class App extends React.Component {
       this.addMessage(`ERROR: ${arg}`);
       this.setState({ready: true});
     });
+    ipcRenderer.on('processing', (event, arg) => {
+      this.addMessage(`Running Ace on ${arg}`);
+      this.setState({ready: false});
+    });
   }
 
   // pass input files onto the main process
   processInputFile(arg) {
-    this.setState({ready: false});
     ipcRenderer.send('fileReceived', arg);
   }
 
@@ -98,10 +101,13 @@ export default class App extends React.Component {
     this.setState({preferences: prefs});
     ipcRenderer.send('onPreferenceChange', key, value);
   }
+  onKeyPress(e) {
+    console.log(`The key of ${e.key}`);
+  }
 
   render() {
     return (
-      <div>
+      <div onKeyDown={this.onKeyPress.bind(this)}>
         <SplitterLayout percentage vertical primaryMinSize={40} secondaryInitialSize={15}>
           <SplitterLayout percentage secondaryInitialSize={80} secondaryMinSize={40}>
             <Sidebar
