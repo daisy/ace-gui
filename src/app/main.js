@@ -114,7 +114,6 @@ ipcMain.on('onPreferenceChange', (event, arg, value) => {
 function processInputFile(filepath) {
   // crude way to check filetype
   if (path.extname(filepath) == '.epub') {
-    win.webContents.send('processing', filepath);
     runAce(filepath);
   }
   else if (path.extname(filepath) == '.json') {
@@ -180,6 +179,8 @@ function quit() {
 function runAce(filepath) {
   let outdir = prepareOutdir(filepath);
   if (outdir == '') return;
+  
+  win.webContents.send('processing', filepath);
   menu.onProcessing();
 
   ace(filepath, {outdir})
