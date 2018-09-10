@@ -13,18 +13,16 @@ export default class Preferences extends React.Component {
   };
   constructor(props) {
     super(props);
-    this.onChange = this.onChange.bind(this);
-    this.onClick = this.onClick.bind(this);
   }
 
-  onChange(e) {
+  onChange = e => {
     let value = e.target.type == "checkbox" ?
       e.target.checked : e.target.value;
     if (this.props.onPreferenceChange) this.props.onPreferenceChange([e.target.id], value);
-  }
+  };
 
   // browse directory button click
-  onClick() {
+  onClick = e => {
     // use electron folder dialog, not html input element dialog (can't choose folders)
     dialog.showOpenDialog(
       {title: "Select a folder", properties: ['openDirectory', 'createDirectory'], buttonLabel: "Select"},
@@ -34,7 +32,7 @@ export default class Preferences extends React.Component {
         }
       }
     );
-  }
+  };
 
   render() {
     return (
@@ -60,14 +58,5 @@ export default class Preferences extends React.Component {
         </ul>
       </section>
     );
-
-    /*
-    right now, saving reports is always true, so we don't need this until we process the json data directly from Ace and skip
-    saving to disk automatically (if we decide to do that)
-    <li>
-      <label htmlFor="save">Save reports: </label>
-      <input type="checkbox" id="save" checked={this.props.preferences.save} onChange={this.onChange}/>
-    </li>
-    */
   }
 }

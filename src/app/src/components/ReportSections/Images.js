@@ -21,15 +21,7 @@ export default class Images extends React.Component {
       orderBy: this.props.orderBy
     };
   }
-
-  onChangePage = (event, page) => {
-    this.setState({ page });
-  };
-
-  onChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
-
+  
   render() {
     let {page, rowsPerPage} = this.state;
 

@@ -26,10 +26,6 @@ export default class App extends React.Component {
         organize: queryStr.get('organize') == 'true'
       }
     };
-
-    this.closeReport = this.closeReport.bind(this);
-    this.processInputFile = this.processInputFile.bind(this);
-    this.preferenceChanged = this.preferenceChanged.bind(this);
   }
 
   componentDidMount() {
@@ -68,27 +64,36 @@ export default class App extends React.Component {
   }
 
   // pass input files onto the main process
-  processInputFile(arg) {
-    ipcRenderer.send('fileReceived', arg);
-  }
+  processInputFile = arg => ipcRenderer.send('fileReceived', arg);
+  // close report, add its filepath to recents
+  closeReport = () => {
+    this.addMessage(`Closing report`);
+    this.addRecent(this.state.report.filepath);
+    this.setState({report: null});
+    ipcRenderer.send("onCloseReport");
+  };
+
+  preferenceChanged = (key, value) => {
+    let prefs = this.state.preferences;
+    prefs[key] = value;
+    this.setState({preferences: prefs});
+  };
 
   // add a message to the messages output
-  addMessage(msg) {
-    this.setState({messages: [...this.state.messages, msg]});
-  }
+  addMessage = msg => this.setState({messages: [...this.state.messages, msg]});
 
   // add to the recent files list
-  addRecent(filepath) {
+  addRecent = filepath => {
     let recents = this.state.recents.slice();
     // don't add duplicates
     if (recents.indexOf(filepath) == -1) {
       recents.push(filepath);
       this.setState({recents: recents});
     }
-  }
+  };
 
   // load an Ace report from file
-  openReport(filepath) {
+  openReport = filepath => {
     if (this.state.report != null) {
       this.closeReport();
     }
@@ -97,21 +102,7 @@ export default class App extends React.Component {
     let report = {filepath: filepath, data: JSON.parse(data)};
     this.setState({report: report, ready: true});
     ipcRenderer.send("onOpenReport");
-  }
-
-  // close report, add its filepath to recents
-  closeReport() {
-    this.addMessage(`Closing report`);
-    this.addRecent(this.state.report.filepath);
-    this.setState({report: null});
-    ipcRenderer.send("onCloseReport");
-  }
-
-  preferenceChanged(key, value) {
-    let prefs = this.state.preferences;
-    prefs[key] = value;
-    this.setState({preferences: prefs});
-  }
+  };
 
   render() {
     return (
