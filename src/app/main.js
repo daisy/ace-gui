@@ -204,7 +204,7 @@ function runAce(filepath) {
     menu.onProcessing();
 
     ace(filepath, {outdir})
-    .then(() => win.webContents.send('message', 'Done.'))
+    .then(() => win.webContents.send('message', 'Ace check complete'))
     .then(() => win.webContents.send('openReport', outdir+'/report.json'))
     .catch(error => {
       win.webContents.send('error', `${JSON.stringify(error)}`);

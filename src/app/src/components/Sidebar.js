@@ -93,7 +93,7 @@ export default class Sidebar extends React.Component {
             onDragEnd={this.onDragEnd}>
               <p><span>Drag an EPUB file or folder here, <br/> or </span>
               {process.platform == 'darwin' ?
-                <span><a href="#" onClick={this.onBrowseClick}>click to browse.</a></span>
+                <span><a href="#" onClick={this.onBrowseFileClick}>click to browse.</a></span>
                 :
                 <span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> or a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
               }
