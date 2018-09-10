@@ -53,17 +53,21 @@ function createWindow() {
   menu.onSplashScreen();
   prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
   if (prefs.outdir == "") prefs.outdir = tmp.dirSync({ unsafeCleanup: true }).name;
-  
+
   // there are a few ways of sending properties over to react. using a query string is one.
   // https://github.com/electron/electron/issues/6504
   win.loadURL(`file://${__dirname}/index.html?overwrite=${prefs.overwrite}&organize=${prefs.organize}&outdir=${prefs.outdir}`);
-  win.webContents.openDevTools();
+
+  // attempting to detect dev mode
+  if (process.defaultApp) win.webContents.openDevTools();
 
   win.on('closed', function () {
       win = null;
   });
   console.log("win created");
 }
+
+app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', createWindow);
 

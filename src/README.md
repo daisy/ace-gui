@@ -5,9 +5,8 @@ https://github.com/pastahito/electron-react-webpack
 
 * a11y review
   - change messages window to be a list; make new items obvious
-  - have a command to copy contents of messages window
   - use live regions
-* table sort + filter
+* table filter
 * include logo on 'about' dialog and in app tray
 * default prefs location + outdir should be app data dir
 * set min width on rule column of violations table
