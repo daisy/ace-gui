@@ -6,10 +6,9 @@ const tmp = require('tmp');
 
 const ace = require('@daisy/ace-core');
 const PrefsPath = "/userprefs.json";
+
 let win;
-let prefs;
 let isReportOpen = false;
-let reportFilepath = '';
 
 function createWindow() {
   win = new BrowserWindow({ show: false });
@@ -50,8 +49,9 @@ function createWindow() {
     "showInFinder": () => { showInFinder(); },
     "copyMessages": () => {copyMessages(); }
   });
+
   menu.onSplashScreen();
-  prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
+  let prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
   if (prefs.outdir == "") prefs.outdir = tmp.dirSync({ unsafeCleanup: true }).name;
 
   // there are a few ways of sending properties over to react. using a query string is one.
@@ -85,17 +85,25 @@ app.on('activate', function () {
   }
 });
 
+app.on('before-quit', function() {
+  savePreferences();
+});
+
 // events from renderer
 ipcMain.on('fileReceived', (event, filepath) => {
   processInputFile(filepath);
 });
 
-// TODO: this is awkward because it only supports files, not directories, on non-mac systems
-// this should be changed to align with rest of Ace. do we add another link to the screen for opening folders?
 ipcMain.on('browseFileRequest', (event, arg) => {
   showFileOpenDialog(
     process.platform == 'darwin' ? ['openFile', 'openDirectory'] : ['openFile'],
     [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}]);
+});
+
+ipcMain.on('browseFolderRequest', (event, arg) => {
+  showFileOpenDialog(
+    process.platform == 'darwin' ? ['openFile', 'openDirectory'] : ['openDirectory'],
+    [{name: 'All Files', extensions: ['*']}]);
 });
 
 ipcMain.on("onOpenReport", (event, arg) => {
@@ -106,14 +114,6 @@ ipcMain.on("onOpenReport", (event, arg) => {
 ipcMain.on("onCloseReport", (event, arg) => {
   isReportOpen = false;
   menu.onSplashScreen();
-});
-
-ipcMain.on('onPreferenceChange', (event, arg, value) => {
-  prefs[arg] = value;
-  console.log("Saving prefs");
-  let data = JSON.stringify(prefs);
-  console.log(data);
-  fs.writeFileSync(__dirname + PrefsPath, data);
 });
 
 function processInputFile(filepath) {
@@ -167,12 +167,16 @@ function showAbout() {
 }
 
 function showInFinder() {
-    if (reportFilepath != '') shell.showItemInFolder(reportFilepath);
+  win.webContents.send('reportFilepathRequest');
+  ipcMain.once('reportFilepathRequestReply', (event, filepath) => {
+    if (filepath != '') shell.showItemInFolder(filepath);
+  });
 }
 
 function launchWebpage(url) {
   shell.openExternal(url);
 }
+
 // put the messages on the clipboard
 function copyMessages() {
   win.webContents.send("messagesRequest");
@@ -185,30 +189,31 @@ function copyMessages() {
 }
 
 function quit() {
-  // TODO save prefs here instead of each time they change
-  // but this doesn't seem to be getting triggered
   app.quit();
 }
 
 // run Ace on an EPUB file or folder
 function runAce(filepath) {
-  let outdir = prepareOutdir(filepath);
-  if (outdir == '') return;
+  win.webContents.send("preferencesRequest");
+  ipcMain.once('preferencesRequestReply', (event, prefs) => {
 
-  win.webContents.send('processing', filepath);
-  menu.onProcessing();
+    let outdir = prepareOutdir(filepath, prefs);
+    if (outdir == '') return;
 
-  ace(filepath, {outdir})
-  .then(() => win.webContents.send('message', 'Done.'))
-  .then(() => reportFilepath = outdir+'/report.json')
-  .then(() => win.webContents.send('openReport', outdir+'/report.json'))
-  .catch(error => {
-    win.webContents.send('error', `${JSON.stringify(error)}`);
-    isReportOpen ? menu.onReportScreen() : menu.onSplashScreen();
+    win.webContents.send('processing', filepath);
+    menu.onProcessing();
+
+    ace(filepath, {outdir})
+    .then(() => win.webContents.send('message', 'Done.'))
+    .then(() => win.webContents.send('openReport', outdir+'/report.json'))
+    .catch(error => {
+      win.webContents.send('error', `${JSON.stringify(error)}`);
+      isReportOpen ? menu.onReportScreen() : menu.onSplashScreen();
+    });
   });
 }
 
-function prepareOutdir(filepath) {
+function prepareOutdir(filepath, prefs) {
   let outdir = prefs.outdir;
   if (prefs.organize) {
     outdir = path.join(outdir, path.parse(filepath).name);
@@ -225,4 +230,14 @@ function prepareOutdir(filepath) {
     }
   }
   return outdir;
+}
+
+function savePreferences() {
+  win.webContents.send("preferencesRequest");
+  ipcMain.once('preferencesRequestReply', (event, prefs) => {
+    console.log("Saving preferences");
+    let data = JSON.stringify(prefs);
+    console.log(data);
+    fs.writeFileSync(__dirname + PrefsPath, data);
+  });
 }

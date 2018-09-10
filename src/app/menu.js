@@ -132,11 +132,11 @@ function getMenuTemplate(appName) {
           id: 'learnMore'
         },
         {
-          label: 'Report an Issue...',
+          label: 'Report an Issue',
           id: 'reportIssue'
         },
         {
-          label: 'Copy Messages',
+          label: 'Copy Message Output',
           id: 'copyMessages'
         }
       ]

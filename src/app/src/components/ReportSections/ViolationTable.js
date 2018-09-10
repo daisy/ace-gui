@@ -35,73 +35,62 @@ export default class ViolationTable extends React.Component {
         label: "Impact",
         numeric: false,
         sortable: true,
-        makeNumeric: (impact) => {
-          return impactOrder.indexOf(impact);
-        },
-        makeCell: (impact, idx) => {return(
+        makeNumeric: impact => impactOrder.indexOf(impact),
+        makeCell: (row, idx) =>
           <TableCell key={idx} className="impact">
-            <span className={impact}>{impact}</span>
-          </TableCell>);
-        }
+            <span className={row.impact}>{row.impact}</span>
+          </TableCell>
       },
       {
         id: "rulesetTag",
         label: "Ruleset",
         numeric: true,
         sortable: true,
-        makeCell: (rulesetTag, idx) => {return(
-          <TableCell key={idx} className="ruleset">{rulesetTag}</TableCell>);
-        }
+        makeCell: (row, idx) =>
+          <TableCell key={idx} className="ruleset">{row.rulesetTag}</TableCell>
       },
       {
         id: "rule",
         label: "Rule",
         numeric: false,
         sortable: true,
-        makeNumeric: (rule) => {
-          return rule.rule;
-        },
-        makeCell: (rule, idx) => {return(
+        makeNumeric: rule => rule.rule,
+        makeCell: (row, idx) =>
           <TableCell key={idx} className="rule">
-            <p>{rule.rule}</p>
-            <p className="violation-engine">{rule.engine}</p>
-          </TableCell>);
-        }
+            <p>{row.rule.rule}</p>
+            <p className="violation-engine">{row.rule.engine}</p>
+          </TableCell>
       },
       {
         id: "location",
         label: "Location",
         numeric: false,
         sortable: true,
-        makeNumeric: (location) => {
-          return location.filename;
-        },
-        makeCell: (location, idx) => {return(
+        makeNumeric: location => location.filename,
+        makeCell: (row, idx) =>
           <TableCell key={idx} className="location">
-            <p><code>{location.filename}</code></p>
-            {location.snippet != '' ?
-              <pre>{unescape(location.snippet)}</pre>
+            <p><code>{row.location.filename}</code></p>
+            {row.location.snippet != '' ?
+              <pre>{unescape(row.location.snippet)}</pre>
               : ''}
-          </TableCell>);
-        }
+          </TableCell>
       },
       {
         id: "details",
         label: "Details",
         numeric: false,
         sortable: false,
-        makeCell: (details, idx) => {return(
+        makeCell: (row, idx) =>
           <TableCell key={idx} className="details">
             <ul>
-              {details.desc.map((txt, idx) => {
+              {row.details.desc.map((txt, idx) => {
                   return (
                     <li key={idx}>{unescape(txt)}</li>
                   );
               })}
             </ul>
-            <p><a className="external-link" onClick={this.onExternalLinkClick.bind(this, details.kburl)}>Learn about {details.kbtitle}</a></p>
-          </TableCell>);
-        }
+            <p><a className="external-link" onClick={this.onExternalLinkClick.bind(this, row.details.kburl)}>Learn about {row.details.kbtitle}</a></p>
+          </TableCell>
       }
     ];
 
@@ -113,7 +102,8 @@ export default class ViolationTable extends React.Component {
           rows={rows}
           heads={heads}
           orderBy='impact'
-          order='desc'/>
+          order='desc'
+          isPaginated={true}/>
         {rows.length == 0 ? <p>No violations reported.</p> : ''}
       </section>
     );

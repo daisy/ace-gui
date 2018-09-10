@@ -53,9 +53,17 @@ export default class App extends React.Component {
       this.addMessage(`Running Ace on ${arg}`);
       this.setState({ready: false});
     });
+
+    // these act nearly synchronously
+    // we do this rather than maintaining too much state in the main process
     ipcRenderer.on('messagesRequest', (event, arg) => {
-      // make this one nearly synchronous
       event.sender.send("messagesRequestReply", this.state.messages);
+    });
+    ipcRenderer.on('reportFilepathRequest', (event, arg) => {
+      event.sender.send("reportFilepathRequestReply", this.state.report ? this.state.report.filepath : '');
+    });
+    ipcRenderer.on('preferencesRequest', (event, arg) => {
+      event.sender.send('preferencesRequestReply', this.state.preferences);
     });
   }
 
@@ -103,9 +111,7 @@ export default class App extends React.Component {
     let prefs = this.state.preferences;
     prefs[key] = value;
     this.setState({preferences: prefs});
-    ipcRenderer.send('onPreferenceChange', key, value);
   }
-
 
   render() {
     return (

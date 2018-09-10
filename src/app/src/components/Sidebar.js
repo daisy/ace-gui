@@ -27,7 +27,8 @@ export default class Sidebar extends React.Component {
     this.onDragOver = this.onDragOver.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
-    this.onBrowseClick = this.onBrowseClick.bind(this);
+    this.onBrowseFileClick = this.onBrowseFileClick.bind(this);
+    this.onBrowseFolderClick = this.onBrowseFolderClick.bind(this);
   }
   onDrop(e) {
     e.preventDefault();
@@ -54,8 +55,12 @@ export default class Sidebar extends React.Component {
     return false;
   }
 
-  onBrowseClick(e) {
+  onBrowseFileClick(e) {
     ipcRenderer.send('browseFileRequest');
+    return false;
+  }
+  onBrowseFolderClick(e) {
+    ipcRenderer.send('browseFolderRequest');
     return false;
   }
 
@@ -66,6 +71,7 @@ export default class Sidebar extends React.Component {
   render() {
     let status = this.props.ready ? "Ready" : "Processing";
     let recentFiles = [];
+
     for (let idx=0; idx < this.props.recents.length; idx++) {
       let filepath = this.props.recents[idx];
       recentFiles.push(<li key={idx}>
@@ -85,7 +91,13 @@ export default class Sidebar extends React.Component {
             onDragOver={this.onDragOver}
             onDragLeave={this.onDragLeave}
             onDragEnd={this.onDragEnd}>
-                <p>Drag an EPUB file or folder here, or <a href="#" onClick={this.onBrowseClick}>click to browse.</a></p>
+              <p><span>Drag an EPUB file or folder here, <br/> or </span>
+              {process.platform == 'darwin' ?
+                <span><a href="#" onClick={this.onBrowseClick}>click to browse.</a></span>
+                :
+                <span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> or a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
+              }
+              </p>
           </div>
           {this.props.ready ? '' :
             <div className='status'>
