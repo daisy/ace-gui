@@ -53,6 +53,10 @@ export default class App extends React.Component {
       this.addMessage(`Running Ace on ${arg}`);
       this.setState({ready: false});
     });
+    ipcRenderer.on('messagesRequest', (event, arg) => {
+      // make this one nearly synchronous
+      event.sender.send("messagesRequestReply", this.state.messages);
+    });
   }
 
   // pass input files onto the main process

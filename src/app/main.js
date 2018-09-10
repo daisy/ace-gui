@@ -1,4 +1,4 @@
-const { app, BrowserWindow, electron, ipcMain, dialog, shell} = require('electron');
+const { app, BrowserWindow, electron, ipcMain, dialog, shell, clipboard} = require('electron');
 const path = require('path');
 const menu = require('./menu');
 const fs = require('fs');
@@ -47,12 +47,13 @@ function createWindow() {
     "gotoMetadata": () => { win.webContents.send("goto", 2); },
     "gotoOutlines": () => { win.webContents.send("goto", 3); },
     "gotoImages": () => { win.webContents.send("goto", 4); },
-    "showInFinder": () => { showInFinder(); }
+    "showInFinder": () => { showInFinder(); },
+    "copyMessages": () => {copyMessages(); }
   });
   menu.onSplashScreen();
   prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
   if (prefs.outdir == "") prefs.outdir = tmp.dirSync({ unsafeCleanup: true }).name;
-
+  
   // there are a few ways of sending properties over to react. using a query string is one.
   // https://github.com/electron/electron/issues/6504
   win.loadURL(`file://${__dirname}/index.html?overwrite=${prefs.overwrite}&organize=${prefs.organize}&outdir=${prefs.outdir}`);
@@ -168,6 +169,16 @@ function showInFinder() {
 function launchWebpage(url) {
   shell.openExternal(url);
 }
+// put the messages on the clipboard
+function copyMessages() {
+  win.webContents.send("messagesRequest");
+  ipcMain.once("messagesRequestReply", (event, messages) => {
+
+    let msgstr = messages.join('\n');
+    console.log(msgstr);
+    clipboard.writeText(msgstr);
+  });
+}
 
 function quit() {
   // TODO save prefs here instead of each time they change
@@ -179,7 +190,7 @@ function quit() {
 function runAce(filepath) {
   let outdir = prepareOutdir(filepath);
   if (outdir == '') return;
-  
+
   win.webContents.send('processing', filepath);
   menu.onProcessing();
 
