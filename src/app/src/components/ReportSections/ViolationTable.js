@@ -23,9 +23,7 @@ export default class ViolationTable extends React.Component {
   }
 
 
-  onExternalLinkClick(url) {
-    shell.openExternal(url);
-  }
+  onExternalLinkClick = url => shell.openExternal(url);
 
   render() {
     const impactOrder = ['minor', 'moderate', 'serious', 'critical'];
@@ -89,7 +87,7 @@ export default class ViolationTable extends React.Component {
                   );
               })}
             </ul>
-            <p><a className="external-link" onClick={this.onExternalLinkClick.bind(this, row.details.kburl)}>Learn about {row.details.kbtitle}</a></p>
+            <p><a className="external-link" onClick={() => this.onExternalLinkClick(row.details.kburl)}>Learn about {row.details.kbtitle}</a></p>
           </TableCell>
       }
     ];

@@ -30,43 +30,44 @@ export default class Sidebar extends React.Component {
     this.onBrowseFileClick = this.onBrowseFileClick.bind(this);
     this.onBrowseFolderClick = this.onBrowseFolderClick.bind(this);
   }
-  onDrop(e) {
+  onDrop = e => {
     e.preventDefault();
     let filepath = e.dataTransfer.files[0].path;
     console.log(`File dropped ${filepath}`);
     if (this.props.onDropFile) this.props.onDropFile(filepath);
     this.setState({fileHover: false});
     return false;
-  }
+  };
 
-  onDragOver(e) {
+  onDragOver = e => {
     e.stopPropagation();
     e.preventDefault();
     this.setState({fileHover: true});
     return false;
-  }
+  };
 
-  onDragLeave(e) {
+  onDragLeave = e => {
     this.setState({fileHover: false});
     return false;
-  }
+  };
 
-  onDragEnd(e) {
+  onDragEnd = e => {
     return false;
-  }
+  };
 
-  onBrowseFileClick(e) {
+  onBrowseFileClick = e => {
     ipcRenderer.send('browseFileRequest');
     return false;
-  }
-  onBrowseFolderClick(e) {
+  };
+
+  onBrowseFolderClick = e => {
     ipcRenderer.send('browseFolderRequest');
     return false;
-  }
+  };
 
-  onRecentsClick(filepath) {
+  onRecentsClick = filepath => {
     this.props.onDropFile(filepath);
-  }
+  };
 
   render() {
     let status = this.props.ready ? "Ready" : "Processing";
@@ -76,8 +77,9 @@ export default class Sidebar extends React.Component {
       let filepath = this.props.recents[idx];
       recentFiles.push(<li key={idx}>
         {this.props.ready ?
-        <a onClick={this.onRecentsClick.bind(this, filepath)}>{filepath}</a>
-        : <span className="processing">{filepath}</span> }
+        <a onClick={() => this.onRecentsClick(filepath)}>{filepath}</a>
+        :
+        <span className="processing">{filepath}</span> }
         </li>);
     }
 

@@ -37,9 +37,9 @@ export default class Report extends React.Component {
     }
   }
   // tab change
-  onChange(e, idx) {
+  onChange = (e, idx) => {
     this.setState({tabIndex: idx});
-  }
+  };
 
   render() {
     console.log("rendering report");
@@ -50,7 +50,7 @@ export default class Report extends React.Component {
     return (
       <section className="ace-report">
         <h1>Report</h1>
-        <Tabs onChange={this.onChange.bind(this)} value={this.state.tabIndex}>
+        <Tabs onChange={this.onChange} value={this.state.tabIndex}>
             <Tab className="pick-section-tab" label="Summary"/>
             <Tab className="pick-section-tab" label="Violations"/>
             <Tab className="pick-section-tab" label="Metadata"/>
