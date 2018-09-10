@@ -63,11 +63,6 @@ function getMenuTemplate(appName) {
           label: 'Open Report...',
           id: 'openReport',
         },
-        /*{
-          label: 'Save Report...',
-          id: 'saveReport',
-          accelerator: 'CmdOrCtrl+S'
-        },*/
         {
           label: 'Close Report',
           id: 'closeReport',
@@ -139,6 +134,10 @@ function getMenuTemplate(appName) {
         {
           label: 'Report an Issue...',
           id: 'reportIssue'
+        },
+        {
+          label: 'Copy Messages',
+          id: 'copyMessages'
         }
       ]
     }
