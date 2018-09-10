@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
+import EnhancedTable from "./EnhancedTable";
 
 // the metadata table in the report
 export default class Metadata extends React.Component {
@@ -33,40 +34,56 @@ export default class Metadata extends React.Component {
 
   render() {
     let hasMissingOrEmpty = this.props.a11ymetadata.missing.length > 0 || this.props.a11ymetadata.empty.length > 0;
+    let heads = [
+      {
+        id: 'name',
+        label: "Name",
+        numeric: true,
+        sortable: true,
+        makeCell: (row, idx) =>
+          <TableCell key={idx} component="th" scope="row">
+            {row.name}
+          </TableCell>
+      },
+      {
+        id: 'value',
+        label: "Value",
+        numeric: false,
+        sortable: false,
+        makeCell: (row, idx) =>
+          <TableCell key={idx}>{row.value instanceof Array ?
+              <ul>{row.value.map((data, idx) => {
+                return (
+                  <li key={idx}>{data}</li>
+                );
+              })}
+              </ul>
+              : row.value}
+          </TableCell>
+      },
+      {
+        id: 'a11y',
+        label: 'A11Y',
+        numeric: true,
+        sortable: true,
+        makeCell: (row, idx) =>
+          <TableCell key={idx}>
+            <span>{this.props.a11ymetadata.present.indexOf(row.name) != -1 ? "Yes" : ""}</span>
+          </TableCell>
+      }
+    ];
+
+
 
     return (
       <section className="metadata">
         <h2>Metadata</h2>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Value</TableCell>
-              <TableCell>A11Y</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {this.state.rows.map((row, idx) => {
-              return (
-                <TableRow key={idx}>
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell>{row.value instanceof Array ?
-                      <ul>{row.value.map((data, idx) => {
-                        return (
-                          <li key={idx}>{data}</li>
-                        );
-                      })}
-                      </ul>
-                      : row.value}
-                  </TableCell>
-                  <TableCell><span>{this.props.a11ymetadata.present.indexOf(row.name) != -1 ? "Yes" : ""}</span></TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+        <EnhancedTable
+          rows={this.state.rows}
+          heads={heads}
+          orderBy='name'
+          order='asc'
+          isPaginated={false}/>
 
         {hasMissingOrEmpty ?
                 <aside>

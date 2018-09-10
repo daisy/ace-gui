@@ -55,7 +55,8 @@ export default class EnhancedTable extends React.Component {
     heads: PropTypes.array,
     rows: PropTypes.array,
     order: PropTypes.string,
-    orderBy: PropTypes.string
+    orderBy: PropTypes.string,
+    isPaginated: PropTypes.bool
   };
 
   constructor(props) {
@@ -85,7 +86,7 @@ export default class EnhancedTable extends React.Component {
   };
 
   render() {
-    const { rows, heads } = this.props;
+    const { rows, heads, isPaginated } = this.props;
     const {order, orderBy, page, rowsPerPage} = this.state;
     const emptyRows = this.state.rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -126,7 +127,7 @@ export default class EnhancedTable extends React.Component {
                   tabIndex={-1}
                   key={idx}>
                   {heads.map((head, idx) => {
-                    return (head.makeCell(row[head.id], idx));
+                    return (head.makeCell(row, idx));
                   })}
                 </TableRow>
               );
@@ -137,6 +138,7 @@ export default class EnhancedTable extends React.Component {
             </TableRow>
           )}
         </TableBody>
+        {isPaginated ?
         <TableFooter>
           <TableRow>
             <TablePagination
@@ -150,6 +152,7 @@ export default class EnhancedTable extends React.Component {
             />
           </TableRow>
         </TableFooter>
+        : '' }
       </Table>
     );
   }
