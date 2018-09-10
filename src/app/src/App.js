@@ -101,13 +101,11 @@ export default class App extends React.Component {
     this.setState({preferences: prefs});
     ipcRenderer.send('onPreferenceChange', key, value);
   }
-  onKeyPress(e) {
-    console.log(`The key of ${e.key}`);
-  }
+
 
   render() {
     return (
-      <div onKeyDown={this.onKeyPress.bind(this)}>
+      <div>
         <SplitterLayout percentage vertical primaryMinSize={40} secondaryInitialSize={15}>
           <SplitterLayout percentage secondaryInitialSize={80} secondaryMinSize={40}>
             <Sidebar

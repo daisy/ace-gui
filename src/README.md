@@ -11,12 +11,11 @@ https://github.com/pastahito/electron-react-webpack
 * include logo on 'about' dialog and in app tray
 * default prefs location + outdir should be app data dir
 * set min width on rule column of violations table
-* add show-in-finder option for reports
 
 # Limitations
 
 * Open file vs directory behavior: https://github.com/electron/electron/blob/master/docs/api/dialog.md#dialogshowopendialogbrowserwindow-options-callback
-* Dynamic menu support missing in electron 
+* Dynamic menu support missing in electron
 
 # questions
 
