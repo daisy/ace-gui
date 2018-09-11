@@ -17,12 +17,14 @@ export default class Report extends React.Component {
     report: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      tabIndex: 0
-    };
-  }
+  state = {
+    tabIndex: 0,
+    tableOrder: {
+      "violations": {order: "desc", orderBy: "impact"},
+      "metadata": {order: "asc", orderBy: "name"},
+      "images": {order: "asc", orderBy: "location"}
+    }
+  };
 
   componentDidMount() {
     ipcRenderer.on('goto', (event, arg) => {
@@ -41,16 +43,22 @@ export default class Report extends React.Component {
     this.setState({tabIndex: idx});
   };
 
+  onReorder = (id, order, orderBy) => {
+    let tableOrder = this.state.tableOrder;
+    tableOrder[id] = {order, orderBy};
+    this.setState({tableOrder});
+  };
+
   render() {
     console.log("rendering report");
     let report = this.props.report.data;
     let violationSummary = "violationSummary" in report ?
       report.violationSummary : helpers.summarizeViolations(this.props.report.data.assertions);
-
+    let {tabIndex, tableOrder} = this.state;
     return (
       <section className="ace-report">
         <h1>Report</h1>
-        <Tabs onChange={this.onChange} value={this.state.tabIndex}>
+        <Tabs onChange={this.onChange} value={tabIndex}>
             <Tab className="pick-section-tab" label="Summary"/>
             <Tab className="pick-section-tab" label="Violations"/>
             <Tab className="pick-section-tab" label="Metadata"/>
@@ -60,18 +68,34 @@ export default class Report extends React.Component {
 
         {this.state.tabIndex === 0 ?
           <ViolationSummary data={violationSummary}/> : ''}
+
         {this.state.tabIndex === 1  ?
-          <ViolationTable data={report.assertions}/> : ''}
+          <ViolationTable
+            data={report.assertions}
+            initialOrder={tableOrder['violations'].order}
+            initialOrderBy={tableOrder['violations'].orderBy}
+            onReorder={this.onReorder}/> : ''}
+
         {this.state.tabIndex === 2 ?
           <Metadata
               metadata={report['earl:testSubject'].metadata}
               links={report['earl:testSubject']['links']}
-              a11ymetadata={report['a11y-metadata']}/>
+              a11ymetadata={report['a11y-metadata']}
+              initialOrder={tableOrder['metadata'].order}
+              initialOrderBy={tableOrder['metadata'].orderBy}
+              onReorder={this.onReorder}/>
             : ''}
+
         {this.state.tabIndex === 3 ?
-          <Outlines data={report.outlines} /> : ''}
+          <Outlines data={report.outlines}/> : ''}
+
         {this.state.tabIndex === 4 ?
-          <Images images={report.data.images} reportFilepath={this.props.report.filepath}/> : ''}
+          <Images
+            images={report.data.images}
+            reportFilepath={this.props.report.filepath}
+            initialOrder={tableOrder['images'].order}
+            initialOrderBy={tableOrder['images'].orderBy}
+            onReorder={this.onReorder}/> : ''}
       </section>
     );
   }

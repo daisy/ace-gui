@@ -10,20 +10,23 @@ const helpers = require("./../../helpers.js");
 export default class ViolationTable extends React.Component {
 
   static propTypes = {
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    initialOrder: PropTypes.string,
+    initialOrderBy: PropTypes.string,
+    onReorder: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      rows: helpers.createFlatListOfViolations(this.props.data),
-      page: 0,
-      rowsPerPage: 5
-    };
-  }
-
+  state = {
+    rows: helpers.createFlatListOfViolations(this.props.data),
+    page: 0,
+    rowsPerPage: 5
+  };
 
   onExternalLinkClick = url => shell.openExternal(url);
+
+  onReorder = (order, orderBy) => {
+    this.props.onReorder("violations", order, orderBy);
+  };
 
   render() {
     const impactOrder = ['minor', 'moderate', 'serious', 'critical'];
@@ -93,15 +96,17 @@ export default class ViolationTable extends React.Component {
     ];
 
     let {page, rowsPerPage, rows} = this.state;
+    let {initialOrder, initialOrderBy} = this.props;
     return (
       <section className="violation-table">
         <h2>Violations</h2>
         <EnhancedTable
           rows={rows}
           heads={heads}
-          orderBy='impact'
-          order='desc'
-          isPaginated={true}/>
+          initialOrderBy={initialOrderBy}
+          initialOrder={initialOrder}
+          isPaginated={true}
+          onReorder={this.onReorder}/>
         {rows.length == 0 ? <p>No violations reported.</p> : ''}
       </section>
     );

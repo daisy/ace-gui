@@ -10,20 +10,24 @@ export default class Images extends React.Component {
 
   static propTypes = {
     images: PropTypes.array.isRequired,
-    reportFilepath: PropTypes.string.isRequired
+    reportFilepath: PropTypes.string.isRequired,
+    initialOrder: PropTypes.string.isRequired,
+    initialOrderBy: PropTypes.string.isRequired,
+    onReorder: PropTypes.func
   };
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: 0,
-      rowsPerPage: 5,
-      order: this.props.order,
-      orderBy: this.props.orderBy
-    };
-  }
-  
+
+  state = {
+    page: 0,
+    rowsPerPage: 5
+  };
+
+  onReorder = (order, orderBy) => {
+    this.props.onReorder("images", order, orderBy);
+  };
+
   render() {
     let {page, rowsPerPage} = this.state;
+    let {images, reportFilepath, initialOrder, initialOrderBy} = this.props;
 
     const heads = [
       {
@@ -32,7 +36,7 @@ export default class Images extends React.Component {
         numeric: false,
         sortable: false,
         makeCell: (row, idx) =>
-          <TableCell key={idx}><img src={path.resolve(this.props.reportFilepath, `../data/${row.src}`)}/></TableCell>
+          <TableCell key={idx}><img src={path.resolve(reportFilepath, `../data/${row.src}`)}/></TableCell>
       },
       {
         id: 'alt',
@@ -80,11 +84,12 @@ export default class Images extends React.Component {
       <section className="images">
         <h2>Images</h2>
         <EnhancedTable
-          rows={this.props.images}
+          rows={images}
           heads={heads}
-          orderBy='location'
-          order='asc'
-          isPaginated={true}/>
+          isPaginated={true}
+          initialOrderBy={initialOrderBy}
+          initialOrder={initialOrder}
+          onReorder={this.onReorder}/>
       </section>
     );
   }

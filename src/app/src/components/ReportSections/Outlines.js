@@ -8,11 +8,7 @@ export default class Outlines extends React.Component {
   static propTypes = {
     data: PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-  }
-
+  
   render() {
     console.log("rendering outlines");
 
