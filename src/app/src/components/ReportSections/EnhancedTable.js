@@ -51,29 +51,29 @@ heads = [{
 rows:[{headId: whatever, headId: whatever}, ...]
 */
 export default class EnhancedTable extends React.Component {
+
   static propTypes = {
     heads: PropTypes.array,
     rows: PropTypes.array,
-    order: PropTypes.string,
-    orderBy: PropTypes.string,
-    isPaginated: PropTypes.bool
+    initialOrder: PropTypes.string,
+    initialOrderBy: PropTypes.string,
+    isPaginated: PropTypes.bool,
+    onReorder: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      order: this.props.order,
-      orderBy: this.props.orderBy,
-      page: 0,
-      rowsPerPage: 5,
-    };
-  }
+  state = {
+    order: this.props.initialOrder,
+    orderBy: this.props.initialOrderBy,
+    page: 0,
+    rowsPerPage: 5,
+  };
 
-  handleRequestSort = (id) => {
+  onRequestSort = (id) => {
     let order = 'desc';
     if (this.state.orderBy === id && this.state.order === 'desc') {
       order = 'asc';
     }
+    this.props.onReorder(order, id);
     this.setState({ order: order, orderBy: id });
   };
 
@@ -108,7 +108,7 @@ export default class EnhancedTable extends React.Component {
                     <TableSortLabel
                       active={orderBy === head.id}
                       direction={order}
-                      onClick={event => this.handleRequestSort(head.id)}>
+                      onClick={event => this.onRequestSort(head.id)}>
                       {head.label}
                     </TableSortLabel>
                   </Tooltip>

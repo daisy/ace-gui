@@ -9,7 +9,10 @@ export default class Metadata extends React.Component {
   static propTypes = {
     metadata: PropTypes.object.isRequired,
     links: PropTypes.object.isRequired,
-    a11ymetadata: PropTypes.object.isRequired
+    a11ymetadata: PropTypes.object.isRequired,
+    initialOrder: PropTypes.string.isRequired,
+    initialOrderBy: PropTypes.string.isRequired,
+    onReorder: PropTypes.func
   };
 
   constructor(props) {
@@ -32,8 +35,14 @@ export default class Metadata extends React.Component {
     };
   }
 
+  onReorder = (order, orderBy) => {
+    this.props.onReorder("metadata", order, orderBy);
+  };
+
   render() {
-    let hasMissingOrEmpty = this.props.a11ymetadata.missing.length > 0 || this.props.a11ymetadata.empty.length > 0;
+    let {a11ymetadata, initialOrder, initialOrderBy} = this.props;
+
+    let hasMissingOrEmpty = a11ymetadata.missing.length > 0 || a11ymetadata.empty.length > 0;
     let heads = [
       {
         id: 'name',
@@ -41,7 +50,7 @@ export default class Metadata extends React.Component {
         numeric: true,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx} component="th" scope="row">
+          <TableCell key={idx}>
             {row.name}
           </TableCell>
       },
@@ -68,12 +77,10 @@ export default class Metadata extends React.Component {
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>
-            <span>{this.props.a11ymetadata.present.indexOf(row.name) != -1 ? "Yes" : ""}</span>
+            <span>{a11ymetadata.present.indexOf(row.name) != -1 ? "Yes" : ""}</span>
           </TableCell>
       }
     ];
-
-
 
     return (
       <section className="metadata">
@@ -83,21 +90,24 @@ export default class Metadata extends React.Component {
           heads={heads}
           orderBy='name'
           order='asc'
-          isPaginated={false}/>
+          isPaginated={false}
+          initialOrderBy={initialOrderBy}
+          initialOrder={initialOrder}
+          onReorder={this.onReorder}/>
 
-        {hasMissingOrEmpty ?
-                <aside>
-                  <h2>Missing A11Y Metadata</h2>
-                  <ul>
-                    {this.props.a11ymetadata.missing.map((data, idx) => {
-                      return (<li key={idx}>{data}</li>);
-                    })}
-                    {this.props.a11ymetadata.empty.map((data, idx) => {
-                      return (<li key={idx}>{data}</li>);
-                    })}
-                  </ul>
-                </aside>
-              : ''}
+      <h2>Missing A11Y Metadata</h2>
+      {hasMissingOrEmpty ?
+        <ul>
+          {a11ymetadata.missing.map((data, idx) => {
+            return (<li key={idx}>{data}</li>);
+          })}
+          {a11ymetadata.empty.map((data, idx) => {
+            return (<li key={idx}>{data}</li>);
+          })}
+        </ul>
+        :
+        <p>All required accessibility metadata is present.</p>
+      }
      </section>
     );
   }
