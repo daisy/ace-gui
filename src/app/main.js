@@ -223,7 +223,7 @@ function prepareOutdir(filepath, prefs) {
       .map(file => path.join(outdir, file))
       .filter(fs.existsSync);
     if (overrides.length > 0) {
-      let msg = `ERROR: Output directory is not empty. Running Ace would overwrite the following files or directories:
+      let msg = `Output directory is not empty. Running Ace would overwrite the following files or directories:
       ${overrides.map(file => `  - ${file}`).join('\n')}. Enable the option 'Overwrite' to allow this.`;
       win.webContents.send('error', msg);
       return '';

@@ -8,11 +8,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import TablePaginationActionsWrapped from "./TablePaginationActions";
-
+import Select from 'react-select';
 
 function desc(a, b, orderBy, head) {
-  let aValue = head.numeric ? a[orderBy] : head.makeNumeric(a[orderBy]);
-  let bValue = head.numeric ? b[orderBy] : head.makeNumeric(b[orderBy]);
+  let aValue = head.numeric ? a[orderBy] : head.sortOn(a[orderBy]);
+  let bValue = head.numeric ? b[orderBy] : head.sortOn(b[orderBy]);
 
   if (bValue < aValue) {
     return -1;
@@ -43,22 +43,30 @@ heads = [{
     label: str,
     numeric: bool,
     makeCell: fn (row[headId], idx),
-    makeNumeric: fn (row[headId])
+    sortOn: fn (row[headId])
   },
   ...
 ]
 
 rows:[{headId: whatever, headId: whatever}, ...]
+
+filters: [headId1, headId2, ..]
+]
 */
 export default class EnhancedTable extends React.Component {
 
+  static defaultProps = {
+    filterFields: []
+  };
+
   static propTypes = {
     heads: PropTypes.array,
-    rows: PropTypes.array,
+    filterFields: PropTypes.array,
+    // initialFilters: PropTypes.array,
     initialOrder: PropTypes.string,
     initialOrderBy: PropTypes.string,
     isPaginated: PropTypes.bool,
-    onReorder: PropTypes.func
+    onBeforeClose: PropTypes.func
   };
 
   state = {
@@ -66,6 +74,18 @@ export default class EnhancedTable extends React.Component {
     orderBy: this.props.initialOrderBy,
     page: 0,
     rowsPerPage: 5,
+    filters: this.props.filterFields.map(field => ({
+        id: field.name,
+        filterOn: field.filterOn,
+        options: this.props.rows.reduce(
+          (uniqueValues, row) => {
+            let rowValue = field.filterOn(row[field.name]);
+            return uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
+          },
+          [])
+          .map(option => {return {value: option, label: option}; } ),
+        selections: []
+      }))
   };
 
   onRequestSort = (id) => {
@@ -73,7 +93,6 @@ export default class EnhancedTable extends React.Component {
     if (this.state.orderBy === id && this.state.order === 'desc') {
       order = 'asc';
     }
-    this.props.onReorder(order, id);
     this.setState({ order: order, orderBy: id });
   };
 
@@ -85,12 +104,77 @@ export default class EnhancedTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
+  onFilterChange = (id, values, {action, removedValue}) => {
+    // long-winded but trying not to upset react state
+    let filters = this.state.filters;
+    let filter = filters.find(filter => filter.id == id);
+    let filterIdx = filters.indexOf(filter);
+    let selections = filter.selections;
+
+    if (action == "select-option") {
+      console.log(`Filter [${id}]: adding criteria`);
+      selections = values;
+
+    }
+    else if (action == "remove-value") {
+      console.log(`Filter [${id}]: removing criteria`);
+      selections = values;
+    }
+    else if (action == "clear") {
+      console.log(`Filter [${id}]: clear`);
+      selections = [];
+    }
+
+    filter.selections = selections;
+    filters[filterIdx] = filter;
+    this.setState({filters});
+  };
+
+  filterRows() {
+    let rows = this.props.rows;
+    let {filters} = this.state;
+    filters.forEach(filter => {
+      if (filter.selections.length > 0) {
+        rows = rows.reduce((filteredRows, row) => {
+          // the row property values might be strings or objects, so run the filterOn function to get the
+          // value the filter is based on
+          let rowValue = filter.filterOn(row[filter.id]);
+          if (filter.selections.find(sel => sel.value == rowValue)) {
+            return filteredRows.concat(row);
+          }
+          else {
+            return filteredRows;
+          }
+        }, []);
+      }
+    });
+    return rows;
+  }
+
   render() {
-    const { rows, heads, isPaginated } = this.props;
-    const {order, orderBy, page, rowsPerPage} = this.state;
-    const emptyRows = this.state.rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    const { heads, isPaginated } = this.props;
+    const { order, orderBy, page, rowsPerPage, filters } = this.state;
+    const filteredRows = this.filterRows();
+    const emptyRows = this.state.rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
     return (
+      <div>
+      {filters.length > 0 ?
+        <div className="table-filters">
+          {filters.map((filter, idx) =>
+            <Select
+              key={idx}
+              options={filter.options}
+              value={filter.selections}
+              onChange={(values, {action, removedValue}) => this.onFilterChange(filter.id, values, {action, removedValue})}
+              name={heads.find(head => head.id == filter.id).label}
+              closeMenuOnSelect={true}
+              isMulti={true}
+              placeholder={heads.find(head => head.id == filter.id).label}
+              isSearchable={true}
+            />)}
+        </div>
+      : ''}
       <Table>
         <TableHead>
           <TableRow>
@@ -119,7 +203,7 @@ export default class EnhancedTable extends React.Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {stableSort(rows, getSorting(order, orderBy, heads))
+          {stableSort(filteredRows, getSorting(order, orderBy, heads))
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, idx) => {
               return (
@@ -143,7 +227,7 @@ export default class EnhancedTable extends React.Component {
           <TableRow>
             <TablePagination
               colSpan={3}
-              count={rows.length}
+              count={filteredRows.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onChangePage={this.onChangePage}
@@ -154,6 +238,7 @@ export default class EnhancedTable extends React.Component {
         </TableFooter>
         : '' }
       </Table>
+      </div>
     );
   }
 }

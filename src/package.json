@@ -13,7 +13,6 @@
       "category": "my.category"
     },
     "asar": "false"
-
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -42,6 +41,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-select": "^2.0.0",
     "react-splitter-layout": "^3.0.1",
     "react-tabs": "^2.2.2",
     "tmp": "^0.0.33",

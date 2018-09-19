@@ -91,4 +91,13 @@
       max-width: 200px;
     }
   }
+
+  .table-filters {
+    display: flex;
+    flex: 1 1 0;
+    > div {
+      width: 30%;
+      margin: 15px;
+    }
+  }
 }

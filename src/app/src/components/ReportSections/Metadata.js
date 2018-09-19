@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
-import EnhancedTable from "./EnhancedTable";
+import EnhancedTable from "./../Table/EnhancedTable";
 
 // the metadata table in the report
 export default class Metadata extends React.Component {
@@ -93,7 +93,10 @@ export default class Metadata extends React.Component {
           isPaginated={false}
           initialOrderBy={initialOrderBy}
           initialOrder={initialOrder}
-          onReorder={this.onReorder}/>
+          onReorder={this.onReorder}
+          filterFields={[
+            {name: 'name', filterOn: obj => obj}
+          ]}/>
 
       <h2>Missing A11Y Metadata</h2>
       {hasMissingOrEmpty ?

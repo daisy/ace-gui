@@ -2,9 +2,8 @@ import React from 'react';
 const {shell} = require('electron');
 import PropTypes from 'prop-types';
 import TableCell from '@material-ui/core/TableCell';
-import EnhancedTable from './EnhancedTable';
+import EnhancedTable from './../Table/EnhancedTable';
 const helpers = require("./../../helpers.js");
-
 
 // the violation table in the report
 export default class ViolationTable extends React.Component {
@@ -36,7 +35,7 @@ export default class ViolationTable extends React.Component {
         label: "Impact",
         numeric: false,
         sortable: true,
-        makeNumeric: impact => impactOrder.indexOf(impact),
+        sortOn: impact => impactOrder.indexOf(impact),
         makeCell: (row, idx) =>
           <TableCell key={idx} className="impact">
             <span className={row.impact}>{row.impact}</span>
@@ -55,7 +54,7 @@ export default class ViolationTable extends React.Component {
         label: "Rule",
         numeric: false,
         sortable: true,
-        makeNumeric: rule => rule.rule,
+        sortOn: rule => rule.rule,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="rule">
             <p>{row.rule.rule}</p>
@@ -67,7 +66,7 @@ export default class ViolationTable extends React.Component {
         label: "Location",
         numeric: false,
         sortable: true,
-        makeNumeric: location => location.filename,
+        sortOn: location => location.filename,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="location">
             <p><code>{row.location.filename}</code></p>
@@ -106,7 +105,13 @@ export default class ViolationTable extends React.Component {
           initialOrderBy={initialOrderBy}
           initialOrder={initialOrder}
           isPaginated={true}
-          onReorder={this.onReorder}/>
+          onReorder={this.onReorder}
+          filterFields={[
+            {name: 'impact', filterOn: obj => obj},
+            {name: 'rulesetTag', filterOn: obj => obj},
+            {name: 'rule', filterOn: obj => obj.rule},
+            {name: 'location', filterOn: obj => obj.filename.indexOf('#') > 0 ? obj.filename.slice(0, obj.filename.indexOf('#')) : obj.filename}
+          ]}/>
         {rows.length == 0 ? <p>No violations reported.</p> : ''}
       </section>
     );

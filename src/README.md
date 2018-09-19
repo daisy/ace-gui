@@ -6,20 +6,23 @@ https://github.com/pastahito/electron-react-webpack
 ## High prio
 
 * change messages window so that new items are obvious (both to screenreader users and sighted users)
-* table filter
-* set min width on rule column of violations table
+* persist table filter selections
+* sorting sometimes changes header col width ?!
+* table styling tweaks
 
 ## Ideas
 
-* sidebar as series of expanders
-* drawer-style sidebar
-* drawer-style messages area?
+* add redux for cleaner state storage
+* persist recent files too
+* implementing style with HoC seems popular in material-ui ... consider it for the tables at least
 
 ## Polishing
 
 * include logo on 'about' dialog and in app tray
 * default prefs location + outdir should be app data dir
-* overall wording review
+* overall wording and layout review
+  - are there too many heading elements?
+  - should we use material-ui drawers anywhere/everywhere?
 
 # Limitations
 
