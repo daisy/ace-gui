@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination} from '@material-ui/core';
 const path = require('path');
-import TablePaginationActionsWrapped from "./TablePaginationActions";
-import EnhancedTable from './EnhancedTable';
+import TablePaginationActionsWrapped from "./../Table/TablePaginationActions";
+import EnhancedTable from './../Table/EnhancedTable';
 
 // the images table in the report
 export default class Images extends React.Component {
@@ -81,7 +81,7 @@ export default class Images extends React.Component {
     ];
 
     return (
-      <section className="images">
+      <section className="report-section images">
         <h2>Images</h2>
         <EnhancedTable
           rows={images}
@@ -89,7 +89,11 @@ export default class Images extends React.Component {
           isPaginated={true}
           initialOrderBy={initialOrderBy}
           initialOrder={initialOrder}
-          onReorder={this.onReorder}/>
+          onReorder={this.onReorder}
+          filterFields={[
+            {name: 'location', filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj},
+            {name: 'role', filterOn: obj => obj}
+          ]}/>
       </section>
     );
   }

@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ViolationSummary from './ReportSections/ViolationSummary';
+import Summary from './ReportSections/Summary';
 import Metadata from './ReportSections/Metadata';
 import Outlines from './ReportSections/Outlines';
-import ViolationTable from './ReportSections/ViolationTable';
+import Violations from './ReportSections/Violations';
 import Images from './ReportSections/Images';
 import {Tabs, Tab} from '@material-ui/core';
 const helpers = require('./../helpers.js');
@@ -52,8 +52,8 @@ export default class Report extends React.Component {
   render() {
     console.log("rendering report");
     let report = this.props.report.data;
-    let violationSummary = "violationSummary" in report ?
-      report.violationSummary : helpers.summarizeViolations(this.props.report.data.assertions);
+    let summary = "violationSummary" in report ?
+      report.summary : helpers.summarizeViolations(this.props.report.data.assertions);
     let {tabIndex, tableOrder} = this.state;
     return (
       <section className="ace-report">
@@ -67,10 +67,10 @@ export default class Report extends React.Component {
         </Tabs>
 
         {this.state.tabIndex === 0 ?
-          <ViolationSummary data={violationSummary}/> : ''}
+          <Summary data={summary}/> : ''}
 
         {this.state.tabIndex === 1  ?
-          <ViolationTable
+          <Violations
             data={report.assertions}
             initialOrder={tableOrder['violations'].order}
             initialOrderBy={tableOrder['violations'].orderBy}

@@ -11,7 +11,26 @@
     }
   }
 
-  .violation-table {
+  .table-filters {
+    display: flex;
+
+    > div {
+      width: 30%;
+      margin: 15px;
+    }
+  }
+
+  .report-section {
+    .table-filters-panel.expanded{
+      // special hack for table filters expansion panel
+      // it makes the menus visible z-order wise
+      div:nth-of-type(2) {
+        overflow: visible;
+      }
+    }
+  }
+
+  .violations {
 
     .violation-engine {
       font-style: italic;
@@ -91,4 +110,6 @@
       max-width: 200px;
     }
   }
+
+
 }
