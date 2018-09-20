@@ -9,6 +9,11 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import TablePaginationActionsWrapped from "./TablePaginationActions";
 import Select from 'react-select';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 function desc(a, b, orderBy, head) {
   let aValue = head.numeric ? a[orderBy] : head.sortOn(a[orderBy]);
@@ -80,12 +85,14 @@ export default class EnhancedTable extends React.Component {
         options: this.props.rows.reduce(
           (uniqueValues, row) => {
             let rowValue = field.filterOn(row[field.name]);
-            return uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
+            return rowValue != null && uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
           },
           [])
           .map(option => {return {value: option, label: option}; } ),
         selections: []
       }))
+      .reduce((activeFilters, filter) =>
+        filter.options.length != 0 ? activeFilters.concat(filter) : activeFilters, []) // don't include filters with no options
   };
 
   onRequestSort = (id) => {
@@ -160,20 +167,27 @@ export default class EnhancedTable extends React.Component {
     return (
       <div>
       {filters.length > 0 ?
-        <div className="table-filters">
-          {filters.map((filter, idx) =>
-            <Select
-              key={idx}
-              options={filter.options}
-              value={filter.selections}
-              onChange={(values, {action, removedValue}) => this.onFilterChange(filter.id, values, {action, removedValue})}
-              name={heads.find(head => head.id == filter.id).label}
-              closeMenuOnSelect={true}
-              isMulti={true}
-              placeholder={heads.find(head => head.id == filter.id).label}
-              isSearchable={true}
-            />)}
-        </div>
+        <ExpansionPanel className="table-filters-panel" classes={{expanded: 'expanded'}}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Filter by</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className="table-filters">
+
+            {filters.map((filter, idx) =>
+              <Select
+                key={idx}
+                options={filter.options}
+                value={filter.selections}
+                onChange={(values, {action, removedValue}) => this.onFilterChange(filter.id, values, {action, removedValue})}
+                name={heads.find(head => head.id == filter.id).label}
+                closeMenuOnSelect={true}
+                isMulti={true}
+                placeholder={heads.find(head => head.id == filter.id).label}
+                isSearchable={true}
+              />)}
+
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
       : ''}
       <Table>
         <TableHead>

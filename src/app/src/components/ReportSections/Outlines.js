@@ -8,12 +8,12 @@ export default class Outlines extends React.Component {
   static propTypes = {
     data: PropTypes.object.isRequired
   };
-  
+
   render() {
     console.log("rendering outlines");
 
     return (
-      <section className="outlines">
+      <section className="report-section outlines">
         <h2>Outlines</h2>
         <Grid container spacing={24}>
           <Grid item xs>

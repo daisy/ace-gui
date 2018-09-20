@@ -81,7 +81,7 @@ export default class Images extends React.Component {
     ];
 
     return (
-      <section className="images">
+      <section className="report-section images">
         <h2>Images</h2>
         <EnhancedTable
           rows={images}

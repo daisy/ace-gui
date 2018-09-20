@@ -83,7 +83,7 @@ export default class Metadata extends React.Component {
     ];
 
     return (
-      <section className="metadata">
+      <section className="report-section metadata">
         <h2>Metadata</h2>
         <EnhancedTable
           rows={this.state.rows}

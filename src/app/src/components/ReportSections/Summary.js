@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 
-// the violations summary table in the report
-export default class ViolationSummary extends React.Component {
+// the summary table in the report
+export default class Summary extends React.Component {
 
   static propTypes = {
     data: PropTypes.object.isRequired
@@ -11,8 +11,8 @@ export default class ViolationSummary extends React.Component {
 
   render() {
   return (
-      <section className="violation-summary">
-        <h2>Violation Summary</h2>
+      <section className="report-section summary">
+        <h2>Summary</h2>
         <Table>
           <TableHead>
             <TableRow>

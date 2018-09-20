@@ -6,7 +6,7 @@ import EnhancedTable from './../Table/EnhancedTable';
 const helpers = require("./../../helpers.js");
 
 // the violation table in the report
-export default class ViolationTable extends React.Component {
+export default class Violations extends React.Component {
 
   static propTypes = {
     data: PropTypes.array.isRequired,
@@ -97,7 +97,7 @@ export default class ViolationTable extends React.Component {
     let {page, rowsPerPage, rows} = this.state;
     let {initialOrder, initialOrderBy} = this.props;
     return (
-      <section className="violation-table">
+      <section className="report-section violations">
         <h2>Violations</h2>
         <EnhancedTable
           rows={rows}
