@@ -6,7 +6,7 @@ module.exports = {
 
     target: 'electron-renderer',
 
-    entry: './app/src/entry.js',
+    entry: './app/renderer/entry.js',
 
     devServer: {
       contentBase: './dist'

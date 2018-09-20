@@ -4,7 +4,7 @@
   "version": "1.0.0-beta.0",
   "description": "A desktop app for Ace, the EPUB accessibility checker by the DAISY Consortium",
   "author": "DAISY Consortium",
-  "main": "./app/main.js",
+  "main": "./app/main/main.js",
   "repository": "daisy/ace-gui",
   "license": "MIT",
   "build": {

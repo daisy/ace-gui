@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Summary from './ReportSections/Summary';
-import Metadata from './ReportSections/Metadata';
-import Outlines from './ReportSections/Outlines';
-import Violations from './ReportSections/Violations';
-import Images from './ReportSections/Images';
+import Summary from './../components/ReportSections/Summary';
+import Metadata from './../components/ReportSections/Metadata';
+import Outlines from './../components/ReportSections/Outlines';
+import Violations from './../components/ReportSections/Violations';
+import Images from './../components/ReportSections/Images';
 import {Tabs, Tab} from '@material-ui/core';
 const helpers = require('./../helpers.js');
 import './../styles/Report.scss';
@@ -51,10 +51,11 @@ export default class Report extends React.Component {
 
   render() {
     console.log("rendering report");
-    let report = this.props.report.data;
-    let summary = "violationSummary" in report ?
-      report.summary : helpers.summarizeViolations(this.props.report.data.assertions);
+    let {aceReport, filepath} = this.props.report;
     let {tabIndex, tableOrder} = this.state;
+    let summary = "violationSummary" in aceReport ?
+      aceReport.summary : helpers.summarizeViolations(aceReport.assertions);
+
     return (
       <section className="ace-report">
         <h1>Report</h1>
@@ -66,36 +67,39 @@ export default class Report extends React.Component {
             <Tab className="pick-section-tab" label="Images"/>
         </Tabs>
 
-        {this.state.tabIndex === 0 ?
+        {tabIndex === 0 ?
           <Summary data={summary}/> : ''}
 
-        {this.state.tabIndex === 1  ?
+        {tabIndex === 1  ?
           <Violations
-            data={report.assertions}
+            data={aceReport.assertions}
             initialOrder={tableOrder['violations'].order}
             initialOrderBy={tableOrder['violations'].orderBy}
             onReorder={this.onReorder}/> : ''}
 
-        {this.state.tabIndex === 2 ?
+        {tabIndex === 2 ?
           <Metadata
-              metadata={report['earl:testSubject'].metadata}
-              links={report['earl:testSubject']['links']}
-              a11ymetadata={report['a11y-metadata']}
+              metadata={aceReport['earl:testSubject'].metadata}
+              links={aceReport['earl:testSubject']['links']}
+              a11ymetadata={aceReport['a11y-metadata']}
               initialOrder={tableOrder['metadata'].order}
               initialOrderBy={tableOrder['metadata'].orderBy}
               onReorder={this.onReorder}/>
             : ''}
 
-        {this.state.tabIndex === 3 ?
-          <Outlines data={report.outlines}/> : ''}
+        {tabIndex === 3 ?
+          <Outlines data={aceReport.outlines}/> : ''}
 
-        {this.state.tabIndex === 4 ?
-          <Images
-            images={report.data.images}
-            reportFilepath={this.props.report.filepath}
-            initialOrder={tableOrder['images'].order}
-            initialOrderBy={tableOrder['images'].orderBy}
-            onReorder={this.onReorder}/> : ''}
+        {tabIndex === 4 ?
+          aceReport.data.images != undefined ?
+            <Images
+              images={aceReport.data.images}
+              reportFilepath={filepath}
+              initialOrder={tableOrder['images'].order}
+              initialOrderBy={tableOrder['images'].orderBy}
+              onReorder={this.onReorder}/>
+              : <p>No images found in publication.</p>
+          : ''}
       </section>
     );
   }
