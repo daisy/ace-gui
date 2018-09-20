@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 const {ipcRenderer} = require('electron');
 const path = require('path');
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Preferences from './Preferences';
+import Preferences from './../components/Preferences';
 import './../styles/Sidebar.scss';
 
 

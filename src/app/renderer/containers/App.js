@@ -4,11 +4,11 @@ const path = require('path');
 import tmp from 'tmp';
 import React from 'react';
 import SplitterLayout from 'react-splitter-layout';
-import Report from './components/Report';
-import Messages from './components/Messages';
-import Sidebar from './components/Sidebar';
-import Splash from './components/Splash';
-import './styles/App.scss';
+import Report from './Report';
+import Sidebar from './Sidebar';
+import Messages from './../components/Messages';
+import Splash from './../components/Splash';
+import './../styles/App.scss';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -99,7 +99,7 @@ export default class App extends React.Component {
     }
     this.addMessage(`Loading report ${filepath}`);
     const data = fs.readFileSync(filepath);
-    let report = {filepath: filepath, data: JSON.parse(data)};
+    let report = {filepath: filepath, aceReport: JSON.parse(data)};
     this.setState({report: report, ready: true});
     ipcRenderer.send("onOpenReport");
   };
