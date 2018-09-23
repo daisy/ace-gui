@@ -5,7 +5,6 @@ function init (appName, callbacks) {
   var menuTemplate = getMenuTemplate(appName);
   attachCallbacks(callbacks, menuTemplate);
   var menu = Menu.buildFromTemplate(menuTemplate);
-
   Menu.setApplicationMenu(menu);
 }
 
@@ -34,13 +33,11 @@ function getMenuItem(id) {
 }
 // set many menu items at once
 function setMenuItemsEnabled(ids, enabled) {
-  //console.log(`Setting menu items enabled=${enabled}`);
-  for (id of ids) {
+  ids.forEach(function(id) {
     if (getMenuItem(id)) {
-      //console.log(`\t-${id}`);
       getMenuItem(id).enabled = enabled;
     }
-  }
+  });
 }
 
 function getMenuTemplate(appName) {

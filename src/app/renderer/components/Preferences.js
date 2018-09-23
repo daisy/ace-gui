@@ -9,16 +9,10 @@ export default class Preferences extends React.Component {
 
   static propTypes = {
     preferences: PropTypes.object.isRequired,
-    onPreferenceChange: PropTypes.func
-  };
-  constructor(props) {
-    super(props);
-  }
-
-  onChange = e => {
-    let value = e.target.type == "checkbox" ?
-      e.target.checked : e.target.value;
-    if (this.props.onPreferenceChange) this.props.onPreferenceChange([e.target.id], value);
+    ready: PropTypes.bool.isRequired,
+    setOutdir: PropTypes.func.isRequired,
+    setOverwrite: PropTypes.func.isRequired,
+    setOrganize: PropTypes.func.isRequired
   };
 
   // browse directory button click
@@ -28,32 +22,34 @@ export default class Preferences extends React.Component {
       {title: "Select a folder", properties: ['openDirectory', 'createDirectory'], buttonLabel: "Select"},
       (filenames) => {
         if (filenames != undefined) {
-          this.setState({outdir: filenames[0]});
+          this.props.setOutdir(filenames[0]);
         }
       }
     );
   };
 
   render() {
+    let {ready, preferences, onPreferenceChanged} = this.props;
+
     return (
       <section className="options">
         <h1>Options</h1>
         <ul>
           <li>
             <label htmlFor="outdir">Save reports to: </label>
-            <input type="text" id="outdir" value={this.props.preferences.outdir} onChange={this.onChange}
-            disabled={this.props.ready ? '' : 'disabled'}/>
-            <button onClick={this.onClick} disabled={this.props.ready ? '' : 'disabled'}>Browse</button>
+            <input type="text" id="outdir" value={preferences.outdir} onChange={ e => setOutdir(e.target.value)}
+            disabled={ready ? '' : 'disabled'}/>
+            <button onClick={this.onClick} disabled={ready ? '' : 'disabled'}>Browse</button>
           </li>
           <li>
             <label htmlFor="organize">Keep reports organized: </label>
-            <input type="checkbox" id="organize" disabled={this.props.ready ? '' : 'disabled'}
-            checked={this.props.preferences.organize} onChange={this.onChange}/>
+            <input type="checkbox" id="organize" disabled={ready ? '' : 'disabled'}
+            checked={preferences.organize} onChange={ e => setOrganize(e.target.checked)}/>
           </li>
           <li>
             <label htmlFor="overwrite">Overwrite files without prompting: </label>
-            <input type="checkbox" id="overwrite" disabled={this.props.ready ? '' : 'disabled'}
-            checked={this.props.preferences.overwrite} onChange={this.onChange}/>
+            <input type="checkbox" id="overwrite" disabled={ready ? '' : 'disabled'}
+            checked={preferences.overwrite} onChange={ e => setOverwrite(e.target.checked)}/>
           </li>
         </ul>
       </section>

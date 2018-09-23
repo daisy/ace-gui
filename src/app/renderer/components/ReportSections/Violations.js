@@ -1,33 +1,32 @@
-import React from 'react';
-const {shell} = require('electron');
-import PropTypes from 'prop-types';
-import TableCell from '@material-ui/core/TableCell';
 import EnhancedTable from './../Table/EnhancedTable';
-const helpers = require("./../../helpers.js");
+import PropTypes from 'prop-types';
+import React from 'react';
+import TableCell from '@material-ui/core/TableCell';
+const {shell} = require('electron');
 
 // the violation table in the report
 export default class Violations extends React.Component {
 
   static propTypes = {
-    data: PropTypes.array.isRequired,
-    initialOrder: PropTypes.string,
-    initialOrderBy: PropTypes.string,
-    onReorder: PropTypes.func
-  };
-
-  state = {
-    rows: helpers.createFlatListOfViolations(this.props.data),
-    page: 0,
-    rowsPerPage: 5
+    violations: PropTypes.array.isRequired,
+    filters: PropTypes.array,
+    pagination: PropTypes.object,
+    sort: PropTypes.object,
+    setTableSort: PropTypes.func,
+    setTableFilterValues: PropTypes.func,
+    setTablePagination: PropTypes.func,
   };
 
   onExternalLinkClick = url => shell.openExternal(url);
 
-  onReorder = (order, orderBy) => {
-    this.props.onReorder("violations", order, orderBy);
-  };
-
   render() {
+    let {violations,
+      filters,
+      pagination: {page, rowsPerPage},
+      sort: {order, orderBy},
+      setTableSort,
+      setTableFilterValues,
+      setTablePagination} = this.props;
     const impactOrder = ['minor', 'moderate', 'serious', 'critical'];
     const heads = [
       {
@@ -94,24 +93,21 @@ export default class Violations extends React.Component {
       }
     ];
 
-    let {page, rowsPerPage, rows} = this.state;
-    let {initialOrder, initialOrderBy} = this.props;
     return (
       <section className="report-section violations">
         <h2>Violations</h2>
         <EnhancedTable
           rows={rows}
           heads={heads}
-          initialOrderBy={initialOrderBy}
-          initialOrder={initialOrder}
+          id={'violations'}
           isPaginated={true}
-          onReorder={this.onReorder}
-          filterFields={[
-            {name: 'impact', filterOn: obj => obj},
-            {name: 'rulesetTag', filterOn: obj => obj},
-            {name: 'rule', filterOn: obj => obj.rule},
-            {name: 'location', filterOn: obj => obj.filename.indexOf('#') > 0 ? obj.filename.slice(0, obj.filename.indexOf('#')) : obj.filename}
-          ]}/>
+          filters={filters}
+          sort={sort}
+          pagination={pagination}
+          onSort={setTableSort}
+          onFilter={setTableFilterValues}
+          onChangePagination={setTablePagination}
+          />
         {rows.length == 0 ? <p>No violations reported.</p> : ''}
       </section>
     );

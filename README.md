@@ -1,24 +1,38 @@
+# Ace-GUI
+
+A desktop GUI for Ace, the EPUB accessibility checker by the [DAISY Consortium](daisy.org).
+
+# Development Notes
+
 This was started from this boilerplate project:
 https://github.com/pastahito/electron-react-webpack
 
-#TODO
+## Work Items
 
-## High prio
-
-* change messages window so that new items are obvious (both to screenreader users and sighted users)
-* persist table filter selections
-* sorting sometimes changes header col width ?!
+* redux
+  - remember table filter selections after tab change
+  - remember everything
+  - write all or part of store to disk
+* messages window
+  - scroll to bottom
+  - use aria-live regions?
 * table styling tweaks
+ - sorting sometimes changes header col width
+ - metadata name column inexplicably right-aligned
+* logo
+  - check that logo is set on all platforms
+  - 'about' dialog
+  - app tray
+* persist state
+  - replace userprefs.json
 
-## Ideas
+### Ideas
 
-* add redux for cleaner state storage
 * persist recent files too
 * implementing style with HoC seems popular in material-ui ... consider it for the tables at least
 
 ## Polishing
 
-* include logo on 'about' dialog and in app tray
 * default prefs location + outdir should be app data dir
 * overall wording and layout review
   - are there too many heading elements?

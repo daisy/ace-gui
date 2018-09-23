@@ -7,6 +7,8 @@ const tmp = require('tmp');
 const ace = require('@daisy/ace-core');
 const PrefsPath = "/userprefs.json";
 
+//const configureStore = require('../shared/store/configureStore');
+
 let win;
 let isReportOpen = false;
 
@@ -51,12 +53,7 @@ function createWindow() {
   });
 
   menu.onSplashScreen();
-  let prefs = JSON.parse(fs.readFileSync(__dirname + PrefsPath));
-  if (prefs.outdir == "") prefs.outdir = tmp.dirSync({ unsafeCleanup: true }).name;
-
-  // there are a few ways of sending properties over to react. using a query string is one.
-  // https://github.com/electron/electron/issues/6504
-  win.loadURL(`file://${__dirname}/index.html?overwrite=${prefs.overwrite}&organize=${prefs.organize}&outdir=${prefs.outdir}`);
+  win.loadURL(`file://${__dirname}/index.html`);
 
   // attempting to detect dev mode
   if (process.defaultApp) win.webContents.openDevTools();
@@ -89,11 +86,6 @@ app.on('before-quit', function() {
   savePreferences();
 });
 
-// events from renderer
-ipcMain.on('fileReceived', (event, filepath) => {
-  processInputFile(filepath);
-});
-
 ipcMain.on('browseFileRequest', (event, arg) => {
   showFileOpenDialog(
     process.platform == 'darwin' ? ['openFile', 'openDirectory'] : ['openFile'],
@@ -106,35 +98,6 @@ ipcMain.on('browseFolderRequest', (event, arg) => {
     [{name: 'All Files', extensions: ['*']}]);
 });
 
-ipcMain.on("onOpenReport", (event, arg) => {
-  isReportOpen = true;
-  menu.onReportScreen();
-});
-
-ipcMain.on("onCloseReport", (event, arg) => {
-  isReportOpen = false;
-  menu.onSplashScreen();
-});
-
-function processInputFile(filepath) {
-  // crude way to check filetype
-  if (path.extname(filepath) == '.epub') {
-    runAce(filepath);
-  }
-  else if (path.extname(filepath) == '.json') {
-    win.webContents.send('openReport', filepath);
-  }
-  else {
-    // don't accept any other files, however...
-    if (fs.statSync(filepath).isFile()) {
-      win.webContents.send('error', `File type not supported ${filepath}`);
-    }
-    // ...it might be an unpacked EPUB directory; let Ace decide
-    else {
-      runAce(filepath);
-    }
-  }
-}
 // use the standard OS dialog to browse for a file or folder
 function showFileOpenDialog(properties, filters) {
   dialog.showOpenDialog(
@@ -147,19 +110,6 @@ function showFileOpenDialog(properties, filters) {
       }
     }
   );
-}
-
-function closeReport() {
-  win.webContents.send('closeReport');
-}
-
-function toggleFullScreen() {
-  if (!win || !win.isVisible()) {
-    return;
-  }
-
-  win.setFullScreen(!win.isFullScreen());
-  menu.onToggleFullScreen(win.isFullScreen());
 }
 
 function showAbout() {
@@ -240,4 +190,10 @@ function savePreferences() {
     console.log(data);
     fs.writeFileSync(__dirname + PrefsPath, data);
   });
+   // const store = configureStore(global.state, 'main');
+   // let prefs = store.getState().preferences;
+   // console.log("Saving preferences");
+   // let data = JSON.stringify(prefs);
+   // console.log(data);
+   // fs.writeFileSync(__dirname + PrefsPath, data);
 }

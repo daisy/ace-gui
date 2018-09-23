@@ -1,33 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Table, TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination} from '@material-ui/core';
-const path = require('path');
-import TablePaginationActionsWrapped from "./../Table/TablePaginationActions";
+import {Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow} from '@material-ui/core';
+
 import EnhancedTable from './../Table/EnhancedTable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import TablePaginationActionsWrapped from "./../Table/TablePaginationActions";
+const path = require('path');
 
 // the images table in the report
 export default class Images extends React.Component {
 
   static propTypes = {
     images: PropTypes.array.isRequired,
-    reportFilepath: PropTypes.string.isRequired,
-    initialOrder: PropTypes.string.isRequired,
-    initialOrderBy: PropTypes.string.isRequired,
-    onReorder: PropTypes.func
-  };
-
-  state = {
-    page: 0,
-    rowsPerPage: 5
-  };
-
-  onReorder = (order, orderBy) => {
-    this.props.onReorder("images", order, orderBy);
+    filters: PropTypes.array,
+    pagination: PropTypes.object,
+    sort: PropTypes.object,
+    setTableSort: PropTypes.func,
+    setTableFilterValues: PropTypes.func,
+    setTablePagination: PropTypes.func,
   };
 
   render() {
-    let {page, rowsPerPage} = this.state;
-    let {images, reportFilepath, initialOrder, initialOrderBy} = this.props;
+    let {images, filters, pagination, sort, setTableSort, setTableFilterValues, setTablePagination} = this.props;
 
     const heads = [
       {
@@ -80,20 +73,23 @@ export default class Images extends React.Component {
       }
     ];
 
+
     return (
       <section className="report-section images">
         <h2>Images</h2>
         <EnhancedTable
           rows={images}
           heads={heads}
+          id={'images'}
           isPaginated={true}
-          initialOrderBy={initialOrderBy}
-          initialOrder={initialOrder}
-          onReorder={this.onReorder}
-          filterFields={[
-            {name: 'location', filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj},
-            {name: 'role', filterOn: obj => obj}
-          ]}/>
+          filters={filters}
+          sort={sort}
+          pagination={pagination}
+          onSort={setTableSort}
+          onFilter={setTableFilterValues}
+          onChangePagination={setTablePagination}
+          />
+          {rows.length == 0 ? <p>No images encountered in this publication.</p> : ''}
       </section>
     );
   }
