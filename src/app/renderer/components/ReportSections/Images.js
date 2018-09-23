@@ -1,33 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Table, TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination} from '@material-ui/core';
-const path = require('path');
-import TablePaginationActionsWrapped from "./../Table/TablePaginationActions";
 import EnhancedTable from './../Table/EnhancedTable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import TableCell from '@material-ui/core/TableCell';
+const path = require('path');
 
-// the images table in the report
+// the images page of the report
 export default class Images extends React.Component {
 
   static propTypes = {
     images: PropTypes.array.isRequired,
-    reportFilepath: PropTypes.string.isRequired,
-    initialOrder: PropTypes.string.isRequired,
-    initialOrderBy: PropTypes.string.isRequired,
-    onReorder: PropTypes.func
-  };
-
-  state = {
-    page: 0,
-    rowsPerPage: 5
-  };
-
-  onReorder = (order, orderBy) => {
-    this.props.onReorder("images", order, orderBy);
+    filters: PropTypes.array,
+    pagination: PropTypes.object,
+    sort: PropTypes.object,
+    setTableSort: PropTypes.func,
+    setTableFilterValues: PropTypes.func,
+    setTablePagination: PropTypes.func,
   };
 
   render() {
-    let {page, rowsPerPage} = this.state;
-    let {images, reportFilepath, initialOrder, initialOrderBy} = this.props;
+    let {images, filters, pagination, sort, setTableSort, setTableFilterValues, setTablePagination} = this.props;
 
     const heads = [
       {
@@ -41,7 +32,7 @@ export default class Images extends React.Component {
       {
         id: 'alt',
         label: <span><code>alt</code> attribute</span>,
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.alt ? row.alt : "N/A"}</TableCell>
@@ -49,7 +40,7 @@ export default class Images extends React.Component {
       {
         id: 'describedby',
         label: <span><code>aria-describedby</code> content</span>,
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.describedby ? row.describedby : "N/A"}</TableCell>
@@ -57,7 +48,7 @@ export default class Images extends React.Component {
       {
         id: 'figcaption',
         label: <span>Associated <code>figcaption</code></span>,
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.figcaption ? row.figcaption : "N/A"}</TableCell>
@@ -65,7 +56,7 @@ export default class Images extends React.Component {
       {
         id: 'location',
         label: 'Location',
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="location"><pre>{row.location}</pre></TableCell>
@@ -73,12 +64,13 @@ export default class Images extends React.Component {
       {
         id: 'role',
         label: 'Role',
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.role ? row.role : "N/A"}</TableCell>
       }
     ];
+
 
     return (
       <section className="report-section images">
@@ -86,14 +78,16 @@ export default class Images extends React.Component {
         <EnhancedTable
           rows={images}
           heads={heads}
+          id={'images'}
           isPaginated={true}
-          initialOrderBy={initialOrderBy}
-          initialOrder={initialOrder}
-          onReorder={this.onReorder}
-          filterFields={[
-            {name: 'location', filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj},
-            {name: 'role', filterOn: obj => obj}
-          ]}/>
+          filters={filters}
+          sort={sort}
+          pagination={pagination}
+          onSort={setTableSort}
+          onFilter={setTableFilterValues}
+          onChangePagination={setTablePagination}
+          />
+          {rows.length == 0 ? <p>No images encountered in this publication.</p> : ''}
       </section>
     );
   }

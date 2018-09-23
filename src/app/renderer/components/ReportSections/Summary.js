@@ -1,16 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-// the summary table in the report
+// the summary page of the report
 export default class Summary extends React.Component {
 
   static propTypes = {
-    data: PropTypes.object.isRequired
+    summary: PropTypes.object.isRequired
   };
 
   render() {
-  return (
+    let {summary} = this.props;
+    return (
       <section className="report-section summary">
         <h2>Summary</h2>
         <Table>
@@ -25,15 +26,15 @@ export default class Summary extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.keys(this.props.data).map((key, idx) => {
+            {Object.keys(summary).map((key, idx) => {
               return (
                 <TableRow key={idx}>
                   <TableCell>{key}</TableCell>
-                  <TableCell>{this.props.data[key]['critical']}</TableCell>
-                  <TableCell>{this.props.data[key]['serious']}</TableCell>
-                  <TableCell>{this.props.data[key]['moderate']}</TableCell>
-                  <TableCell>{this.props.data[key]['minor']}</TableCell>
-                  <TableCell>{this.props.data[key]['total']}</TableCell>
+                  <TableCell>{summary[key]['critical']}</TableCell>
+                  <TableCell>{summary[key]['serious']}</TableCell>
+                  <TableCell>{summary[key]['moderate']}</TableCell>
+                  <TableCell>{summary[key]['minor']}</TableCell>
+                  <TableCell>{summary[key]['total']}</TableCell>
                 </TableRow>
               );
             })}

@@ -1,23 +1,24 @@
-import React from 'react';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import {Table, TableBody, TableCell, TableHead, TableFooter, TableRow, TablePagination} from '@material-ui/core';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-import TablePaginationActionsWrapped from "./TablePaginationActions";
-import Select from 'react-select';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
+import { Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from '@material-ui/core';
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import IconButton from '@material-ui/core/IconButton';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Select from 'react-select';
+import TablePaginationActionsWrapped from "./TablePaginationActions";
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import classNames from 'classnames';
+import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 function desc(a, b, orderBy, head) {
-  let aValue = head.numeric ? a[orderBy] : head.sortOn(a[orderBy]);
-  let bValue = head.numeric ? b[orderBy] : head.sortOn(b[orderBy]);
+  let aValue = head.hasOwnProperty('sortOn') ? head.sortOn(a[orderBy]) : a[orderBy];
+  let bValue = head.hasOwnProperty('sortOn') ? head.sortOn(b[orderBy]) : b[orderBy];
 
   if (bValue < aValue) {
     return -1;
@@ -43,6 +44,8 @@ function getSorting(order, orderBy, heads) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy, head) : (a, b) => -desc(a, b, orderBy, head);
 }
 /*
+head properties
+
 heads = [{
     id: id,
     label: str,
@@ -53,92 +56,88 @@ heads = [{
   ...
 ]
 
-rows:[{headId: whatever, headId: whatever}, ...]
+rows:[{headId1: value, headId2: value}, ...]
 
-filters: [headId1, headId2, ..]
+filters: [headId1: {values: [], filterOnFn}, ..]
 ]
 */
 export default class EnhancedTable extends React.Component {
 
-  static defaultProps = {
-    filterFields: []
-  };
-
   static propTypes = {
-    heads: PropTypes.array,
-    filterFields: PropTypes.array,
-    // initialFilters: PropTypes.array,
-    initialOrder: PropTypes.string,
-    initialOrderBy: PropTypes.string,
-    isPaginated: PropTypes.bool,
-    onBeforeClose: PropTypes.func
+    id: PropTypes.string.isRequired,
+    heads: PropTypes.array.isRequired,
+    rows: PropTypes.array.isRequired,
+    isPaginated: PropTypes.bool.isRequired,
+
+    filters: PropTypes.bool.isRequired,
+    sort: PropTypes.object.isRequired,
+    pagination: PropTypes.object.isRequired,
+
+    onSort: PropTypes.func.isRequired,
+    onFilter: PropTypes.func.isRequired,
+    onChangePagination: PropTypes.func.isRequired,
   };
 
   state = {
-    order: this.props.initialOrder,
-    orderBy: this.props.initialOrderBy,
-    page: 0,
-    rowsPerPage: 5,
-    filters: this.props.filterFields.map(field => ({
-        id: field.name,
-        filterOn: field.filterOn,
-        options: this.props.rows.reduce(
-          (uniqueValues, row) => {
-            let rowValue = field.filterOn(row[field.name]);
-            return rowValue != null && uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
-          },
-          [])
-          .map(option => {return {value: option, label: option}; } ),
-        selections: []
+    filters: this.props.filters.map(filter => ({
+      ...filter,
+      options: this.props.rows.reduce(
+        (uniqueValues, row) => {
+          let rowValue = filter.filterOn(row[field.name]);
+          return rowValue != null && uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
+        },
+      [])
+      .map(option => {return {value: option, label: option}; } ),
       }))
       .reduce((activeFilters, filter) =>
         filter.options.length != 0 ? activeFilters.concat(filter) : activeFilters, []) // don't include filters with no options
   };
 
-  onRequestSort = (id) => {
+  onChangeSort = (id) => {
+    let {onSort, sort} = this.props;
     let order = 'desc';
-    if (this.state.orderBy === id && this.state.order === 'desc') {
+    if (sort.orderBy === id && sort.order === 'desc') {
       order = 'asc';
     }
-    this.setState({ order: order, orderBy: id });
+    onSort(this.props.id, {order: order, orderBy: id});
   };
 
   onChangePage = (event, page) => {
-    this.setState({ page });
+    let {onChangePage, pagination} = this.props;
+    onChangePagination(this.props.id, {...pagination, page: page});
   };
 
   onChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
+    let {onChangePagination, pagination} = this.props;
+    onChangePagination(this.props.id, {...pagination, rowsPerPage: event.target.value});
   };
 
-  onFilterChange = (id, values, {action, removedValue}) => {
+  onChangeFilter = (id, values, {action, removedValue}) => {
+    let {onFilter} = this.props;
     // long-winded but trying not to upset react state
     let filters = this.state.filters;
     let filter = filters.find(filter => filter.id == id);
     let filterIdx = filters.indexOf(filter);
-    let selections = filter.selections;
+    let filterValues = filter.values;
 
     if (action == "select-option") {
       console.log(`Filter [${id}]: adding criteria`);
-      selections = values;
+      filterValues = values;
 
     }
     else if (action == "remove-value") {
       console.log(`Filter [${id}]: removing criteria`);
-      selections = values;
+      filterValues = values;
     }
     else if (action == "clear") {
       console.log(`Filter [${id}]: clear`);
-      selections = [];
+      filterValues = [];
     }
-
-    filter.selections = selections;
-    filters[filterIdx] = filter;
-    this.setState({filters});
+    onFilter(this.props.id, id, filterValues);
   };
 
   filterRows() {
-    let rows = this.props.rows;
+    let {rows} = this.props;
     let {filters} = this.state;
     filters.forEach(filter => {
       if (filter.selections.length > 0) {
@@ -159,10 +158,10 @@ export default class EnhancedTable extends React.Component {
   }
 
   render() {
-    const { heads, isPaginated } = this.props;
-    const { order, orderBy, page, rowsPerPage, filters } = this.state;
+    const { heads, isPaginated, pagination: {rowsPerPage, page}, sort: {order, orderBy} } = this.props;
+    const {filters} = this.state;
     const filteredRows = this.filterRows();
-    const emptyRows = this.state.rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
     return (
       <div>
@@ -177,8 +176,8 @@ export default class EnhancedTable extends React.Component {
               <Select
                 key={idx}
                 options={filter.options}
-                value={filter.selections}
-                onChange={(values, {action, removedValue}) => this.onFilterChange(filter.id, values, {action, removedValue})}
+                value={filter.values}
+                onChange={(values, {action, removedValue}) => this.onChangeFilter(filter.id, values, {action, removedValue})}
                 name={heads.find(head => head.id == filter.id).label}
                 closeMenuOnSelect={true}
                 isMulti={true}
@@ -201,12 +200,12 @@ export default class EnhancedTable extends React.Component {
                   {head.sortable ?
                   <Tooltip
                   title="Sort"
-                  placement={head.numeric ? 'bottom-end' : 'bottom-start'}
+                  placement={'bottom-start'}
                   enterDelay={300}>
                     <TableSortLabel
                       active={orderBy === head.id}
                       direction={order}
-                      onClick={event => this.onRequestSort(head.id)}>
+                      onClick={event => this.onChangeSort(head.id)}>
                       {head.label}
                     </TableSortLabel>
                   </Tooltip>

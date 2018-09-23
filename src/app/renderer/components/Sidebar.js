@@ -3,39 +3,32 @@ import PropTypes from 'prop-types';
 const {ipcRenderer} = require('electron');
 const path = require('path');
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Preferences from './../components/Preferences';
+import PreferencesContainer from './../containers/PreferencesContainer';
 import './../styles/Sidebar.scss';
-
+import * as Helpers from "./../../shared/helpers";
+const {dialog} = require('electron').remote;
 
 // the sidebar
 export default class Sidebar extends React.Component {
 
   static propTypes = {
-    onDropFile: PropTypes.func,
     ready: PropTypes.bool.isRequired,
     recents: PropTypes.array.isRequired,
-    preferences: PropTypes.object.isRequired
+    openReport: PropTypes.func.isRequired,
+    runAce: PropTypes.func.isRequired,
+    addMessage: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      fileHover: false
-    };
+  state = {
+    fileHover: false
+  };
 
-    this.onDrop = this.onDrop.bind(this);
-    this.onDragOver = this.onDragOver.bind(this);
-    this.onDragLeave = this.onDragLeave.bind(this);
-    this.onDragEnd = this.onDragEnd.bind(this);
-    this.onBrowseFileClick = this.onBrowseFileClick.bind(this);
-    this.onBrowseFolderClick = this.onBrowseFolderClick.bind(this);
-  }
   onDrop = e => {
     e.preventDefault();
     let filepath = e.dataTransfer.files[0].path;
     console.log(`File dropped ${filepath}`);
-    if (this.props.onDropFile) this.props.onDropFile(filepath);
     this.setState({fileHover: false});
+    processInputFile(filepath);
     return false;
   };
 
@@ -55,53 +48,55 @@ export default class Sidebar extends React.Component {
     return false;
   };
 
+  onBrowseFileOrFolderClick = e => {
+    Helpers.showEpubFileOrFolderBrowseDialog(this.processInputFile);
+    return false;
+  };
+
   onBrowseFileClick = e => {
-    ipcRenderer.send('browseFileRequest');
+    Helpers.showEpubFileBrowseDialog(this.processInputFile);
     return false;
   };
 
   onBrowseFolderClick = e => {
-    ipcRenderer.send('browseFolderRequest');
+    Helpers.showEpubFolderBrowseDialog(this.processInputFile);
     return false;
   };
 
-  onRecentsClick = filepath => {
-    this.props.onDropFile(filepath);
+  processInputFile = filepath => {
+    let type = checkType(filepath);
+    if (type == 1) {
+      this.props.runAce(filepath);
+    }
+    else if (type == 2) {
+      this.props.openReport(filepath);
+    }
+    else if (type == -1) {
+      this.props.addMessage(`ERROR: File type of ${filepath} not supported`);
+    }
   };
 
   render() {
-    let status = this.props.ready ? "Ready" : "Processing";
-    let recentFiles = [];
+    let {ready, recents, openReport} = this.props;
 
-    for (let idx=0; idx < this.props.recents.length; idx++) {
-      let filepath = this.props.recents[idx];
-      recentFiles.push(<li key={idx}>
-        {this.props.ready ?
-        <a onClick={() => this.onRecentsClick(filepath)}>{filepath}</a>
-        :
-        <span className="processing">{filepath}</span> }
-        </li>);
-    }
-
-    let dropzoneClasses = `dropzone ${this.state.fileHover ? 'dropzone-hover' : ''} ${this.props.ready ? '' : 'processing'}`;
     return (
       <aside className="sidebar">
         <section className="drop-file">
           <h1>Run Ace</h1>
-          <div className={dropzoneClasses}
+          <div className={`dropzone ${this.state.fileHover ? 'dropzone-hover' : ''} ${ready ? '' : 'processing'}`}
             onDrop={this.onDrop}
             onDragOver={this.onDragOver}
             onDragLeave={this.onDragLeave}
             onDragEnd={this.onDragEnd}>
               <p><span>Drag an EPUB file or folder here, <br/> or </span>
               {process.platform == 'darwin' ?
-                <span><a href="#" onClick={this.onBrowseFileClick}>click to browse.</a></span>
+                <span><a href="#" onClick={this.onBrowseFileOrFolderClick}>click to browse.</a></span>
                 :
                 <span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> or a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
               }
               </p>
           </div>
-          {this.props.ready ? '' :
+          {ready ? '' :
             <div className='status'>
               <LinearProgress />
               <p>Processing...</p>
@@ -111,15 +106,23 @@ export default class Sidebar extends React.Component {
         </section>
 
         <section className="preferences">
-          <Preferences ready={this.props.ready} preferences={this.props.preferences} onPreferenceChange={this.props.onPreferenceChange}/>
+          <PreferencesContainer/>
         </section>
         <section className="recents">
           <h1>Recent</h1>
           <ul>
-          {recentFiles}
+          {recents.map((recent, idx) =>
+            <li key={idx}>
+              {ready ?
+              <a onClick={() => openReport(recent.filepath)}>{recent.filepath}</a>
+              :
+              <span className="processing">{recent.filepath}</span> }
+            </li>
+          )}
           </ul>
         </section>
       </aside>
     );
   }
 }
+// <Preferences ready={this.props.ready} preferences={this.props.preferences} onPreferenceChange={this.props.onPreferenceChange}/>
