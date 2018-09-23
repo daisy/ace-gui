@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 const {dialog} = require('electron').remote;
 import "./../styles/Preferences.scss";
+import {showOutdirFolderBrowseDialog} from "./../../shared/helpers";
 
 // this could grow into a preferences dialog
 // for now, it's presented as an 'options' pane
@@ -15,21 +16,8 @@ export default class Preferences extends React.Component {
     setOrganize: PropTypes.func.isRequired
   };
 
-  // browse directory button click
-  onClick = e => {
-    // use electron folder dialog, not html input element dialog (can't choose folders)
-    dialog.showOpenDialog(
-      {title: "Select a folder", properties: ['openDirectory', 'createDirectory'], buttonLabel: "Select"},
-      (filenames) => {
-        if (filenames != undefined) {
-          this.props.setOutdir(filenames[0]);
-        }
-      }
-    );
-  };
-
   render() {
-    let {ready, preferences, onPreferenceChanged} = this.props;
+    let { preferences, ready, setOutdir, setOverwrite, setOrganize } = this.props;
 
     return (
       <section className="options">
@@ -39,7 +27,9 @@ export default class Preferences extends React.Component {
             <label htmlFor="outdir">Save reports to: </label>
             <input type="text" id="outdir" value={preferences.outdir} onChange={ e => setOutdir(e.target.value)}
             disabled={ready ? '' : 'disabled'}/>
-            <button onClick={this.onClick} disabled={ready ? '' : 'disabled'}>Browse</button>
+            <button onClick={e => showOutdirFolderBrowseDialog(this.props.setOutdir)} disabled={ready ? '' : 'disabled'}>
+              Browse
+            </button>
           </li>
           <li>
             <label htmlFor="organize">Keep reports organized: </label>

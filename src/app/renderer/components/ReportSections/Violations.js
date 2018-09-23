@@ -4,7 +4,7 @@ import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 const {shell} = require('electron');
 
-// the violation table in the report
+// the violations page of the report
 export default class Violations extends React.Component {
 
   static propTypes = {
@@ -43,7 +43,7 @@ export default class Violations extends React.Component {
       {
         id: "rulesetTag",
         label: "Ruleset",
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="ruleset">{row.rulesetTag}</TableCell>

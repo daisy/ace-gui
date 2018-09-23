@@ -17,8 +17,8 @@ import classNames from 'classnames';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 function desc(a, b, orderBy, head) {
-  let aValue = head.numeric ? a[orderBy] : head.sortOn(a[orderBy]);
-  let bValue = head.numeric ? b[orderBy] : head.sortOn(b[orderBy]);
+  let aValue = head.hasOwnProperty('sortOn') ? head.sortOn(a[orderBy]) : a[orderBy];
+  let bValue = head.hasOwnProperty('sortOn') ? head.sortOn(b[orderBy]) : b[orderBy];
 
   if (bValue < aValue) {
     return -1;
@@ -44,6 +44,8 @@ function getSorting(order, orderBy, heads) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy, head) : (a, b) => -desc(a, b, orderBy, head);
 }
 /*
+head properties
+
 heads = [{
     id: id,
     label: str,
@@ -54,9 +56,9 @@ heads = [{
   ...
 ]
 
-rows:[{headId: whatever, headId: whatever}, ...]
+rows:[{headId1: value, headId2: value}, ...]
 
-filters: [headId1, headId2, ..]
+filters: [headId1: {values: [], filterOnFn}, ..]
 ]
 */
 export default class EnhancedTable extends React.Component {

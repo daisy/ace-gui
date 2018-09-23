@@ -1,10 +1,9 @@
-import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
-
 import EnhancedTable from "./../Table/EnhancedTable";
 import PropTypes from 'prop-types';
 import React from 'react';
+import TableCell from '@material-ui/core/TableCell';
 
-// the metadata table in the report
+// the metadata page of the report
 export default class Metadata extends React.Component {
 
   static propTypes = {
@@ -26,7 +25,7 @@ export default class Metadata extends React.Component {
       {
         id: 'name',
         label: "Name",
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>
@@ -52,7 +51,7 @@ export default class Metadata extends React.Component {
       {
         id: 'a11y',
         label: 'A11Y',
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>

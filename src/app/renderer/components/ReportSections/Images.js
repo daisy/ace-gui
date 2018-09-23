@@ -1,12 +1,10 @@
-import {Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow} from '@material-ui/core';
-
 import EnhancedTable from './../Table/EnhancedTable';
 import PropTypes from 'prop-types';
 import React from 'react';
-import TablePaginationActionsWrapped from "./../Table/TablePaginationActions";
+import TableCell from '@material-ui/core/TableCell';
 const path = require('path');
 
-// the images table in the report
+// the images page of the report
 export default class Images extends React.Component {
 
   static propTypes = {
@@ -34,7 +32,7 @@ export default class Images extends React.Component {
       {
         id: 'alt',
         label: <span><code>alt</code> attribute</span>,
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.alt ? row.alt : "N/A"}</TableCell>
@@ -42,7 +40,7 @@ export default class Images extends React.Component {
       {
         id: 'describedby',
         label: <span><code>aria-describedby</code> content</span>,
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.describedby ? row.describedby : "N/A"}</TableCell>
@@ -50,7 +48,7 @@ export default class Images extends React.Component {
       {
         id: 'figcaption',
         label: <span>Associated <code>figcaption</code></span>,
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.figcaption ? row.figcaption : "N/A"}</TableCell>
@@ -58,7 +56,7 @@ export default class Images extends React.Component {
       {
         id: 'location',
         label: 'Location',
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="location"><pre>{row.location}</pre></TableCell>
@@ -66,7 +64,7 @@ export default class Images extends React.Component {
       {
         id: 'role',
         label: 'Role',
-        numeric: true,
+        numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.role ? row.role : "N/A"}</TableCell>

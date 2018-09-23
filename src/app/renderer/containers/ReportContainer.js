@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import Report from './../components/Report';
 import * as ReportViewActions from './../../shared/actions/reportView';
 
-const mapStateToProps = {reportView} => {
+const mapStateToProps = state => {
+  let { reportView: {selectedTab} } = state;
   return {
-    reportView.selectedTab
+    selectedTab
   };
 }
 

@@ -1,8 +1,7 @@
 export const SET_READY = 'SET_READY';
-export const OPEN_EPUB = 'OPEN_EPUB';
+export const RUN_ACE = 'RUN_ACE';
 export const OPEN_REPORT = "OPEN_REPORT";
 export const CLOSE_REPORT = "CLOSE_REPORT";
-export const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 export const ADD_MESSAGE = "ADD_MESSAGE";
 
 export function setReady(flag) {
@@ -11,9 +10,9 @@ export function setReady(flag) {
     payload: flag,
   };
 }
-export function openEpub(filepath) {
+export function runAce(filepath) {
   return {
-    type: OPEN_EPUB,
+    type: RUN_ACE,
     payload: filepath,
   };
 }
@@ -27,12 +26,6 @@ export function closeReport() {
   return {
     type: CLOSE_REPORT,
     payload: '',
-  };
-}
-export function toggleFullscreen(flag) {
-  return {
-    type: TOGGLE_FULLSCREEN,
-    payload: flag,
   };
 }
 export function addMessage(message) {

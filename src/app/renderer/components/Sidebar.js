@@ -5,7 +5,8 @@ const path = require('path');
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PreferencesContainer from './../containers/PreferencesContainer';
 import './../styles/Sidebar.scss';
-import {checkType} from "./../../shared/helpers";
+import * as Helpers from "./../../shared/helpers";
+const {dialog} = require('electron').remote;
 
 // the sidebar
 export default class Sidebar extends React.Component {
@@ -13,9 +14,8 @@ export default class Sidebar extends React.Component {
   static propTypes = {
     ready: PropTypes.bool.isRequired,
     recents: PropTypes.array.isRequired,
-    preferences: PropTypes.object.isRequired,
     openReport: PropTypes.func.isRequired,
-    openEpub: PropTypes.func.isRequired,
+    runAce: PropTypes.func.isRequired,
     addMessage: PropTypes.func.isRequired,
   };
 
@@ -28,17 +28,7 @@ export default class Sidebar extends React.Component {
     let filepath = e.dataTransfer.files[0].path;
     console.log(`File dropped ${filepath}`);
     this.setState({fileHover: false});
-
-    let type = checkType(filepath);
-    if (type == 1) {
-      this.props.openEpub(filepath);
-    }
-    else if (type == 2) {
-      this.props.openReport(filepath);
-    }
-    else if (type == -1) {
-      addMessage(`ERROR: File type of ${filepath} not supported`);
-    }
+    processInputFile(filepath);
     return false;
   };
 
@@ -58,18 +48,36 @@ export default class Sidebar extends React.Component {
     return false;
   };
 
+  onBrowseFileOrFolderClick = e => {
+    Helpers.showEpubFileOrFolderBrowseDialog(this.processInputFile);
+    return false;
+  };
+
   onBrowseFileClick = e => {
-    ipcRenderer.send('browseFileRequest');
+    Helpers.showEpubFileBrowseDialog(this.processInputFile);
     return false;
   };
 
   onBrowseFolderClick = e => {
-    ipcRenderer.send('browseFolderRequest');
+    Helpers.showEpubFolderBrowseDialog(this.processInputFile);
     return false;
   };
 
+  processInputFile = filepath => {
+    let type = checkType(filepath);
+    if (type == 1) {
+      this.props.runAce(filepath);
+    }
+    else if (type == 2) {
+      this.props.openReport(filepath);
+    }
+    else if (type == -1) {
+      this.props.addMessage(`ERROR: File type of ${filepath} not supported`);
+    }
+  };
+
   render() {
-    let {ready, recents, preferences, openReport} = this.props;
+    let {ready, recents, openReport} = this.props;
 
     return (
       <aside className="sidebar">
@@ -82,7 +90,7 @@ export default class Sidebar extends React.Component {
             onDragEnd={this.onDragEnd}>
               <p><span>Drag an EPUB file or folder here, <br/> or </span>
               {process.platform == 'darwin' ?
-                <span><a href="#" onClick={this.onBrowseFileClick}>click to browse.</a></span>
+                <span><a href="#" onClick={this.onBrowseFileOrFolderClick}>click to browse.</a></span>
                 :
                 <span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> or a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
               }

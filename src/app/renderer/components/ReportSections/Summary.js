@@ -2,7 +2,7 @@ import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/cor
 import PropTypes from 'prop-types';
 import React from 'react';
 
-// the summary table in the report
+// the summary page of the report
 export default class Summary extends React.Component {
 
   static propTypes = {

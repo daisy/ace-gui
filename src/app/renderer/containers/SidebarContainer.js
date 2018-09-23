@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import Sidebar from './../components/Sidebar';
 import * as AppActions from './../../shared/actions/app';
 
-const mapStateToProps = {app: {ready, recents}, preferences} => {
+const mapStateToProps = state => {
+  let {app: {ready, recents}} = state;
   return {
-    ready: PropTypes.bool.isRequired,
-    recents: PropTypes.array.isRequired,
-    preferences: PropTypes.object.isRequired
+    ready,
+    recents
   };
 }
 

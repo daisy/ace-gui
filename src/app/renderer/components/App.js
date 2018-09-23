@@ -1,16 +1,13 @@
+import './../styles/App.scss';
+import Messages from './Messages';
+import React from 'react';
+import ReportContainer from './../containers/ReportContainer';
+import SidebarContainer from './../containers/SidebarContainer';
+import Splash from './Splash';
+import SplitterLayout from 'react-splitter-layout';
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
 const path = require('path');
-
-import './../styles/App.scss';
-
-import Messages from './Messages';
-import React from 'react';
-import Report from './Report';
-import Sidebar from './Sidebar';
-import Splash from './Splash';
-import SplitterLayout from 'react-splitter-layout';
-import tmp from 'tmp';
 
 export default class App extends React.Component {
 

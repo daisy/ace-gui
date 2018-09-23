@@ -1,6 +1,8 @@
 // helper functions
 const path = require('path');
 const fs = require('fs');
+const electron = require('electron');
+const dialog = electron.dialog || electron.remote.dialog;
 
 module.exports = {
   checkType: function(filepath) {
@@ -74,8 +76,64 @@ module.exports = {
   summarizeViolations: function(assertions) {
     let flatList = createFlatListOfViolations(assertions);
     return collectViolationStats(flatList);
+  },
+
+  showEpubFileBrowseDialog: function(onOpenFunc) {
+    let title = "Choose an EPUB file";
+    let buttonLabel = "Check";
+    let properties = ['openFile'];
+    let filters = [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}];
+    showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
+  },
+
+  showReportFileBrowseDialog: function(onOpenFunc) {
+    let title = "Choose a file";
+    let buttonLabel = "Open";
+    let properties = ['openFile'];
+    let filters = [{name: 'Ace Report', extensions: ['json']}, {name: 'All Files', extensions: ['*']}];
+    showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
+  },
+
+  showEpubFolderBrowseDialog: function(onOpenFunc) {
+    let title = "Choose an EPUB folder";
+    let buttonLabel = "Check";
+    let properties = ['openDirectory'];
+    let filters = [{name: 'All Files', extensions: ['*']}];
+    showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
+  },
+
+  showOutdirFolderBrowseDialog: function(onOpenFunc) {
+    let title = "Choose a folder";
+    let buttonLabel = "Select";
+    let properties = ['openDirectory', 'createDirectory'];
+    let filters = [{name: 'All Files', extensions: ['*']}];
+    showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
+  },
+
+  showEpubFileOrFolderBrowseDialog: function(onOpenFunc) {
+    let title = "Choose an EPUB file or folder";
+    let buttonLabel = "Check";
+    let properties = ['openFile', 'openDirectory'];
+    let filters = [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}];
+    showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
+  },
+
+  runAce: function(onCheckCompleteFunc) {
+
   }
+
 };
+
+function showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc) {
+  dialog.showOpenDialog(
+    { title, buttonLabel, properties, filters },
+    (filenames) => {
+      if (filenames != undefined) {
+        onOpenFunc(filenames[0]);
+      }
+    }
+  );
+}
 
 // to support older Ace reports without a separate summary section
 // summarize the violation ruleset and impact data

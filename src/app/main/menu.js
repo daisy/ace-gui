@@ -1,267 +1,284 @@
-const {electron, Menu, app} = require('electron');
+import { app, Menu, shell, BrowserWindow, dialog } from 'electron';
+import {
+  selectTab,
+  runAce,
+  openReport,
+  closeReport
+} from './../shared/actions/app';
 
-// entry point to create the menu
-function init (appName, callbacks) {
-  var menuTemplate = getMenuTemplate(appName);
-  attachCallbacks(callbacks, menuTemplate);
-  var menu = Menu.buildFromTemplate(menuTemplate);
-  Menu.setApplicationMenu(menu);
-}
+export default class MenuBuilder {
+  mainWindow: BrowserWindow;
 
-// enable or disable icons based on application state
-function onSplashScreen() {
-  setMenuItemsEnabled(["checkEpub", "openReport"], true);
-  setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
-  "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], false);
-}
-function onReportScreen() {
-  setMenuItemsEnabled(["checkEpub", "openReport"], true);
-  setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
-  "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], true);
-}
-function onToggleFullScreen(val) {
-  getMenuItem("fullScreen").checked = val;
-}
-function onProcessing() {
-  setMenuItemsEnabled(["checkEpub", "openReport"], false);
-  setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
-  "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], false);
-}
-function getMenuItem(id) {
-  let menu = Menu.getApplicationMenu();
-  return menu.getMenuItemById(id);
-}
-// set many menu items at once
-function setMenuItemsEnabled(ids, enabled) {
-  ids.forEach(function(id) {
-    if (getMenuItem(id)) {
-      getMenuItem(id).enabled = enabled;
+  stateValues: {
+    isReportOpen: false
+  };
+
+  constructor(mainWindow: BrowserWindow, store) {
+    this.mainWindow = mainWindow;
+    this.store = store;
+
+    // listen for when a report is open
+    this.store.subscribe(() => {
+      let currVal = this.stateValues.isReportOpen;
+      let newVal = this.store.getState().app.report != null;
+      if (currVal != newVal) {
+        this.stateValues.isReportOpen = newVal;
+        refreshMenuItemsEnabled();
+      }
+    })
+  }
+
+  buildMenu() {
+    if (
+      process.env.NODE_ENV === 'development' ||
+      process.env.DEBUG_PROD === 'true'
+    ) {
+      this.setupDevelopmentEnvironment();
     }
-  });
-}
 
-function getMenuTemplate(appName) {
-  // the menu will apparently look correct in production mode
-  // https://stackoverflow.com/questions/41551110/unable-to-override-app-name-on-mac-os-electron-menu
-  // devs will see "Electron" instead of the app name (e.g. it says 'About Electron')
-  // need to test this though
+    const template = buildTemplate();
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
 
-  // sets up cross-platform structure (lowest common denominator) for File, View, Help menus
-  var template = [
-    {
-      label: 'File',
-      submenu: [
+    return menu;
+  }
+
+  setupDevelopmentEnvironment() {
+    this.mainWindow.openDevTools();
+    this.mainWindow.webContents.on('context-menu', (e, props) => {
+      const { x, y } = props;
+
+      Menu.buildFromTemplate([
         {
-          label: 'Check EPUB...',
-          id: 'checkEpub',
-          accelerator: 'CmdOrCtrl+O'
-        },
-        {
-          label: 'Open Report...',
-          id: 'openReport',
-        },
-        {
-          label: 'Close Report',
-          id: 'closeReport',
-          accelerator: 'CmdOrCtrl+Shift+C'
+          label: 'Inspect element',
+          click: () => {
+            this.mainWindow.inspectElement(x, y);
+          }
         }
-      ]
-    },
-    {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Full Screen',
-          type: 'checkbox',
-          id: 'fullScreen',
-          accelerator: process.platform === 'darwin'
-            ? 'Ctrl+Command+F'
-            : 'F11'
-        },
+      ]).popup(this.mainWindow);
+    });
+  }
+
+  buildTemplate() {
+
+    const defaultTemplate = {
+      subMenuFile: {
+        label: 'File',
+        submenu: [
+          {
+            label: 'Check EPUB...',
+            accelerator: 'CmdOrCtrl+O',
+            click: () => process.platform == 'darwin' ?
+              Helpers.showEpubFileOrFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
+              :
+              Helpers.showEpubFileBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
+          },
+          {
+            label: 'Open Report...',
+            click: () => Helpers.showReportFileBrowseDialog(filepath => this.store.dispatch(openReport(filepath)))
+          },
+          {
+            label: 'Close Report',
+            accelerator: 'CmdOrCtrl+Shift+C',
+            click: () => this.store.dispatch(closeReport())
+          }
+        ]
+      },
+      subMenuViewProd: {
+        label: 'View',
+        submenu: [
+          {
+            label: 'Toggle Full Screen',
+            type: 'checkbox',
+            accelerator: process.platform === 'darwin'
+              ? 'Ctrl+Command+F'
+              : 'F11',
+            click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Go to Summary',
+            accelerator: 'CmdOrCtrl+Shift+S',
+            click: () => this.store.dispatch(selectTab(0))
+          },
+          {
+            label: 'Go to Violations',
+            accelerator: 'CmdOrCtrl+Shift+V',
+            click: () => this.store.dispatch(selectTab(1))
+          },
+          {
+            label: 'Go to Metadata',
+            accelerator: 'CmdOrCtrl+Shift+M',
+            click: () => this.store.dispatch(selectTab(2))
+          },
+          {
+            label: 'Go to Outlines',
+            accelerator: 'CmdOrCtrl+Shift+O',
+            click: () => this.store.dispatch(selectTab(3))
+          },
+          {
+            label: 'Go to Images',
+            accelerator: 'CmdOrCtrl+Shift+I',
+            click: () => this.store.dispatch(selectTab(4))
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: process.platform == 'darwin' ? 'Show in Finder' : 'Show in Explorer',
+            accelerator: 'CmdOrCtrl+Shift+F',
+            click: () => shell.showItemInFolder(this.store.getState().app.reportFilepath)
+          }
+        ]
+      },
+      subMenuDev: {
+        label: 'Dev',
+        submenu: [
+          {
+            label: 'Reload',
+            accelerator: 'Command+R',
+            click: () => this.mainWindow.webContents.reload()
+          },
+          {
+            label: 'Toggle Developer Tools',
+            accelerator: 'Alt+Command+I',
+            click: () => this.mainWindow.toggleDevTools()
+          }
+        ]
+      },
+      subMenuHelp: {
+        label: 'Help',
+        role: 'help',
+        submenu: [
+          {
+            label: 'Knowledge Base',
+            click: () => shell.openExternal('http://kb.daisy.org/publishing/')
+          },
+          {
+            label: 'Learn more',
+            click: () => shell.openExternal('http://daisy.github.io/ace')
+          },
+          {
+            label: 'Report an Issue',
+            click: () => shell.openExternal('http://github.com/DAISY/ace-gui/issues')
+          },
+          {
+            label: 'Copy Message Output',
+            click: () => {
+              let messages = this.getState().app.messages;
+              let msgstr = messages.join('\n');
+              clipboard.writeText(msgstr);
+            }
+          }
+        ]
+      },
+      subMenuAbout: {
+        label: 'Ace',
+        submenu: [
+          {
+            label: 'About Ace',
+            click: () => dialog.showMessageBox({"message": "Ace Beta", "detail": "DAISY Consortium 2018"})
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Services',
+            role: 'services',
+            submenu: []
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Hide Ace',
+            accelerator: 'Command+H',
+            role: 'hide'
+          },
+          {
+            label: 'Hide Others',
+            accelerator: 'Command+Alt+H',
+            role: 'hideothers'
+          },
+          {
+            label: 'Show All',
+            role: 'unhide'
+          },
+          {
+            type: 'separator'
+          },
+          {
+            role: 'quit'
+          }
+        ]
+      },
+      subMenuWindow: {
+        label: 'Window',
+        role: 'window',
+        submenu: [
+          {
+            label: 'Minimize',
+            role: 'minimize'
+          },
+          { type: 'separator' },
+          {
+            label: 'Bring All to Front',
+            role: 'front'
+          }
+        ]
+      }
+    };
+
+
+    // On Windows and Linux, open dialogs do not support selecting both files and
+    // folders and files, so add an extra menu item so there is one for each type.
+    if (process.platform === 'linux' || process.platform === 'win32') {
+      // insert item into File submenu
+      this.defaultTemplate.subMenuFile.submenu.unshift({
+        label: 'Check EPUB Folder ... ',
+        click: () => Helpers.showEpubFolderBrowseDialog(filepath => store.dispatch(runAce(filepath)))
+      });
+
+      // insert item into Help submenu
+      this.defaultTemplate.subMenuHelp.submenu.push(
         {
           type: 'separator'
         },
-        {
-          label: 'Go to Summary',
-          id: 'gotoSummary',
-          accelerator: 'CmdOrCtrl+Shift+S'
-        },
-        {
-          label: 'Go to Violations',
-          id: 'gotoViolations',
-          accelerator: 'CmdOrCtrl+Shift+V'
-        },
-        {
-          label: 'Go to Metadata',
-          id: 'gotoMetadata',
-          accelerator: 'CmdOrCtrl+Shift+M'
-        },
-        {
-          label: 'Go to Outlines',
-          id: 'gotoOutlines',
-          accelerator: 'CmdOrCtrl+Shift+O'
-        },
-        {
-          label: 'Go to Images',
-          id: 'gotoImages',
-          accelerator: 'CmdOrCtrl+Shift+I'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: process.platform == 'darwin' ? 'Show in Finder' : 'Show in Explorer',
-          id: 'showInFinder',
-          accelerator: 'CmdOrCtrl+Shift+F'
-        }
-      ]
-    },
-    {
-      label: 'Help',
-      role: 'help',
-      submenu: [
-        {
-          label: 'Knowledge Base',
-          id: 'knowledgeBase'
-        },
-        {
-          label: 'Learn more',
-          id: 'learnMore'
-        },
-        {
-          label: 'Report an Issue',
-          id: 'reportIssue'
-        },
-        {
-          label: 'Copy Message Output',
-          id: 'copyMessages'
-        }
-      ]
-    }
-  ];
-
-  // customize for Darwin by adding App and Window menus
-  // the order will be: AppName, File, View, Window, Help
-  if (process.platform === 'darwin') {
-    // App menu
-    template.unshift({
-      label: appName,
-      submenu: [
         {
           label: 'About ' + appName,
-          id: 'about'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Services',
-          role: 'services',
-          submenu: []
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Hide ' + appName,
-          accelerator: 'Command+H',
-          role: 'hide'
-        },
-        {
-          label: 'Hide Others',
-          accelerator: 'Command+Alt+H',
-          role: 'hideothers'
-        },
-        {
-          label: 'Show All',
-          role: 'unhide'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          role: 'quit'
+          click: () => dialog.showMessageBox({"message": "Ace Beta", "detail": "DAISY Consortium 2018"})
         }
-      ]
-    });
-
-    // Window menu
-    template.splice(3, 0, {
-      label: 'Window',
-      role: 'window',
-      submenu: [
-        {
-          label: 'Minimize',
-          accelerator: 'CmdOrCtrl+M',
-          role: 'minimize'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Bring All to Front',
-          role: 'front'
-        }
-      ]
-    });
-  }
-
-  // On Windows and Linux, open dialogs do not support selecting both files and
-  // folders and files, so add an extra menu item so there is one for each type.
-  if (process.platform === 'linux' || process.platform === 'win32') {
-    // insert item into File submenu
-    template[0].submenu.unshift({
-      label: 'Check EPUB Folder ... ',
-      id: 'checkEpubFolder'
-    });
-
-    // insert item into Help submenu
-    template[2].submenu.push(
-      {
-        type: 'separator'
-      },
-      {
-        label: 'About ' + appName,
-        id: 'about'
-      }
-    );
-  }
-  // Add "File > Quit" menu item so Linux distros where the system tray icon is
-  // missing will have a way to quit the app.
-  if (process.platform === 'linux') {
-    // File menu (Linux)
-    template[0].submenu.push({
-      label: 'Quit',
-      id: 'quit'
-    });
-  }
-
-  return template;
-}
-
-// add callbacks to the menu items, formatted like {MenuId: function, ...}:
-function attachCallbacks(callbacks, menuTemplate) {
-
-  for (let item of menuTemplate) {
-    if ("id" in item) {
-      if (item['id'] in callbacks) {
-        item.click = callbacks[item['id']];
-      }
+      );
+    }
+    // Add "File > Quit" menu item so Linux distros where the system tray icon is
+    // missing will have a way to quit the app.
+    if (process.platform === 'linux') {
+      // File menu (Linux)
+      this.defaultTemplate.subMenuFile.submenu.push({
+        label: 'Quit',
+        click: () => app.quit()
+      });
     }
 
-    for (var key in item) {
-      if (item[key] instanceof Array) {
-        attachCallbacks(callbacks, item[key]);
-      }
-    }
+    let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+    let menuTemplate = process.platform === 'darwin' ?
+      [
+        subMenuAbout,
+        subMenuFile,
+        subMenuView,
+        subMenuWindow,
+        subMenuHelp
+      ]
+      :
+      [
+        subMenuFile,
+        subMenuView,
+        subMenuHelp
+      ];
+
+    return isDev ? menuTemplate.concat(subMenuDev) : menuTemplate;
   }
 }
-
-// export some functions to control the menu (e.g. check/uncheck/enable items in response to application state changes)
-module.exports = {
-  init,
-  onSplashScreen,
-  onReportScreen,
-  onToggleFullScreen,
-  onProcessing
-};

@@ -10,25 +10,21 @@ https://github.com/pastahito/electron-react-webpack
 ## Work Items
 
 * redux
-  - remember table filter selections after tab change
-  - remember everything
-  - write all or part of store to disk
+  - add ES6 support to main process
+  - there TODOs here related to setting status and error messages related to running Ace
+  - also plenty of TODOs here as this redux code is largely untested
 * messages window
   - scroll to bottom
   - use aria-live regions?
 * table styling tweaks
- - sorting sometimes changes header col width
- - metadata name column inexplicably right-aligned
 * logo
   - check that logo is set on all platforms
   - 'about' dialog
   - app tray
-* persist state
-  - replace userprefs.json
+* persist preferences + recents
 
 ### Ideas
 
-* persist recent files too
 * implementing style with HoC seems popular in material-ui ... consider it for the tables at least
 
 ## Polishing

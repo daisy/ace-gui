@@ -2,7 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-// the outlines section of the report
+// the outlines page of the report
 export default class Outlines extends React.Component {
 
   static propTypes = {

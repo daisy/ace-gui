@@ -7,7 +7,6 @@ import ViolationsContainer from './../containers/ReportSections/ViolationsContai
 import ImagesContainer from './../containers/ReportSections/ImagesContainer';
 import {Tabs, Tab} from '@material-ui/core';
 import './../styles/Report.scss';
-const {ipcRenderer} = require('electron');
 
 // the report view
 export default class Report extends React.Component {

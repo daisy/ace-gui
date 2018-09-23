@@ -3,8 +3,12 @@ import { connect } from 'react-redux';
 import Preferences from './../components/Preferences';
 import * as PreferencesActions from './../../shared/actions/preferences';
 
-function mapStateToProps({app: {ready}, preferences }) {
-  return { ready, preferences };
+const mapStateToProps = state => {
+  let { app: {ready}, preferences } = state;
+  return {
+    ready,
+    preferences
+  };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import App from './../components/App';
 import * as AppActions from './../../shared/actions/app';
 
-const mapStateToProps = {app: {report, messages}} => {
+const mapStateToProps = state => {
+  let {app: {report, messages}} = state;
   return {
     report,
     messages
