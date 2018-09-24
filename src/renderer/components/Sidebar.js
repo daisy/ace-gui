@@ -5,7 +5,7 @@ const path = require('path');
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PreferencesContainer from './../containers/PreferencesContainer';
 import './../styles/Sidebar.scss';
-import {checkType} from "./../../shared/helpers";
+import * as Helpers from "./../../shared/helpers";
 const {dialog} = require('electron').remote;
 
 // the sidebar
@@ -114,9 +114,9 @@ export default class Sidebar extends React.Component {
           {recents.map((recent, idx) =>
             <li key={idx}>
               {ready ?
-              <a onClick={() => openReport(recent.filepath)}>{recent.filepath}</a>
+              <a onClick={() => openReport(recent)}>{recent}</a>
               :
-              <span className="processing">{recent.filepath}</span> }
+              <span className="processing">{recent}</span> }
             </li>
           )}
           </ul>
@@ -125,4 +125,3 @@ export default class Sidebar extends React.Component {
     );
   }
 }
-// <Preferences ready={this.props.ready} preferences={this.props.preferences} onPreferenceChange={this.props.onPreferenceChange}/>

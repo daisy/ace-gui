@@ -15,9 +15,6 @@ https://github.com/pastahito/electron-react-webpack
 * broken since redux integration
   - running Ace (it's a thunk experiment, not sure if it's the correct approach)
   - table filters
-  - recents list
-  - help->copy message output
-* enable/disable menu items based on state
 * messages window
   - scroll to bottom
   - use aria-live regions?

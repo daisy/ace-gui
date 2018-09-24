@@ -4,10 +4,9 @@ import App from './../components/App';
 import * as AppActions from './../../shared/actions/app';
 
 const mapStateToProps = state => {
-  let {app: {report, messages}} = state;
+  let {app: {report}} = state;
   return {
-    report,
-    messages
+    report
   };
 }
 

@@ -72,12 +72,7 @@ module.exports = {
     let properties = ['openFile', 'openDirectory'];
     let filters = [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}];
     showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
-  },
-
-  runAce: function(onCheckCompleteFunc) {
-
   }
-
 };
 
 function showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc) {

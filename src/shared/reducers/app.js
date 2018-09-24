@@ -35,6 +35,7 @@ export default function app(state = initialState, action) {
       return dispatch => {
         let ready = false;
         dispatch({type: SET_READY, ready});
+        dispatch({type: ADD_MESSAGE, payload: `Running Ace on ${action.payload}`});
         let epubFilepath = action.payload;
         let outdir = prepareOutdir(epubFilepath, state.preferences);
 
@@ -73,18 +74,19 @@ export default function app(state = initialState, action) {
       }
     }
     case OPEN_REPORT: {
-      // TODO show error
       try {
         let report = JSON.parse(fs.readFileSync(action.payload));
         let reportFilepath = action.payload;
+        let messages = [...state.messages, `Loaded report ${reportFilepath}`];
         return {
           ...state,
           reportFilepath,
-          report
+          report,
+          messages
         };
       }
       catch(error) {
-        messages = [...state.messages, `ERROR: Could not open ${action.payload}`];
+        let messages = [...state.messages, `ERROR: Could not open ${action.payload}`];
         return {
           ...state,
           messages
@@ -94,13 +96,14 @@ export default function app(state = initialState, action) {
     }
     case CLOSE_REPORT: {
       let recents = addToRecents(state.reportFilepath, state.recents);
-      let reportFilepath = '';
       let report = null;
+      let messages = [...state.messages, `Closed report ${state.reportFilepath}`];
       return {
         ...state,
         recents,
-        reportFilepath,
-        report
+        reportFilepath: '',
+        report,
+        messages
       };
     }
     case ADD_MESSAGE: {
