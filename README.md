@@ -14,7 +14,6 @@ https://github.com/pastahito/electron-react-webpack
   - add unit and e2e test templates
 * broken since redux integration
   - running Ace (it's a thunk experiment, not sure if it's the correct approach)
-  - table filters
 * messages window
   - scroll to bottom
   - use aria-live regions?

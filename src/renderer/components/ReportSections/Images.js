@@ -9,17 +9,29 @@ export default class Images extends React.Component {
 
   static propTypes = {
     images: PropTypes.array.isRequired,
-    filters: PropTypes.object,
-    pagination: PropTypes.object,
-    sort: PropTypes.object,
-    setTableSort: PropTypes.func,
-    setTableFilterValues: PropTypes.func,
-    setTablePagination: PropTypes.func,
-    reportFilepath: PropTypes.string
+    reportFilepath: PropTypes.string.isRequired,
+    filters: PropTypes.object.isRequired,
+    pagination: PropTypes.object.isRequired,
+    sort: PropTypes.object.isRequired,
+    expandFilters: PropTypes.bool.isRequired,
+    setTableSort: PropTypes.func.isRequired,
+    setTableFilterValues: PropTypes.func.isRequired,
+    setTablePagination: PropTypes.func.isRequired,
+    setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
   render() {
-    let {images, filters, pagination, sort, setTableSort, setTableFilterValues, setTablePagination, reportFilepath} = this.props;
+    let {
+      images,
+      reportFilepath,
+      filters,
+      pagination,
+      sort,
+      expandFilters,
+      setTableSort,
+      setTableFilterValues,
+      setTablePagination,
+      setTableFiltersExpanded} = this.props;
 
     const heads = [
       {
@@ -86,9 +98,11 @@ export default class Images extends React.Component {
           filters={filters}
           sort={sort}
           pagination={pagination}
+          expandFilters={expandFilters}
           onSort={setTableSort}
           onFilter={setTableFilterValues}
           onChangePagination={setTablePagination}
+          onExpandFilters={setTableFiltersExpanded}
           />
           {images.length == 0 ? <p>No images encountered in this publication.</p> : ''}
       </section>

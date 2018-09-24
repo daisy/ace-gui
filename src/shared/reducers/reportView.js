@@ -3,7 +3,8 @@ import {
   SELECT_TAB,
   SET_TABLE_FILTER_VALUES,
   SET_TABLE_SORT,
-  SET_TABLE_PAGINATION
+  SET_TABLE_PAGINATION,
+  SET_TABLE_FILTERS_EXPANDED
 } from '../actions/reportView';
 
 
@@ -15,7 +16,7 @@ const initialState = {
       "impact": {values: []},
       "rulesetTag": {values: []},
       "rule": {values: []},
-      "location": {values: []}
+      "location": {values: []},
     },
     "metadata": {
       "name": {values: []}
@@ -25,7 +26,12 @@ const initialState = {
       "role": {values: []}
     }
   },
-
+  expandFilters:
+  {
+    "violations": false,
+    "metadata": false,
+    "images": false
+  },
   sort: {
     "violations": {order: "desc", orderBy: "impact"},
     "metadata": {order: "asc", orderBy: "name"},
@@ -79,7 +85,15 @@ export default function reportView(state = initialState, action) {
         pagination
       };
     }
-
+    case SET_TABLE_FILTERS_EXPANDED: {
+      let {tableId, isExpanded } = action.payload;
+      let expandFilters = state.expandFilters;
+      expandFilters[tableId] = isExpanded;
+      return {
+        ...state,
+        expandFilters
+      };
+    }
     default:
       return state;
   }

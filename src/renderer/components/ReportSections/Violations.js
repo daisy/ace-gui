@@ -9,12 +9,14 @@ export default class Violations extends React.Component {
 
   static propTypes = {
     violations: PropTypes.array.isRequired,
-    filters: PropTypes.object,
-    pagination: PropTypes.object,
-    sort: PropTypes.object,
-    setTableSort: PropTypes.func,
-    setTableFilterValues: PropTypes.func,
-    setTablePagination: PropTypes.func,
+    filters: PropTypes.object.isRequired,
+    pagination: PropTypes.object.isRequired,
+    sort: PropTypes.object.isRequired,
+    expandFilters: PropTypes.bool.isRequired,
+    setTableSort: PropTypes.func.isRequired,
+    setTableFilterValues: PropTypes.func.isRequired,
+    setTablePagination: PropTypes.func.isRequired,
+    setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
   onExternalLinkClick = url => shell.openExternal(url);
@@ -24,9 +26,11 @@ export default class Violations extends React.Component {
       filters,
       pagination,
       sort,
+      expandFilters,
       setTableSort,
       setTableFilterValues,
-      setTablePagination} = this.props;
+      setTablePagination,
+      setTableFiltersExpanded} = this.props;
     const impactOrder = ['minor', 'moderate', 'serious', 'critical'];
     const heads = [
       {
@@ -108,9 +112,11 @@ export default class Violations extends React.Component {
           filters={filters}
           sort={sort}
           pagination={pagination}
+          expandFilters={expandFilters}
           onSort={setTableSort}
           onFilter={setTableFilterValues}
           onChangePagination={setTablePagination}
+          onExpandFilters={setTableFiltersExpanded}
           />
         {violations.length == 0 ? <p>No violations reported.</p> : ''}
       </section>

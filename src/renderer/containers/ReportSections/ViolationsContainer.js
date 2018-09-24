@@ -5,12 +5,13 @@ import * as ReportViewActions from './../../../shared/actions/reportView';
 import {createFlatListOfViolations} from "./../../../shared/helpers";
 
 const mapStateToProps = state => {
-  let {app: {report}, reportView: {filters, sort, pagination}} = state;
+  let {app: {report}, reportView: {filters, sort, pagination, expandFilters}} = state;
   return {
     violations: createFlatListOfViolations(report.assertions),
     filters: filters['violations'],
     pagination: pagination['violations'],
     sort: sort['violations'],
+    expandFilters: expandFilters['violations']
   };
 };
 

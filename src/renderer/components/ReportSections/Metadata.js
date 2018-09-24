@@ -9,16 +9,28 @@ export default class Metadata extends React.Component {
   static propTypes = {
     metadata: PropTypes.array.isRequired,
     a11ymetadata: PropTypes.object.isRequired,
-    filters: PropTypes.object,
-    pagination: PropTypes.object,
-    sort: PropTypes.object,
-    setTableSort: PropTypes.func,
-    setTableFilterValues: PropTypes.func,
-    setTablePagination: PropTypes.func,
+    filters: PropTypes.object.isRequired,
+    pagination: PropTypes.object.isRequired,
+    sort: PropTypes.object.isRequired,
+    expandFilters: PropTypes.bool.isRequired,
+    setTableSort: PropTypes.func.isRequired,
+    setTableFilterValues: PropTypes.func.isRequired,
+    setTablePagination: PropTypes.func.isRequired,
+    setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
   render() {
-    let {metadata, a11ymetadata, filters, pagination, sort, setTableSort, setTableFilterValues, setTablePagination} = this.props;
+    let {
+      metadata,
+      a11ymetadata,
+      filters,
+      pagination,
+      sort,
+      expandFilters,
+      setTableSort,
+      setTableFilterValues,
+      setTablePagination,
+      setTableFiltersExpanded} = this.props;
 
     let hasMissingOrEmpty = a11ymetadata.missing.length > 0 || a11ymetadata.empty.length > 0;
     let heads = [
@@ -72,9 +84,11 @@ export default class Metadata extends React.Component {
           filters={filters}
           sort={sort}
           pagination={pagination}
+          expandFilters={expandFilters}
           onSort={setTableSort}
           onFilter={setTableFilterValues}
           onChangePagination={setTablePagination}
+          onExpandFilters={setTableFiltersExpanded}
         />
 
       <h2>Missing A11Y Metadata</h2>
