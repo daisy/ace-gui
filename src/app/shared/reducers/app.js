@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+const ace = require('@daisy/ace-core');
 
 import {
   SET_READY,
@@ -29,25 +30,45 @@ export default function app(state = initialState, action) {
       };
     }
     case RUN_ACE: {
-      let epubFilepath = action.payload;
-      let outdir = prepareOutdir(epubFilepath, state.preferences);
-      let messages = state.app.messages;
-      let report = state.app.report;
-      if (outdir.success) {
-        let aceReport = await runAce(epubFilepath, outdir.value); // TODO something like this maybe
-        messages = [...messages, 'Ace check complete']; // TODO might have been an error
-        if (aceReport) report = aceReport;
-      }
-      else {
-        messages = [...messages, outdir.value];
-      }
+      return dispatch => {
+        let ready = false;
+        dispatch({type: SET_READY, ready});
+        let epubFilepath = action.payload;
+        let outdir = prepareOutdir(epubFilepath, state.preferences);
 
-      return {
-        ...state,
-        epubFilepath,
-        messages,
-        report
-      };
+        if (outdir.success) {
+          ace(epubFilepath, {outdir: outdir.value})
+          .then(() => {
+            let messages = [...state.app.messages, 'Ace check complete']);
+            let report = JSON.parse(fs.readFileSync(outdir + '/report.json');
+            let reportFilepath = outdir + '/report.json';
+            ready = true;
+            return {
+              ...state,
+              messages,
+              report,
+              reportFilepath,
+              ready
+            };
+          })
+          .catch(error => { // Ace execution error
+            messages = [...state.app.messages, error]);
+            ready = true;
+            return {
+              ...state,
+              messages,
+              ready
+            };
+          }
+        }
+        else { // error creating outdir (.value has the error message)
+          messages = [...state.app.messages, outdir.value];
+          return {
+            ...state,
+            messages
+          };
+        }
+      }
     }
     case OPEN_REPORT: {
       let report = fs.readFileSync(filepath);
@@ -102,12 +123,4 @@ function prepareOutdir(filepath, prefs) {
     }
   }
   return {success: true, value: outdir};
-}
-
-function runAce(filepath, outdir) {
-  ace(filepath, {outdir})
-  .catch(error => {
-    // TODO
-    console.log("OH NO");
-  });
 }
