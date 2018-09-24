@@ -1,33 +1,12 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-lerna-debug.log
-yarn-debug.log*
-yarn-error.log*
-
-# Build
 node_modules
-build
-dist
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# VS Code files
-.vscode
-
-# Yarn Integrity file
-.yarn-integrity
-
-# OS files
 .DS_Store
-._*
 Thumbs.db
+*.log
 
-dist
-src/package
-src/*.tgz
+/dist
+/temp
+
+# ignore everything in 'app' folder what had been generated from 'src' folder
+/app/app.js
+/app/background.js
+/app/**/*.map

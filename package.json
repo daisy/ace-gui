@@ -1,0 +1,65 @@
+{
+  "name": "ace-gui",
+  "productName": "Ace, by DAISY",
+  "description": "Ace is the EPUB accessibility checker by the DAISY Consortium (desktop application)",
+  "version": "1.0.0-alpha.0",
+  "author": "DAISY Consortium",
+  "homepage": "http://daisy.github.io/ace",
+  "repository": "daisy/ace-gui",
+  "license": "MIT",
+  "main": "app/background.js",
+  "build": {
+    "appId": "org.daisy.ace",
+    "mac": {
+      "category": "my.category"
+    },
+    "asar": "false"
+  },
+  "scripts": {
+    "clean": "rimraf dist && rimraf app/app.js && && rimraf app/background.js",
+    "dist": "webpack --config=build/webpack.app.config.js --env=production && electron-builder",
+    "build": "echo TODO build the app",
+    "start": "node build/start.js",
+    "test": "echo TODO test the app"
+  },
+  "dependencies": {
+    "@daisy/ace-config": "^1.0.0",
+    "@daisy/ace-core": "^1.0.2",
+    "@material-ui/core": "^3.0.0",
+    "@material-ui/icons": "^3.0.0",
+    "electron-redux": "^1.3.1",
+    "fs-jetpack": "^2.1.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "react-select": "^2.0.0",
+    "react-splitter-layout": "^3.0.1",
+    "redux": "^4.0.0",
+    "redux-promise": "^0.6.0",
+    "redux-thunk": "^2.3.0",
+    "tmp": "^0.0.33",
+    "typeface-roboto": "^0.0.54"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
+    "css-loader": "^1.0.0",
+    "electron": "2.0.7",
+    "electron-builder": "^20.28.3",
+    "file-loader": "^2.0.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "node-sass": "^4.9.3",
+    "rimraf": "^2.6.2",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.22.0",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.4",
+    "webpack-merge": "^4.1.3",
+    "webpack-node-externals": "^1.7.2"
+  }
+}
