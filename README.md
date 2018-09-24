@@ -9,6 +9,8 @@ https://github.com/pastahito/electron-react-webpack
 
 ## Work Items
 
+* build
+  - generate `index.html` in the app folder with the Webpack HTML plugin
 * redux
   - add ES6 support to main process
   - there TODOs here related to setting status and error messages related to running Ace
