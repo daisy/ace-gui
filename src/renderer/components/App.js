@@ -25,7 +25,7 @@ export default class App extends React.Component {
             <SidebarContainer/>
             {this.props.report === null ? <Splash/> : <ReportContainer/> }
           </SplitterLayout>
-          <Messages messages={this.props.messages}/>
+          <Messages messages={this.props.messages === undefined ? [] : this.props.messages }/>
         </SplitterLayout>
       </div>
     );

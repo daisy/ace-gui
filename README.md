@@ -11,6 +11,7 @@ https://github.com/pastahito/electron-react-webpack
 
 * build
   - generate `index.html` in the app folder with the Webpack HTML plugin
+  - add unit and e2e test templates
 * broken since redux integration
   - running Ace (it's a thunk experiment, not sure if it's the correct approach)
   - table filters

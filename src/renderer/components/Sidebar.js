@@ -64,7 +64,7 @@ export default class Sidebar extends React.Component {
   };
 
   processInputFile = filepath => {
-    let type = checkType(filepath);
+    let type = Helpers.checkType(filepath);
     if (type == 1) {
       this.props.runAce(filepath);
     }
