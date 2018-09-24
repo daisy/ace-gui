@@ -1,21 +1,19 @@
-import { app, Menu, shell, BrowserWindow, dialog } from 'electron';
+import { app, Menu, shell, dialog } from 'electron';
 import {
-  selectTab,
   runAce,
   openReport,
   closeReport
 } from './../shared/actions/app';
+import {selectTab} from './../shared/actions/reportView';
 
 export default class MenuBuilder {
-  mainWindow: BrowserWindow;
 
-  stateValues: {
-    isReportOpen: false
-  };
-
-  constructor(mainWindow: BrowserWindow, store) {
+  constructor(mainWindow, store) {
     this.mainWindow = mainWindow;
     this.store = store;
+    this.stateValues = {
+      isReportOpen: false
+    };
 
     // listen for when a report is open
     this.store.subscribe(() => {
@@ -27,38 +25,6 @@ export default class MenuBuilder {
       }
     })
   }
-
-  buildMenu() {
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-    ) {
-      this.setupDevelopmentEnvironment();
-    }
-
-    const template = buildTemplate();
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
-
-    return menu;
-  }
-
-  setupDevelopmentEnvironment() {
-    this.mainWindow.openDevTools();
-    this.mainWindow.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
-
-      Menu.buildFromTemplate([
-        {
-          label: 'Inspect element',
-          click: () => {
-            this.mainWindow.inspectElement(x, y);
-          }
-        }
-      ]).popup(this.mainWindow);
-    });
-  }
-
   buildTemplate() {
 
     const defaultTemplate = {
@@ -84,7 +50,7 @@ export default class MenuBuilder {
           }
         ]
       },
-      subMenuViewProd: {
+      subMenuView: {
         label: 'View',
         submenu: [
           {
@@ -236,13 +202,13 @@ export default class MenuBuilder {
     // folders and files, so add an extra menu item so there is one for each type.
     if (process.platform === 'linux' || process.platform === 'win32') {
       // insert item into File submenu
-      this.defaultTemplate.subMenuFile.submenu.unshift({
+      defaultTemplate.subMenuFile.submenu.unshift({
         label: 'Check EPUB Folder ... ',
         click: () => Helpers.showEpubFolderBrowseDialog(filepath => store.dispatch(runAce(filepath)))
       });
 
       // insert item into Help submenu
-      this.defaultTemplate.subMenuHelp.submenu.push(
+      defaultTemplate.subMenuHelp.submenu.push(
         {
           type: 'separator'
         },
@@ -256,7 +222,7 @@ export default class MenuBuilder {
     // missing will have a way to quit the app.
     if (process.platform === 'linux') {
       // File menu (Linux)
-      this.defaultTemplate.subMenuFile.submenu.push({
+      defaultTemplate.subMenuFile.submenu.push({
         label: 'Quit',
         click: () => app.quit()
       });
@@ -266,19 +232,51 @@ export default class MenuBuilder {
 
     let menuTemplate = process.platform === 'darwin' ?
       [
-        subMenuAbout,
-        subMenuFile,
-        subMenuView,
-        subMenuWindow,
-        subMenuHelp
+        defaultTemplate.subMenuAbout,
+        defaultTemplate.subMenuFile,
+        defaultTemplate.subMenuView,
+        defaultTemplate.subMenuWindow,
+        defaultTemplate.subMenuHelp
       ]
       :
       [
-        subMenuFile,
-        subMenuView,
-        subMenuHelp
+        defaultTemplate.subMenuFile,
+        defaultTemplate.subMenuView,
+        defaultTemplate.subMenuHelp
       ];
 
-    return isDev ? menuTemplate.concat(subMenuDev) : menuTemplate;
+    return isDev ? menuTemplate.concat(defaultTemplate.subMenuDev) : menuTemplate;
   }
+
+  setupDevelopmentEnvironment() {
+    this.mainWindow.openDevTools();
+    this.mainWindow.webContents.on('context-menu', (e, props) => {
+      const { x, y } = props;
+
+      Menu.buildFromTemplate([
+        {
+          label: 'Inspect element',
+          click: () => {
+            this.mainWindow.inspectElement(x, y);
+          }
+        }
+      ]).popup(this.mainWindow);
+    });
+  }
+
+  buildMenu() {
+    if (
+      process.env.NODE_ENV === 'development' ||
+      process.env.DEBUG_PROD === 'true'
+    ) {
+      this.setupDevelopmentEnvironment();
+    }
+
+    const template = this.buildTemplate();
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+
+    return menu;
+  }
+
 }

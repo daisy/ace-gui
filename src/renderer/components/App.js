@@ -1,5 +1,6 @@
 import './../styles/App.scss';
 import Messages from './Messages';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReportContainer from './../containers/ReportContainer';
 import SidebarContainer from './../containers/SidebarContainer';
@@ -11,7 +12,7 @@ const path = require('path');
 
 export default class App extends React.Component {
 
-  propTypes = {
+  static props = {
     report: PropTypes.obj,
     messages: PropTypes.array
   };

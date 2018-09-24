@@ -29,7 +29,7 @@ const initialState = {
       "name": {values: [], filterOn: obj => obj}
     },
     "images": {
-      "location": {values: [], filterOn: filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj},
+      "location": {values: [], filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj},
       "role": {values: [], filterOn: obj => obj}
     }
   },
@@ -56,7 +56,7 @@ export default function reportView(state = initialState, action) {
     }
     case SET_TABLE_FILTER_VALUES: {
       let {tableId, filterId, filterValues} = action.payload;
-      let tableFilters = state.filters?;
+      let tableFilters = state.filters;
       if (tableFilters.hasOwnProperty(tableId)) {
         if (tableFilters[tableId].hasOwnProperty(filterId)) {
           tableFilters[tableId][filterId].values = filterValues;
