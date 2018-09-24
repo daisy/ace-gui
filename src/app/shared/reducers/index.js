@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import app from './preferences';
+import app from './app';
 import preferences from './preferences';
-import reportView from './preferences';
+import reportView from './reportView';
 
 export default function getRootReducer(scope = 'main') {
   let reducers = {
