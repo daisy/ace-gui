@@ -28,7 +28,7 @@ export default class Sidebar extends React.Component {
     let filepath = e.dataTransfer.files[0].path;
     console.log(`File dropped ${filepath}`);
     this.setState({fileHover: false});
-    processInputFile(filepath);
+    this.processInputFile(filepath);
     return false;
   };
 
@@ -64,7 +64,7 @@ export default class Sidebar extends React.Component {
   };
 
   processInputFile = filepath => {
-    let type = checkType(filepath);
+    let type = Helpers.checkType(filepath);
     if (type == 1) {
       this.props.runAce(filepath);
     }
@@ -114,9 +114,9 @@ export default class Sidebar extends React.Component {
           {recents.map((recent, idx) =>
             <li key={idx}>
               {ready ?
-              <a onClick={() => openReport(recent.filepath)}>{recent.filepath}</a>
+              <a onClick={() => openReport(recent)}>{recent}</a>
               :
-              <span className="processing">{recent.filepath}</span> }
+              <span className="processing">{recent}</span> }
             </li>
           )}
           </ul>
@@ -125,4 +125,3 @@ export default class Sidebar extends React.Component {
     );
   }
 }
-// <Preferences ready={this.props.ready} preferences={this.props.preferences} onPreferenceChange={this.props.onPreferenceChange}/>

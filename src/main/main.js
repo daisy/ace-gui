@@ -4,8 +4,7 @@ const tmp = require('tmp');
 const ace = require('@daisy/ace-core');
 const { app, BrowserWindow, electron, ipcMain, dialog, shell, clipboard} = require('electron');
 import MenuBuilder from './menu';
-import * as Helpers from "./../shared/helpers";
-const configureStore = require('./../shared/store/configureStore');
+import configureStore from './../shared/store/configureStore';
 import {
   setReady,
   runAce,
@@ -26,7 +25,7 @@ function createWindow() {
   win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
   win.show();
 
-  const menuBuilder = new MenuBuilder(mainWindow, store);
+  const menuBuilder = new MenuBuilder(win, store);
   menuBuilder.buildMenu();
 
   win.loadURL(`file://${__dirname}/index.html`);

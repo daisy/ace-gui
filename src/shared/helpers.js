@@ -25,52 +25,8 @@ module.exports = {
     }
   },
 
-  // a flat list is easier to work with regarding visual presentation
-  createFlatListOfViolations: function(violations) {
-    let flatData = [];
-    let rulesetTags = ['wcag2a', 'wcag2aa', 'EPUB', 'best-practice']; // applicable ruleset tags
-
-    violations.forEach(function(assertion) {
-      let filename = assertion["earl:testSubject"]["url"];
-      let filetitle = assertion["earl:testSubject"]["dct:title"];
-      assertion.assertions.forEach(function(item) {
-        // each item may have multiple ruleset tags from the underlying html checker
-        // narrow it down to one, from our list above, or label as 'other'
-        let applicableRulesetTag = "other";
-        item["earl:test"]["rulesetTags"].forEach(function(tag) {
-          if (rulesetTags.indexOf(tag) != -1) {
-            applicableRulesetTag = tag;
-          }
-        });
-        let cfi = item["earl:result"]["earl:pointer"] ?
-          `#epubcfi(${item["earl:result"]["earl:pointer"]["cfi"]})` : '';
-        let html = item["earl:result"]["html"] ? escape(item["earl:result"]["html"]) : '';
-        let desc = item["earl:result"]["dct:description"];
-        desc = desc.replace("Fix all of the following:", "");
-        desc = desc.replace("Fix any of the following:", "");
-
-        let obj = {
-          "impact": item["earl:test"]["earl:impact"],
-          "rulesetTag": applicableRulesetTag,
-          "rule": {
-            "rule": item["earl:test"]["dct:title"],
-            "engine": item["earl:assertedBy"]
-          },
-          "location": {
-            "filename": `${filename}${cfi}`,
-            "snippet": html
-          },
-          "details": {
-            "kburl": item["earl:test"]["help"]["url"],
-            "kbtitle": item["earl:test"]["help"]["dct:title"],
-            "desc": desc.split("\n").filter(s => s.trim().length > 0)
-          }
-        };
-
-        flatData.push(obj);
-      });
-    });
-    return flatData;
+  createFlatListOfViolations: function(assertions) {
+    return createFlatListOfViolations(assertions);
   },
 
   summarizeViolations: function(assertions) {
@@ -116,12 +72,7 @@ module.exports = {
     let properties = ['openFile', 'openDirectory'];
     let filters = [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}];
     showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
-  },
-
-  runAce: function(onCheckCompleteFunc) {
-
   }
-
 };
 
 function showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc) {
@@ -170,4 +121,52 @@ function collectViolationStats(flatListOfViolations) {
   });
 
   return summaryData;
+}
+
+// a flat list is easier to work with regarding visual presentation
+function createFlatListOfViolations(violations) {
+  let flatData = [];
+  let rulesetTags = ['wcag2a', 'wcag2aa', 'EPUB', 'best-practice']; // applicable ruleset tags
+
+  violations.forEach(function(assertion) {
+    let filename = assertion["earl:testSubject"]["url"];
+    let filetitle = assertion["earl:testSubject"]["dct:title"];
+    assertion.assertions.forEach(function(item) {
+      // each item may have multiple ruleset tags from the underlying html checker
+      // narrow it down to one, from our list above, or label as 'other'
+      let applicableRulesetTag = "other";
+      item["earl:test"]["rulesetTags"].forEach(function(tag) {
+        if (rulesetTags.indexOf(tag) != -1) {
+          applicableRulesetTag = tag;
+        }
+      });
+      let cfi = item["earl:result"]["earl:pointer"] ?
+        `#epubcfi(${item["earl:result"]["earl:pointer"]["cfi"]})` : '';
+      let html = item["earl:result"]["html"] ? escape(item["earl:result"]["html"]) : '';
+      let desc = item["earl:result"]["dct:description"];
+      desc = desc.replace("Fix all of the following:", "");
+      desc = desc.replace("Fix any of the following:", "");
+
+      let obj = {
+        "impact": item["earl:test"]["earl:impact"],
+        "rulesetTag": applicableRulesetTag,
+        "rule": {
+          "rule": item["earl:test"]["dct:title"],
+          "engine": item["earl:assertedBy"]
+        },
+        "location": {
+          "filename": `${filename}${cfi}`,
+          "snippet": html
+        },
+        "details": {
+          "kburl": item["earl:test"]["help"]["url"],
+          "kbtitle": item["earl:test"]["help"]["dct:title"],
+          "desc": desc.split("\n").filter(s => s.trim().length > 0)
+        }
+      };
+
+      flatData.push(obj);
+    });
+  });
+  return flatData;
 }

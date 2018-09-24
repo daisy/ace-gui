@@ -8,9 +8,9 @@ const mapStateToProps = state => {
   let {app: {report}, reportView: {filters, sort, pagination}} = state;
   return {
     violations: createFlatListOfViolations(report.assertions),
-    filters: filters.hasOwnProperty('violations') ? filters['violations'] : {},
-    pagination: pagination.hasOwnProperty('violations') ? pagination['violations'] : {},
-    sort: sort.hasOwnProperty('violations') ? sort['violations'] : {},
+    filters: filters['violations'],
+    pagination: pagination['violations'],
+    sort: sort['violations'],
   };
 };
 

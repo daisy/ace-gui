@@ -9,7 +9,7 @@ export default class Violations extends React.Component {
 
   static propTypes = {
     violations: PropTypes.array.isRequired,
-    filters: PropTypes.array,
+    filters: PropTypes.object,
     pagination: PropTypes.object,
     sort: PropTypes.object,
     setTableSort: PropTypes.func,
@@ -22,8 +22,8 @@ export default class Violations extends React.Component {
   render() {
     let {violations,
       filters,
-      pagination: {page, rowsPerPage},
-      sort: {order, orderBy},
+      pagination,
+      sort,
       setTableSort,
       setTableFilterValues,
       setTablePagination} = this.props;
@@ -35,6 +35,7 @@ export default class Violations extends React.Component {
         numeric: false,
         sortable: true,
         sortOn: impact => impactOrder.indexOf(impact),
+        filterOn: obj => obj,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="impact">
             <span className={row.impact}>{row.impact}</span>
@@ -45,6 +46,7 @@ export default class Violations extends React.Component {
         label: "Ruleset",
         numeric: false,
         sortable: true,
+        filterOn: obj => obj,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="ruleset">{row.rulesetTag}</TableCell>
       },
@@ -54,6 +56,7 @@ export default class Violations extends React.Component {
         numeric: false,
         sortable: true,
         sortOn: rule => rule.rule,
+        filterOn: obj => obj.rule,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="rule">
             <p>{row.rule.rule}</p>
@@ -66,6 +69,7 @@ export default class Violations extends React.Component {
         numeric: false,
         sortable: true,
         sortOn: location => location.filename,
+        filterOn: obj => obj.filename.indexOf('#') > 0 ? obj.filename.slice(0, obj.filename.indexOf('#')) : obj.filename,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="location">
             <p><code>{row.location.filename}</code></p>
@@ -97,7 +101,7 @@ export default class Violations extends React.Component {
       <section className="report-section violations">
         <h2>Violations</h2>
         <EnhancedTable
-          rows={rows}
+          rows={violations}
           heads={heads}
           id={'violations'}
           isPaginated={true}
@@ -108,7 +112,7 @@ export default class Violations extends React.Component {
           onFilter={setTableFilterValues}
           onChangePagination={setTablePagination}
           />
-        {rows.length == 0 ? <p>No violations reported.</p> : ''}
+        {violations.length == 0 ? <p>No violations reported.</p> : ''}
       </section>
     );
   }

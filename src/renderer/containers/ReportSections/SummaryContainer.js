@@ -5,8 +5,8 @@ import {summarizeViolations} from "./../../../shared/helpers";
 
 const mapStateToProps = state => {
   let {app: {report}} = state;
-  let summary = "violationSummary" in report ?
-      report.violationSummary : summarizeViolations(report.assertions);
+  let summary = report === null ? {} : ("violationSummary" in report ?
+      report.violationSummary : summarizeViolations(report.assertions));
 
   return { summary };
 };

@@ -1,62 +1,53 @@
-import { app, Menu, shell, BrowserWindow, dialog } from 'electron';
+import { app, Menu, shell, dialog, clipboard } from 'electron';
 import {
-  selectTab,
   runAce,
   openReport,
   closeReport
 } from './../shared/actions/app';
-
+import {selectTab} from './../shared/actions/reportView';
+import * as Helpers from './../shared/helpers';
 export default class MenuBuilder {
-  mainWindow: BrowserWindow;
 
-  stateValues: {
-    isReportOpen: false
-  };
-
-  constructor(mainWindow: BrowserWindow, store) {
+  constructor(mainWindow, store) {
     this.mainWindow = mainWindow;
     this.store = store;
+    this.stateValues = {
+      isReportOpen: false,
+      ready: true
+    };
 
     // listen for when a report is open
     this.store.subscribe(() => {
-      let currVal = this.stateValues.isReportOpen;
-      let newVal = this.store.getState().app.report != null;
-      if (currVal != newVal) {
-        this.stateValues.isReportOpen = newVal;
-        refreshMenuItemsEnabled();
+      let currIsReportOpen = this.stateValues.isReportOpen;
+      let newIsReportOpen = this.store.getState().app.report != null;
+      let currReady = this.stateValues.ready;
+      let newReady = this.store.getState().app.ready;
+      if (currIsReportOpen != newIsReportOpen || currReady == newReady) {
+        this.stateValues = {
+          isReportOpen: newIsReportOpen,
+          ready: newReady
+        };
+        this.refreshMenuItemsEnabled();
       }
     })
   }
-
-  buildMenu() {
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-    ) {
-      this.setupDevelopmentEnvironment();
-    }
-
-    const template = buildTemplate();
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
-
-    return menu;
+  refreshMenuItemsEnabled() {
+    let {isReportOpen, ready} = this.stateValues;
+    this.setMenuItemsEnabled(["checkEpub", "openReport"], ready);
+    this.setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
+      "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], isReportOpen);
   }
-
-  setupDevelopmentEnvironment() {
-    this.mainWindow.openDevTools();
-    this.mainWindow.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
-
-      Menu.buildFromTemplate([
-        {
-          label: 'Inspect element',
-          click: () => {
-            this.mainWindow.inspectElement(x, y);
-          }
-        }
-      ]).popup(this.mainWindow);
-    });
+  getMenuItem(id) {
+    let menu = Menu.getApplicationMenu();
+    return menu.getMenuItemById(id);
+  }
+  // set many menu items at once
+  setMenuItemsEnabled(ids, enabled) {
+    for (let idx=0; idx < ids.length; idx+=1) {
+      if (this.getMenuItem(ids[idx])) {
+        this.getMenuItem(ids[idx]).enabled = enabled;
+      }
+    }
   }
 
   buildTemplate() {
@@ -67,6 +58,7 @@ export default class MenuBuilder {
         submenu: [
           {
             label: 'Check EPUB...',
+            id: 'checkEpub',
             accelerator: 'CmdOrCtrl+O',
             click: () => process.platform == 'darwin' ?
               Helpers.showEpubFileOrFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
@@ -75,16 +67,18 @@ export default class MenuBuilder {
           },
           {
             label: 'Open Report...',
+            id: 'openReport',
             click: () => Helpers.showReportFileBrowseDialog(filepath => this.store.dispatch(openReport(filepath)))
           },
           {
             label: 'Close Report',
+            id: 'closeReport',
             accelerator: 'CmdOrCtrl+Shift+C',
             click: () => this.store.dispatch(closeReport())
           }
         ]
       },
-      subMenuViewProd: {
+      subMenuView: {
         label: 'View',
         submenu: [
           {
@@ -100,26 +94,31 @@ export default class MenuBuilder {
           },
           {
             label: 'Go to Summary',
+            id: 'gotoSummary',
             accelerator: 'CmdOrCtrl+Shift+S',
             click: () => this.store.dispatch(selectTab(0))
           },
           {
             label: 'Go to Violations',
+            id: 'gotoViolations',
             accelerator: 'CmdOrCtrl+Shift+V',
             click: () => this.store.dispatch(selectTab(1))
           },
           {
             label: 'Go to Metadata',
+            id: 'gotoMetadata',
             accelerator: 'CmdOrCtrl+Shift+M',
             click: () => this.store.dispatch(selectTab(2))
           },
           {
             label: 'Go to Outlines',
+            id: 'gotoOutlines',
             accelerator: 'CmdOrCtrl+Shift+O',
             click: () => this.store.dispatch(selectTab(3))
           },
           {
             label: 'Go to Images',
+            id: 'gotoImages',
             accelerator: 'CmdOrCtrl+Shift+I',
             click: () => this.store.dispatch(selectTab(4))
           },
@@ -128,6 +127,7 @@ export default class MenuBuilder {
           },
           {
             label: process.platform == 'darwin' ? 'Show in Finder' : 'Show in Explorer',
+            id: 'showInFinder',
             accelerator: 'CmdOrCtrl+Shift+F',
             click: () => shell.showItemInFolder(this.store.getState().app.reportFilepath)
           }
@@ -167,7 +167,7 @@ export default class MenuBuilder {
           {
             label: 'Copy Message Output',
             click: () => {
-              let messages = this.getState().app.messages;
+              let messages = this.store.getState().app.messages;
               let msgstr = messages.join('\n');
               clipboard.writeText(msgstr);
             }
@@ -236,13 +236,13 @@ export default class MenuBuilder {
     // folders and files, so add an extra menu item so there is one for each type.
     if (process.platform === 'linux' || process.platform === 'win32') {
       // insert item into File submenu
-      this.defaultTemplate.subMenuFile.submenu.unshift({
+      defaultTemplate.subMenuFile.submenu.unshift({
         label: 'Check EPUB Folder ... ',
         click: () => Helpers.showEpubFolderBrowseDialog(filepath => store.dispatch(runAce(filepath)))
       });
 
       // insert item into Help submenu
-      this.defaultTemplate.subMenuHelp.submenu.push(
+      defaultTemplate.subMenuHelp.submenu.push(
         {
           type: 'separator'
         },
@@ -256,7 +256,7 @@ export default class MenuBuilder {
     // missing will have a way to quit the app.
     if (process.platform === 'linux') {
       // File menu (Linux)
-      this.defaultTemplate.subMenuFile.submenu.push({
+      defaultTemplate.subMenuFile.submenu.push({
         label: 'Quit',
         click: () => app.quit()
       });
@@ -266,19 +266,51 @@ export default class MenuBuilder {
 
     let menuTemplate = process.platform === 'darwin' ?
       [
-        subMenuAbout,
-        subMenuFile,
-        subMenuView,
-        subMenuWindow,
-        subMenuHelp
+        defaultTemplate.subMenuAbout,
+        defaultTemplate.subMenuFile,
+        defaultTemplate.subMenuView,
+        defaultTemplate.subMenuWindow,
+        defaultTemplate.subMenuHelp
       ]
       :
       [
-        subMenuFile,
-        subMenuView,
-        subMenuHelp
+        defaultTemplate.subMenuFile,
+        defaultTemplate.subMenuView,
+        defaultTemplate.subMenuHelp
       ];
 
-    return isDev ? menuTemplate.concat(subMenuDev) : menuTemplate;
+    return isDev ? menuTemplate.concat(defaultTemplate.subMenuDev) : menuTemplate;
   }
+
+  setupDevelopmentEnvironment() {
+    this.mainWindow.openDevTools();
+    this.mainWindow.webContents.on('context-menu', (e, props) => {
+      const { x, y } = props;
+
+      Menu.buildFromTemplate([
+        {
+          label: 'Inspect element',
+          click: () => {
+            this.mainWindow.inspectElement(x, y);
+          }
+        }
+      ]).popup(this.mainWindow);
+    });
+  }
+
+  buildMenu() {
+    if (
+      process.env.NODE_ENV === 'development' ||
+      process.env.DEBUG_PROD === 'true'
+    ) {
+      this.setupDevelopmentEnvironment();
+    }
+
+    const template = this.buildTemplate();
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+    this.refreshMenuItemsEnabled();
+    return menu;
+  }
+
 }

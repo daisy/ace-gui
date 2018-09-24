@@ -1,19 +1,21 @@
 import './../styles/App.scss';
-import Messages from './Messages';
+
+import MessagesContainer from './../containers/MessagesContainer';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReportContainer from './../containers/ReportContainer';
 import SidebarContainer from './../containers/SidebarContainer';
 import Splash from './Splash';
 import SplitterLayout from 'react-splitter-layout';
+
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
 const path = require('path');
 
 export default class App extends React.Component {
 
-  propTypes = {
-    report: PropTypes.obj,
-    messages: PropTypes.array
+  static props = {
+    report: PropTypes.obj
   };
 
   render() {
@@ -24,7 +26,7 @@ export default class App extends React.Component {
             <SidebarContainer/>
             {this.props.report === null ? <Splash/> : <ReportContainer/> }
           </SplitterLayout>
-          <Messages messages={this.props.messages}/>
+          <MessagesContainer/>
         </SplitterLayout>
       </div>
     );

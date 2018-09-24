@@ -9,16 +9,17 @@ export default class Images extends React.Component {
 
   static propTypes = {
     images: PropTypes.array.isRequired,
-    filters: PropTypes.array,
+    filters: PropTypes.object,
     pagination: PropTypes.object,
     sort: PropTypes.object,
     setTableSort: PropTypes.func,
     setTableFilterValues: PropTypes.func,
     setTablePagination: PropTypes.func,
+    reportFilepath: PropTypes.string
   };
 
   render() {
-    let {images, filters, pagination, sort, setTableSort, setTableFilterValues, setTablePagination} = this.props;
+    let {images, filters, pagination, sort, setTableSort, setTableFilterValues, setTablePagination, reportFilepath} = this.props;
 
     const heads = [
       {
@@ -58,6 +59,7 @@ export default class Images extends React.Component {
         label: 'Location',
         numeric: false,
         sortable: true,
+        filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="location"><pre>{row.location}</pre></TableCell>
       },
@@ -66,6 +68,7 @@ export default class Images extends React.Component {
         label: 'Role',
         numeric: false,
         sortable: true,
+        filterOn: obj => obj,
         makeCell: (row, idx) =>
           <TableCell key={idx}>{row.role ? row.role : "N/A"}</TableCell>
       }
@@ -87,7 +90,7 @@ export default class Images extends React.Component {
           onFilter={setTableFilterValues}
           onChangePagination={setTablePagination}
           />
-          {rows.length == 0 ? <p>No images encountered in this publication.</p> : ''}
+          {images.length == 0 ? <p>No images encountered in this publication.</p> : ''}
       </section>
     );
   }

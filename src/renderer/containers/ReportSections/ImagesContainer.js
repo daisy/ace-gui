@@ -4,12 +4,13 @@ import Images from './../../components/ReportSections/Images';
 import * as ReportViewActions from './../../../shared/actions/reportView';
 
 const mapStateToProps = state => {
-  let {app: {report}, reportView: {filters, sort, pagination}} = state;
+  let {app: {report, reportFilepath}, reportView: {filters, sort, pagination}} = state;
   return {
     images: report.data.images == undefined ? [] : report.data.images,
-    filters: filters.hasOwnProperty('images') ? filters['images'] : {},
-    pagination: pagination.hasOwnProperty('images') ? pagination['images'] : {},
-    sort: sort.hasOwnProperty('images') ? sort['images'] : {},
+    filters: filters['images'],
+    pagination: pagination['images'],
+    sort: sort['images'],
+    reportFilepath
   };
 };
 

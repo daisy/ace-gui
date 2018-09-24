@@ -11,10 +11,10 @@ https://github.com/pastahito/electron-react-webpack
 
 * build
   - generate `index.html` in the app folder with the Webpack HTML plugin
-* redux
-  - add ES6 support to main process
-  - there TODOs here related to setting status and error messages related to running Ace
-  - also plenty of TODOs here as this redux code is largely untested
+  - add unit and e2e test templates
+* broken since redux integration
+  - running Ace (it's a thunk experiment, not sure if it's the correct approach)
+  - table filters
 * messages window
   - scroll to bottom
   - use aria-live regions?
