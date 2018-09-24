@@ -31,48 +31,6 @@ export default function app(state = initialState, action) {
           ready
       };
     }
-    case RUN_ACE: {
-      return dispatch => {
-        let ready = false;
-        dispatch({type: SET_READY, ready});
-        dispatch({type: ADD_MESSAGE, payload: `Running Ace on ${action.payload}`});
-        let epubFilepath = action.payload;
-        let outdir = prepareOutdir(epubFilepath, state.preferences);
-
-        if (outdir.success) {
-          ace(epubFilepath, {outdir: outdir.value})
-          .then(() => {
-            let messages = [...state.messages, 'Ace check complete'];
-            let report = JSON.parse(fs.readFileSync(outdir + '/report.json')); // TODO error handling for parsing
-            let reportFilepath = outdir + '/report.json';
-            ready = true;
-            return {
-              ...state,
-              messages,
-              report,
-              reportFilepath,
-              ready
-            };
-          })
-          .catch(error => { // Ace execution error
-            let messages = [...state.messages, error];
-            ready = true;
-            return {
-              ...state,
-              messages,
-              ready
-            };
-          })
-        }
-        else { // error creating outdir (.value has the error message)
-          let messages = [...state.messages, outdir.value];
-          return {
-            ...state,
-            messages
-          };
-        }
-      }
-    }
     case OPEN_REPORT: {
       try {
         let report = JSON.parse(fs.readFileSync(action.payload));
@@ -121,22 +79,4 @@ export default function app(state = initialState, action) {
 function addToRecents(filepath, recents) {
   return (recents.indexOf(filepath) == -1) ?
     [...recents, filepath] : recents;
-}
-
-function prepareOutdir(filepath, prefs) {
-  let outdir = prefs.outdir;
-  if (prefs.organize) {
-    outdir = path.join(outdir, path.parse(filepath).name);
-  }
-  if (!prefs.overwrite) {
-    const overrides = ['report.json', 'report.html', 'data', 'js']
-      .map(file => path.join(outdir, file))
-      .filter(fs.existsSync);
-    if (overrides.length > 0) {
-      let msg = `Output directory is not empty. Running Ace would overwrite the following files or directories:
-      ${overrides.map(file => `  - ${file}`).join('\n')}. Enable the option 'Overwrite' to allow this.`;
-      return {success: false, value: msg};
-    }
-  }
-  return {success: true, value: outdir};
 }
