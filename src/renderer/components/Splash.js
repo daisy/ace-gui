@@ -10,7 +10,7 @@ export default class Splash extends React.Component {
         <div className="splash">
           <h1>Ace, by DAISY</h1>
 
-          <img src={`../${AceLogo}`}/>
+          <img src={`${AceLogo}`}/>
           <p>EPUB Accessibility Checker</p>
         </div>
     );
