@@ -1,4 +1,4 @@
-import App from './components/App'
+import AppContainer from './containers/AppContainer'
 import { Provider } from 'react-redux';
 import { getInitialStateRenderer } from 'electron-redux';
 import React from 'react'
@@ -11,7 +11,7 @@ const store = configureStore(initialState, 'renderer');
 
 render(
   <Provider store={store}>
-    <App />
+    <AppContainer />
   </Provider>,
   document.getElementById('react-root')
 );

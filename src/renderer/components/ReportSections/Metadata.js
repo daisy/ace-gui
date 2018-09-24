@@ -7,9 +7,9 @@ import TableCell from '@material-ui/core/TableCell';
 export default class Metadata extends React.Component {
 
   static propTypes = {
-    metadata: PropTypes.object.isRequired,
+    metadata: PropTypes.array.isRequired,
     a11ymetadata: PropTypes.object.isRequired,
-    filters: PropTypes.array,
+    filters: PropTypes.object,
     pagination: PropTypes.object,
     sort: PropTypes.object,
     setTableSort: PropTypes.func,
@@ -27,6 +27,7 @@ export default class Metadata extends React.Component {
         label: "Name",
         numeric: false,
         sortable: true,
+        filterOn: obj => obj,
         makeCell: (row, idx) =>
           <TableCell key={idx}>
             {row.name}

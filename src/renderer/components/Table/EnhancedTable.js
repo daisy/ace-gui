@@ -69,7 +69,7 @@ export default class EnhancedTable extends React.Component {
     rows: PropTypes.array.isRequired,
     isPaginated: PropTypes.bool.isRequired,
 
-    filters: PropTypes.bool.isRequired,
+    filters: PropTypes.object.isRequired,
     sort: PropTypes.object.isRequired,
     pagination: PropTypes.object.isRequired,
 
@@ -79,11 +79,13 @@ export default class EnhancedTable extends React.Component {
   };
 
   state = {
-    filters: this.props.filters.map(filter => ({
-      ...filter,
+    filters: Object.keys(this.props.filters).map(key => ({
+      ...this.props.filters[key],
+      id: key,
       options: this.props.rows.reduce(
         (uniqueValues, row) => {
-          let rowValue = filter.filterOn(row[field.name]);
+          let head = this.props.heads.find(h => h.id === key);
+          let rowValue = head.filterOn(row[key]);
           return rowValue != null && uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
         },
       [])
@@ -103,13 +105,13 @@ export default class EnhancedTable extends React.Component {
   };
 
   onChangePage = (event, page) => {
-    let {onChangePage, pagination} = this.props;
-    onChangePagination(this.props.id, {...pagination, page: page});
+    let {onChangePagination, pagination} = this.props;
+    onChangePagination(this.props.id, {rowsPerPage: pagination.rowsPerPage, page: page});
   };
 
   onChangeRowsPerPage = event => {
     let {onChangePagination, pagination} = this.props;
-    onChangePagination(this.props.id, {...pagination, rowsPerPage: event.target.value});
+    onChangePagination(this.props.id, {page: pagination.page, rowsPerPage: event.target.value});
   };
 
   onChangeFilter = (id, values, {action, removedValue}) => {
@@ -140,12 +142,12 @@ export default class EnhancedTable extends React.Component {
     let {rows} = this.props;
     let {filters} = this.state;
     filters.forEach(filter => {
-      if (filter.selections.length > 0) {
+      if (filter.values.length > 0) {
         rows = rows.reduce((filteredRows, row) => {
           // the row property values might be strings or objects, so run the filterOn function to get the
           // value the filter is based on
           let rowValue = filter.filterOn(row[filter.id]);
-          if (filter.selections.find(sel => sel.value == rowValue)) {
+          if (filter.values.find(sel => sel.value == rowValue)) {
             return filteredRows.concat(row);
           }
           else {

@@ -12,25 +12,17 @@ const initialState = {
   filters:
   {
     "violations": {
-      "impact": {
-        values: [],
-        filterOn: obj => obj},
-      "rulesetTag": {
-        values: [],
-        filterOn: obj => obj},
-      "rule": {
-        values: [],
-        filterOn: obj => obj.rule},
-      "location": {
-        values: [],
-        filterOn: obj => obj.filename.indexOf('#') > 0 ? obj.filename.slice(0, obj.filename.indexOf('#')) : obj.filename}
+      "impact": {values: []},
+      "rulesetTag": {values: []},
+      "rule": {values: []},
+      "location": {values: []}
     },
     "metadata": {
-      "name": {values: [], filterOn: obj => obj}
+      "name": {values: []}
     },
     "images": {
-      "location": {values: [], filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj},
-      "role": {values: [], filterOn: obj => obj}
+      "location": {values: []},
+      "role": {values: []}
     }
   },
 
@@ -42,6 +34,7 @@ const initialState = {
 
   pagination: {
     "violations": {page: 0, rowsPerPage: 5},
+    "metadata": {page: 0, rowsPerPage: 5},
     "images": {page: 0, rowsPerPage: 5}
   }
 };
@@ -62,25 +55,25 @@ export default function reportView(state = initialState, action) {
           tableFilters[tableId][filterId].values = filterValues;
           return {
             ...state,
-            tableFilters
+            filters: tableFilters
           };
         }
       }
       return state;
     }
     case SET_TABLE_SORT: {
-      let {tableId, order, orderBy} = action.payload;
+      let {tableId, sort: {order, orderBy}} = action.payload;
       let sort = state.sort;
-      tableSort[tableId] = {order, orderBy};
+      sort[tableId] = {order, orderBy};
       return {
         ...state,
         sort
       };
     }
     case SET_TABLE_PAGINATION: {
-      let {tableId, tablePagination} = action.payload;
+      let {tableId, pagination: {page, rowsPerPage}} = action.payload;
       let pagination = state.pagination;
-      pagination[tableId] = tablePagination;
+      pagination[tableId] = {page, rowsPerPage};
       return {
         ...state,
         pagination

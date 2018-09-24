@@ -5,7 +5,7 @@ const path = require('path');
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PreferencesContainer from './../containers/PreferencesContainer';
 import './../styles/Sidebar.scss';
-import * as Helpers from "./../../shared/helpers";
+import {checkType} from "./../../shared/helpers";
 const {dialog} = require('electron').remote;
 
 // the sidebar
@@ -28,7 +28,7 @@ export default class Sidebar extends React.Component {
     let filepath = e.dataTransfer.files[0].path;
     console.log(`File dropped ${filepath}`);
     this.setState({fileHover: false});
-    processInputFile(filepath);
+    this.processInputFile(filepath);
     return false;
   };
 

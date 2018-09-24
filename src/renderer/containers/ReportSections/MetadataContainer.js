@@ -25,9 +25,9 @@ const mapStateToProps = state => {
   return {
     metadata: rows,
     a11ymetadata: a11ymeta,
-    filters: filters.hasOwnProperty('metadata') ? filters['metadata'] : {},
-    pagination: pagination.hasOwnProperty('metadata') ? pagination['metadata'] : {},
-    sort: sort.hasOwnProperty('metadata') ? sort['metadata'] : {},
+    filters: filters['metadata'],
+    pagination: pagination['metadata'],
+    sort: sort['metadata'],
   };
 };
 

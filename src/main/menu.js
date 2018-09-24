@@ -5,7 +5,7 @@ import {
   closeReport
 } from './../shared/actions/app';
 import {selectTab} from './../shared/actions/reportView';
-
+import * as Helpers from './../shared/helpers';
 export default class MenuBuilder {
 
   constructor(mainWindow, store) {
@@ -21,7 +21,7 @@ export default class MenuBuilder {
       let newVal = this.store.getState().app.report != null;
       if (currVal != newVal) {
         this.stateValues.isReportOpen = newVal;
-        refreshMenuItemsEnabled();
+        // TODO refreshMenuItemsEnabled();
       }
     })
   }

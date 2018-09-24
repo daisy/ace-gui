@@ -11,10 +11,12 @@ https://github.com/pastahito/electron-react-webpack
 
 * build
   - generate `index.html` in the app folder with the Webpack HTML plugin
-* redux
-  - add ES6 support to main process
-  - there TODOs here related to setting status and error messages related to running Ace
-  - also plenty of TODOs here as this redux code is largely untested
+* broken since redux integration
+  - running Ace (it's a thunk experiment, not sure if it's the correct approach)
+  - table filters
+  - recents list
+  - help->copy message output
+* enable/disable menu items based on state
 * messages window
   - scroll to bottom
   - use aria-live regions?

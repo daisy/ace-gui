@@ -4,7 +4,6 @@ const tmp = require('tmp');
 const ace = require('@daisy/ace-core');
 const { app, BrowserWindow, electron, ipcMain, dialog, shell, clipboard} = require('electron');
 import MenuBuilder from './menu';
-import * as Helpers from "./../shared/helpers";
 import configureStore from './../shared/store/configureStore';
 import {
   setReady,
