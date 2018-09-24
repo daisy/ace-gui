@@ -114,39 +114,28 @@ export default class EnhancedTable extends React.Component {
     onChangePagination(this.props.id, {page: pagination.page, rowsPerPage: event.target.value});
   };
 
+  // values is an array formatted like each option is formatted {value: '', label: ''}
   onChangeFilter = (id, values, {action, removedValue}) => {
-    let {onFilter} = this.props;
-    // long-winded but trying not to upset react state
+    // the state doesn't get recalculated on render
+    // so either we could be really clever or just set it manually here:
     let filters = this.state.filters;
-    let filter = filters.find(filter => filter.id == id);
-    let filterIdx = filters.indexOf(filter);
-    let filterValues = filter.values;
-
-    if (action == "select-option") {
-      console.log(`Filter [${id}]: adding criteria`);
-      filterValues = values;
-
-    }
-    else if (action == "remove-value") {
-      console.log(`Filter [${id}]: removing criteria`);
-      filterValues = values;
-    }
-    else if (action == "clear") {
-      console.log(`Filter [${id}]: clear`);
-      filterValues = [];
-    }
-    onFilter(this.props.id, id, filterValues);
+    let filter = filters.find(f=>f.id == id);
+    filter.values = values;
+    filters[id] = filter;
+    this.setState({filters});
+    this.props.onFilter(this.props.id, id, values);
   };
 
   filterRows() {
-    let {rows} = this.props;
+    let {rows, heads} = this.props;
     let {filters} = this.state;
     filters.forEach(filter => {
       if (filter.values.length > 0) {
         rows = rows.reduce((filteredRows, row) => {
           // the row property values might be strings or objects, so run the filterOn function to get the
           // value the filter is based on
-          let rowValue = filter.filterOn(row[filter.id]);
+          let head = heads.find(h=>h.id == filter.id);
+          let rowValue = head.filterOn(row[filter.id]);
           if (filter.values.find(sel => sel.value == rowValue)) {
             return filteredRows.concat(row);
           }
@@ -161,7 +150,7 @@ export default class EnhancedTable extends React.Component {
 
   render() {
     const { heads, isPaginated, pagination: {rowsPerPage, page}, sort: {order, orderBy} } = this.props;
-    const {filters} = this.state;
+    const {filters, rows} = this.state;
     const filteredRows = this.filterRows();
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
