@@ -72,10 +72,13 @@ export default class EnhancedTable extends React.Component {
     filters: PropTypes.object.isRequired,
     sort: PropTypes.object.isRequired,
     pagination: PropTypes.object.isRequired,
+    expandFilters: PropTypes.bool.isRequired,
 
     onSort: PropTypes.func.isRequired,
     onFilter: PropTypes.func.isRequired,
     onChangePagination: PropTypes.func.isRequired,
+
+    onExpandFilters: PropTypes.func.isRequired
   };
 
   state = {
@@ -126,6 +129,10 @@ export default class EnhancedTable extends React.Component {
     this.props.onFilter(this.props.id, id, values);
   };
 
+  onChangeExpanded = (expanded) => {
+    this.props.onExpandFilters(this.props.id, expanded);
+  }
+
   filterRows() {
     let {rows, heads} = this.props;
     let {filters} = this.state;
@@ -149,7 +156,7 @@ export default class EnhancedTable extends React.Component {
   }
 
   render() {
-    const { heads, isPaginated, pagination: {rowsPerPage, page}, sort: {order, orderBy} } = this.props;
+    const { heads, isPaginated, pagination: {rowsPerPage, page}, sort: {order, orderBy}, expandFilters } = this.props;
     const {filters, rows} = this.state;
     const filteredRows = this.filterRows();
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
@@ -157,12 +164,15 @@ export default class EnhancedTable extends React.Component {
     return (
       <div>
       {filters.length > 0 ?
-        <ExpansionPanel className="table-filters-panel" classes={{expanded: 'expanded'}}>
+        <ExpansionPanel
+          className="table-filters-panel"
+          expanded={expandFilters}
+          classes={{expanded: 'expanded'}}
+          onChange={(e, v) => this.onChangeExpanded(v)}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>Filter by</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className="table-filters">
-
             {filters.map((filter, idx) =>
               <Select
                 key={idx}
@@ -174,10 +184,10 @@ export default class EnhancedTable extends React.Component {
                 isMulti={true}
                 placeholder={heads.find(head => head.id == filter.id).label}
                 isSearchable={true}
-              />)}
-
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+              />
+            )}
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
       : ''}
       <Table>
         <TableHead>
