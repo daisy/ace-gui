@@ -39,7 +39,7 @@ export default function app(state = initialState, action) {
         if (outdir.success) {
           ace(epubFilepath, {outdir: outdir.value})
           .then(() => {
-            let messages = [...state.app.messages, 'Ace check complete']);
+            let messages = [...state.messages, 'Ace check complete']);
             let report = JSON.parse(fs.readFileSync(outdir + '/report.json');
             let reportFilepath = outdir + '/report.json';
             ready = true;
@@ -52,7 +52,7 @@ export default function app(state = initialState, action) {
             };
           })
           .catch(error => { // Ace execution error
-            messages = [...state.app.messages, error]);
+            messages = [...state.messages, error]);
             ready = true;
             return {
               ...state,
@@ -62,7 +62,7 @@ export default function app(state = initialState, action) {
           }
         }
         else { // error creating outdir (.value has the error message)
-          messages = [...state.app.messages, outdir.value];
+          messages = [...state.messages, outdir.value];
           return {
             ...state,
             messages
@@ -80,7 +80,7 @@ export default function app(state = initialState, action) {
       };
     }
     case CLOSE_REPORT: {
-      let recents = addToRecents(state.app.reportFilepath, state.app.recents);
+      let recents = addToRecents(state.reportFilepath, state.recents);
       let reportFilepath = '';
       let report = null;
       return {
@@ -91,7 +91,7 @@ export default function app(state = initialState, action) {
       };
     }
     case ADD_MESSAGE: {
-      let messages = [...state.app.messages, action.payload];
+      let messages = [...state.messages, action.payload];
       return {
         ...state,
         messages
