@@ -2,18 +2,13 @@
 
 A desktop GUI for Ace, the EPUB accessibility checker by the [DAISY Consortium](daisy.org).
 
-# Development Notes
+## Development Notes
 
-This was started from this boilerplate project:
-https://github.com/pastahito/electron-react-webpack
-
-## Work Items
+### Work Items
 
 * build
   - generate `index.html` in the app folder with the Webpack HTML plugin
   - add unit and e2e test templates
-* broken since redux integration
-  - running Ace (it's a thunk experiment, not sure if it's the correct approach)
 * messages window
   - scroll to bottom
   - use aria-live regions?
@@ -28,14 +23,14 @@ https://github.com/pastahito/electron-react-webpack
 
 * implementing style with HoC seems popular in material-ui ... consider it for the tables at least
 
-## Polishing
+### Polishing
 
 * default prefs location + outdir should be app data dir
 * overall wording and layout review
   - are there too many heading elements?
   - should we use material-ui drawers anywhere/everywhere?
 
-# Limitations
+### Limitations
 
 * Open file vs directory behavior: https://github.com/electron/electron/blob/master/docs/api/dialog.md#dialogshowopendialogbrowserwindow-options-callback
 * Dynamic menu support missing in electron
