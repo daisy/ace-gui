@@ -1,6 +1,6 @@
 {
   "name": "ace-gui",
-  "productName": "Ace, by DAISY",
+  "productName": "Ace by DAISY",
   "description": "Ace is the EPUB accessibility checker by the DAISY Consortium (desktop application)",
   "version": "1.0.0-alpha.0",
   "author": "DAISY Consortium",
@@ -11,14 +11,19 @@
   "build": {
     "appId": "org.daisy.ace",
     "mac": {
-      "category": "my.category"
+      "category": "my.category",
+      "icon": "build/icons/ace.icns"
     },
-    "asar": "false"
+    "win": {
+      "icon": "build/icons/ace.ico"
+    },
+    "asar": false
   },
   "scripts": {
     "clean": "rimraf dist && rimraf app/app.js && && rimraf app/background.js",
     "dist": "webpack --config=build/webpack.app.config.js --env=production && electron-builder",
     "build": "echo TODO build the app",
+    "postinstall": "electron-builder install-app-deps",
     "start": "node build/start.js",
     "test": "echo TODO test the app"
   },
