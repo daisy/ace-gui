@@ -44,7 +44,7 @@ app.on('window-all-closed', function () {
   /*if (process.platform !== 'darwin') {
       quit();
   }*/
-  quit();
+  app.quit();
 });
 
 app.on('activate', function () {

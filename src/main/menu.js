@@ -247,7 +247,7 @@ export default class MenuBuilder {
           type: 'separator'
         },
         {
-          label: 'About ' + appName,
+          label: 'About Ace',
           click: () => dialog.showMessageBox({"message": "Ace Beta", "detail": "DAISY Consortium 2018"})
         }
       );
