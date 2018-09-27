@@ -1,8 +1,8 @@
 {
   "name": "ace-gui",
   "productName": "Ace by DAISY",
-  "description": "Ace is the EPUB accessibility checker by the DAISY Consortium (desktop application)",
-  "version": "1.0.0-alpha.0",
+  "description": "Ace, the EPUB accessibility checker by the DAISY Consortium (desktop application)",
+  "version": "1.0.0-beta.0",
   "author": "DAISY Consortium",
   "homepage": "http://daisy.github.io/ace",
   "repository": "daisy/ace-gui",
@@ -10,20 +10,36 @@
   "main": "app/background.js",
   "build": {
     "appId": "org.daisy.ace",
+    "files": [
+      "app",
+      "!**/node_modules/puppeteer/.local-chromium/**/*",
+      {
+        "from": "node_modules/puppeteer/.local-chromium",
+        "to": "node_modules/puppeteer/.local-chromium",
+        "filter": "${os}*/**/*"
+      }
+    ],
     "mac": {
       "category": "my.category",
-      "icon": "build/icons/ace.icns"
+      "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/ace.ico"
+      "appId": "DaisyConsortium.Ace",
+      "icon": "build/icons/icon.ico"
     },
-    "asar": false
+    "asar": false,
+    "publish": {
+      "provider": "github",
+      "owner": "daisy",
+      "repo": "ace-gui"
+    }
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf app/app.js && && rimraf app/background.js",
-    "dist": "webpack --config=build/webpack.app.config.js --env=production && electron-builder",
-    "build": "echo TODO build the app",
+    "clean": "cross-env BUILD_TARGET=clean node build/build.js",
+    "build:chromium": "cross-env BUILD_TARGET=fetch-chromium node build/build.js",
+    "build": "webpack --config=build/webpack.app.config.js --env=production && electron-builder",
     "postinstall": "electron-builder install-app-deps",
+    "release": "build -mw -p always",
     "start": "node build/start.js",
     "test": "echo TODO test the app"
   },
@@ -53,12 +69,15 @@
     "babel-loader": "^8.0.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
+    "chalk": "^2.4.1",
+    "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "electron": "2.0.7",
     "electron-builder": "^20.28.3",
     "file-loader": "^2.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "node-sass": "^4.9.3",
+    "progress": "^2.0.0",
     "rimraf": "^2.6.2",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.0",
