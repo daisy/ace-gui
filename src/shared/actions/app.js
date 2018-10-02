@@ -3,16 +3,50 @@ import fs from 'fs';
 import ace from '@daisy/ace-core';
 
 export const SET_READY = 'SET_READY';
-export const RUN_ACE = 'RUN_ACE';
 export const OPEN_REPORT = "OPEN_REPORT";
 export const CLOSE_REPORT = "CLOSE_REPORT";
 export const ADD_MESSAGE = "ADD_MESSAGE";
+
+function checkType(filepath) {
+  // crude way to check filetype
+  if (path.extname(filepath) == '.epub') {
+    return 1;
+  }
+  else if (path.extname(filepath) == '.json') {
+    return 2;
+  }
+  else {
+    // don't accept any other files, however...
+    if (fs.statSync(filepath).isFile()) {
+      return -1;
+    }
+    // ...it might be an unpacked EPUB directory; let Ace decide
+    else {
+      return 1;
+    }
+  }
+}
 
 export function setReady(flag) {
   return {
     type: SET_READY,
     payload: flag,
   };
+}
+
+export function openFile(filepath) {
+  return dispatch => {
+    let type = checkType(filepath);
+    if (type == 1) {
+      dispatch(runAce(filepath));
+    }
+    else if (type == 2) {
+      dispatch(openReport(filepath));
+    }
+    else if (type == -1) {
+      dispatch(addMessage(`ERROR: File type of ${filepath} not supported`));
+    }
+  }
 }
 
 export function runAce(filepath) {

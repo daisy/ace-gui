@@ -5,7 +5,6 @@ const fs = require('fs');
 
 import {
   SET_READY,
-  RUN_ACE,
   OPEN_REPORT,
   CLOSE_REPORT,
   ADD_MESSAGE,

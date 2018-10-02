@@ -7,8 +7,13 @@
 
 body {
     font-family: system;
+    margin: 0;
 }
 a {
   color: black;
   text-decoration: underline;
+}
+
+.layout-pane {
+  display: flex;
 }

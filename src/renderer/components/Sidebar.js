@@ -1,37 +1,110 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-const {ipcRenderer} = require('electron');
-const path = require('path');
-import LinearProgress from '@material-ui/core/LinearProgress';
-import PreferencesContainer from './../containers/PreferencesContainer';
-import './../styles/Sidebar.scss';
-import * as Helpers from "./../../shared/helpers";
-const {dialog} = require('electron').remote;
+import classNames from 'classnames';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { createMuiTheme, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import {
+  Divider, 
+  Drawer, 
+  IconButton, 
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Grow,
+  Typography
+} from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import HistoryIcon from '@material-ui/icons/History';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import {SHOW_PREFS} from './../../shared/actions/preferences';
+import * as AppActions from './../../shared/actions/app';
+import * as FileDialogHelpers from "./../helpers/input";
 
-// the sidebar
-export default class Sidebar extends React.Component {
+const drawerWidth = 240;
 
+const sidebarTheme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+  overrides: {
+    MuiDivider: {
+      root: {
+        'margin-left': '20px',
+        'margin-right': '20px',
+      },
+    },
+  },
+});
+
+const styles = theme => ({
+  
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 36,
+  },
+  hide: {
+    display: 'none',
+  },
+  drawerPaper: {
+    position: 'relative',
+    display: 'flex',
+    'justify-content': 'flex-end',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    // background: theme.palette.primary.main,
+    // color: 'white',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing.unit * 7,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing.unit * 9,
+    },
+  },
+  toggle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  primaryActions: {
+    'flex-grow': 1,
+  },
+});
+
+class Sidebar extends React.Component {
   static propTypes = {
-    ready: PropTypes.bool.isRequired,
-    recents: PropTypes.array.isRequired,
-    openReport: PropTypes.func.isRequired,
-    runAce: PropTypes.func.isRequired,
-    addMessage: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
+    openFile: PropTypes.func.isRequired,
+    theme: PropTypes.object.isRequired,
   };
 
   state = {
-    fileHover: false
+    open: true,
+    fileHover: false,
   };
-
-  onDrop = e => {
-    e.preventDefault();
-    let filepath = e.dataTransfer.files[0].path;
-    console.log(`File dropped ${filepath}`);
-    this.setState({fileHover: false});
-    this.processInputFile(filepath);
+  
+  browseFile = () => {
+    FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
     return false;
   };
-
+  
   onDragOver = e => {
     e.stopPropagation();
     e.preventDefault();
@@ -44,84 +117,96 @@ export default class Sidebar extends React.Component {
     return false;
   };
 
-  onDragEnd = e => {
+  onDrop = e => {
+    e.preventDefault();
+    let filepath = e.dataTransfer.files[0].path;
+    this.setState({fileHover: false});
+    this.props.openFile(filepath);
     return false;
   };
 
-  onBrowseFileOrFolderClick = e => {
-    Helpers.showEpubFileOrFolderBrowseDialog(this.processInputFile);
-    return false;
+  toggleDrawer = () => {
+    this.setState({ open: !this.state.open });
   };
 
-  onBrowseFileClick = e => {
-    Helpers.showEpubFileBrowseDialog(this.processInputFile);
-    return false;
-  };
-
-  onBrowseFolderClick = e => {
-    Helpers.showEpubFolderBrowseDialog(this.processInputFile);
-    return false;
-  };
-
-  processInputFile = filepath => {
-    let type = Helpers.checkType(filepath);
-    if (type == 1) {
-      this.props.runAce(filepath);
-    }
-    else if (type == 2) {
-      this.props.openReport(filepath);
-    }
-    else if (type == -1) {
-      this.props.addMessage(`ERROR: File type of ${filepath} not supported`);
-    }
-  };
 
   render() {
-    let {ready, recents, openReport} = this.props;
-
+    const { classes, ready, theme } = this.props;
     return (
-      <aside className="sidebar">
-        <section className="drop-file">
-          <h1>Run Ace</h1>
-          <div className={`dropzone ${this.state.fileHover ? 'dropzone-hover' : ''} ${ready ? '' : 'processing'}`}
-            onDrop={this.onDrop}
-            onDragOver={this.onDragOver}
-            onDragLeave={this.onDragLeave}
-            onDragEnd={this.onDragEnd}>
-              <p><span>Drag an EPUB file or folder here, <br/> or </span>
-              {process.platform == 'darwin' ?
-                <span><a href="#" onClick={this.onBrowseFileOrFolderClick}>click to browse.</a></span>
-                :
-                <span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> or a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
-              }
-              </p>
+      <MuiThemeProvider
+      theme={sidebarTheme}>
+      <Drawer
+          variant="permanent"
+          classes={{
+            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+          }}
+          open={this.state.open}
+        >
+          <div className={classes.toggle}>
+            <IconButton onClick={this.toggleDrawer}>
+              {(theme.direction === 'rtl' && this.state.open || !this.state.open)
+                ?<ChevronRightIcon />
+                : <ChevronLeftIcon />}
+            </IconButton>
           </div>
-          {ready ? '' :
-            <div className='status'>
-              <LinearProgress />
-              <p>Processing...</p>
-            </div>
-          }
-
-        </section>
-
-        <section className="preferences">
-          <PreferencesContainer/>
-        </section>
-        <section className="recents">
-          <h1>Recent</h1>
-          <ul>
-          {recents.map((recent, idx) =>
-            <li key={idx}>
-              {ready ?
-              <a onClick={() => openReport(recent)}>{recent}</a>
-              :
-              <span className="processing">{recent}</span> }
-            </li>
-          )}
-          </ul>
-        </section>
-      </aside>
+          <Divider />
+          <List className={classes.primaryActions}>
+            <ListItem button
+              className={`${this.state.fileHover ? 'hover' : ''}
+                          ${ready ? '' : 'processing'}`}
+              onClick={this.browseFile}
+              onDrop={this.onDrop}
+              onDragOver={this.onDragOver}
+              onDragLeave={this.onDragLeave}
+              selected={this.state.fileHover}>
+              <ListItemIcon>
+                <AddCircleOutlineIcon />
+              </ListItemIcon>
+              <ListItemText primary="Check EPUB" />
+            </ListItem>
+            <ListItem button disabled>
+              <ListItemIcon>
+                <RefreshIcon />
+              </ListItemIcon>
+              <ListItemText primary="Rerun" />
+            </ListItem>
+            <ListItem button disabled>
+              <ListItemIcon>
+                <HistoryIcon />
+              </ListItemIcon>
+              <ListItemText primary="History" />
+            </ListItem>
+            <ListItem button disabled>
+              <ListItemIcon>
+                <SaveAltIcon />
+              </ListItemIcon>
+              <ListItemText primary="Export" />
+            </ListItem>
+          </List>
+          <Divider/>
+          <List className={classes.otherActions}>
+            <ListItem button>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" primaryTypographyProps={{color: 'textSecondary'}}/>
+            </ListItem>
+          </List>
+        </Drawer>
+        </MuiThemeProvider>
     );
   }
 }
+function mapStateToProps(state) {
+  let { app: {ready}, preferences } = state;
+  return {
+    ready,
+    preferences
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({SHOW_PREFS, ...AppActions}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles,{ withTheme: true })(Sidebar));
+

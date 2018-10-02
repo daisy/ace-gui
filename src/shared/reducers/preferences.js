@@ -10,7 +10,7 @@ import {
 const initialState = {
   outdir: tmp.dirSync({ unsafeCleanup: true }).name,
   organize: true,
-  overwrite: false
+  overwrite: true
 };
 
 export default function preferences(state = initialState, action) {
