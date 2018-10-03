@@ -3,6 +3,7 @@ import './../styles/App.scss';
 import MessagesContainer from './../containers/MessagesContainer';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ModalRoot from './ModalRoot';
 import ReportContainer from './../containers/ReportContainer';
 import Sidebar from './../components/Sidebar';
 import Splash from './Splash';
@@ -42,14 +43,14 @@ class App extends React.Component {
     const { classes } = this.props;
     return (
       <MuiThemeProvider theme={theme}>
-        {/* <AppBar/> */}
-            <SplitterLayout percentage vertical primaryMinSize={40} secondaryInitialSize={15}>
-        <div className={classes.root}>
+        <ModalRoot/>
+        <SplitterLayout percentage vertical primaryMinSize={40} secondaryInitialSize={15}>
+          <div className={classes.root}>
             <Sidebar/>
-              {this.props.report === null ? <Splash/> : <ReportContainer/> }
-        </div>
-              <MessagesContainer/>
-            </SplitterLayout>
+            {this.props.report === null ? <Splash/> : <ReportContainer/> }
+          </div>
+          <MessagesContainer/>
+        </SplitterLayout>
       </MuiThemeProvider>
     );
   }

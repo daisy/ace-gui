@@ -2,35 +2,23 @@
 const tmp = require('tmp');
 
 import {
-  SET_OUTDIR,
-  SET_ORGANIZE,
-  SET_OVERWRITE
+  SAVE_PREFS,
 } from '../actions/preferences';
 
 const initialState = {
-  outdir: tmp.dirSync({ unsafeCleanup: true }).name,
-  organize: true,
-  overwrite: true
+  reports: {
+    dir: tmp.dirSync({ unsafeCleanup: true }).name,
+    organize: true,
+    overwrite: true,
+  }
 };
 
 export default function preferences(state = initialState, action) {
   switch (action.type) {
-    case SET_OUTDIR: {
+    case SAVE_PREFS: {
       return {
         ...state,
-        outdir: action.payload,
-      };
-    }
-    case SET_ORGANIZE: {
-      return {
-        ...state,
-        organize: action.payload,
-      };
-    }
-    case SET_OVERWRITE: {
-      return {
-        ...state,
-        overwrite: action.payload,
+        ...action.payload,
       };
     }
     default:

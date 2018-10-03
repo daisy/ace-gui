@@ -1,25 +1,18 @@
-export const SET_OUTDIR = 'SET_OUTDIR';
-export const SET_OVERWRITE = 'SET_OVERWRITE';
-export const SET_ORGANIZE = 'SET_ORGANIZE';
-export const SHOW_PREFS = 'SHOW_PREFS';
-export const SAVE_PREFS = 'SAVE_PREFS';
-export const CLOSE_PREFS = 'CLOSE_PREFS';
+import {SHOW_MODAL} from './modal';
 
-export function setOutdir(outdir) {
+export const SAVE_PREFS = 'SAVE_PREFS';
+export const EDIT_PREFS = 'EDIT_PREFS';
+
+export function savePreferences(preferences) {
   return {
-    type: SET_OUTDIR,
-    payload: outdir,
+    type: SAVE_PREFS,
+    payload: preferences,
   };
 }
-export function setOverwrite(flag) {
+
+export function showPreferences() {
   return {
-    type: SET_OVERWRITE,
-    payload: flag,
-  };
-}
-export function setOrganize(flag) {
-  return {
-    type: SET_ORGANIZE,
-    payload: flag,
+    type: SHOW_MODAL,
+    modalType: EDIT_PREFS,
   };
 }

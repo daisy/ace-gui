@@ -96,11 +96,11 @@ export function addMessage(message) {
 }
 
 function prepareOutdir(filepath, prefs) {
-  let outdir = prefs.outdir;
-  if (prefs.organize) {
+  let outdir = prefs.reports.dir;
+  if (prefs.reports.organize) {
     outdir = path.join(outdir, path.parse(filepath).name);
   }
-  if (!prefs.overwrite) {
+  if (!prefs.reports.overwrite) {
     const overrides = ['report.json', 'report.html', 'data', 'js']
       .map(file => path.join(outdir, file))
       .filter(fs.existsSync);

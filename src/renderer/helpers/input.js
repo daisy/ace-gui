@@ -2,58 +2,59 @@
 const electron = require('electron');
 const dialog = electron.dialog || electron.remote.dialog;
 
-// function showEpubFileBrowseDialog(onOpenFunc) {
+// function showEpubFileBrowseDialog(open) {
 //   let title = "Choose an EPUB file";
 //   let buttonLabel = "Check";
 //   let properties = ['openFile'];
 //   let filters = [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}];
-//   showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
+//   showBrowseDialog(title, buttonLabel, properties, filters, open);
 // }
 
-// function showReportFileBrowseDialog(onOpenFunc) {
+// function showReportFileBrowseDialog(open) {
 //   let title = "Choose a file";
 //   let buttonLabel = "Open";
 //   let properties = ['openFile'];
 //   let filters = [{name: 'Ace Report', extensions: ['json']}, {name: 'All Files', extensions: ['*']}];
-//   showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
+//   showBrowseDialog(title, buttonLabel, properties, filters, open);
 // }
 
-// function  showEpubFolderBrowseDialog(onOpenFunc) {
-//   let title = "Choose an EPUB folder";
-//   let buttonLabel = "Check";
-//   let properties = ['openDirectory'];
-//   let filters = [{name: 'All Files', extensions: ['*']}];
-//   showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
-// }
 
-// function showOutdirFolderBrowseDialog(onOpenFunc) {
-//   let title = "Choose a folder";
-//   let buttonLabel = "Select";
-//   let properties = ['openDirectory', 'createDirectory'];
-//   let filters = [{name: 'All Files', extensions: ['*']}];
-//   showBrowseDialog(title, buttonLabel, properties, filters, onOpenFunc);
-// }
+// function showOutdirFolderBrowseDialog(open) {
+  //   let title = "Choose a folder";
+  //   let buttonLabel = "Select";
+  //   let properties = ['openDirectory', 'createDirectory'];
+  //   let filters = [{name: 'All Files', extensions: ['*']}];
+  //   showBrowseDialog(title, buttonLabel, properties, filters, open);
+  // }
+function  showFolderBrowseDialog(open) {
+  let title = "Choose a directory";
+  let buttonLabel = "Select";
+  let properties = ['openDirectory', 'createDirectory'];
+  let filters = [{name: 'All Files', extensions: ['*']}];
+  showBrowseDialog(title, buttonLabel, properties, filters, open);
+}
 
-function showEpubFileOrFolderBrowseDialog(processFile) {
+function showEpubFileOrFolderBrowseDialog(open) {
   let title = "Choose an EPUB file or folder";
   let buttonLabel = "Check";
   let properties = ['openFile', 'openDirectory'];
   let filters = [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}];
-  showBrowseDialog(title, buttonLabel, properties, filters, processFile);
+  showBrowseDialog(title, buttonLabel, properties, filters, open);
 }
 
-function showBrowseDialog(title, buttonLabel, properties, filters, processFile) {
+function showBrowseDialog(title, buttonLabel, properties, filters, open) {
   dialog.showOpenDialog(
     { title, buttonLabel, properties, filters },
     (filenames) => {
       if (filenames != undefined) {
-        processFile(filenames[0]);
+        open(filenames[0]);
       }
     }
   );
 }
 
 export {
+  showFolderBrowseDialog,
   showEpubFileOrFolderBrowseDialog,
 };
 

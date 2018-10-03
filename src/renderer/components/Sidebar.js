@@ -23,7 +23,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import {SHOW_PREFS} from './../../shared/actions/preferences';
+import {showPreferences} from './../../shared/actions/preferences';
 import * as AppActions from './../../shared/actions/app';
 import * as FileDialogHelpers from "./../helpers/input";
 
@@ -58,8 +58,6 @@ const styles = theme => ({
     'justify-content': 'flex-end',
     whiteSpace: 'nowrap',
     width: drawerWidth,
-    // background: theme.palette.primary.main,
-    // color: 'white',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -185,11 +183,12 @@ class Sidebar extends React.Component {
           </List>
           <Divider/>
           <List className={classes.otherActions}>
-            <ListItem button>
+            <ListItem button
+              onClick={this.props.showPreferences}>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
-              <ListItemText primary="Settings" primaryTypographyProps={{color: 'textSecondary'}}/>
+              <ListItemText primary="Settings"/>
             </ListItem>
           </List>
         </Drawer>
@@ -205,7 +204,7 @@ function mapStateToProps(state) {
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({SHOW_PREFS, ...AppActions}, dispatch);
+  return bindActionCreators({showPreferences, ...AppActions}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles,{ withTheme: true })(Sidebar));
