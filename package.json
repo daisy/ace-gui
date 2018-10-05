@@ -41,8 +41,9 @@
   },
   "scripts": {
     "clean": "cross-env BUILD_TARGET=clean node build/build.js",
+    "build:bundle": "webpack --config=build/webpack.app.config.js --env=production",
     "build:chromium": "cross-env BUILD_TARGET=fetch-chromium node build/build.js",
-    "build": "webpack --config=build/webpack.app.config.js --env=production && electron-builder",
+    "build": "build:bundle && electron-builder",
     "postinstall": "electron-builder install-app-deps",
     "release": "build -mw -p always",
     "start": "node build/start.js",
