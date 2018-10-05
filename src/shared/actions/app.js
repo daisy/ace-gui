@@ -49,19 +49,18 @@ export function openFile(filepath) {
   }
 }
 
-export function runAce(filepath) {
+export function runAce(inputPath) {
   return (dispatch, getState) => {
     dispatch(setReady(false));
-    dispatch(addMessage(`Running Ace on ${filepath}`));
-    let epubFilepath = filepath;
-    let outdir = prepareOutdir(epubFilepath, getState().preferences);
+    dispatch(addMessage(`Running Ace on ${inputPath}`));
+    let outdir = prepareOutdir(inputPath, getState().preferences);
 
     if (outdir.success) {
-      ace(epubFilepath, {outdir: outdir.value})
+      ace(inputPath, {outdir: outdir.value})
       .then(() => {
         dispatch(addMessage('Ace check complete'));
-        let reportFilepath = outdir.value + '/report.json';
-        dispatch(openReport(reportFilepath));
+        let reportPath = outdir.value + '/report.json';
+        dispatch(openReport(reportPath, inputPath));
       })
       .then(() =>
         dispatch(setReady(true))
@@ -76,16 +75,15 @@ export function runAce(filepath) {
     }
   }
 }
-export function openReport(filepath) {
+export function openReport(reportPath, inputPath) {
   return {
     type: OPEN_REPORT,
-    payload: filepath,
+    payload: { reportPath, inputPath },
   };
 }
 export function closeReport() {
   return {
     type: CLOSE_REPORT,
-    payload: '',
   };
 }
 export function addMessage(message) {

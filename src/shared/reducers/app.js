@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
-const ace = require('@daisy/ace-core');
-const electron = require('electron');
-const fs = require('fs');
+import fs from 'fs';
+import path from 'path';
 
 import {
   SET_READY,
@@ -13,10 +12,10 @@ import {
 import * as Helpers from '../helpers';
 
 const initialState = {
-  epubFilepath: '',
+  inputPath: null,
   ready: true,
   report: null,
-  reportFilepath: '',
+  reportPath: null,
   recents: [],
   messages: []
 };
@@ -32,18 +31,23 @@ export default function app(state = initialState, action) {
     }
     case OPEN_REPORT: {
       try {
-        let report = JSON.parse(fs.readFileSync(action.payload));
-        let reportFilepath = action.payload;
-        let messages = [...state.messages, `Loaded report ${reportFilepath}`];
+        let {reportPath, inputPath } = action.payload;
+        let report = JSON.parse(fs.readFileSync(reportPath));
+        if (inputPath === undefined && report['earl:testSubject'] !== undefined && report['earl:testSubject'].url !== undefined) {
+          inputPath = path.resolve(reportPath, report['earl:testSubject'].url);
+          if (!fs.existsSync(inputPath)) inputPath = null;
+        }
+        let messages = [...state.messages, `Loaded report ${reportPath}`];
         return {
           ...state,
-          reportFilepath,
+          inputPath,
+          reportPath,
           report,
           messages
         };
       }
       catch(error) {
-        let messages = [...state.messages, `ERROR: Could not open ${action.payload}`];
+        let messages = [...state.messages, error, `ERROR: Could not open ${action.payload}`];
         return {
           ...state,
           messages
@@ -52,15 +56,15 @@ export default function app(state = initialState, action) {
 
     }
     case CLOSE_REPORT: {
-      let recents = addToRecents(state.reportFilepath, state.recents);
-      let report = null;
-      let messages = [...state.messages, `Closed report ${state.reportFilepath}`];
+      let recents = addToRecents(state.reportPath, state.recents);
+      let messages = [...state.messages, `Closed report ${state.reportPath}`];
       return {
         ...state,
         recents,
-        reportFilepath: '',
-        report,
-        messages
+        reportPath: null,
+        report: null,
+        inputPath: null,
+        messages,
       };
     }
     case ADD_MESSAGE: {

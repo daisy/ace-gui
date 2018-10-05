@@ -1,17 +1,6 @@
-const path = require('path');
-const fs = require('fs');
-const tmp = require('tmp');
-const ace = require('@daisy/ace-core');
-const { app, BrowserWindow, electron, ipcMain, dialog, shell, clipboard} = require('electron');
+const { app, BrowserWindow} = require('electron');
 import MenuBuilder from './menu';
 import configureStore from './../shared/store/configureStore';
-import {
-  setReady,
-  runAce,
-  openReport,
-  closeReport,
-  addMessage
-} from './../shared/actions/app';
 
 const store = configureStore(undefined, 'main');
 let win;

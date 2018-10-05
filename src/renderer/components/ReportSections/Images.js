@@ -9,7 +9,7 @@ export default class Images extends React.Component {
 
   static propTypes = {
     images: PropTypes.array.isRequired,
-    reportFilepath: PropTypes.string.isRequired,
+    reportPath: PropTypes.string.isRequired,
     filters: PropTypes.object.isRequired,
     pagination: PropTypes.object.isRequired,
     sort: PropTypes.object.isRequired,
@@ -23,7 +23,7 @@ export default class Images extends React.Component {
   render() {
     let {
       images,
-      reportFilepath,
+      reportPath,
       filters,
       pagination,
       sort,
@@ -40,7 +40,7 @@ export default class Images extends React.Component {
         numeric: false,
         sortable: false,
         makeCell: (row, idx) =>
-          <TableCell key={idx}><img src={path.resolve(reportFilepath, `../data/${row.src}`)}/></TableCell>
+          <TableCell key={idx}><img src={path.resolve(reportPath, `../data/${row.src}`)}/></TableCell>
       },
       {
         id: 'alt',

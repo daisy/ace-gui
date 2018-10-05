@@ -129,7 +129,7 @@ class Sidebar extends React.Component {
 
 
   render() {
-    const { classes, ready, theme } = this.props;
+    const { classes, ready, theme, openFile, inputPath } = this.props;
     return (
       <MuiThemeProvider
       theme={sidebarTheme}>
@@ -162,7 +162,9 @@ class Sidebar extends React.Component {
               </ListItemIcon>
               <ListItemText primary="Check EPUB" />
             </ListItem>
-            <ListItem button disabled>
+            <ListItem button 
+              onClick={() => openFile(inputPath)}
+              disabled={!inputPath}>
               <ListItemIcon>
                 <RefreshIcon />
               </ListItemIcon>
@@ -197,10 +199,10 @@ class Sidebar extends React.Component {
   }
 }
 function mapStateToProps(state) {
-  let { app: {ready}, preferences } = state;
+  let { app: {ready, inputPath} } = state;
   return {
+    inputPath,
     ready,
-    preferences
   };
 }
 function mapDispatchToProps(dispatch) {

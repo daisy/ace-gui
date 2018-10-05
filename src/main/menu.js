@@ -34,7 +34,7 @@ export default class MenuBuilder {
   refreshMenuItemsEnabled() {
     let {isReportOpen, ready} = this.stateValues;
     this.setMenuItemsEnabled(["checkEpub", "openReport"], ready);
-    this.setMenuItemsEnabled(["closeReport", "gotoSummary", "gotoViolations",
+    this.setMenuItemsEnabled(["rerunAce","closeReport", "gotoSummary", "gotoViolations",
       "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], isReportOpen);
   }
   getMenuItem(id) {
@@ -69,6 +69,18 @@ export default class MenuBuilder {
             label: 'Open Report...',
             id: 'openReport',
             click: () => Helpers.showReportFileBrowseDialog(filepath => this.store.dispatch(openReport(filepath)))
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Rerun Ace',
+            id: 'rerunAce',
+            accelerator: 'CmdOrCtrl+Shift+R',
+            click: () => this.store.dispatch(runAce(this.store.getState().app.inputPath))
+          },
+          {
+            type: 'separator'
           },
           {
             label: 'Close Report',
@@ -129,7 +141,7 @@ export default class MenuBuilder {
             label: process.platform == 'darwin' ? 'Show in Finder' : 'Show in Explorer',
             id: 'showInFinder',
             accelerator: 'CmdOrCtrl+Shift+F',
-            click: () => shell.showItemInFolder(this.store.getState().app.reportFilepath)
+            click: () => shell.showItemInFolder(this.store.getState().app.reportPath)
           }
         ]
       },
