@@ -2,6 +2,8 @@ const { app, BrowserWindow} = require('electron');
 import MenuBuilder from './menu';
 import configureStore from './../shared/store/configureStore';
 
+require('electron-debug')();
+
 const store = configureStore(undefined, 'main');
 let win;
 
