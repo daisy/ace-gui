@@ -1,6 +1,7 @@
 // helper functions
 const electron = require('electron');
 const dialog = electron.dialog || electron.remote.dialog;
+const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
 
 // function showEpubFileBrowseDialog(open) {
 //   let title = "Choose an EPUB file";
@@ -26,35 +27,54 @@ const dialog = electron.dialog || electron.remote.dialog;
   //   let filters = [{name: 'All Files', extensions: ['*']}];
   //   showBrowseDialog(title, buttonLabel, properties, filters, open);
   // }
-function  showFolderBrowseDialog(open) {
-  let title = "Choose a directory";
-  let buttonLabel = "Select";
-  let properties = ['openDirectory', 'createDirectory'];
-  let filters = [{name: 'All Files', extensions: ['*']}];
-  showBrowseDialog(title, buttonLabel, properties, filters, open);
-}
 
-function showEpubFileOrFolderBrowseDialog(open) {
-  let title = "Choose an EPUB file or folder";
-  let buttonLabel = "Check";
-  let properties = ['openFile', 'openDirectory'];
-  let filters = [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}];
-  showBrowseDialog(title, buttonLabel, properties, filters, open);
-}
+module.exports = {
+  showExportReportDialog: callback => {
+    return showSaveDialog({
+      title: "Save Report",
+      filters: [{name: 'Zip Archive', extensions: ['zip']}],
+    }, callback);
+  },
+  
+  showFolderBrowseDialog: callback => {
+    return showOpenDialog({
+      title: "Choose a directory",
+      buttonLabel: "Select",
+      properties: ['openDirectory', 'createDirectory'],
+      filters: [{name: 'All Files', extensions: ['*']}],
+    }, callback);
+  },
+  
+  showEpubFileOrFolderBrowseDialog: callback => {
+    return showOpenDialog({
+      title: "Choose an EPUB file or folder",
+      buttonLabel: "Check",
+      properties: ['openFile', 'openDirectory'],
+      filters: [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}],
+    }, callback);
+  },
+};
 
-function showBrowseDialog(title, buttonLabel, properties, filters, open) {
-  dialog.showOpenDialog(
-    { title, buttonLabel, properties, filters },
-    (filenames) => {
+function showOpenDialog(options, callback) {
+  return dialog.showOpenDialog(
+    BrowserWindow.getFocusedWindow(),
+    options,
+    (callback===undefined) ? undefined: (filenames) => {
       if (filenames != undefined) {
-        open(filenames[0]);
+        callback(filenames[0]);
       }
     }
   );
 }
 
-export {
-  showFolderBrowseDialog,
-  showEpubFileOrFolderBrowseDialog,
-};
-
+function showSaveDialog(options, callback) {
+  return dialog.showSaveDialog(
+    BrowserWindow.getFocusedWindow(),
+    options,
+    (callback===undefined) ? undefined: (filename) => {
+      if (filename != undefined) {
+        callback(filename);
+      }
+    }
+  );
+}

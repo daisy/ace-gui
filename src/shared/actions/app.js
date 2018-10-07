@@ -1,11 +1,13 @@
 import path from 'path';
 import fs from 'fs';
 import ace from '@daisy/ace-core';
+import zip from '../helpers/zip';
 
-export const SET_READY = 'SET_READY';
-export const OPEN_REPORT = "OPEN_REPORT";
-export const CLOSE_REPORT = "CLOSE_REPORT";
 export const ADD_MESSAGE = "ADD_MESSAGE";
+export const CLOSE_REPORT = "CLOSE_REPORT";
+export const EXPORT_REPORT = "EXPORT_REPORT";
+export const OPEN_REPORT = "OPEN_REPORT";
+export const SET_READY = 'SET_READY';
 
 function checkType(filepath) {
   // crude way to check filetype
@@ -81,11 +83,30 @@ export function openReport(reportPath, inputPath) {
     payload: { reportPath, inputPath },
   };
 }
+
 export function closeReport() {
   return {
     type: CLOSE_REPORT,
   };
 }
+
+export function exportReport(outfile) {
+  return (dispatch, getState) => {
+    let {app: { reportPath }} = getState();
+    // TODO add defensive statements:
+    // - ensure reportPath exists
+    // - ensure outdir exists
+    // - ensure outdir is overwriteable
+    dispatch(addMessage(`Saving report to ${outfile}…`));
+    zip(path.dirname(reportPath), outfile)
+      .then(() => dispatch(addMessage(`Saved report to ${outfile}…`)))
+      .catch(error => {
+        dispatch(addMessage(error));
+        dispatch(addMessage(`ERROR: couldn't save report to ${outfile}`));
+      });
+  };
+}
+
 export function addMessage(message) {
   return {
     type: ADD_MESSAGE,

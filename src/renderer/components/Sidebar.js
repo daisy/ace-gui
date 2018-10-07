@@ -12,8 +12,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Grow,
-  Typography
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -98,10 +96,15 @@ class Sidebar extends React.Component {
     fileHover: false,
   };
   
-  browseFile = () => {
+  showOpenEPUBDialog = () => {
     FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
     return false;
   };
+
+  showExportReportDialog = () => {
+    FileDialogHelpers.showExportReportDialog(this.props.exportReport);
+    return false;
+  }
   
   onDragOver = e => {
     e.stopPropagation();
@@ -129,7 +132,7 @@ class Sidebar extends React.Component {
 
 
   render() {
-    const { classes, ready, theme, openFile, inputPath } = this.props;
+    const { classes, ready, theme, openFile, inputPath, reportPath } = this.props;
     return (
       <MuiThemeProvider
       theme={sidebarTheme}>
@@ -152,13 +155,13 @@ class Sidebar extends React.Component {
             <ListItem button
               className={`${this.state.fileHover ? 'hover' : ''}
                           ${ready ? '' : 'processing'}`}
-              onClick={this.browseFile}
+              onClick={this.showOpenEPUBDialog}
               onDrop={this.onDrop}
               onDragOver={this.onDragOver}
               onDragLeave={this.onDragLeave}
               selected={this.state.fileHover}>
               <ListItemIcon>
-                <AddCircleOutlineIcon />
+                <AddCircleOutlineIcon/>
               </ListItemIcon>
               <ListItemText primary="Check EPUB" />
             </ListItem>
@@ -176,7 +179,9 @@ class Sidebar extends React.Component {
               </ListItemIcon>
               <ListItemText primary="History" />
             </ListItem>
-            <ListItem button disabled>
+            <ListItem button
+              disabled={!reportPath}
+              onClick={this.showExportReportDialog}>
               <ListItemIcon>
                 <SaveAltIcon />
               </ListItemIcon>
@@ -199,9 +204,10 @@ class Sidebar extends React.Component {
   }
 }
 function mapStateToProps(state) {
-  let { app: {ready, inputPath} } = state;
+  let { app: {ready, inputPath, reportPath} } = state;
   return {
     inputPath,
+    reportPath,
     ready,
   };
 }

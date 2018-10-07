@@ -2,7 +2,8 @@ import { app, Menu, shell, dialog, clipboard } from 'electron';
 import {
   runAce,
   openReport,
-  closeReport
+  closeReport,
+  exportReport
 } from './../shared/actions/app';
 import {selectTab} from './../shared/actions/reportView';
 import * as Helpers from './../shared/helpers';
@@ -34,8 +35,9 @@ export default class MenuBuilder {
   refreshMenuItemsEnabled() {
     let {isReportOpen, ready} = this.stateValues;
     this.setMenuItemsEnabled(["checkEpub", "openReport"], ready);
-    this.setMenuItemsEnabled(["rerunAce","closeReport", "gotoSummary", "gotoViolations",
-      "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"], isReportOpen);
+    this.setMenuItemsEnabled(["rerunAce", "exportReport", "closeReport", "gotoSummary",
+      "gotoViolations", "gotoMetadata", "gotoOutlines", "gotoImages", "showInFinder"],
+      isReportOpen);
   }
   getMenuItem(id) {
     let menu = Menu.getApplicationMenu();
@@ -83,11 +85,20 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
+            label: 'Export Report',
+            id: 'exportReport',
+            accelerator: 'CmdOrCtrl+Shift+E',
+            click: () => this.store.dispatch(exportReport())
+          },
+          {
+            type: 'separator'
+          },
+          {
             label: 'Close Report',
             id: 'closeReport',
             accelerator: 'CmdOrCtrl+Shift+C',
             click: () => this.store.dispatch(closeReport())
-          }
+          },
         ]
       },
       subMenuView: {

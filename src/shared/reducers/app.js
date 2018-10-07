@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 
 import {
@@ -8,8 +8,6 @@ import {
   CLOSE_REPORT,
   ADD_MESSAGE,
 } from '../actions/app';
-
-import * as Helpers from '../helpers';
 
 const initialState = {
   inputPath: null,
@@ -22,11 +20,23 @@ const initialState = {
 
 export default function app(state = initialState, action) {
   switch (action.type) {
-    case SET_READY: {
-      let ready = action.payload;
+    case ADD_MESSAGE: {
+      let messages = [...state.messages, action.payload];
       return {
         ...state,
-          ready
+        messages
+      };
+    }
+    case CLOSE_REPORT: {
+      let recents = addToRecents(state.reportPath, state.recents);
+      let messages = [...state.messages, `Closed report ${state.reportPath}`];
+      return {
+        ...state,
+        recents,
+        reportPath: null,
+        report: null,
+        inputPath: null,
+        messages,
       };
     }
     case OPEN_REPORT: {
@@ -55,23 +65,11 @@ export default function app(state = initialState, action) {
       }
 
     }
-    case CLOSE_REPORT: {
-      let recents = addToRecents(state.reportPath, state.recents);
-      let messages = [...state.messages, `Closed report ${state.reportPath}`];
+    case SET_READY: {
+      let ready = action.payload;
       return {
         ...state,
-        recents,
-        reportPath: null,
-        report: null,
-        inputPath: null,
-        messages,
-      };
-    }
-    case ADD_MESSAGE: {
-      let messages = [...state.messages, action.payload];
-      return {
-        ...state,
-        messages
+          ready
       };
     }
     default:
