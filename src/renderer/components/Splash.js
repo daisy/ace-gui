@@ -4,7 +4,22 @@ import { bindActionCreators } from 'redux';
 import {openFile} from './../../shared/actions/app';
 import './../styles/Splash.scss';
 import AceLogo from './../assets/logo.svg';
+import CircularProgress from '@material-ui/core/CircularProgress'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  buttonProcessing: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -91,
+    marginLeft: -89,
+    // height: 300,
+    zIndex: 1,
+    color: '#22C7F0',
+  }
+});
 
 class Splash extends React.Component {
 
@@ -37,20 +52,21 @@ class Splash extends React.Component {
   };
 
   render() {
-    let {ready} = this.props;
+    let {classes, processing} = this.props;
   
     return (
         <div className={`splash
-            ${this.state.fileHover ? 'hover' : ''}
-            ${ready ? '' : 'processing'}`}
+            ${this.state.fileHover ? 'hover' : ''}`}
           onDrop={this.onDrop}
           onDragOver={this.onDragOver}
           onDragLeave={this.onDragLeave}
           onDragEnd={this.onDragEnd}>
 
           <h1>Ace, by DAISY</h1>
-
-          <img src={`${AceLogo}`}/>
+          <div style={{position: 'relative'}}>
+            <img src={`${AceLogo}`} width="150" height="150"/>
+            {processing && <CircularProgress size={178} className={classes.buttonProcessing}/>}
+          </div>
           <p>Drop an EPUB file or directory here,<br/>
             or on the&nbsp;
               <AddCircleOutlineIcon titleAccess="“New”" fontSize='inherit' style={{position: 'relative', bottom: '-0.15em'}}/>
@@ -63,9 +79,9 @@ class Splash extends React.Component {
 }
 
 function mapStateToProps(state) {
-  let { app: {ready} } = state;
+  let { app: {processing: {ace}} } = state;
   return {
-    ready
+    processing: ace
   };
 }
 
@@ -73,4 +89,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({openFile}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Splash);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Splash));

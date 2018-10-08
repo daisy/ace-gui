@@ -3,19 +3,23 @@ import fs from 'fs-extra';
 import path from 'path';
 
 import {
-  SET_READY,
-  OPEN_REPORT,
   CLOSE_REPORT,
   ADD_MESSAGE,
+  OPEN_REPORT,
+  SET_PROCESSING,
+  PROCESSING_TYPE,
 } from '../actions/app';
 
 const initialState = {
   inputPath: null,
-  ready: true,
   report: null,
   reportPath: null,
   recents: [],
-  messages: []
+  messages: [],
+  processing: {
+    export: false,
+    ace: false,
+  }
 };
 
 export default function app(state = initialState, action) {
@@ -65,11 +69,12 @@ export default function app(state = initialState, action) {
       }
 
     }
-    case SET_READY: {
-      let ready = action.payload;
+    case SET_PROCESSING: {
+      let processing = {...state.processing};
+      processing[action.payload.type] = action.payload.value;
       return {
         ...state,
-          ready
+        processing,
       };
     }
     default:

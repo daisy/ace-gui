@@ -7,7 +7,11 @@ export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";
 export const EXPORT_REPORT = "EXPORT_REPORT";
 export const OPEN_REPORT = "OPEN_REPORT";
-export const SET_READY = 'SET_READY';
+export const SET_PROCESSING = 'SET_PROCESSING';
+export const PROCESSING_TYPE = {
+  ACE: 'ace',
+  EXPORT: 'export',
+}
 
 function checkType(filepath) {
   // crude way to check filetype
@@ -29,10 +33,10 @@ function checkType(filepath) {
   }
 }
 
-export function setReady(flag) {
+export function setProcessing(type, value) {
   return {
-    type: SET_READY,
-    payload: flag,
+    type: SET_PROCESSING,
+    payload: {type: type, value: value},
   };
 }
 
@@ -53,10 +57,10 @@ export function openFile(filepath) {
 
 export function runAce(inputPath) {
   return (dispatch, getState) => {
-    dispatch(setReady(false));
+    dispatch(setProcessing(PROCESSING_TYPE.ACE, true));
     dispatch(addMessage(`Running Ace on ${inputPath}`));
     let outdir = prepareOutdir(inputPath, getState().preferences);
-
+    
     if (outdir.success) {
       ace(inputPath, {outdir: outdir.value})
       .then(() => {
@@ -64,15 +68,16 @@ export function runAce(inputPath) {
         let reportPath = outdir.value + '/report.json';
         dispatch(openReport(reportPath, inputPath));
       })
-      .then(() =>
-        dispatch(setReady(true))
-      )
+      .then(() => {
+        dispatch(setProcessing(PROCESSING_TYPE.ACE, false));
+      })
       .catch(error =>  {// Ace execution error
         dispatch(addMessage(error));
-        dispatch(setReady(true));
+        dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
       });
     }
     else { // error creating outdir (.value has the error message)
+      dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
       dispatch(addMessage(outdir.value));
     }
   }
@@ -97,13 +102,18 @@ export function exportReport(outfile) {
     // - ensure reportPath exists
     // - ensure outdir exists
     // - ensure outdir is overwriteable
+    dispatch(setProcessing(PROCESSING_TYPE.EXPORT, true));
     dispatch(addMessage(`Saving report to ${outfile}…`));
     zip(path.dirname(reportPath), outfile)
-      .then(() => dispatch(addMessage(`Saved report to ${outfile}…`)))
-      .catch(error => {
-        dispatch(addMessage(error));
-        dispatch(addMessage(`ERROR: couldn't save report to ${outfile}`));
-      });
+    .then(() => {
+      dispatch(addMessage(`Saved report to ${outfile}…`))
+      dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
+    })
+    .catch(error => {
+      dispatch(addMessage(error));
+      dispatch(addMessage(`ERROR: couldn't save report to ${outfile}`));
+      dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
+    });
   };
 }
 

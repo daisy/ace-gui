@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createMuiTheme, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import {
+  CircularProgress,
   Divider, 
   Drawer, 
   IconButton, 
@@ -82,6 +83,13 @@ const styles = theme => ({
   primaryActions: {
     'flex-grow': 1,
   },
+  buttonProcessing: {
+    position: 'absolute',
+    top: 4,
+    left: 16,
+    zIndex: 1,
+    color: theme.palette.primary.contrastText,
+  }
 });
 
 class Sidebar extends React.Component {
@@ -132,7 +140,7 @@ class Sidebar extends React.Component {
 
 
   render() {
-    const { classes, ready, theme, openFile, inputPath, reportPath } = this.props;
+    const { classes, processing, theme, openFile, inputPath, reportPath } = this.props;
     return (
       <MuiThemeProvider
       theme={sidebarTheme}>
@@ -153,8 +161,6 @@ class Sidebar extends React.Component {
           <Divider />
           <List className={classes.primaryActions}>
             <ListItem button
-              className={`${this.state.fileHover ? 'hover' : ''}
-                          ${ready ? '' : 'processing'}`}
               onClick={this.showOpenEPUBDialog}
               onDrop={this.onDrop}
               onDragOver={this.onDragOver}
@@ -164,6 +170,8 @@ class Sidebar extends React.Component {
                 <AddCircleOutlineIcon/>
               </ListItemIcon>
               <ListItemText primary="Check EPUB" />
+              {processing.ace && reportPath &&
+                <CircularProgress size={40} className={classes.buttonProcessing} />}
             </ListItem>
             <ListItem button 
               onClick={() => openFile(inputPath)}
@@ -186,6 +194,7 @@ class Sidebar extends React.Component {
                 <SaveAltIcon />
               </ListItemIcon>
               <ListItemText primary="Export" />
+              {processing.export && <CircularProgress size={40} className={classes.buttonProcessing} />}
             </ListItem>
           </List>
           <Divider/>
@@ -204,11 +213,11 @@ class Sidebar extends React.Component {
   }
 }
 function mapStateToProps(state) {
-  let { app: {ready, inputPath, reportPath} } = state;
+  let { app: {processing, inputPath, reportPath} } = state;
   return {
     inputPath,
     reportPath,
-    ready,
+    processing,
   };
 }
 function mapDispatchToProps(dispatch) {
