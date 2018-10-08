@@ -157,7 +157,7 @@ class PreferencesModal extends React.Component {
                 classes={{ root: classes.browseControlHelperText }}
                 >(where Ace stores reports internally)</FormHelperText>
             </FormControl>
-            <FormControl aria-describedby='preferences-dialog-reports-organize-helper-text'
+            {/* <FormControl aria-describedby='preferences-dialog-reports-organize-helper-text'
               margin="dense">
               <FormControlLabel
                 label='Keep reports organize'
@@ -172,7 +172,7 @@ class PreferencesModal extends React.Component {
                 variant='outlined'
                 classes={{ contained: classes.checkboxControlHelperText }}
                 >(stored each report in its own directory?)</FormHelperText>
-            </FormControl>
+            </FormControl> */}
             <FormControl aria-describedby='preferences-dialog-reports-overwrite-helper-text'
               margin="dense">
               <FormControlLabel
