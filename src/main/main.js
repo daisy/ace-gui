@@ -12,8 +12,9 @@ function createWindow() {
   win.maximize();
   let sz = win.getSize();
   // open a window that's not quite full screen ... makes sense on mac, anyway
-  win.setSize(Math.round(sz[0] * .75), Math.round(sz[1] * .85));
-  win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
+  win.setSize(Math.min(Math.round(sz[0] * .75),1200), Math.min(Math.round(sz[1] * .85), 800));
+  // win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
+  win.setPosition(Math.round(sz[0]*0.5-win.getSize()[0]*0.5), Math.round(sz[1]*0.5-win.getSize()[1]*0.5));
   win.show();
 
   const menuBuilder = new MenuBuilder(win, store);
