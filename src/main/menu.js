@@ -6,7 +6,7 @@ import {
   exportReport
 } from './../shared/actions/app';
 import {selectTab} from './../shared/actions/reportView';
-import * as Helpers from './../shared/helpers';
+import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 export default class MenuBuilder {
 
   constructor(mainWindow, store) {
@@ -20,10 +20,10 @@ export default class MenuBuilder {
     // listen for when a report is open
     this.store.subscribe(() => {
       let currIsReportOpen = this.stateValues.isReportOpen;
-      let newIsReportOpen = this.store.getState().app.report != null;
       let currReady = this.stateValues.ready;
-      let newReady = this.store.getState().app.ready;
-      if (currIsReportOpen != newIsReportOpen || currReady == newReady) {
+      let newIsReportOpen = this.store.getState().app.report != null;
+      let newReady = !this.store.getState().app.processing.ace;
+      if (currIsReportOpen != newIsReportOpen || currReady != newReady) {
         this.stateValues = {
           isReportOpen: newIsReportOpen,
           ready: newReady
@@ -62,15 +62,14 @@ export default class MenuBuilder {
             label: 'Check EPUB...',
             id: 'checkEpub',
             accelerator: 'CmdOrCtrl+O',
-            click: () => process.platform == 'darwin' ?
-              Helpers.showEpubFileOrFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
-              :
-              Helpers.showEpubFileBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
+            click: () => process.platform == 'darwin'
+              ?FileDialogHelpers.showEpubFileOrFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
+              :FileDialogHelpers.showEpubFileBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
           },
           {
             label: 'Open Report...',
             id: 'openReport',
-            click: () => Helpers.showReportFileBrowseDialog(filepath => this.store.dispatch(openReport(filepath)))
+            click: () => FileDialogHelpers.showReportFileBrowseDialog(filepath => this.store.dispatch(openReport(filepath)))
           },
           {
             type: 'separator'
@@ -261,7 +260,7 @@ export default class MenuBuilder {
       // insert item into File submenu
       defaultTemplate.subMenuFile.submenu.unshift({
         label: 'Check EPUB Folder ... ',
-        click: () => Helpers.showEpubFolderBrowseDialog(filepath => store.dispatch(runAce(filepath)))
+        click: () => FileDialogHelpers.showEpubFolderBrowseDialog(filepath => store.dispatch(runAce(filepath)))
       });
 
       // insert item into Help submenu

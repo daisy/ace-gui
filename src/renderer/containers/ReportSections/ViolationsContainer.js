@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Violations from './../../components/ReportSections/Violations';
 import * as ReportViewActions from './../../../shared/actions/reportView';
-import {createFlatListOfViolations} from "./../../../shared/helpers";
+import {createFlatListOfViolations} from "../../../shared/helpers/violations";
 
 const mapStateToProps = state => {
   let {app: {report}, reportView: {filters, sort, pagination, expandFilters}} = state;

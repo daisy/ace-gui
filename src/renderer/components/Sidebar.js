@@ -24,7 +24,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {showPreferences} from './../../shared/actions/preferences';
 import * as AppActions from './../../shared/actions/app';
-import * as FileDialogHelpers from "./../helpers/input";
+import * as FileDialogHelpers from "../../shared/helpers/fileDialogs";
 
 const drawerWidth = 240;
 
@@ -105,7 +105,9 @@ class Sidebar extends React.Component {
   };
   
   showOpenEPUBDialog = () => {
-    FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
+    process.platform == 'darwin'
+      ? FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile)
+      : FileDialogHelpers.showEpubFileBrowseDialog(this.props.openFile)
     return false;
   };
 

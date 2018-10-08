@@ -15,7 +15,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
-import {showFolderBrowseDialog} from "./../helpers/input";
+import {showFolderBrowseDialog} from "../../shared/helpers/fileDialogs";
 import { hideModal } from './../../shared/actions/modal';
 import { savePreferences } from './../../shared/actions/preferences';
 
