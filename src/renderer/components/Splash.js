@@ -64,7 +64,7 @@ class Splash extends React.Component {
 
           <h1>Ace, by DAISY</h1>
           <div style={{position: 'relative'}}>
-            <img src={`${AceLogo}`} width="150" height="150"/>
+            <img src={`${AceLogo}`} alt="" width="150" height="150"/>
             {processing && <CircularProgress size={178} className={classes.buttonProcessing}/>}
           </div>
           <p>Drop an EPUB file or directory here,<br/>

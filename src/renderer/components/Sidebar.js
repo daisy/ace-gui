@@ -152,7 +152,8 @@ class Sidebar extends React.Component {
           open={this.state.open}
         >
           <div className={classes.toggle}>
-            <IconButton onClick={this.toggleDrawer}>
+            <IconButton onClick={this.toggleDrawer}
+              aria-label={`${this.state.open?'Minimize':'Maximise'} Sidebar`}>
               {(theme.direction === 'rtl' && this.state.open || !this.state.open)
                 ?<ChevronRightIcon />
                 : <ChevronLeftIcon />}
