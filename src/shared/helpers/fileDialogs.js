@@ -10,7 +10,7 @@ module.exports = {
       filters: [{name: 'Zip Archive', extensions: ['zip']}],
     }, callback);
   },
-  
+
   showFolderBrowseDialog: callback => {
     return showOpenDialog({
       title: "Choose a directory",
@@ -19,7 +19,7 @@ module.exports = {
       filters: [{name: 'All Files', extensions: ['*']}],
     }, callback);
   },
-  
+
   showEpubFileOrFolderBrowseDialog: callback => {
     return showOpenDialog({
       title: "Choose an EPUB file or folder",
@@ -28,7 +28,7 @@ module.exports = {
       filters: [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}],
     }, callback);
   },
-  
+
   showEpubFileBrowseDialog: callback => {
     return showOpenDialog({
       title: "Choose an EPUB file",
@@ -37,13 +37,22 @@ module.exports = {
       filters: [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}],
     }, callback);
   },
-  
+
   showEpubFolderBrowseDialog: callback => {
     return showOpenDialog({
       title: "Choose an EPUB directory",
       buttonLabel: "Select",
       properties: ['openDirectory'],
       filters: [{name: 'All Files', extensions: ['*']}],
+    }, callback);
+  },
+
+  showReportFileBrowseDialog: callback => {
+    return showOpenDialog({
+      title: "Choose an Ace report",
+      buttonLabel: "Open",
+      properties: ['openFile'],
+      filters: [{name: 'JSON', extensions: ['json']}, {name: 'All Files', extensions: ['*']}],
     }, callback);
   },
 };
