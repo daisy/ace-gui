@@ -1,6 +1,11 @@
-# Ace, the desktop application
+<img src="./src/renderer/assets/logo.svg" alt="" width="150" align="left"/>
+
+# Ace, the desktop application 
 
 A desktop graphical user interface for [Ace](https://daisy.github.io/ace), the EPUB accessibility checker by the [DAISY Consortium](http://daisy.org).
+
+<br/>
+
 
 ## Getting started
 
