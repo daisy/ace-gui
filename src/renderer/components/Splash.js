@@ -69,7 +69,7 @@ class Splash extends React.Component {
 
   render() {
     let {classes, processing} = this.props;
-  
+
     return (
         <div className={`splash
             ${this.state.fileHover ? 'hover' : ''}`}
@@ -89,8 +89,8 @@ class Splash extends React.Component {
               &nbsp;button in the sidebar, <br/>
               or {process.platform == 'darwin'
                 ?<span><a href="#" onClick={this.onBrowseFileOrFolderClick}>click to browse.</a></span>
-                :<span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> 
-                               or a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
+                :<span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> or
+                       a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
 }
           </p>
         </div>
