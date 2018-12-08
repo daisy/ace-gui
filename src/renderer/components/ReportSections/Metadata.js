@@ -68,7 +68,7 @@ export default class Metadata extends React.Component {
         sortable: true,
         makeCell: (row, idx) =>
           <TableCell key={idx}>
-            <span>{a11ymetadata.present.indexOf(row.name) != -1 ? "Yes" : ""}</span>
+            {row.a11y}
           </TableCell>
       }
     ];

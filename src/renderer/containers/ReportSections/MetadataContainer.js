@@ -11,14 +11,17 @@ const mapStateToProps = state => {
   let a11ymeta = report['a11y-metadata'];
 
   for (let key in metadata) {
-    rows.push({"name": key, "value": metadata[key]});
+    let a11y = a11ymeta.present.indexOf(key) != -1 ? "Yes" : "";
+    rows.push({"name": key, "value": metadata[key], "a11y": a11y});
   }
 
   // conformsTo lives in ['links'] so we have to add it separately to the table
   if (links != undefined && links != {} && 'dcterms:conformsTo' in links) {
+        let a11y = a11ymeta.present.indexOf(row.name) != -1 ? "Yes" : "";
         rows.push({
-          "name": "conformsTo",
-          "value": links['dcterms:conformsTo']
+          "name": "dcterms:conformsTo",
+          "value": links['dcterms:conformsTo'],
+          "a11y": a11y
       });
   }
 
