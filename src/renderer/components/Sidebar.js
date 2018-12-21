@@ -6,9 +6,9 @@ import { bindActionCreators } from 'redux';
 import { createMuiTheme, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import {
   CircularProgress,
-  Divider,
-  Drawer,
-  IconButton,
+  Divider, 
+  Drawer, 
+  IconButton, 
   List,
   ListItem,
   ListItemIcon,
@@ -43,7 +43,7 @@ const sidebarTheme = createMuiTheme({
 });
 
 const styles = theme => ({
-
+  
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
@@ -103,7 +103,7 @@ class Sidebar extends React.Component {
     open: true,
     fileHover: false,
   };
-
+  
   showOpenEPUBDialog = () => {
     process.platform == 'darwin'
       ? FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile)
@@ -115,7 +115,7 @@ class Sidebar extends React.Component {
     FileDialogHelpers.showExportReportDialog(this.props.exportReport);
     return false;
   }
-
+  
   onDragOver = e => {
     e.stopPropagation();
     e.preventDefault();
@@ -164,7 +164,6 @@ class Sidebar extends React.Component {
           <Divider />
           <List className={classes.primaryActions}>
             <ListItem button
-              disabled={processing.ace}
               onClick={this.showOpenEPUBDialog}
               onDrop={this.onDrop}
               onDragOver={this.onDragOver}
@@ -177,7 +176,7 @@ class Sidebar extends React.Component {
               {processing.ace && reportPath &&
                 <CircularProgress size={40} className={classes.buttonProcessing} />}
             </ListItem>
-            <ListItem button
+            <ListItem button 
               onClick={() => openFile(inputPath)}
               disabled={!inputPath}>
               <ListItemIcon>
@@ -229,3 +228,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles,{ withTheme: true })(Sidebar));
+

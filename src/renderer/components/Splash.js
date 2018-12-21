@@ -69,11 +69,10 @@ class Splash extends React.Component {
 
   render() {
     let {classes, processing} = this.props;
-    let disabled = processing ? 'disabled' : '';
+  
     return (
         <div className={`splash
-            ${this.state.fileHover ? 'hover' : ''}
-            ${processing ? 'processing' : ''}`}
+            ${this.state.fileHover ? 'hover' : ''}`}
           onDrop={this.onDrop}
           onDragOver={this.onDragOver}
           onDragLeave={this.onDragLeave}
@@ -84,21 +83,16 @@ class Splash extends React.Component {
             <img src={`${AceLogo}`} alt="" width="150" height="150"/>
             {processing && <CircularProgress size={178} className={classes.buttonProcessing}/>}
           </div>
-          {!processing &&
           <p>Drop an EPUB file or directory here,<br/>
             or on the&nbsp;
               <AddCircleOutlineIcon titleAccess="“New”" fontSize='inherit' style={{position: 'relative', bottom: '-0.15em'}}/>
               &nbsp;button in the sidebar, <br/>
-              or
-              {process.platform == 'darwin'
-                ? <span> <a href="#"onClick={this.onBrowseFileOrFolderClick}>click to browse.</a></span>
-                : <span> browse for
-                a <a href="#" onClick={this.onBrowseFileClick}>file</a> or
-                a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.
-                </span>
-              }
+              or {process.platform == 'darwin'
+                ?<span><a href="#" onClick={this.onBrowseFileOrFolderClick}>click to browse.</a></span>
+                :<span>browse for a <a href="#" onClick={this.onBrowseFileClick}>file</a> 
+                               or a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.</span>
+}
           </p>
-        }
         </div>
     );
   }
