@@ -7,6 +7,7 @@ import {
 } from './../shared/actions/app';
 import {selectTab} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
+import * as AboutBoxHelper from './../shared/helpers/about';
 export default class MenuBuilder {
 
   constructor(mainWindow, store) {
@@ -201,7 +202,8 @@ export default class MenuBuilder {
         submenu: [
           {
             label: 'About Ace',
-            click: () => dialog.showMessageBox({"message": "Ace Beta", "detail": "DAISY Consortium 2018"})
+            id: 'about',
+            click: () => AboutBoxHelper.showAbout()
           },
           {
             type: 'separator'
@@ -270,7 +272,8 @@ export default class MenuBuilder {
         },
         {
           label: 'About Ace',
-          click: () => dialog.showMessageBox({"message": "Ace Beta", "detail": "DAISY Consortium 2018"})
+          id: 'about',
+          click: () => AboutBoxHelper.showAbout()
         }
       );
     }
