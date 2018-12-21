@@ -60,7 +60,7 @@ export function runAce(inputPath) {
     dispatch(setProcessing(PROCESSING_TYPE.ACE, true));
     dispatch(addMessage(`Running Ace on ${inputPath}`));
     let outdir = prepareOutdir(inputPath, getState().preferences);
-    
+
     if (outdir.success) {
       ace(inputPath, {outdir: outdir.value})
       .then(() => {
@@ -96,6 +96,7 @@ export function closeReport() {
 }
 
 export function exportReport(outfile) {
+  console.log("Writing report");
   return (dispatch, getState) => {
     let {app: { reportPath }} = getState();
     // TODO add defensive statements:
@@ -106,7 +107,7 @@ export function exportReport(outfile) {
     dispatch(addMessage(`Saving report to ${outfile}…`));
     zip(path.dirname(reportPath), outfile)
     .then(() => {
-      dispatch(addMessage(`Saved report to ${outfile}…`))
+      dispatch(addMessage(`Saved report to ${outfile}…`));
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
     })
     .catch(error => {
