@@ -88,7 +88,7 @@ export default class MenuBuilder {
             label: 'Export Report',
             id: 'exportReport',
             accelerator: 'CmdOrCtrl+Shift+E',
-            click: () => this.store.dispatch(exportReport())
+            click: () => FileDialogHelpers.showExportReportDialog(filepath => this.store.dispatch(exportReport(filepath)))
           },
           {
             type: 'separator'
