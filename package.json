@@ -83,7 +83,7 @@
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "devtron": "^1.4.0",
-    "electron": "2.0.7",
+    "electron": "2.0.16",
     "electron-builder": "^20.28.3",
     "electron-react-devtools": "^0.5.3",
     "file-loader": "^2.0.0",
