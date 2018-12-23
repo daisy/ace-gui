@@ -3,11 +3,11 @@ import MenuBuilder from './menu';
 import configureStore from './../shared/store/configureStore';
 
 require('electron-debug')();
-
 const store = configureStore(undefined, 'main');
 let win;
 
 function createWindow() {
+
   win = new BrowserWindow({ show: false });
   win.maximize();
   let sz = win.getSize();
@@ -27,7 +27,11 @@ function createWindow() {
   });
 }
 
-app.setAccessibilitySupportEnabled(true);
+// if you comment out this line, ace runs on electron 4.0
+// if you leave it in, it starts and immediately exits
+// this command turns on the a11y tree in chromium
+// maybe check chromium version against puppeteer?
+//app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', createWindow);
 
