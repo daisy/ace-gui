@@ -2,9 +2,8 @@ import path  from 'path';
 import readdir from '@mrmlnc/readdir-enhanced';
 import fs from 'fs';
 import JSZip from 'jszip';
- 
+
 export default function zip(dir, output) {
-  
   return new Promise((resolve, reject) => {
     var archive = new JSZip();
     readdir.stream(dir, {deep: true})

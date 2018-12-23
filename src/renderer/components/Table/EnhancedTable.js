@@ -200,7 +200,7 @@ export default class EnhancedTable extends React.Component {
                   sortDirection={head.sortable && orderBy === head.id ? order : false}>
                   {head.sortable ?
                   <Tooltip
-                  title="Sort"
+                  title={'Sort by ' + head.label}
                   placement={'bottom-start'}
                   enterDelay={300}>
                     <TableSortLabel
