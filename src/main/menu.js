@@ -262,7 +262,7 @@ export default class MenuBuilder {
       // insert item into File submenu
       defaultTemplate.subMenuFile.submenu.unshift({
         label: 'Check EPUB Folder ... ',
-        click: () => FileDialogHelpers.showEpubFolderBrowseDialog(filepath => store.dispatch(runAce(filepath)))
+        click: () => FileDialogHelpers.showEpubFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
       });
 
       // insert item into Help submenu
