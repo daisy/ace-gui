@@ -21,17 +21,12 @@ function createWindow() {
   menuBuilder.buildMenu();
 
   win.loadURL(`file://${__dirname}/index.html`);
-
+  // as of electron 4, this line has to happen after the window is created
+  app.setAccessibilitySupportEnabled(true);
   win.on('closed', function () {
       win = null;
   });
 }
-
-// if you comment out this line, ace runs on electron 4.0
-// if you leave it in, it starts and immediately exits
-// this command turns on the a11y tree in chromium
-// maybe check chromium version against puppeteer?
-//app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', createWindow);
 
