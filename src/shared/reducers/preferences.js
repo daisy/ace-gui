@@ -6,6 +6,7 @@ import {
 } from '../actions/preferences';
 
 const initialState = {
+  language: null,
   reports: {
     dir: tmp.dirSync({ unsafeCleanup: true }).name,
     organize: true,
