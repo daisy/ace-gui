@@ -47,5 +47,14 @@
         "overwriteExistingReportsTip": "(allow writing new reports over previous ones?)",
         "userInterfaceLanguage": "User Interface Language",
         "userInterfaceLanguageTip": "(select the language for UI labels and messages)"
+    },
+    "sidebar": {
+        "checkEPUB": "Check EPUB",
+        "reRun": "Rerun",
+        "history": "History",
+        "export": "Export",
+        "settings": "Settings",
+        "minimize": "Minimize Sidebar",
+        "maximize": "Maximize Sidebar"
     }
 }
