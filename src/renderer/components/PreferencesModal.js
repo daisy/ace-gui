@@ -98,9 +98,6 @@ class PreferencesModal extends React.Component {
   };
 
   handleChangeLanguage = arg => (event) => {
-    const msg = `##### RENDERER PROCESS - handleChangeLanguage: ${event.target.value}`;
-    console.log(msg);
-    process.stdout.write(msg + '\n');
     const newState = {
       "language": event.target.value
     };
@@ -129,9 +126,11 @@ class PreferencesModal extends React.Component {
 
     let currentLanguage = this.state.language || getCurrentLanguage();
 
-    // const msg = `##### RENDERER PROCESS - this.props/state: \n${JSON.stringify(this.props, null, "   ")}\n\n${JSON.stringify(this.state, null, "   ")}\n`;
-    // console.log(msg);
-    // process.stdout.write(msg + '\n');
+    const languageSelectMenuItems = [];
+    const languageKeys = Object.keys(LANGUAGES);
+    for (var i = 0; i < languageKeys.length; i++) {
+      languageSelectMenuItems.push(<MenuItem key={i} value={languageKeys[i]}>{LANGUAGES[languageKeys[i]]}</MenuItem>);
+    }
 
     const {classes, dispatch, modalType} = this.props;
 
@@ -225,8 +224,7 @@ class PreferencesModal extends React.Component {
                 displayEmpty
                 name="language"
               >
-                <MenuItem value={"en"}>English</MenuItem>
-                <MenuItem value={"fr"}>Francais</MenuItem>
+                {languageSelectMenuItems}
               </Select>
               <FormHelperText 
                 id="preferences-dialog-user-interface-language-helper-text"
