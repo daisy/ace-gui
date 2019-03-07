@@ -34,5 +34,18 @@
         "quit": "Quitter",
         "minimize": "Minimiser",
         "bringToFront": "Mettre au Devant"
+    },
+    "preferences": {
+        "title": "Préférences de Ace",
+        "cancel": "Annuler",
+        "save": "Sauver",
+        "internalReportStorage": "Stockage Interne des Rapports",
+        "reportsDataDirectory": "Répertoires des Rapports",
+        "reportsDataDirectoryButton": "Choisir",
+        "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
+        "overwriteExistingReports": "Ecraser les rapports existants",
+        "overwriteExistingReportsTip": "(écraser les rapports existants avec les nouveaux ?)",
+        "userInterfaceLanguage": "Langue d'Interface Utilisateur",
+        "userInterfaceLanguageTip": "(selectionner la langue des labels et messages d'interface)"
     }
 }

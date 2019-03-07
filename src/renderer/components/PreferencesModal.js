@@ -21,7 +21,7 @@ import { savePreferences } from './../../shared/actions/preferences';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {LANGUAGES, getCurrentLanguage} from './../../shared/l10n/localize';
+import {LANGUAGES, getCurrentLanguage, localize} from './../../shared/l10n/localize';
 
 const styles = theme => ({
   paper: {
@@ -141,12 +141,12 @@ class PreferencesModal extends React.Component {
         onClose={() => dispatch(hideModal())}
         onRendered={() => { this.forceUpdate() }}
         classes={{ paper: classes.paper }}>
-        <DialogTitle id="preferences-dialog-title">Ace Preferences</DialogTitle>
+        <DialogTitle id="preferences-dialog-title">{localize("preferences.title")}</DialogTitle>
         <DialogContent>
           <FormControl variant="outlined" margin="dense" fullWidth
           classes={{ root: classes.prefsGroup }}
           >
-            <Typography variant="subheading">Internal Report Storage</Typography>
+            <Typography variant="subheading">{localize("preferences.internalReportStorage")}</Typography>
             <FormControl 
               aria-describedby="preferences-dialog-reports-dir-helper-text"
               variant="outlined"
@@ -156,7 +156,7 @@ class PreferencesModal extends React.Component {
               <InputLabel htmlFor="preferences-dialog-reports-input"
                 ref={ref => { this.labelRef = ReactDOM.findDOMNode(ref) }}
                 classes={{ root: classes.browseControlInputLabel }}
-                >Reports Data Directory</InputLabel>
+                >{localize("preferences.reportsDataDirectory")}</InputLabel>
               <OutlinedInput 
                 id="preferences-dialog-reports-input"
                 value={this.state.reports.dir}
@@ -173,10 +173,10 @@ class PreferencesModal extends React.Component {
               <Button variant="outlined" 
                 classes={{ root: classes.browseControlButton}}
                 onClick={this.selectReportDir}
-                >Browse</Button>
+                >{localize("preferences.reportsDataDirectoryButton")}</Button>
               <FormHelperText id="preferences-dialog-reports-dir-helper-text"
                 classes={{ root: classes.browseControlHelperText }}
-                >(where Ace stores reports internally)</FormHelperText>
+                >{localize("preferences.reportsDataDirectoryTip")}</FormHelperText>
             </FormControl>
             {/* <FormControl aria-describedby='preferences-dialog-reports-organize-helper-text'
               margin="dense">
@@ -197,7 +197,7 @@ class PreferencesModal extends React.Component {
             <FormControl aria-describedby='preferences-dialog-reports-overwrite-helper-text'
               margin="dense">
               <FormControlLabel
-                label='Overwrite existing reports'
+                label={localize("preferences.overwriteExistingReports")}
                 labelPlacement='end'
                 checked={this.state.reports.overwrite}
                 value="reports.overwrite"
@@ -208,14 +208,14 @@ class PreferencesModal extends React.Component {
                 id="preferences-dialog-reports-overwrite-helper-text"
                 variant='outlined'
                 classes={{ contained: classes.checkboxControlHelperText }}
-                >(allow writing new reports over previous ones?)</FormHelperText>
+                >{localize("preferences.overwriteExistingReportsTip")}</FormHelperText>
             </FormControl>
           </FormControl>
 
           <FormControl variant="outlined" margin="dense" fullWidth
           classes={{ root: classes.prefsGroup }}
           >
-            <Typography variant="subheading">User Interface Language</Typography>
+            <Typography variant="subheading">{localize("preferences.userInterfaceLanguage")}</Typography>
             <FormControl aria-describedby='preferences-dialog-user-interface-language-helper-text'
               margin="dense">
               <Select
@@ -230,16 +230,16 @@ class PreferencesModal extends React.Component {
                 id="preferences-dialog-user-interface-language-helper-text"
                 variant='outlined'
                 classes={{ contained: classes.checkboxControlHelperText }}
-                >(select the language for UI labels and messages)</FormHelperText>
+                >{localize("preferences.userInterfaceLanguageTip")}</FormHelperText>
             </FormControl>
           </FormControl>
         </DialogContent>
         <DialogActions classes={{ root: classes.dialogActions }}>
           <Button onClick={() => dispatch(hideModal())}>
-            Cancel
+            {localize("preferences.cancel")}
           </Button>
           <Button onClick={this.savePrefs} variant="contained" color="secondary">
-            Save
+            {localize("preferences.save")}
           </Button>
         </DialogActions>
       </Dialog>

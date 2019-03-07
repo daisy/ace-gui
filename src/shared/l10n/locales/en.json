@@ -34,5 +34,18 @@
         "quit": "Quit",
         "minimize": "Minimize",
         "bringToFront": "Bring All to Front"
+    },
+    "preferences": {
+        "title": "Ace Preferences",
+        "cancel": "Cancel",
+        "save": "Save",
+        "internalReportStorage": "Internal Report Storage",
+        "reportsDataDirectory": "Reports Data Directory",
+        "reportsDataDirectoryButton": "Browse",
+        "reportsDataDirectoryTip": "(where Ace stores reports internally)",
+        "overwriteExistingReports": "Overwrite existing reports",
+        "overwriteExistingReportsTip": "(allow writing new reports over previous ones?)",
+        "userInterfaceLanguage": "User Interface Language",
+        "userInterfaceLanguageTip": "(select the language for UI labels and messages)"
     }
 }
