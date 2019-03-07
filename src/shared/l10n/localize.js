@@ -3,9 +3,6 @@ import * as i18n from 'i18next';
 import * as enJson from "./locales/en.json";
 import * as frJson from "./locales/fr.json";
 
-// console.log(JSON.stringify(enJson, null, "    "));
-// console.log(JSON.stringify(frJson, null, "    "));
-
 export const LANGUAGES = {
     en: "English",
     fr: "Français",
@@ -16,7 +13,7 @@ export const DEFAULT_LANGUAGE = "en";
 
 // https://www.i18next.com/overview/configuration-options
 i18n.init({
-    debug: true,
+    debug: false,
     resources: {
         en: {
             translation: enJson.default || enJson,

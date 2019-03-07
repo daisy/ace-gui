@@ -9,48 +9,50 @@ import {selectTab} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 import * as AboutBoxHelper from './../shared/helpers/about';
 
-import {DEFAULT_LANGUAGE, getCurrentLanguage, setCurrentLanguage, localize} from './../shared/l10n/localize';
+import {getCurrentLanguage, localize} from './../shared/l10n/localize';
 
 export default class MenuBuilder {
 
   constructor(mainWindow, store) {
     this.mainWindow = mainWindow;
     this.store = store;
-    const initLanguage = this.store.getState().preferences.language || DEFAULT_LANGUAGE;
-    setCurrentLanguage(initLanguage);
     this.stateValues = {
       isReportOpen: false,
       ready: true,
+
+      language: getCurrentLanguage() // this.store.getState().preferences.language
     };
+  }
 
-    // listen for when a report is open, and language change
-    this.store.subscribe(() => {
-      let needsRefresh = false;
-      let needsRebuild = false;
+  // store.subscribe(() => { ... });
+  // storeHasChanged() is called AFTER the central store.subscribe() in store-persist.js (initialized from main.js)
+  // this ensures that app-wide UI language is ready in localizer
+  storeHasChanged() {
+    let needsRefresh = false;
+    let needsRebuild = false;
 
-      const currLanguage = getCurrentLanguage();
-      const newLanguage = this.store.getState().preferences.language;
-      if (newLanguage && newLanguage !== currLanguage) {
-        setCurrentLanguage(newLanguage);
-        needsRebuild = true;
-      }
+    const currLanguage = this.stateValues.language;
+    const newLanguage = getCurrentLanguage(); // this.store.getState().preferences.language
+    if (newLanguage !== currLanguage) {
+      this.stateValues.language = newLanguage;
+      needsRebuild = true;
+    }
 
-      let currIsReportOpen = this.stateValues.isReportOpen;
-      let currReady = this.stateValues.ready;
-      let newIsReportOpen = this.store.getState().app.report != null;
-      let newReady = !this.store.getState().app.processing.ace;
-      if (currIsReportOpen != newIsReportOpen || currReady != newReady) {
-        this.stateValues.ready = newReady;
-        this.stateValues.isReportOpen = newIsReportOpen;
-        needsRefresh = true;
-      }
+    let currIsReportOpen = this.stateValues.isReportOpen;
+    let currReady = this.stateValues.ready;
+    let newIsReportOpen = this.store.getState().app.report != null;
+    let newReady = !this.store.getState().app.processing.ace;
+    if (currIsReportOpen != newIsReportOpen || currReady != newReady) {
+      this.stateValues.ready = newReady;
+      this.stateValues.isReportOpen = newIsReportOpen;
+      needsRefresh = true;
+    }
 
-      if (needsRebuild) {
-        this.rebuildMenu(); // calls this.refreshMenuItemsEnabled()
-      } else if (needsRefresh) {
-        this.refreshMenuItemsEnabled();
-      }
-    })
+    if (needsRebuild) {
+      this.rebuildMenu(); // calls this.refreshMenuItemsEnabled()
+    } else if (needsRefresh) {
+      this.refreshMenuItemsEnabled();
+    }
   }
   refreshMenuItemsEnabled() {
     let {isReportOpen, ready} = this.stateValues;

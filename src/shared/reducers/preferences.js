@@ -1,18 +1,10 @@
-/* eslint-disable no-param-reassign */
-const tmp = require('tmp');
-
 import {
   SAVE_PREFS,
 } from '../actions/preferences';
 
-const initialState = {
-  language: null,
-  reports: {
-    dir: tmp.dirSync({ unsafeCleanup: true }).name,
-    organize: true,
-    overwrite: true,
-  }
-};
+import {defaultPreferences} from '../default-preferences';
+
+const initialState = defaultPreferences;
 
 export default function preferences(state = initialState, action) {
   switch (action.type) {

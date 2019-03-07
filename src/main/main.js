@@ -1,13 +1,16 @@
 const { app, BrowserWindow} = require('electron');
 import MenuBuilder from './menu';
-import configureStore from './../shared/store/configureStore';
+
+import {initPersistentStore} from './store-persist';
 
 require('electron-debug')();
 
-const store = configureStore(undefined, 'main');
+const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
+
 let win;
 
 function createWindow() {
+
   win = new BrowserWindow({ show: false });
   win.maximize();
   let sz = win.getSize();
@@ -20,14 +23,21 @@ function createWindow() {
   const menuBuilder = new MenuBuilder(win, store);
   menuBuilder.buildMenu();
 
+  const cb = () => {
+    menuBuilder.storeHasChanged();
+  };
+  storeSubscribe(cb);
+  
   win.loadURL(`file://${__dirname}/index.html`);
 
   win.on('closed', function () {
       win = null;
+      storeUnsubscribe(cb);
   });
 }
 
-app.setAccessibilitySupportEnabled(true);
+// Is enabled automatically when screen reader is detected
+// app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', createWindow);
 
@@ -46,5 +56,4 @@ app.on('activate', function () {
 });
 
 app.on('before-quit', function() {
-  // TODO persist anything that needs persisting
 });

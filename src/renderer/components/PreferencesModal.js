@@ -19,6 +19,10 @@ import {showFolderBrowseDialog} from "../../shared/helpers/fileDialogs";
 import { hideModal } from './../../shared/actions/modal';
 import { savePreferences } from './../../shared/actions/preferences';
 
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import {LANGUAGES, getCurrentLanguage} from './../../shared/l10n/localize';
+
 const styles = theme => ({
   paper: {
     'width': '50vw',
@@ -70,6 +74,7 @@ const styles = theme => ({
   }
 });
 
+
 class PreferencesModal extends React.Component {
 
   static propTypes = {
@@ -92,6 +97,16 @@ class PreferencesModal extends React.Component {
     this.setState(newState);
   };
 
+  handleChangeLanguage = arg => (event) => {
+    const msg = `##### RENDERER PROCESS - handleChangeLanguage: ${event.target.value}`;
+    console.log(msg);
+    process.stdout.write(msg + '\n');
+    const newState = {
+      "language": event.target.value
+    };
+    this.setState(newState);
+  };
+
   selectReportDir = () => {
     showFolderBrowseDialog(dir => {
       this.setState({
@@ -111,6 +126,13 @@ class PreferencesModal extends React.Component {
   }
 
   render() {
+
+    let currentLanguage = this.state.language || getCurrentLanguage();
+
+    // const msg = `##### RENDERER PROCESS - this.props/state: \n${JSON.stringify(this.props, null, "   ")}\n\n${JSON.stringify(this.state, null, "   ")}\n`;
+    // console.log(msg);
+    // process.stdout.write(msg + '\n');
+
     const {classes, dispatch, modalType} = this.props;
 
     return (
@@ -188,6 +210,29 @@ class PreferencesModal extends React.Component {
                 variant='outlined'
                 classes={{ contained: classes.checkboxControlHelperText }}
                 >(allow writing new reports over previous ones?)</FormHelperText>
+            </FormControl>
+          </FormControl>
+
+          <FormControl variant="outlined" margin="dense" fullWidth
+          classes={{ root: classes.prefsGroup }}
+          >
+            <Typography variant="subheading">User Interface Language</Typography>
+            <FormControl aria-describedby='preferences-dialog-user-interface-language-helper-text'
+              margin="dense">
+              <Select
+                value={currentLanguage}
+                onChange={this.handleChangeLanguage()}
+                displayEmpty
+                name="language"
+              >
+                <MenuItem value={"en"}>English</MenuItem>
+                <MenuItem value={"fr"}>Francais</MenuItem>
+              </Select>
+              <FormHelperText 
+                id="preferences-dialog-user-interface-language-helper-text"
+                variant='outlined'
+                classes={{ contained: classes.checkboxControlHelperText }}
+                >(select the language for UI labels and messages)</FormHelperText>
             </FormControl>
           </FormControl>
         </DialogContent>
