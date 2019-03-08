@@ -56,5 +56,13 @@
         "settings": "Préférences",
         "minimize": "Minimizer le Menu Latéral",
         "maximize": "Maximizer le Menu Latéral"
+    },
+    "splash": {
+        "title": "Ace, par DAISY",
+        "dropHere": "Déposer un fichier EPUB ou un répertoire ici,",
+        "orDropSidebar": "ou sur le bouton __ dans le menu latéral,",
+        "or": "ou",
+        "clickToBrowse": "cliquer pour choisir.",
+        "browseForFileOrFolder": "choisir un __fichier__ ou un __répertoire__."
     }
 }

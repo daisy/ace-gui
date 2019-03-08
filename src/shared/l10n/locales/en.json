@@ -56,5 +56,13 @@
         "settings": "Settings",
         "minimize": "Minimize Sidebar",
         "maximize": "Maximize Sidebar"
+    },
+    "splash": {
+        "title": "Ace, by DAISY",
+        "dropHere": "Drop an EPUB file or directory here,",
+        "orDropSidebar": "or on the __ button in the sidebar,",
+        "or": "or",
+        "clickToBrowse": "click to browse.",
+        "browseForFileOrFolder": "browse for a __file__ or a __folder__ ."
     }
 }
