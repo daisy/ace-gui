@@ -101,6 +101,16 @@
             "moderate": "Modéré",
             "minor": "Mineur",
             "total": "Total"
+        },
+        "violationsSection": {
+            "impact": "Impact",
+            "noViolations": "Pas de violations.",
+            "ruleset": "Catégorie de Règles",
+            "rule": "Règles",
+            "location": "Référence",
+            "details": "Détails",
+            "learnAbout": "En savoir plus:",
+            "via": "Via:"
         }
     },
     "enhancedTable": {

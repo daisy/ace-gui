@@ -101,6 +101,16 @@
             "moderate": "Moderate",
             "minor": "Minor",
             "total": "Total"
+        },
+        "violationsSection": {
+            "impact": "Impact",
+            "noViolations": "No violations reported.",
+            "ruleset": "Ruleset",
+            "rule": "Rule",
+            "location": "Location",
+            "details": "Details",
+            "learnAbout": "Learn about:",
+            "via": "Via:"
         }
     },
     "enhancedTable": {

@@ -4,6 +4,8 @@ import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 const {shell} = require('electron');
 
+import {localize} from './../../../shared/l10n/localize';
+
 // the violations page of the report
 export default class Violations extends React.Component {
 
@@ -35,7 +37,7 @@ export default class Violations extends React.Component {
     const heads = [
       {
         id: "impact",
-        label: "Impact",
+        label: localize("report.violationsSection.impact"),
         numeric: false,
         sortable: true,
         sortOn: impact => impactOrder.indexOf(impact),
@@ -47,7 +49,7 @@ export default class Violations extends React.Component {
       },
       {
         id: "rulesetTag",
-        label: "Ruleset",
+        label: localize("report.violationsSection.ruleset"),
         numeric: false,
         sortable: true,
         filterOn: obj => obj,
@@ -56,7 +58,7 @@ export default class Violations extends React.Component {
       },
       {
         id: "rule",
-        label: "Rule",
+        label: localize("report.violationsSection.rule"),
         numeric: false,
         sortable: true,
         sortOn: rule => rule.rule,
@@ -64,12 +66,12 @@ export default class Violations extends React.Component {
         makeCell: (row, idx) =>
           <TableCell key={idx} className="rule">
             <p>{row.rule.rule}</p>
-            <p className="violation-engine">{row.rule.engine}</p>
+            <p className="violation-engine">{localize("report.violationsSection.via")} {row.rule.engine}</p>
           </TableCell>
       },
       {
         id: "location",
-        label: "Location",
+        label: localize("report.violationsSection.location"),
         numeric: false,
         sortable: true,
         sortOn: location => location.filename,
@@ -84,7 +86,7 @@ export default class Violations extends React.Component {
       },
       {
         id: "details",
-        label: "Details",
+        label: localize("report.violationsSection.details"),
         numeric: false,
         sortable: false,
         makeCell: (row, idx) =>
@@ -96,14 +98,14 @@ export default class Violations extends React.Component {
                   );
               })}
             </ul>
-            <p><a className="external-link" onClick={() => this.onExternalLinkClick(row.details.kburl)}>Learn about {row.details.kbtitle}</a></p>
+            <p><a className="external-link" onClick={() => this.onExternalLinkClick(row.details.kburl)}>{localize("report.violationsSection.learnAbout")} {row.details.kbtitle}</a></p>
           </TableCell>
       }
     ];
 
     return (
       <section className="report-section violations">
-        <h2>Violations</h2>
+        <h2>{localize("report.violations")}</h2>
         <EnhancedTable
           rows={violations}
           heads={heads}
@@ -118,7 +120,7 @@ export default class Violations extends React.Component {
           onChangePagination={setTablePagination}
           onExpandFilters={setTableFiltersExpanded}
           />
-        {violations.length == 0 ? <p>No violations reported.</p> : ''}
+        {violations.length == 0 ? <p>{localize("report.violationsSection.noViolations")}</p> : ''}
       </section>
     );
   }
