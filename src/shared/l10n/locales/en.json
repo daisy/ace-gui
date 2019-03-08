@@ -93,6 +93,14 @@
             "toc": "EPUB Table of Contents",
             "headings": "Headings outline",
             "html": "HTML outline"
+        },
+        "summarySection": {
+            "type": "Type",
+            "critical": "Critical",
+            "serious": "Serious",
+            "moderate": "Moderate",
+            "minor": "Minor",
+            "total": "Total"
         }
     },
     "enhancedTable": {

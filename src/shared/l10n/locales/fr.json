@@ -13,7 +13,7 @@
         "exportReport": "Exporter Rapport",
         "closeReport": "Fermer Rapport",
         "toggleFullScreen": "Basculer Plein Ecran",
-        "gotoSummary": "Aller au Sommaire",
+        "gotoSummary": "Aller au Résumé",
         "gotoViolations": "Aller aux Violations",
         "gotoMetadata": "Aller aux Métadonnées",
         "gotoOutlines": "Aller à la Structure",
@@ -67,7 +67,7 @@
     },
     "report": {
         "title": "Report",
-        "summary": "Sommaire",
+        "summary": "Résumé",
         "violations": "Violations",
         "metadata": "Métadonnées",
         "outlines": "Structure",
@@ -93,6 +93,14 @@
             "toc": "Table des Matières EPUB",
             "headings": "Structure d'entêtes",
             "html": "Structure HTML"
+        },
+        "summarySection": {
+            "type": "Type",
+            "critical": "Critique",
+            "serious": "Sérieux",
+            "moderate": "Modéré",
+            "minor": "Mineur",
+            "total": "Total"
         }
     },
     "enhancedTable": {

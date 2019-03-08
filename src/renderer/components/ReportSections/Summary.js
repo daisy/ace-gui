@@ -2,6 +2,8 @@ import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/cor
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import {localize} from './../../../shared/l10n/localize';
+
 // the summary page of the report
 export default class Summary extends React.Component {
 
@@ -13,16 +15,16 @@ export default class Summary extends React.Component {
     let {summary} = this.props;
     return (
       <section className="report-section summary">
-        <h2>Summary</h2>
+        <h2>{localize("report.summary")}</h2>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Type</TableCell>
-              <TableCell>Critical</TableCell>
-              <TableCell>Serious</TableCell>
-              <TableCell>Moderate</TableCell>
-              <TableCell>Minor</TableCell>
-              <TableCell>Total</TableCell>
+              <TableCell>{localize("report.summarySection.type")}</TableCell>
+              <TableCell>{localize("report.summarySection.critical")}</TableCell>
+              <TableCell>{localize("report.summarySection.serious")}</TableCell>
+              <TableCell>{localize("report.summarySection.moderate")}</TableCell>
+              <TableCell>{localize("report.summarySection.minor")}</TableCell>
+              <TableCell>{localize("report.summarySection.total")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
