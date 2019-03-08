@@ -4,6 +4,8 @@ import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 const path = require('path');
 
+import {localize} from './../../../shared/l10n/localize';
+
 // the images page of the report
 export default class Images extends React.Component {
 
@@ -36,7 +38,7 @@ export default class Images extends React.Component {
     const heads = [
       {
         id: 'image',
-        label: "Image",
+        label: localize("report.imagesSection.image"),
         numeric: false,
         sortable: false,
         makeCell: (row, idx) =>
@@ -44,31 +46,31 @@ export default class Images extends React.Component {
       },
       {
         id: 'alt',
-        label: <span><code>alt</code> attribute</span>,
+        label: localize("report.imagesSection.altAttribute"),
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.alt ? row.alt : "N/A"}</TableCell>
+          <TableCell key={idx}>{row.alt ? row.alt : localize("report.imagesSection.NA")}</TableCell>
       },
       {
         id: 'describedby',
-        label: <span><code>aria-describedby</code> content</span>,
+        label: localize("report.imagesSection.ariaDescribedbyContent"),
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.describedby ? row.describedby : "N/A"}</TableCell>
+          <TableCell key={idx}>{row.describedby ? row.describedby : localize("report.imagesSection.NA")}</TableCell>
       },
       {
         id: 'figcaption',
-        label: <span>Associated <code>figcaption</code></span>,
+        label: localize("report.imagesSection.associatedFigcaption"),
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.figcaption ? row.figcaption : "N/A"}</TableCell>
+          <TableCell key={idx}>{row.figcaption ? row.figcaption : localize("report.imagesSection.NA")}</TableCell>
       },
       {
         id: 'location',
-        label: 'Location',
+        label: localize("report.imagesSection.location"),
         numeric: false,
         sortable: true,
         filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj,
@@ -77,19 +79,19 @@ export default class Images extends React.Component {
       },
       {
         id: 'role',
-        label: 'Role',
+        label: localize("report.imagesSection.role"),
         numeric: false,
         sortable: true,
         filterOn: obj => obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.role ? row.role : "N/A"}</TableCell>
+          <TableCell key={idx}>{row.role ? row.role : localize("report.imagesSection.NA")}</TableCell>
       }
     ];
 
 
     return (
       <section className="report-section images">
-        <h2>Images</h2>
+        <h2>{localize("report.images")}</h2>
         <EnhancedTable
           rows={images}
           heads={heads}
@@ -104,7 +106,7 @@ export default class Images extends React.Component {
           onChangePagination={setTablePagination}
           onExpandFilters={setTableFiltersExpanded}
           />
-          {images.length == 0 ? <p>No images encountered in this publication.</p> : ''}
+          {images.length == 0 ? <p>{localize("report.imagesSection.noImages")}</p> : ''}
       </section>
     );
   }

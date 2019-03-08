@@ -64,5 +64,23 @@
         "or": "or",
         "clickToBrowse": "click to browse.",
         "browseForFileOrFolder": "browse for a __file__ or a __folder__ ."
+    },
+    "report": {
+        "title": "Report",
+        "summary": "Summary",
+        "violations": "Violations",
+        "metadata": "Metadata",
+        "outlines": "Outlines",
+        "images": "Images",
+        "imagesSection": {
+            "noImages": "No images encountered in this publication.",
+            "NA": "N/A",
+            "role": "Role",
+            "location": "Location",
+            "associatedFigcaption": "Associated 'figcaption'",
+            "ariaDescribedbyContent": "'aria-describedby' content",
+            "altAttribute": "'alt' attribute",
+            "image": "Image"
+        }
     }
 }

@@ -16,7 +16,7 @@
         "gotoSummary": "Aller au Sommaire",
         "gotoViolations": "Aller aux Violations",
         "gotoMetadata": "Aller aux Métadonnées",
-        "gotoOutlines": "Aller aux tables de contenus",
+        "gotoOutlines": "Aller à la Structure",
         "gotoImages": "Aller aux Images",
         "showInFinder": "Montrer dans Finder (explorateur de fichiers)",
         "showInExplorer": "Montrer dans l'Explorateur de fichiers",
@@ -64,5 +64,23 @@
         "or": "ou",
         "clickToBrowse": "cliquer pour choisir.",
         "browseForFileOrFolder": "choisir un __fichier__ ou un __répertoire__."
+    },
+    "report": {
+        "title": "Report",
+        "summary": "Sommaire",
+        "violations": "Violations",
+        "metadata": "Métadonnées",
+        "outlines": "Structure",
+        "images": "Images",
+        "imagesSection": {
+            "noImages": "Pas d'images dans cette publication.",
+            "NA": "Non renseigné",
+            "role": "Rôle",
+            "location": "Positionement",
+            "associatedFigcaption": "'figcaption' associée",
+            "ariaDescribedbyContent": "contenu 'aria-describedby'",
+            "altAttribute": "Attribut 'alt'",
+            "image": "Image"
+        }
     }
 }

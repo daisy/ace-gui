@@ -4,7 +4,7 @@ import Metadata from './../../components/ReportSections/Metadata';
 import * as ReportViewActions from './../../../shared/actions/reportView';
 
 const mapStateToProps = state => {
-  let {app: {report}, reportView: {filters, sort, pagination, expandFilters}} = state;
+  let {app: {report}, reportView: {filters, sort, pagination, expandFilters}, preferences: {language}} = state;
   let rows = [];
   let metadata = report['earl:testSubject'].metadata;
   let links = report['earl:testSubject']['links'];
@@ -26,6 +26,7 @@ const mapStateToProps = state => {
   }
 
   return {
+    language,
     metadata: rows,
     a11ymetadata: a11ymeta,
     filters: filters['metadata'],
