@@ -81,6 +81,13 @@
             "ariaDescribedbyContent": "contenu 'aria-describedby'",
             "altAttribute": "Attribut 'alt'",
             "image": "Image"
+        },
+        "metadataSection": {
+            "name": "Nom",
+            "value": "Valeur",
+            "a11y": "Accessibilité",
+            "allPresent": "Toutes les métadonnées requises sont présentes.",
+            "missing": "Métadonnées d'accessibilité manquantes:"
         }
     },
     "enhancedTable": {
