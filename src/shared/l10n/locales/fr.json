@@ -76,11 +76,15 @@
             "noImages": "Pas d'images dans cette publication.",
             "NA": "Non renseigné",
             "role": "Rôle",
-            "location": "Positionement",
+            "location": "Référence",
             "associatedFigcaption": "'figcaption' associée",
             "ariaDescribedbyContent": "contenu 'aria-describedby'",
             "altAttribute": "Attribut 'alt'",
             "image": "Image"
         }
+    },
+    "enhancedTable": {
+        "filterBy": "Filtrer Par",
+        "sortBy": "Trier Par: "
     }
 }

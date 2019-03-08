@@ -16,6 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
+import {localize} from './../../../shared/l10n/localize';
+
 function desc(a, b, orderBy, head) {
   let aValue = head.hasOwnProperty('sortOn') ? head.sortOn(a[orderBy]) : a[orderBy];
   let bValue = head.hasOwnProperty('sortOn') ? head.sortOn(b[orderBy]) : b[orderBy];
@@ -170,7 +172,7 @@ export default class EnhancedTable extends React.Component {
           classes={{expanded: 'expanded'}}
           onChange={(e, v) => this.onChangeExpanded(v)}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Filter by</Typography>
+            <Typography>{localize("enhancedTable.filterBy")}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className="table-filters">
             {filters.map((filter, idx) =>
@@ -200,7 +202,7 @@ export default class EnhancedTable extends React.Component {
                   sortDirection={head.sortable && orderBy === head.id ? order : false}>
                   {head.sortable ?
                   <Tooltip
-                  title={'Sort by ' + head.label}
+                  title={localize("enhancedTable.sortBy") + head.label}
                   placement={'bottom-start'}
                   enterDelay={300}>
                     <TableSortLabel

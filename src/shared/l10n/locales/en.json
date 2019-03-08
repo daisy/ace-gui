@@ -82,5 +82,9 @@
             "altAttribute": "'alt' attribute",
             "image": "Image"
         }
+    },
+    "enhancedTable": {
+        "filterBy": "Filter By",
+        "sortBy": "Sort By: "
     }
 }
