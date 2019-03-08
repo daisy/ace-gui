@@ -85,6 +85,13 @@
     },
     "enhancedTable": {
         "filterBy": "Filter By",
-        "sortBy": "Sort By: "
+        "sortBy": "Sort By: ",
+        "rowsPerPage": "Rows per page:"
+    },
+    "tablePagination": {
+        "firstPage": "First Page",
+        "lastPage": "Last Page",
+        "previousPage": "Previous Page",
+        "nextPage": "Next Page"
     }
 }

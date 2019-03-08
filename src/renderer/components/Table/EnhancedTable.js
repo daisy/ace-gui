@@ -249,6 +249,8 @@ export default class EnhancedTable extends React.Component {
               onChangePage={this.onChangePage}
               onChangeRowsPerPage={this.onChangeRowsPerPage}
               ActionsComponent={TablePaginationActionsWrapped}
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
+              labelRowsPerPage={localize("enhancedTable.rowsPerPage")}
             />
           </TableRow>
         </TableFooter>
