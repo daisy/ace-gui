@@ -88,6 +88,11 @@
             "a11y": "Accessibilité",
             "allPresent": "Toutes les métadonnées requises sont présentes.",
             "missing": "Métadonnées d'accessibilité manquantes:"
+        },
+        "outlinesSection": {
+            "toc": "Table des Matières EPUB",
+            "headings": "Structure d'entêtes",
+            "html": "Structure HTML"
         }
     },
     "enhancedTable": {

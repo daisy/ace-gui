@@ -2,6 +2,8 @@ import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import {localize} from './../../../shared/l10n/localize';
+
 // the outlines page of the report
 export default class Outlines extends React.Component {
 
@@ -13,19 +15,19 @@ export default class Outlines extends React.Component {
     let {outlines} = this.props;
     return (
       <section className="report-section outlines">
-        <h2>Outlines</h2>
+        <h2>{localize("report.outlines")}</h2>
         <Grid container spacing={24}>
           <Grid item xs>
-            <h3>EPUB Table of Contents</h3>
+            <h3>{localize("report.outlinesSection.toc")}</h3>
             <div dangerouslySetInnerHTML={createMarkup(outlines.toc)}/>
           </Grid>
           <Grid item xs>
-            <h3>Headings outline</h3>
+            <h3>{localize("report.outlinesSection.headings")}</h3>
             <div dangerouslySetInnerHTML={createMarkup(outlines.headings)}/>
           </Grid>
 
           <Grid item xs>
-            <h3>HTML outline</h3>
+            <h3>{localize("report.outlinesSection.html")}</h3>
             <div dangerouslySetInnerHTML={createMarkup(outlines.html)}/>
           </Grid>
         </Grid>
