@@ -135,5 +135,18 @@
         "closedreport": "Rapport fermé {{reportPath}}",
         "loadedreport": "Rapport ouvert {{reportPath}}",
         "loadfailreport": "ERREUR: Impossible de charger {{p}}"
+    },
+    "dialog": {
+        "savereport": "Sauver le Rapport",
+        "ziparchive": "Archive Zip",
+        "choosedir": "Choisir un répertoire",
+        "select": "Sélectionner",
+        "allfiles": "Tous les fichiers",
+        "chooseepub": "Choisir un fichier ou répertoire EPUB",
+        "chooseepubfile": "Choisir un fichier EPUB",
+        "chooseepubdir": "Choisir un répertoire EPUB",
+        "check": "Vérifier",
+        "open": "Ouvrir",
+        "choosereport": "Choisir un rapport Ace"
     }
 }

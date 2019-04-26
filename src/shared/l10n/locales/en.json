@@ -135,5 +135,18 @@
         "closedreport": "Closed report {{reportPath}}",
         "loadedreport": "Loaded report {{reportPath}}",
         "loadfailreport": "ERROR: Could not open {{p}}"
+    },
+    "dialog": {
+        "savereport": "Save Report",
+        "ziparchive": "Zip Archive",
+        "choosedir": "Choose a directory",
+        "select": "Select",
+        "allfiles": "All Files",
+        "chooseepub": "Choose an EPUB file or folder",
+        "chooseepubfile": "Choose an EPUB file",
+        "chooseepubdir": "Choose an EPUB directory",
+        "check": "Check",
+        "open": "Open",
+        "choosereport": "Choose an Ace report"
     }
 }
