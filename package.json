@@ -47,7 +47,14 @@
     "postinstall": "electron-builder install-app-deps",
     "release": "build -mw -p always",
     "start": "node build/start.js",
-    "test": "echo TODO test the app"
+    "test": "echo TODO test the app",
+    "__replace-ace-packages": "npm run __rap1 && npm run __rap2 && npm run __rap3 && npm run __rap4 && npm run __rap5 && npm run __rap6",
+    "__rap1": "rimraf \"node_modules/@daisy/puppeteer-utils/lib/**/*\" && cpy --cwd=\"../ace/packages/puppeteer-utils/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/puppeteer-utils/lib/\"",
+    "__rap2": "rimraf \"node_modules/@daisy/epub-utils/lib/**/*\" && cpy --cwd=\"../ace/packages/epub-utils/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/epub-utils/lib/\"",
+    "__rap3": "rimraf \"node_modules/@daisy/ace-report-axe/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-report-axe/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-report-axe/lib/\"",
+    "__rap4": "rimraf \"node_modules/@daisy/ace-report/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-report/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-report/lib/\"",
+    "__rap5": "rimraf \"node_modules/@daisy/ace-core/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-core/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-core/lib/\"",
+    "__rap6": "rimraf \"node_modules/@daisy/ace-config/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-config/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-config/lib/\""
   },
   "dependencies": {
     "@daisy/ace-config": "^1.0.0",
@@ -82,6 +89,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
     "chalk": "^2.4.1",
+    "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "devtron": "^1.4.0",
