@@ -10,6 +10,8 @@ import {
   PROCESSING_TYPE,
 } from '../actions/app';
 
+import {localize} from '../l10n/localize';
+
 const initialState = {
   inputPath: null,
   report: null,
@@ -33,7 +35,7 @@ export default function app(state = initialState, action) {
     }
     case CLOSE_REPORT: {
       let recents = addToRecents(state.reportPath, state.recents);
-      let messages = [...state.messages, `Closed report ${state.reportPath}`];
+      let messages = [...state.messages, localize("message.closedreport", {reportPath: state.reportPath, interpolation: { escapeValue: false }})];
       return {
         ...state,
         recents,
@@ -51,7 +53,7 @@ export default function app(state = initialState, action) {
           inputPath = path.resolve(reportPath, report['earl:testSubject'].url);
           if (!fs.existsSync(inputPath)) inputPath = null;
         }
-        let messages = [...state.messages, `Loaded report ${reportPath}`];
+        let messages = [...state.messages, localize("message.loadedreport", {reportPath, interpolation: { escapeValue: false }})];
         return {
           ...state,
           inputPath,
@@ -61,7 +63,7 @@ export default function app(state = initialState, action) {
         };
       }
       catch(error) {
-        let messages = [...state.messages, error, `ERROR: Could not open ${action.payload}`];
+        let messages = [...state.messages, error, localize("message.loadfailreport", {p: action.payload.reportPath, interpolation: { escapeValue: false }})];
         return {
           ...state,
           messages

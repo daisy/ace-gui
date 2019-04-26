@@ -123,5 +123,17 @@
         "lastPage": "Last Page",
         "previousPage": "Previous Page",
         "nextPage": "Next Page"
+    },
+    "message": {
+        "filetypenotsupported": "ERROR: File type of {{filepath}} not supported",
+        "runningace": "Running Ace on {{inputPath}}",
+        "checkcomplete": "Ace check complete",
+        "savingreport": "Saving report to {{outfile}} ...",
+        "savedreport": "Saved report to {{outfile}}",
+        "failsavereport": "ERROR: couldn't save report to {{outfile}}",
+        "overwrite": "Output directory is not empty. Running Ace would overwrite the following files or directories: \n{{val}}.\nEnable the option 'Overwrite' to allow this.",
+        "closedreport": "Closed report {{reportPath}}",
+        "loadedreport": "Loaded report {{reportPath}}",
+        "loadfailreport": "ERROR: Could not open {{p}}"
     }
 }

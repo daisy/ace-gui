@@ -14,7 +14,7 @@ export function initPersistentStore() {
         process.env.DEBUG_PROD === 'true'
     ) {
         console.log(`electronStore.path: ${electronStore.path}`);
-        electronStore.openInEditor();
+        // electronStore.openInEditor();
     }
 
     const reportsOrganize = electronStore.get('reports.organize');

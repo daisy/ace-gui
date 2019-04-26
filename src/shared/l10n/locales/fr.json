@@ -123,5 +123,17 @@
         "lastPage": "Dernière Page",
         "previousPage": "Page Précédente",
         "nextPage": "Page Suivante"
+    },
+    "message": {
+        "filetypenotsupported": "ERREUR: Type de fichier non supporté {{filepath}}",
+        "runningace": "Lancement de Ace sur {{inputPath}}",
+        "checkcomplete": "Vérification Ace terminée",
+        "savingreport": "Sauvegarde du rapport dans {{outfile}} ...",
+        "savedreport": "Rapport sauvegardé dans {{outfile}}",
+        "failsavereport": "ERREUR: échec de sauvegarde du rapport dans {{outfile}}",
+        "overwrite": "Le répertoire de sauvegarde n'est pas vide. Ace doit pouvoir écraser les répertoires ou fichiers suivant: \n{{val}}.\nConfigurer l'option 'Ecraser' pour autoriser ceci.",
+        "closedreport": "Rapport fermé {{reportPath}}",
+        "loadedreport": "Rapport ouvert {{reportPath}}",
+        "loadfailreport": "ERREUR: Impossible de charger {{p}}"
     }
 }
