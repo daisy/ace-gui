@@ -44,7 +44,7 @@ export default class Violations extends React.Component {
         filterOn: obj => obj,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="impact">
-            <span className={row.impact}>{row.impact}</span>
+            <span className={row.impact}>{localize(`report.summarySection.${row.impact}`)}</span>
           </TableCell>
       },
       {
