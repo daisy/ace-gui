@@ -66,7 +66,7 @@
         "browseForFileOrFolder": "choisir un __fichier__ ou un __répertoire__."
     },
     "report": {
-        "title": "Report",
+        "title": "Rapport",
         "summary": "Résumé",
         "violations": "Violations",
         "metadata": "Métadonnées",
