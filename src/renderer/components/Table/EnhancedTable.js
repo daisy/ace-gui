@@ -174,6 +174,31 @@ export default class EnhancedTable extends React.Component {
     const filteredRows = this.filterRows();
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
+    // ensure correct language
+    filters.forEach((filter) => {
+      let head = this.props.heads.find(h => h.id === filter.id);
+      if (!head) {
+        return;
+      }
+      const ignoreMissingKey = (head.l10n && head.l10n.ignoreMissingKey) ? true : false;
+      if (filter.options) {
+        filter.options.forEach((option) => {
+          option.label = head.l10n ?
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(option.value, {ignoreMissingKey})) :
+            option.value;
+          console.log(option.label);
+        });
+      }
+      if (filter.values) {
+        filter.values.forEach((value) => {
+          value.label = head.l10n ?
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + value.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(value.value, {ignoreMissingKey})) :
+            value.value;
+          console.log(value.label);
+        });
+      }
+    });
+
     return (
       <div>
       {filters.length > 0 ?
