@@ -4,7 +4,8 @@ import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 const {shell} = require('electron');
 
-import {localize} from './../../../shared/l10n/localize';
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
 
 // the violations page of the report
 export default class Violations extends React.Component {
@@ -34,8 +35,13 @@ export default class Violations extends React.Component {
       setTablePagination,
       setTableFiltersExpanded} = this.props;
     const impactOrder = ['minor', 'moderate', 'serious', 'critical'];
+    const keyPrefix = "report.summarySection.";
     const heads = [
       {
+        l10n: {
+          keyPrefix: keyPrefix,
+          ignoreMissingKey: false,
+        },
         id: "impact",
         label: localize("report.violationsSection.impact"),
         numeric: false,
@@ -44,17 +50,21 @@ export default class Violations extends React.Component {
         filterOn: obj => obj,
         makeCell: (row, idx) =>
           <TableCell key={idx} className="impact">
-            <span className={row.impact}>{localize(`report.summarySection.${row.impact}`)}</span>
+            <span className={row.impact}>{localize(`${keyPrefix}${row.impact}`, {ignoreMissingKey: false}).replace(keyPrefix, "")}</span>
           </TableCell>
       },
       {
+        l10n: {
+          keyPrefix: keyPrefix,
+          ignoreMissingKey: true,
+        },
         id: "rulesetTag",
         label: localize("report.violationsSection.ruleset"),
         numeric: false,
         sortable: true,
         filterOn: obj => obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="ruleset">{row.rulesetTag}</TableCell>
+          <TableCell key={idx} className="ruleset">{localize(`${keyPrefix}${row.rulesetTag}`, {ignoreMissingKey: true}).replace(keyPrefix, "")}</TableCell>
       },
       {
         id: "rule",

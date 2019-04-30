@@ -5,12 +5,13 @@ import React from 'react'
 import configureStore from './../shared/store/configureStore';
 import {render} from 'react-dom'
 
-import {DEFAULT_LANGUAGE, setCurrentLanguage} from './../shared/l10n/localize';
+import { localizer } from './../shared/l10n/localize';
+const { getDefaultLanguage, setCurrentLanguage } = localizer;
 
 const initialState = getInitialStateRenderer();
 const store = configureStore(initialState, 'renderer');
 
-const initLanguage = store.getState().preferences.language || DEFAULT_LANGUAGE;
+const initLanguage = store.getState().preferences.language || getDefaultLanguage();
 setCurrentLanguage(initLanguage);
 
 store.subscribe(() => {

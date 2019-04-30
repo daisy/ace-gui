@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 
-import {localize} from './../../../shared/l10n/localize';
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
 
 // the metadata page of the report
 export default class Metadata extends React.Component {

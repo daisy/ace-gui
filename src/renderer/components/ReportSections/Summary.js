@@ -2,7 +2,8 @@ import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/cor
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import {localize} from './../../../shared/l10n/localize';
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
 
 // the summary page of the report
 export default class Summary extends React.Component {
@@ -13,6 +14,7 @@ export default class Summary extends React.Component {
 
   render() {
     let {summary} = this.props;
+    const keyPrefix = "report.summarySection.";
     return (
       <section className="report-section summary">
         <h2>{localize("report.summary")}</h2>
@@ -31,7 +33,7 @@ export default class Summary extends React.Component {
             {Object.keys(summary).map((key, idx) => {
               return (
                 <TableRow key={idx}>
-                  <TableCell>{key}</TableCell>
+                  <TableCell>{localize(keyPrefix+key, {ignoreMissingKey: true}).replace(keyPrefix, "")}</TableCell>
                   <TableCell>{summary[key]['critical']}</TableCell>
                   <TableCell>{summary[key]['serious']}</TableCell>
                   <TableCell>{summary[key]['moderate']}</TableCell>

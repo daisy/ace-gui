@@ -26,7 +26,8 @@ import {showPreferences} from './../../shared/actions/preferences';
 import * as AppActions from './../../shared/actions/app';
 import * as FileDialogHelpers from "../../shared/helpers/fileDialogs";
 
-import {localize} from './../../shared/l10n/localize';
+import { localizer } from './../../shared/l10n/localize';
+const { localize } = localizer;
 
 const drawerWidth = 240;
 

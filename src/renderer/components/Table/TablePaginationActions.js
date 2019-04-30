@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
-import {localize} from './../../../shared/l10n/localize';
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
 
 const actionsStyles = theme => ({
   root: {

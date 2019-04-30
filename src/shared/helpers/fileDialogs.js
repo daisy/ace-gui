@@ -3,7 +3,8 @@ const electron = require('electron');
 const dialog = electron.dialog || electron.remote.dialog;
 const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
 
-const {localize} = require('../l10n/localize');
+const { localizer } = require('../l10n/localize');
+const { localize } = localizer;
 
 module.exports = {
   showExportReportDialog: callback => {

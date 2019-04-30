@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
 const tmp = require('tmp');
 
-import {DEFAULT_LANGUAGE} from './l10n/localize';
+import { localizer } from './l10n/localize';
+const { getDefaultLanguage } = localizer;
 
 export const defaultPreferences = {
-  language: DEFAULT_LANGUAGE,
+  language: getDefaultLanguage(),
   reports: {
     dir: tmp.dirSync({ unsafeCleanup: true }).name,
     organize: true,

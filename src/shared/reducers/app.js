@@ -10,7 +10,8 @@ import {
   PROCESSING_TYPE,
 } from '../actions/app';
 
-import {localize} from '../l10n/localize';
+import { localizer } from '../l10n/localize';
+const { localize } = localizer;
 
 const initialState = {
   inputPath: null,

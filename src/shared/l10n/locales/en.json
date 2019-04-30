@@ -100,6 +100,8 @@
             "serious": "Serious",
             "moderate": "Moderate",
             "minor": "Minor",
+            "best-practice": "Best Practice",
+            "other": "Other",
             "total": "Total"
         },
         "violationsSection": {

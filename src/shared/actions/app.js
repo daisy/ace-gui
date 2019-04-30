@@ -3,9 +3,8 @@ import fs from 'fs';
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';
 
-import {getCurrentLanguage} from '../l10n/localize';
-
-import {localize} from '../l10n/localize';
+import { localizer } from '../l10n/localize';
+const { getCurrentLanguage, localize } = localizer;
 
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";

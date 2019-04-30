@@ -16,7 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
-import {localize} from './../../../shared/l10n/localize';
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
 
 function desc(a, b, orderBy, head) {
   let aValue = head.hasOwnProperty('sortOn') ? head.sortOn(a[orderBy]) : a[orderBy];
@@ -84,18 +85,28 @@ export default class EnhancedTable extends React.Component {
   };
 
   state = {
-    filters: Object.keys(this.props.filters).map(key => ({
+    filters: Object.keys(this.props.filters).map(key => {
+      let head = this.props.heads.find(h => h.id === key);
+      return {
       ...this.props.filters[key],
       id: key,
       options: this.props.rows.reduce(
         (uniqueValues, row) => {
-          let head = this.props.heads.find(h => h.id === key);
           let rowValue = head.filterOn(row[key]);
           return rowValue != null && uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
         },
       [])
-      .map(option => {return {value: option, label: option}; } ),
-      }))
+      .map(option => {
+        const ignoreMissingKey = (head.l10n && head.l10n.ignoreMissingKey) ? true : false;
+        return {
+          value: option,
+          label: head.l10n ?
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(option, {ignoreMissingKey})) :
+            option
+        };
+      })
+      ,
+      };})
       .reduce((activeFilters, filter) =>
         filter.options.length != 0 ? activeFilters.concat(filter) : activeFilters, []) // don't include filters with no options
   };
@@ -175,8 +186,8 @@ export default class EnhancedTable extends React.Component {
             <Typography>{localize("enhancedTable.filterBy")}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className="table-filters">
-            {filters.map((filter, idx) =>
-              <Select
+            {filters.map((filter, idx) => 
+            <Select
                 key={idx}
                 options={filter.options}
                 value={filter.values}

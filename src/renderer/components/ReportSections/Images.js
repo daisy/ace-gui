@@ -4,7 +4,8 @@ import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 const path = require('path');
 
-import {localize} from './../../../shared/l10n/localize';
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
 
 // the images page of the report
 export default class Images extends React.Component {

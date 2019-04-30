@@ -9,7 +9,8 @@ import {selectTab} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 import * as AboutBoxHelper from './../shared/helpers/about';
 
-import {getCurrentLanguage, localize} from './../shared/l10n/localize';
+import { localizer } from './../shared/l10n/localize';
+const { getCurrentLanguage, localize } = localizer;
 
 export default class MenuBuilder {
 

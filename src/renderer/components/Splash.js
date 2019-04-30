@@ -9,7 +9,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { withStyles } from '@material-ui/core/styles';
 
-import {localize} from './../../shared/l10n/localize';
+import { localizer } from './../../shared/l10n/localize';
+const { localize } = localizer;
 
 const styles = theme => ({
   buttonProcessing: {

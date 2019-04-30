@@ -8,7 +8,8 @@ import ImagesContainer from './../containers/ReportSections/ImagesContainer';
 import {Tabs, Tab} from '@material-ui/core';
 import './../styles/Report.scss';
 
-import {localize} from './../../shared/l10n/localize';
+import { localizer } from './../../shared/l10n/localize';
+const { localize } = localizer;
 
 // the report view
 export default class Report extends React.Component {

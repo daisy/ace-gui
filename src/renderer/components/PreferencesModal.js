@@ -21,7 +21,8 @@ import { savePreferences } from './../../shared/actions/preferences';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {LANGUAGES, getCurrentLanguage, localize} from './../../shared/l10n/localize';
+import { localizer } from './../../shared/l10n/localize';
+const { getRawResources, getCurrentLanguage, localize } = localizer;
 
 const styles = theme => ({
   paper: {
@@ -127,9 +128,10 @@ class PreferencesModal extends React.Component {
     let currentLanguage = this.state.language || getCurrentLanguage();
 
     const languageSelectMenuItems = [];
-    const languageKeys = Object.keys(LANGUAGES);
+    const res = getRawResources()
+    const languageKeys = Object.keys(res);
     for (var i = 0; i < languageKeys.length; i++) {
-      languageSelectMenuItems.push(<MenuItem key={i} value={languageKeys[i]}>{LANGUAGES[languageKeys[i]]}</MenuItem>);
+      languageSelectMenuItems.push(<MenuItem key={i} value={languageKeys[i]}>{res[languageKeys[i]].name}</MenuItem>);
     }
 
     const {classes, dispatch, modalType} = this.props;

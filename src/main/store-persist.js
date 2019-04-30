@@ -1,7 +1,8 @@
 
 import configureStore from './../shared/store/configureStore';
 
-import { setCurrentLanguage } from './../shared/l10n/localize';
+import { localizer } from './../shared/l10n/localize';
+const { setCurrentLanguage } = localizer;
 
 import { defaultPreferences } from './../shared/default-preferences';
 
