@@ -35,10 +35,13 @@ function createWindow() {
   win = new BrowserWindow({ show: false });
   win.maximize();
   let sz = win.getSize();
+  const sz0 = sz[0];
+  const sz1 = sz[1];
+  win.unmaximize();
   // open a window that's not quite full screen ... makes sense on mac, anyway
-  win.setSize(Math.min(Math.round(sz[0] * .75),1200), Math.min(Math.round(sz[1] * .85), 800));
+  win.setSize(Math.min(Math.round(sz0 * .75),1200), Math.min(Math.round(sz1 * .85), 800));
   // win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
-  win.setPosition(Math.round(sz[0]*0.5-win.getSize()[0]*0.5), Math.round(sz[1]*0.5-win.getSize()[1]*0.5));
+  win.setPosition(Math.round(sz0*0.5-win.getSize()[0]*0.5), Math.round(sz1*0.5-win.getSize()[1]*0.5));
   win.show();
 
   const menuBuilder = new MenuBuilder(win, store);

@@ -497,7 +497,7 @@ export class KnowledgeBase {
         const template = buildMenuTemplate(this.win);
         this.win.setMenu(Menu.buildFromTemplate(template));
 
-        this.win.maximize();
+        // this.win.maximize();
         // let sz = this.win.getSize();
         // // open a window that's not quite full screen ... makes sense on mac, anyway
         // this.win.setSize(Math.min(Math.round(sz[0] * .75), 1200), Math.min(Math.round(sz[1] * .85), 800));
