@@ -42,7 +42,7 @@ function createWindow() {
   win.show();
 
   const menuBuilder = new MenuBuilder(win, store);
-  menuBuilder.buildMenu();
+  menuBuilder.buildMenu(win);
 
   win.loadURL(`file://${__dirname}/index.html`);
 

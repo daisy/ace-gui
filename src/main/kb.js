@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const { BrowserWindow, webContents } = require('electron');
-import { app, shell, session, ipcMain } from 'electron';
+import { app, shell, session, ipcMain, Menu } from 'electron';
 
 import * as express from "express";
 import * as portfinder from "portfinder";
@@ -240,6 +240,228 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
     });
 }
 
+function buildMenuTemplate(win) {
+
+    const defaultTemplate = {
+        subMenuEdit: {
+            label: 'Edit',
+            submenu: [
+                {
+                    label: "Undo",
+                    accelerator: "CmdOrCtrl+Z",
+                    selector: "undo:"
+                },
+                {
+                    label: "Redo",
+                    accelerator: "Shift+CmdOrCtrl+Z",
+                    selector: "redo:"
+                },
+                { type: "separator" },
+                {
+                    label: "Cut",
+                    accelerator: "CmdOrCtrl+X",
+                    selector: "cut:"
+                },
+                {
+                    label: "Copy",
+                    accelerator: "CmdOrCtrl+C",
+                    selector: "copy:"
+                },
+                {
+                    label: "Paste",
+                    accelerator: "CmdOrCtrl+V",
+                    selector: "paste:"
+                },
+                {
+                    label: "Select All",
+                    accelerator: "CmdOrCtrl+A",
+                    selector: "selectAll:"
+                },
+            ],
+        },
+        subMenuDev: {
+            label: 'Dev',
+            submenu: [
+                {
+                    label: 'Reload',
+                    accelerator: 'CmdOrCtrl+R',
+                    click: () => {
+                      const bw = BrowserWindow.getFocusedWindow();
+                      if (bw) {
+                          bw.webContents.reload();
+                      } else {
+                          this.mainWindow.webContents.reload();
+        
+                          // const arr = BrowserWindow.getAllWindows();
+                          // arr.forEach((bww) => {
+                          //     bww.webContents.openDevTools({ mode: "detach" });
+                          // });
+        
+                          // for (const wc of webContents.getAllWebContents()) {
+                          //   // if (wc.hostWebContents &&
+                          //   //     wc.hostWebContents.id === this.mainWindow.webContents.id) {
+                          //   // }
+                          //   wc.openDevTools({ mode: "detach" });
+                          // }
+                      }
+                    }
+                },
+                {
+                    label: 'Toggle Developer Tools',
+                    accelerator: 'Alt+CmdOrCtrl+I',
+                    click: () => {
+                        // win.toggleDevTools();
+                        const arr = BrowserWindow.getAllWindows();
+                        arr.forEach((bww) => {
+                            bww.webContents.toggleDevTools();
+                        });
+
+                        // const bw = BrowserWindow.getFocusedWindow();
+                        // if (bw) {
+                        //     bw.webContents.openDevTools({ mode: "detach" });
+                        // } else {
+                        //     const arr = BrowserWindow.getAllWindows();
+                        //     arr.forEach((bww) => {
+                        //         bww.webContents.openDevTools({ mode: "detach" });
+                        //     });
+
+                        //     // for (const wc of webContents.getAllWebContents()) {
+                        //     //   // if (wc.hostWebContents &&
+                        //     //   //     wc.hostWebContents.id === win.webContents.id) {
+                        //     //   // }
+                        //     //   wc.openDevTools({ mode: "detach" });
+                        //     // }
+                        // }
+                    }
+                }
+            ]
+        },
+        subMenuHelp: {
+            label: 'Help',
+            role: 'help',
+            submenu: [
+                {
+                    label: 'Learn more',
+                    click: () => shell.openExternal('http://daisy.github.io/ace')
+                },
+                {
+                    label: 'Report an Issue',
+                    click: () => shell.openExternal('http://github.com/DAISY/ace-gui/issues')
+                },
+            ]
+        },
+        subMenuAbout: {
+            label: 'Ace',
+            submenu: [
+                {
+                    label: 'About Ace',
+                    id: 'about',
+                    click: () => AboutBoxHelper.showAbout()
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    // label: 'Services',
+                    role: 'services',
+                    submenu: []
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    // label: 'Hide Ace',
+                    // accelerator: 'CmdOrCtrl+H',
+                    role: 'hide'
+                },
+                {
+                    // label: 'Hide Others',
+                    // accelerator: 'CmdOrCtrl+Alt+H',
+                    role: 'hideothers'
+                },
+                {
+                    // label: 'Show All',
+                    role: 'unhide'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'quit'
+                }
+            ]
+        },
+        subMenuWindow: {
+            label: 'Window',
+            role: 'window',
+            submenu: [
+                // {
+                //     label: 'Toggle Full Screen',
+                //     type: 'checkbox',
+                //     accelerator: process.platform === 'darwin'
+                //         ? 'Ctrl+Command+F'
+                //         : 'F11',
+                //     click: () => win.setFullScreen(!win.isFullScreen())
+                // },
+                {
+                    role: "togglefullscreen",
+                },
+                {
+                    role: "minimize",
+                },
+                {
+                    role: "close",
+                },
+                // {
+                //   label: 'Minimize',
+                //   role: 'minimize'
+                // },
+                { type: 'separator' },
+                {
+                    // label: 'Bring All to Front',
+                    role: 'front'
+                }
+            ]
+        }
+    };
+
+
+    // On Windows and Linux, open dialogs do not support selecting both files and
+    // folders and files, so add an extra menu item so there is one for each type.
+    if (process.platform === 'linux' || process.platform === 'win32') {
+
+        // insert item into Help submenu
+        defaultTemplate.subMenuHelp.submenu.push(
+            {
+                type: 'separator'
+            },
+            {
+                label: 'About Ace',
+                id: 'about',
+                click: () => AboutBoxHelper.showAbout()
+            }
+        );
+    }
+
+    let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+    let menuTemplate = process.platform === 'darwin' ?
+        [
+            defaultTemplate.subMenuAbout,
+            defaultTemplate.subMenuEdit,
+            defaultTemplate.subMenuWindow,
+            defaultTemplate.subMenuHelp
+        ]
+        :
+        [
+            defaultTemplate.subMenuEdit,
+            defaultTemplate.subMenuWindow,
+            defaultTemplate.subMenuHelp
+        ];
+
+    return isDev ? menuTemplate.concat(defaultTemplate.subMenuDev) : menuTemplate;
+}
+
 export class KnowledgeBase {
 
     win = null;
@@ -266,6 +488,9 @@ export class KnowledgeBase {
             },
         });
         wins.push(this.win);
+
+        const template = buildMenuTemplate(this.win);
+        this.win.setMenu(Menu.buildFromTemplate(template));
 
         this.win.maximize();
         let sz = this.win.getSize();
@@ -307,7 +532,7 @@ export class KnowledgeBase {
         } else {
             this.win.loadURL(`${rootUrl}/publishing/docs/index.html`);
         }
-        
+
         this.win.on('closed', function () {
             const i = wins.indexOf(this.win);
             if (i >= 0) {
