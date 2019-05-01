@@ -464,6 +464,9 @@ function buildMenuTemplate(win) {
     return isDev ? menuTemplate.concat(defaultTemplate.subMenuDev) : menuTemplate;
 }
 
+const WIN_OFFSET = 60;
+let winOffset = 0;
+
 export class KnowledgeBase {
 
     win = null;
@@ -495,11 +498,19 @@ export class KnowledgeBase {
         this.win.setMenu(Menu.buildFromTemplate(template));
 
         this.win.maximize();
-        let sz = this.win.getSize();
-        // open a window that's not quite full screen ... makes sense on mac, anyway
-        this.win.setSize(Math.min(Math.round(sz[0] * .75), 1200), Math.min(Math.round(sz[1] * .85), 800));
-        // win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
-        this.win.setPosition(Math.round(sz[0] * 0.4 - this.win.getSize()[0] * 0.4), Math.round(sz[1] * 0.4 - this.win.getSize()[1] * 0.4));
+        // let sz = this.win.getSize();
+        // // open a window that's not quite full screen ... makes sense on mac, anyway
+        // this.win.setSize(Math.min(Math.round(sz[0] * .75), 1200), Math.min(Math.round(sz[1] * .85), 800));
+        // // win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
+        // this.win.setPosition(Math.round(sz[0] * 0.4 - this.win.getSize()[0] * 0.4), Math.round(sz[1] * 0.4 - this.win.getSize()[1] * 0.4));
+
+        this.win.setSize(1024, 768);
+        winOffset += WIN_OFFSET;
+        if (winOffset > 300) {
+            winOffset = WIN_OFFSET;
+        }
+        this.win.setPosition(winOffset, winOffset);
+
         this.win.show();
 
         this.win.webContents.on("new-window", (event, url) => {
