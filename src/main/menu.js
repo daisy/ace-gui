@@ -378,8 +378,7 @@ export default class MenuBuilder {
     }
     // Add "File > Quit" menu item so Linux distros where the system tray icon is
     // missing will have a way to quit the app.
-    if (process.platform === 'linux') {
-      // File menu (Linux)
+    if (process.platform === 'linux' || process.platform === 'win32') {
       defaultTemplate.subMenuFile.submenu.push({
         label: 'Quit',
         click: () => app.quit()

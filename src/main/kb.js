@@ -3,6 +3,8 @@ const fs = require('fs');
 const { BrowserWindow, webContents } = require('electron');
 import { app, shell, session, ipcMain, Menu } from 'electron';
 
+import * as AboutBoxHelper from './../shared/helpers/about';
+
 import * as express from "express";
 import * as portfinder from "portfinder";
 // import * as http from "http";
@@ -448,14 +450,14 @@ function buildMenuTemplate(win) {
     let menuTemplate = process.platform === 'darwin' ?
         [
             defaultTemplate.subMenuAbout,
-            defaultTemplate.subMenuEdit,
             defaultTemplate.subMenuWindow,
+            defaultTemplate.subMenuEdit,
             defaultTemplate.subMenuHelp
         ]
         :
         [
-            defaultTemplate.subMenuEdit,
             defaultTemplate.subMenuWindow,
+            defaultTemplate.subMenuEdit,
             defaultTemplate.subMenuHelp
         ];
 
