@@ -31,7 +31,6 @@ function openTopLevelDevTools() {
 
 const store = configureStore(undefined, 'main');
 let win;
-let kburl = 0;
 function createWindow() {
   win = new BrowserWindow({ show: false });
   win.maximize();
@@ -42,10 +41,10 @@ function createWindow() {
   win.setPosition(Math.round(sz[0]*0.5-win.getSize()[0]*0.5), Math.round(sz[1]*0.5-win.getSize()[1]*0.5));
   win.show();
 
-  const menuBuilder = new MenuBuilder(win, store, kburl);
+  const menuBuilder = new MenuBuilder(win, store);
   menuBuilder.buildMenu();
 
-  win.loadURL(`file://${__dirname}/index.html?kburl=${kburl}`);
+  win.loadURL(`file://${__dirname}/index.html`);
 
   win.on('closed', function () {
       win = null;
@@ -68,12 +67,10 @@ app.setAccessibilitySupportEnabled(true);
 app.on('ready', () => {
   let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
   const kbRootPath = isDev ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");
-  startKnowledgeBaseServer(kbRootPath).then((rootUrl) => {
-    kburl = rootUrl;
+  startKnowledgeBaseServer(kbRootPath).then(() => {
     createWindow();
   }).catch((err) => {
     console.log(err);
-    kburl = 0;
     createWindow();
   });
 });

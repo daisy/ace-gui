@@ -12,10 +12,9 @@ import {KnowledgeBase} from './kb';
 
 export default class MenuBuilder {
 
-  constructor(mainWindow, store, kburl) {
+  constructor(mainWindow, store) {
     this.mainWindow = mainWindow;
     this.store = store;
-    this.kburl = kburl;
     this.stateValues = {
       isReportOpen: false,
       ready: true
@@ -215,7 +214,7 @@ export default class MenuBuilder {
               {
                 label: 'Local (offline)',
                 click: () => {
-                  new KnowledgeBase(this.mainWindow, this.kburl);
+                  new KnowledgeBase(this.mainWindow, undefined);
                 }
               },
               {

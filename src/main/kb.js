@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const { BrowserWindow, webContents } = require('electron');
-import { app, shell, session } from 'electron';
+import { app, shell, session, ipcMain } from 'electron';
 
 import * as express from "express";
 import * as portfinder from "portfinder";
@@ -29,6 +29,25 @@ export function closeKnowledgeBaseWindows() {
 let expressApp;
 let httpServer;
 let port;
+let ip;
+let proto;
+let rootUrl;
+
+function httpReady() {
+    ipcMain.on('KB_URL', (event, arg) => {
+        const regexp = /http[s]?:\/\/kb.daisy.org\//;
+        if (!arg.match(regexp)) {
+            shell.openExternal(arg);
+            return;
+        }
+        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} link ${arg}`);
+        const offlineUrl = arg.replace(regexp, `${rootUrl}/`);
+        const urlPath = offlineUrl.replace(rootUrl, "");
+        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} urlPath ${urlPath}`);
+        new KnowledgeBase(undefined, urlPath);
+    });
+}
+
 export function stopKnowledgeBaseServer() {
     closeKnowledgeBaseWindows();
 
@@ -67,7 +86,7 @@ export function stopKnowledgeBaseServer() {
 export function startKnowledgeBaseServer(kbRootPath) {
 
     app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
-        if (url.match(/http[s]?:\/\/127\.0\.0\.1:[0-9]+\//)) {
+        if (url.indexOf(`${rootUrl}/`) === 0) {
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert error OKAY ${url}`);
             callback(true);
             return;
@@ -84,13 +103,13 @@ export function startKnowledgeBaseServer(kbRootPath) {
             return;
         }
 
-        if (details.url.match(/http[s]?:\/\/127\.0\.0\.1:[0-9]+\//)) {
+        if (details.url.indexOf(`${rootUrl}/`) === 0) {
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} CSP ${details.url}`);
             callback({
                 // responseHeaders: {
                 //     ...details.responseHeaders,
                 //     "Content-Security-Policy":
-                //         [`default-src 'self' 'unsafe-inline' 'unsafe-eval' data: http: https: http://127.0.0.1:8000`],
+                //         [`default-src 'self' 'unsafe-inline' 'unsafe-eval' data: http: https: ${rootUrl}`],
                 // },
             });
         } else {
@@ -101,7 +120,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
 
     const setCertificateVerifyProcCB = (request, callback) => {
 
-        if (request.hostname === "127.0.0.1") {
+        if (request.hostname === ip) {
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert verify OKAY ${request.hostname}`);
             callback(0); // OK
             return;
@@ -139,7 +158,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
             const toMatch2 = "KB.prototype.generateFooter = function () {";
             const link = "GO ONLINE";
             const online = `
-var zhref = document.location.href.replace('https://127.0.0.1:${port}/', 'http://kb.daisy.org/');
+var zhref = document.location.href.replace('${rootUrl}/', 'http://kb.daisy.org/');
 var zdiv = document.createElement('div');
 zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
 
@@ -153,8 +172,8 @@ zdiv.appendChild(za);
 document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
 `;
             // js = js.replace("kb.initializePage('ace')", "kb.initializePage('kb')");
-            js = js.replace(toMatch1, `${toMatch1} || document.location.hostname == '127.0.0.1' || document.location.host == '127.0.0.1:${port}'`);
-            js = js.replace(/http:\/\/kb.daisy.org\//g, "https://127.0.0.1/");
+            js = js.replace(toMatch1, `${toMatch1} || document.location.hostname == '${rootUrl.replace(/http[s]?:\/\/(.+):[0-9]+/, "$1")}' || document.location.host == '${rootUrl.replace(/http[s]?:\/\//, "")}'`);
+            js = js.replace(/http[s]?:\/\/kb.daisy.org\//g, `${rootUrl}/`);
             js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n`);
             res.send(js);
             // next();
@@ -182,10 +201,14 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
                 httpServer = https.createServer({ key: certData.private, cert: certData.cert }, expressApp).listen(port, () => {
                     const p = httpServer.address().port;
 
-                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS port ${p}`);
-
                     port = p;
-                    resolve(`https://127.0.0.1:${p}`);
+                    ip = "127.0.0.1";
+                    proto = "https";
+                    rootUrl = `${proto}://${ip}:${port}`;
+                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+
+                    resolve();
+                    httpReady();
                 });
             }).catch((err) => {
                 if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} ${err}`);
@@ -193,10 +216,14 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
                 httpServer = expressApp.listen(port, () => {
                     const p = httpServer.address().port;
 
-                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTP port ${p}`);
-
                     port = p;
-                    resolve(`http://127.0.0.1:${p}`);
+                    ip = "127.0.0.1";
+                    proto = "http";
+                    rootUrl = `${proto}://${ip}:${port}`;
+                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+
+                    resolve();
+                    httpReady();
                 });
             });
         }
@@ -216,9 +243,9 @@ export class KnowledgeBase {
 
     win = null;
 
-    constructor(mainWin, rootUrl) {
+    constructor(mainWin, urlPath) {
         this.mainWin = mainWin;
-        this.rootUrl = rootUrl;
+        this.urlPath = urlPath;
         this.launch();
     }
 
@@ -252,7 +279,7 @@ export class KnowledgeBase {
             const wcUrl = event.sender.getURL();
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} new-window ${wcUrl} => ${url}`);
 
-            if (url.indexOf(this.rootUrl) !== 0) {
+            if (url.indexOf(rootUrl) !== 0) {
                 event.preventDefault();
                 shell.openExternal(url);
             }
@@ -263,15 +290,19 @@ export class KnowledgeBase {
             const wcUrl = event.sender.getURL();
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} will-navigate ${wcUrl} => ${url}`);
 
-            if (url.indexOf(this.rootUrl) !== 0) {
+            if (url.indexOf(rootUrl) !== 0) {
                 event.preventDefault();
                 shell.openExternal(url);
             }
         });
 
         // http://kb.daisy.org/publishing/docs/index.html
-        this.win.loadURL(`${this.rootUrl}/publishing/docs/index.html`);
-
+        if (this.urlPath) {
+            this.win.loadURL(`${rootUrl}${this.urlPath}`);
+        } else {
+            this.win.loadURL(`${rootUrl}/publishing/docs/index.html`);
+        }
+        
         this.win.on('closed', function () {
             const i = wins.indexOf(this.win);
             if (i >= 0) {
