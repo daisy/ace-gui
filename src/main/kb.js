@@ -49,7 +49,7 @@ function httpReady() {
 }
 
 export function stopKnowledgeBaseServer() {
-    closeKnowledgeBaseWindows();
+    // closeKnowledgeBaseWindows();
 
     if (httpServer) {
         httpServer.close();
@@ -165,6 +165,7 @@ zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background:
 var za = document.createElement('a');
 za.setAttribute('href',zhref);
 za.setAttribute('target','_BLANK');
+za.setAttribute('style','color: red;');
 za.appendChild(document.createTextNode('${link}'));
 
 zdiv.appendChild(za);
@@ -279,10 +280,14 @@ export class KnowledgeBase {
             const wcUrl = event.sender.getURL();
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} new-window ${wcUrl} => ${url}`);
 
+            event.preventDefault();
+
             if (url.indexOf(rootUrl) !== 0) {
-                event.preventDefault();
                 shell.openExternal(url);
+                return;
             }
+
+            this.win.loadURL(url);
         });
 
         this.win.webContents.on("will-navigate", (event, url) => {
