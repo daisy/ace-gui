@@ -1,4 +1,4 @@
-import { app, Menu, shell, dialog, clipboard } from 'electron';
+import { app, Menu, shell, dialog, clipboard, webContents, BrowserWindow } from 'electron';
 import {
   runAce,
   openReport,
@@ -8,11 +8,14 @@ import {
 import {selectTab} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 import * as AboutBoxHelper from './../shared/helpers/about';
+import {KnowledgeBase} from './kb';
+
 export default class MenuBuilder {
 
-  constructor(mainWindow, store) {
+  constructor(mainWindow, store, kburl) {
     this.mainWindow = mainWindow;
     this.store = store;
+    this.kburl = kburl;
     this.stateValues = {
       isReportOpen: false,
       ready: true
@@ -156,6 +159,18 @@ export default class MenuBuilder {
           }
         ]
       },
+      subMenuEdit: {
+        label: 'Edit',
+        submenu: [
+            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+            { type: "separator" },
+            { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+            { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+            { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+            { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
+        ],
+      },
       subMenuDev: {
         label: 'Dev',
         submenu: [
@@ -167,7 +182,26 @@ export default class MenuBuilder {
           {
             label: 'Toggle Developer Tools',
             accelerator: 'Alt+Command+I',
-            click: () => this.mainWindow.toggleDevTools()
+            click: () => {
+              // this.mainWindow.toggleDevTools();
+
+              const bw = BrowserWindow.getFocusedWindow();
+              if (bw) {
+                  bw.webContents.openDevTools({ mode: "detach" });
+              } else {
+                  const arr = BrowserWindow.getAllWindows();
+                  arr.forEach((bww) => {
+                      bww.webContents.openDevTools({ mode: "detach" });
+                  });
+
+                  // for (const wc of webContents.getAllWebContents()) {
+                  //   // if (wc.hostWebContents &&
+                  //   //     wc.hostWebContents.id === this.mainWindow.webContents.id) {
+                  //   // }
+                  //   wc.openDevTools({ mode: "detach" });
+                  // }
+              }
+            }
           }
         ]
       },
@@ -177,7 +211,20 @@ export default class MenuBuilder {
         submenu: [
           {
             label: 'Knowledge Base',
-            click: () => shell.openExternal('http://kb.daisy.org/publishing/')
+            submenu: [
+              {
+                label: 'Local (offline)',
+                click: () => {
+                  new KnowledgeBase(this.mainWindow, this.kburl);
+                }
+              },
+              {
+                label: 'Web (online)',
+                click: () => {
+                  shell.openExternal('http://kb.daisy.org/publishing/docs/index.html');
+                }
+              }
+            ]
           },
           {
             label: 'Learn more',
@@ -243,9 +290,18 @@ export default class MenuBuilder {
         role: 'window',
         submenu: [
           {
-            label: 'Minimize',
-            role: 'minimize'
+              role: "togglefullscreen",
           },
+          {
+              role: "minimize",
+          },
+          {
+              role: "close",
+          },
+          // {
+          //   label: 'Minimize',
+          //   role: 'minimize'
+          // },
           { type: 'separator' },
           {
             label: 'Bring All to Front',
@@ -294,6 +350,7 @@ export default class MenuBuilder {
         defaultTemplate.subMenuAbout,
         defaultTemplate.subMenuFile,
         defaultTemplate.subMenuView,
+        defaultTemplate.subMenuEdit,
         defaultTemplate.subMenuWindow,
         defaultTemplate.subMenuHelp
       ]
@@ -301,6 +358,7 @@ export default class MenuBuilder {
       [
         defaultTemplate.subMenuFile,
         defaultTemplate.subMenuView,
+        defaultTemplate.subMenuEdit,
         defaultTemplate.subMenuHelp
       ];
 
@@ -324,10 +382,8 @@ export default class MenuBuilder {
   }
 
   buildMenu() {
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-    ) {
+    let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+    if (isDev) {
       this.setupDevelopmentEnvironment();
     }
 
