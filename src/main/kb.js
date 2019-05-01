@@ -292,7 +292,7 @@ function buildMenuTemplate(win) {
                       if (bw) {
                           bw.webContents.reload();
                       } else {
-                          this.mainWindow.webContents.reload();
+                          win.webContents.reload();
         
                           // const arr = BrowserWindow.getAllWindows();
                           // arr.forEach((bww) => {
@@ -301,7 +301,7 @@ function buildMenuTemplate(win) {
         
                           // for (const wc of webContents.getAllWebContents()) {
                           //   // if (wc.hostWebContents &&
-                          //   //     wc.hostWebContents.id === this.mainWindow.webContents.id) {
+                          //   //     wc.hostWebContents.id === win.webContents.id) {
                           //   // }
                           //   wc.openDevTools({ mode: "detach" });
                           // }
