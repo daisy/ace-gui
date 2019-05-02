@@ -3,6 +3,8 @@ import fs from 'fs';
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';
 
+import {axeRunner} from '../axe-runner';
+
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";
 export const EXPORT_REPORT = "EXPORT_REPORT";
@@ -62,7 +64,7 @@ export function runAce(inputPath) {
     let outdir = prepareOutdir(inputPath, getState().preferences);
 
     if (outdir.success) {
-      ace(inputPath, {outdir: outdir.value})
+      ace(inputPath, {outdir: outdir.value}, axeRunner)
       .then(() => {
         dispatch(addMessage('Ace check complete'));
         let reportPath = outdir.value + '/report.json';

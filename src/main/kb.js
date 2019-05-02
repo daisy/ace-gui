@@ -10,8 +10,7 @@ import * as portfinder from "portfinder";
 // import * as http from "http";
 import * as https from "https";
 
-import * as selfsigned from "selfsigned";
-import * as uuid from "uuid";
+import {generateSelfSignedData} from "./selfsigned";
 
 const LOG_DEBUG = false;
 const KB_LOG_PREFIX = "[KB]";
@@ -57,7 +56,7 @@ export function stopKnowledgeBaseServer() {
         httpServer.close();
     }
 
-    const sess = session.fromPartition(SESSION_PARTITION, { cache: true }) || session.defaultSession;
+    const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
     if (sess) {
         sess.clearCache(() => {
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} session cache cleared`);
@@ -132,7 +131,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
         // callback(-2); // Fail
     };
 
-    const sess = session.fromPartition(SESSION_PARTITION, { cache: true }) || session.defaultSession;
+    const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
 
     if (sess) {
         sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
@@ -554,33 +553,4 @@ export class KnowledgeBase {
             this.win = null;
         });
     }
-}
-
-function generateSelfSignedData() {
-    return new Promise((resolve, reject) => {
-        const opts = {
-            algorithm: "sha256",
-            // clientCertificate: true,
-            // clientCertificateCN: "KB insecure client",
-            days: 30,
-            extensions: [{
-                altNames: [{
-                    type: 2, // DNSName
-                    value: "localhost",
-                }],
-                name: "subjectAltName",
-            }],
-        };
-        const rand = uuid.v4();
-        const attributes = [{ name: "commonName", value: "KB insecure server " + rand }];
-
-        selfsigned.generate(attributes, opts, (err, keys) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            resolve(keys);
-        });
-    });
 }

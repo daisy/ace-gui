@@ -2,7 +2,6 @@
 
 const chalk = require('chalk');
 const path = require('path');
-const puppeteer = require('puppeteer');
 const ProgressBar = require('progress');
 
 (async () => {
@@ -10,9 +9,6 @@ const ProgressBar = require('progress');
     switch(process.env.BUILD_TARGET) {
       case 'clean':
         clean();
-        break;
-      case 'fetch-chromium':
-        await fetchChromium();
         break;
       default:
         build();
@@ -27,39 +23,6 @@ const ProgressBar = require('progress');
     process.exit();
   }
   
-  async function fetchChromium() {
-    const platformList = [
-      'mac',
-      // 'linux',
-      'win64'
-    ]
-    for (const platform of platformList) {
-      const revision = require(`puppeteer/package.json`).puppeteer.chromium_revision;
-      const fetcher = puppeteer.createBrowserFetcher({
-        platform: platform
-      })
-      var progressBar;
-      var lastDownloadedBytes = 0;
-      await fetcher.download(revision, (downloadedBytes, totalBytes) => {
-        if (!progressBar) {
-          progressBar = new ProgressBar(`  \u2772:bar\u2773 :percent | :bytes Mb`, {
-            complete: `${chalk.green('\u25AC')}`,
-            incomplete: '\u25AC',
-            width: 50,
-            total: totalBytes,
-          });
-          progressBar.interrupt(`Downloading Chromium for ${platform} v${revision} (${toMegabytes(totalBytes)} Mb):`)
-        }
-        const delta = downloadedBytes - lastDownloadedBytes;
-        lastDownloadedBytes = downloadedBytes;
-        progressBar.tick(delta, {bytes: toMegabytes(downloadedBytes)});
-      });
-      progressBar = undefined;
-    }
-    console.log(`${chalk.bgGreen.black(' DONE ')}${chalk.green(' Downloaded Chromium.')}\n`);
-    process.exit();
-  }
-
   function build() {
     console.log(`${chalk.bgYellow.black(' TODO ')}${chalk.white(' implement build task.')}\n`);
     process.exit();
