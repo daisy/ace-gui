@@ -17,9 +17,9 @@ const logger = require('@daisy/ace-logger');
 logger.initLogger({ verbose: true, silent: false });
 
 let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-const showWindow = true;
+const showWindow = false;
 
-const LOG_DEBUG = true;
+const LOG_DEBUG = false;
 const AXE_LOG_PREFIX = "[AXE]";
 
 const SESSION_PARTITION = "persist:axe";
@@ -97,8 +97,10 @@ export function axeRunnerInitEvents() {
         if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner closing ...`);
 
         if (browserWindow) {
-            browserWindow.close();
-            browserWindow = undefined;
+            if (!(isDev && showWindow)) {
+                browserWindow.close();
+                browserWindow = undefined;
+            }
         }
 
         if (httpServer) {
@@ -171,6 +173,8 @@ new Promise((resolve, reject) => {
                 browserWindow.webContents.executeJavaScript(js, true)
                     .then((ok) => {
                         if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner done.`);
+                        // console.log(ok);
+                        // console.log(JSON.stringify(ok, null, "  "));
                         replySent = true;
                         event.sender.send("AXE_RUNNER_RUN_", {
                             ok
@@ -277,6 +281,7 @@ export function startAxeServer(epubRootPath, scripts) {
                         js = fs.readFileSync(scriptPath, { encoding: "utf8" });
                         jsCache[scriptPath] = js;
                     }
+                    res.setHeader("Content-Type", "text/javascript");
                     res.send(js);
                     return;
                 }
@@ -296,6 +301,7 @@ export function startAxeServer(epubRootPath, scripts) {
                     if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTML neither </head> nor </body>?! ${req.url}`);
                 }
 
+                res.setHeader("Content-Type", "application/xhtml+xml");
                 res.send(html);
                 return;
             }
