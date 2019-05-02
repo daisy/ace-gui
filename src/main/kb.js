@@ -98,26 +98,26 @@ export function startKnowledgeBaseServer(kbRootPath) {
 
     const filter = { urls: ["*", "*://*/*"] };
 
-    const onHeadersReceivedCB = (details, callback) => {
-        if (!details.url) {
-            callback({});
-            return;
-        }
+    // const onHeadersReceivedCB = (details, callback) => {
+    //     if (!details.url) {
+    //         callback({});
+    //         return;
+    //     }
 
-        if (details.url.indexOf(`${rootUrl}/`) === 0) {
-            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} CSP ${details.url}`);
-            callback({
-                // responseHeaders: {
-                //     ...details.responseHeaders,
-                //     "Content-Security-Policy":
-                //         [`default-src 'self' 'unsafe-inline' 'unsafe-eval' data: http: https: ${rootUrl}`],
-                // },
-            });
-        } else {
-            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} !CSP ${details.url}`);
-            callback({});
-        }
-    };
+    //     if (details.url.indexOf(`${rootUrl}/`) === 0) {
+    //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} CSP ${details.url}`);
+    //         callback({
+    //             // responseHeaders: {
+    //             //     ...details.responseHeaders,
+    //             //     "Content-Security-Policy":
+    //             //         [`default-src 'self' 'unsafe-inline' 'unsafe-eval' data: http: https: ${rootUrl}`],
+    //             // },
+    //         });
+    //     } else {
+    //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} !CSP ${details.url}`);
+    //         callback({});
+    //     }
+    // };
 
     const setCertificateVerifyProcCB = (request, callback) => {
 
@@ -134,7 +134,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
     const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
 
     if (sess) {
-        sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
+        // sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
         // sess.webRequest.onBeforeSendHeaders(filter, onBeforeSendHeadersCB);
         sess.setCertificateVerifyProc(setCertificateVerifyProcCB);
     }

@@ -17,11 +17,14 @@ const logger = require('@daisy/ace-logger');
 logger.initLogger({ verbose: true, silent: false });
 
 let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const showWindow = true;
 
 const LOG_DEBUG = true;
 const AXE_LOG_PREFIX = "[AXE]";
 
 const SESSION_PARTITION = "persist:axe";
+
+const HTTP_QUERY_PARAM = "AXE_RUNNER";
 
 let expressApp;
 let httpServer;
@@ -31,6 +34,8 @@ let proto;
 let rootUrl;
 
 let browserWindow = undefined;
+
+const jsCache = {};
 
 export function axeRunnerInitEvents() {
 
@@ -46,26 +51,26 @@ export function axeRunnerInitEvents() {
 
     const filter = { urls: ["*", "*://*/*"] };
 
-    const onHeadersReceivedCB = (details, callback) => {
-        if (!details.url) {
-            callback({});
-            return;
-        }
+    // const onHeadersReceivedCB = (details, callback) => {
+    //     if (!details.url) {
+    //         callback({});
+    //         return;
+    //     }
 
-        if (details.url.indexOf(`${rootUrl}/`) === 0) {
-            if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} CSP ${details.url}`);
-            callback({
-                // responseHeaders: {
-                //     ...details.responseHeaders,
-                //     "Content-Security-Policy":
-                //         [`default-src 'self' 'unsafe-inline' 'unsafe-eval' data: http: https: ${rootUrl}`],
-                // },
-            });
-        } else {
-            if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} !CSP ${details.url}`);
-            callback({});
-        }
-    };
+    //     if (details.url.indexOf(`${rootUrl}/`) === 0) {
+    //         if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} CSP ${details.url}`);
+    //         callback({
+    //             // responseHeaders: {
+    //             //     ...details.responseHeaders,
+    //             //     "Content-Security-Policy":
+    //             //         [`default-src 'self' 'unsafe-inline' 'unsafe-eval' data: http: https: ${rootUrl}`],
+    //             // },
+    //         });
+    //     } else {
+    //         if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} !CSP ${details.url}`);
+    //         callback({});
+    //     }
+    // };
 
     const setCertificateVerifyProcCB = (request, callback) => {
 
@@ -82,7 +87,7 @@ export function axeRunnerInitEvents() {
     const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
 
     if (sess) {
-        sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
+        // sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
         // sess.webRequest.onBeforeSendHeaders(filter, onBeforeSendHeadersCB);
         sess.setCertificateVerifyProc(setCertificateVerifyProcCB);
     }
@@ -136,50 +141,64 @@ export function axeRunnerInitEvents() {
 
     ipcMain.on('AXE_RUNNER_RUN', (event, arg) => {
 
-        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner running ...`);
-
         const basedir = arg.basedir;
         const u = arg.url;
         const scripts = arg.scripts;
 
-        console.log("----- AXE RUN");
-        console.log(basedir);
-        console.log(u);
-        console.log(JSON.stringify(scripts));
+        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner running ... ${basedir} ${u}`);
 
         function doRun() {
-
-            // const page = await _browser.newPage();
-            // await page.goto(url);
-            // await utils.addScripts(scripts, page);
-
-            // const results = await page.evaluate(() => new Promise((resolve, reject) => {
-            //     /* eslint-disable */
-            //     window.daisy.ace.run((err, res) => {
-            //     if (err) {
-            //         return reject(err);
-            //     }
-            //     return resolve(res);
-            //     });
-            //     /* eslint-enable */
-            // }));
-            // await page.close();
-            // return results;
 
             const p = decodeURI(url.parse(u).pathname);
             const httpUrl = rootUrl + p.replace(basedir, "");
 
-            if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner ${httpUrl}`);
-            browserWindow.loadURL(httpUrl);
+            let replySent = false;
+
+            browserWindow.webContents.once("dom-ready", () => {
+                if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner DOM READY ${httpUrl}`);
+
+                const js = `
+new Promise((resolve, reject) => {
+    window.daisy.ace.run((err, res) => {
+        if (err) {
+            reject(err);
+            return;
+        }
+        resolve(res);
+    });
+}).then(res => res).catch(err => { throw err; });
+`;
+                browserWindow.webContents.executeJavaScript(js, true)
+                    .then((ok) => {
+                        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner done.`);
+                        replySent = true;
+                        event.sender.send("AXE_RUNNER_RUN_", {
+                            ok
+                        });
+                    })
+                    .catch((err) => {
+                        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner fail!`);
+                        replySent = true;
+                        event.sender.send("AXE_RUNNER_RUN_", {
+                            err
+                        });
+                    });
+            });
+
+            if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner LOAD URL ... ${httpUrl}`);
+            browserWindow.loadURL(`${httpUrl}?${HTTP_QUERY_PARAM}=1`);
 
             setTimeout(() => {
-                if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner finished run.`);
+                if (replySent) {
+                    return;
+                }
+                replySent = true;
 
+                if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner timeout!`);
                 event.sender.send("AXE_RUNNER_RUN_", {
-                    errzz: "DANIEL",
-                    ok: []
+                    err: "Timeout :("
                 });
-            }, 1000);
+            }, 3000);
         }
 
         if (!httpServer) { // lazy init
@@ -187,12 +206,12 @@ export function axeRunnerInitEvents() {
                 if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} server started`);
 
                 browserWindow = new BrowserWindow({
-                    show: true,
+                    show: showWindow,
                     webPreferences: {
+                        devTools: isDev && showWindow,
                         title: "Axe Electron runner",
                         allowRunningInsecureContent: false,
                         contextIsolation: false,
-                        // devTools: true,
                         nodeIntegration: false,
                         nodeIntegrationInWorker: false,
                         sandbox: false,
@@ -210,7 +229,11 @@ export function axeRunnerInitEvents() {
                 browserWindow.setSize(Math.min(Math.round(sz0 * .75), 1200), Math.min(Math.round(sz1 * .85), 800));
                 // browserWindow.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
                 browserWindow.setPosition(Math.round(sz0 * 0.5 - browserWindow.getSize()[0] * 0.5), Math.round(sz1 * 0.5 - browserWindow.getSize()[1] * 0.5));
-                browserWindow.show();
+                if (showWindow) {
+                    browserWindow.show();
+                }
+
+                browserWindow.webContents.setAudioMuted(true);
 
                 doRun();
             }).catch((err) => {
@@ -229,6 +252,12 @@ export function startAxeServer(epubRootPath, scripts) {
 
     return new Promise((resolve, reject) => {
 
+        let scriptsMarkup = "";
+        scripts.forEach((scriptPath) => {
+            const filename = path.basename(scriptPath);
+            scriptsMarkup += `<script data-ace="" src="/${HTTP_QUERY_PARAM}/${filename}"> </script>`;
+        });
+
         expressApp = express();
         // expressApp.enable('strict routing');
 
@@ -237,42 +266,42 @@ export function startAxeServer(epubRootPath, scripts) {
         //     next();
         // });
 
-        scripts.forEach((scriptPath) => {
-            const filename = path.basename(scriptPath);
+        expressApp.use("/", (req, res, next) => {
+
+            for (const scriptPath of scripts) {
+                const filename = path.basename(scriptPath);
+                if (req.url.endsWith(`${HTTP_QUERY_PARAM}/${filename}`)) {
+                    let js = jsCache[scriptPath];
+                    if (!js) {
+                        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTTP loading ${scriptPath}`);
+                        js = fs.readFileSync(scriptPath, { encoding: "utf8" });
+                        jsCache[scriptPath] = js;
+                    }
+                    res.send(js);
+                    return;
+                }
+            }
+
+            if (req.query[HTTP_QUERY_PARAM]) {
+                if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTTP intercept ${req.url}`);
+
+                let html = fs.readFileSync(path.join(epubRootPath, url.parse(req.url).pathname), { encoding: "utf8" });
+
+                if (html.match(/<\/head>/)) {
+                    html = html.replace(/<\/head>/, `${scriptsMarkup}</head>`);
+                } else if (html.match(/<\/body>/)) {
+                    if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTML no </head>? (using </body>) ${req.url}`);
+                    html = html.replace(/<\/body>/, `${scriptsMarkup}</body>`);
+                } else {
+                    if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTML neither </head> nor </body>?! ${req.url}`);
+                }
+
+                res.send(html);
+                return;
+            }
+
+            next();
         });
-
-//         const jsInitPath = "js/init.js";
-//         expressApp.use(`/${jsInitPath}`, (req, res, next) => {
-
-//             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTP intercept /${jsInitPath}`);
-
-//             let js = fs.readFileSync(path.join(kbRootPath, jsInitPath), { encoding: "utf8" });
-
-//             const toMatch1 = "document.location.host == 'localhost'";
-//             const toMatch2 = "KB.prototype.generateFooter = function () {";
-//             const link = "GO ONLINE";
-//             const online = `
-// var zhref = document.location.href.replace('${rootUrl}/', 'http://kb.daisy.org/');
-// var zdiv = document.createElement('div');
-// zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
-
-// var za = document.createElement('a');
-// za.setAttribute('href',zhref);
-// za.setAttribute('target','_BLANK');
-// za.setAttribute('style','color: red;');
-// za.appendChild(document.createTextNode('${link}'));
-
-// zdiv.appendChild(za);
-
-// document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
-// `;
-//             // js = js.replace("kb.initializePage('ace')", "kb.initializePage('kb')");
-//             js = js.replace(toMatch1, `${toMatch1} || document.location.hostname == '${rootUrl.replace(/http[s]?:\/\/(.+):[0-9]+/, "$1")}' || document.location.host == '${rootUrl.replace(/http[s]?:\/\//, "")}'`);
-//             js = js.replace(/http[s]?:\/\/kb.daisy.org\//g, `${rootUrl}/`);
-//             js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n`);
-//             res.send(js);
-//             // next();
-//         });
 
         // https://expressjs.com/en/4x/api.html#express.static
         const staticOptions = {

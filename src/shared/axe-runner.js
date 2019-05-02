@@ -7,7 +7,7 @@ logger.initLogger({ verbose: true, silent: false });
 
 let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
-const LOG_DEBUG = true;
+const LOG_DEBUG = false;
 const AXE_LOG_PREFIX = "[AXE]";
 
 export const axeRunner = {
