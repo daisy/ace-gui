@@ -1,4 +1,4 @@
-import { app, Menu, shell, dialog, clipboard } from 'electron';
+import { app, Menu, shell, dialog, clipboard, webContents, BrowserWindow } from 'electron';
 import {
   runAce,
   openReport,
@@ -8,6 +8,8 @@ import {
 import {selectTab} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 import * as AboutBoxHelper from './../shared/helpers/about';
+import {KnowledgeBase} from './kb';
+
 export default class MenuBuilder {
 
   constructor(mainWindow, store) {
@@ -105,17 +107,6 @@ export default class MenuBuilder {
         label: 'View',
         submenu: [
           {
-            label: 'Toggle Full Screen',
-            type: 'checkbox',
-            accelerator: process.platform === 'darwin'
-              ? 'Ctrl+Command+F'
-              : 'F11',
-            click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
-          },
-          {
-            type: 'separator'
-          },
-          {
             label: 'Go to Summary',
             id: 'gotoSummary',
             accelerator: 'CmdOrCtrl+Shift+S',
@@ -156,18 +147,96 @@ export default class MenuBuilder {
           }
         ]
       },
+      subMenuEdit: {
+        label: 'Edit',
+        submenu: [
+            {
+                label: "Undo",
+                accelerator: "CmdOrCtrl+Z",
+                selector: "undo:"
+            },
+            {
+                label: "Redo",
+                accelerator: "Shift+CmdOrCtrl+Z",
+                selector: "redo:"
+            },
+            { type: "separator" },
+            {
+                label: "Cut",
+                accelerator: "CmdOrCtrl+X",
+                selector: "cut:"
+            },
+            {
+                label: "Copy",
+                accelerator: "CmdOrCtrl+C",
+                selector: "copy:"
+            },
+            {
+                label: "Paste",
+                accelerator: "CmdOrCtrl+V",
+                selector: "paste:"
+            },
+            {
+                label: "Select All",
+                accelerator: "CmdOrCtrl+A",
+                selector: "selectAll:"
+            },
+        ],
+      },
       subMenuDev: {
         label: 'Dev',
         submenu: [
           {
             label: 'Reload',
-            accelerator: 'Command+R',
-            click: () => this.mainWindow.webContents.reload()
+            accelerator: 'CmdOrCtrl+R',
+            click: () => {
+              const bw = BrowserWindow.getFocusedWindow();
+              if (bw) {
+                  bw.webContents.reload();
+              } else {
+                  this.mainWindow.webContents.reload();
+
+                  // const arr = BrowserWindow.getAllWindows();
+                  // arr.forEach((bww) => {
+                  //     bww.webContents.openDevTools({ mode: "detach" });
+                  // });
+
+                  // for (const wc of webContents.getAllWebContents()) {
+                  //   // if (wc.hostWebContents &&
+                  //   //     wc.hostWebContents.id === this.mainWindow.webContents.id) {
+                  //   // }
+                  //   wc.openDevTools({ mode: "detach" });
+                  // }
+              }
+            }
           },
           {
             label: 'Toggle Developer Tools',
-            accelerator: 'Alt+Command+I',
-            click: () => this.mainWindow.toggleDevTools()
+            accelerator: 'Alt+CmdOrCtrl+I',
+            click: () => {
+              // this.mainWindow.toggleDevTools();
+              const arr = BrowserWindow.getAllWindows();
+              arr.forEach((bww) => {
+                  bww.webContents.toggleDevTools();
+              });
+
+              // const bw = BrowserWindow.getFocusedWindow();
+              // if (bw) {
+              //     bw.webContents.openDevTools({ mode: "detach" });
+              // } else {
+              //     const arr = BrowserWindow.getAllWindows();
+              //     arr.forEach((bww) => {
+              //         bww.webContents.openDevTools({ mode: "detach" });
+              //     });
+
+              //     // for (const wc of webContents.getAllWebContents()) {
+              //     //   // if (wc.hostWebContents &&
+              //     //   //     wc.hostWebContents.id === this.mainWindow.webContents.id) {
+              //     //   // }
+              //     //   wc.openDevTools({ mode: "detach" });
+              //     // }
+              // }
+            }
           }
         ]
       },
@@ -177,7 +246,20 @@ export default class MenuBuilder {
         submenu: [
           {
             label: 'Knowledge Base',
-            click: () => shell.openExternal('http://kb.daisy.org/publishing/')
+            submenu: [
+              {
+                label: 'Local (offline)',
+                click: () => {
+                  new KnowledgeBase(this.mainWindow, undefined);
+                }
+              },
+              {
+                label: 'Web (online)',
+                click: () => {
+                  shell.openExternal('http://kb.daisy.org/publishing/docs/index.html');
+                }
+              }
+            ]
           },
           {
             label: 'Learn more',
@@ -209,7 +291,7 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            label: 'Services',
+            // label: 'Services',
             role: 'services',
             submenu: []
           },
@@ -217,17 +299,17 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            label: 'Hide Ace',
-            accelerator: 'Command+H',
+            // label: 'Hide Ace',
+            // accelerator: 'CmdOrCtrl+H',
             role: 'hide'
           },
           {
-            label: 'Hide Others',
-            accelerator: 'Command+Alt+H',
+            // label: 'Hide Others',
+            // accelerator: 'CmdOrCtrl+Alt+H',
             role: 'hideothers'
           },
           {
-            label: 'Show All',
+            // label: 'Show All',
             role: 'unhide'
           },
           {
@@ -242,13 +324,30 @@ export default class MenuBuilder {
         label: 'Window',
         role: 'window',
         submenu: [
+          // {
+          //   label: 'Toggle Full Screen',
+          //   type: 'checkbox',
+          //   accelerator: process.platform === 'darwin'
+          //     ? 'Ctrl+Command+F'
+          //     : 'F11',
+          //   click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+          // },
           {
-            label: 'Minimize',
-            role: 'minimize'
+              role: "togglefullscreen",
           },
+          {
+              role: "minimize",
+          },
+          {
+              role: "close",
+          },
+          // {
+          //   label: 'Minimize',
+          //   role: 'minimize'
+          // },
           { type: 'separator' },
           {
-            label: 'Bring All to Front',
+            // label: 'Bring All to Front',
             role: 'front'
           }
         ]
@@ -279,9 +378,12 @@ export default class MenuBuilder {
     }
     // Add "File > Quit" menu item so Linux distros where the system tray icon is
     // missing will have a way to quit the app.
-    if (process.platform === 'linux') {
-      // File menu (Linux)
-      defaultTemplate.subMenuFile.submenu.push({
+    if (process.platform === 'linux' || process.platform === 'win32') {
+      defaultTemplate.subMenuFile.submenu.push(
+        {
+            type: 'separator'
+        },
+        {
         label: 'Quit',
         click: () => app.quit()
       });
@@ -294,6 +396,7 @@ export default class MenuBuilder {
         defaultTemplate.subMenuAbout,
         defaultTemplate.subMenuFile,
         defaultTemplate.subMenuView,
+        defaultTemplate.subMenuEdit,
         defaultTemplate.subMenuWindow,
         defaultTemplate.subMenuHelp
       ]
@@ -301,6 +404,8 @@ export default class MenuBuilder {
       [
         defaultTemplate.subMenuFile,
         defaultTemplate.subMenuView,
+        defaultTemplate.subMenuEdit,
+        defaultTemplate.subMenuWindow,
         defaultTemplate.subMenuHelp
       ];
 
@@ -323,17 +428,18 @@ export default class MenuBuilder {
     });
   }
 
-  buildMenu() {
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-    ) {
+  buildMenu(win) {
+    let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+    if (isDev) {
       this.setupDevelopmentEnvironment();
     }
 
     const template = this.buildTemplate();
     const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+
+    Menu.setApplicationMenu(menu); // necessary for app-wide menu on MacOS
+    // win.setMenu(menu);
+    
     this.refreshMenuItemsEnabled();
     return menu;
   }

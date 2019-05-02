@@ -2,7 +2,7 @@ import EnhancedTable from './../Table/EnhancedTable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
-const {shell} = require('electron');
+const {ipcRenderer} = require('electron');
 
 // the violations page of the report
 export default class Violations extends React.Component {
@@ -19,7 +19,10 @@ export default class Violations extends React.Component {
     setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
-  onExternalLinkClick = url => shell.openExternal(url);
+  onExternalLinkClick = url => {
+    ipcRenderer.send('KB_URL', url);
+    // shell.openExternal(url);
+  }
 
   render() {
     let {violations,
