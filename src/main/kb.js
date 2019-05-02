@@ -356,15 +356,6 @@ function buildMenuTemplate(win) {
                     label: localize('menu.reportIssue'),
                     id: 'reportIssue',
                     click: () => shell.openExternal('http://github.com/DAISY/ace-gui/issues')
-                },
-                {
-                    label: localize('menu.copyMessageOutput'),
-                    id: 'copyMessageOutput',
-                    click: () => {
-                        let messages = this.store.getState().app.messages;
-                        let msgstr = messages.join('\n');
-                        clipboard.writeText(msgstr);
-                    }
                 }
             ]
         },
