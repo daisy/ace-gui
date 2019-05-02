@@ -133,8 +133,11 @@ class Sidebar extends React.Component {
 
   onDrop = e => {
     e.preventDefault();
-    let filepath = e.dataTransfer.files[0].path;
     this.setState({fileHover: false});
+    if (!e.dataTransfer.files || !e.dataTransfer.files.length) {
+      return false;
+    }
+    let filepath = e.dataTransfer.files[0].path;
     this.props.openFile(filepath);
     return false;
   };

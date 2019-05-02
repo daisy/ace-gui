@@ -2,7 +2,7 @@ import EnhancedTable from './../Table/EnhancedTable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
-const {shell} = require('electron');
+const {ipcRenderer} = require('electron');
 
 import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
@@ -22,7 +22,10 @@ export default class Violations extends React.Component {
     setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
-  onExternalLinkClick = url => shell.openExternal(url);
+  onExternalLinkClick = url => {
+    ipcRenderer.send('KB_URL', url);
+    // shell.openExternal(url);
+  }
 
   render() {
     let {violations,

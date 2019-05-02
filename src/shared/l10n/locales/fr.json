@@ -23,6 +23,8 @@
         "reload": "Recharger",
         "toggleDevTools": "Basculer les outils de Développement",
         "knowledgeBase": "Base de Connaissances",
+        "knowledgeBaseOffline": "Local (hors-ligne)",
+        "knowledgeBaseOnline": "Web (en-ligne)",
         "learnMore": "En savoir Plus",
         "reportIssue": "Faire un rapport de bug",
         "copyMessageOutput": "Copier les Messages",
@@ -33,7 +35,14 @@
         "showAll": "Tout montrer",
         "quit": "Quitter",
         "minimize": "Minimiser",
-        "bringToFront": "Mettre au Devant"
+        "bringToFront": "Mettre au Devant",
+        "edit": "Edition",
+        "undo": "Défaire",
+        "redo": "Refaire",
+        "copy": "Copier",
+        "cut": "Couper",
+        "paste": "Coller",
+        "selectall": "Sélectionner Tout"
     },
     "preferences": {
         "title": "Préférences de Ace",
@@ -150,5 +159,6 @@
         "check": "Vérifier",
         "open": "Ouvrir",
         "choosereport": "Choisir un rapport Ace"
-    }
+    },
+    "kbgoonline": "ALLER EN LIGNE"
 }

@@ -23,6 +23,8 @@
         "reload": "Reload",
         "toggleDevTools": "Toggle Developer Tools",
         "knowledgeBase": "Knowledge Base",
+        "knowledgeBaseOffline": "Local (offline)",
+        "knowledgeBaseOnline": "Web (online)",
         "learnMore": "Learn more",
         "reportIssue": "Report an Issue",
         "copyMessageOutput": "Copy Message Output",
@@ -33,7 +35,14 @@
         "showAll": "Show All",
         "quit": "Quit",
         "minimize": "Minimize",
-        "bringToFront": "Bring All to Front"
+        "bringToFront": "Bring All to Front",
+        "edit": "Edit",
+        "undo": "Undo",
+        "redo": "Redo",
+        "copy": "Copy",
+        "cut": "Cut",
+        "paste": "Paste",
+        "selectall": "Select All"
     },
     "preferences": {
         "title": "Ace Preferences",
@@ -150,5 +159,6 @@
         "check": "Check",
         "open": "Open",
         "choosereport": "Choose an Ace report"
-    }
+    },
+    "kbgoonline": "GO ONLINE"
 }
