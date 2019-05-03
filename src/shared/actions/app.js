@@ -5,6 +5,7 @@ import zip from '../helpers/zip';
 
 import { localizer } from '../l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
+import {axeRunner} from '../axe-runner';
 
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";
@@ -67,7 +68,7 @@ export function runAce(inputPath) {
     if (outdir.success) {
       const language = getCurrentLanguage();
       
-      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: true})
+      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: false}, axeRunner)
       .then(() => {
         dispatch(addMessage(localize("message.checkcomplete")));
         let reportPath = outdir.value + '/report.json';

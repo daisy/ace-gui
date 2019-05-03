@@ -11,13 +11,7 @@
   "build": {
     "appId": "org.daisy.ace",
     "files": [
-      "app",
-      "!**/node_modules/puppeteer/.local-chromium/**/*",
-      {
-        "from": "node_modules/puppeteer/.local-chromium",
-        "to": "node_modules/puppeteer/.local-chromium",
-        "filter": "${os}*/**/*"
-      }
+      "app"
     ],
     "mac": {
       "category": "my.category",
@@ -42,14 +36,12 @@
   "scripts": {
     "clean": "cross-env BUILD_TARGET=clean node build/build.js",
     "build:bundle": "webpack --config=build/webpack.app.config.js --env=production",
-    "build:chromium": "cross-env BUILD_TARGET=fetch-chromium node build/build.js",
     "build": "yarn build:bundle && cpy --cwd=\"./kb\" --parents \"**/*\" \"../app/kb/\" && electron-builder",
     "postinstall": "electron-builder install-app-deps",
     "release": "build -mw -p always",
     "start": "node build/start.js",
     "test": "echo TODO test the app",
-    "__replace-ace-packages": "npm run __rap1 && npm run __rap2 && npm run __rap3 && npm run __rap4 && npm run __rap5 && npm run __rap6 && npm run __rap7 && npm run __rap8 && npm run __rap9 && npm run __rap10 && npm run __rap11",
-    "__rap1": "rimraf \"node_modules/@daisy/puppeteer-utils/lib/**/*\" && cpy --cwd=\"../ace/packages/puppeteer-utils/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/puppeteer-utils/lib/\" && cpy \"../ace/packages/puppeteer-utils/package.json\" \"./node_modules/@daisy/puppeteer-utils/\"",
+    "__replace-ace-packages": "npm run __rap2 && npm run __rap3 && npm run __rap4 && npm run __rap5 && npm run __rap6 && npm run __rap7 && npm run __rap8 && npm run __rap9 && npm run __rap10 && npm run __rap11",
     "__rap2": "rimraf \"node_modules/@daisy/epub-utils/lib/**/*\" && cpy --cwd=\"../ace/packages/epub-utils/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/epub-utils/lib/\" && cpy \"../ace/packages/epub-utils/package.json\" \"./node_modules/@daisy/epub-utils/\"",
     "__rap3": "rimraf \"node_modules/@daisy/ace-report-axe/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-report-axe/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-report-axe/lib/\" && cpy \"../ace/packages/ace-report-axe/package.json\" \"./node_modules/@daisy/ace-report-axe/\"",
     "__rap4": "rimraf \"node_modules/@daisy/ace-report/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-report/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-report/lib/\" && cpy \"../ace/packages/ace-report/package.json\" \"./node_modules/@daisy/ace-report/\"",
@@ -61,19 +53,28 @@
     "__rap10": "cpy --cwd=\"../ace/node_modules/\" --parents --no-dir \"./axe-core/**/*\" \"../../ace-gui/node_modules/\"",
     "__rap11": "cpy --cwd=\"../ace/node_modules/\" --parents --no-dir \"./i18next/**/*\" \"../../ace-gui/node_modules/\""
   },
+  "@daisy/ace-core": "^1.0.2",
   "dependencies": {
     "@daisy/ace-config": "^1.0.0",
-    "@daisy/ace-core": "^1.0.2",
+    "@daisy/ace-logger": "^1.0.1",
+    "@daisy/ace-report": "^1.0.1",
+    "@daisy/ace-report-axe": "^1.0.1",
+    "@daisy/epub-utils": "^1.0.2",
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^3.0.0",
     "@mrmlnc/readdir-enhanced": "^2.2.1",
     "about-window": "^1.12.1",
+    "axe-core": "~2.6.1",
     "electron-debug": "^2.0.0",
     "electron-redux": "^1.3.1",
     "electron-store": "^2.0.0",
     "express": "^4.16.4",
+    "file-url": "^2.0.2",
     "fs-jetpack": "^2.1.0",
+    "h5o": "^0.11.3",
+    "handlebars": "^4.1.2",
     "jszip": "^3.1.5",
+    "p-map": "^1.2.0",
     "portfinder": "^1.0.20",
     "prop-types": "^15.6.2",
     "react": "^16.3.0",
@@ -87,7 +88,10 @@
     "selfsigned": "^1.10.4",
     "tmp": "^0.0.33",
     "typeface-roboto": "^0.0.54",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "winston": "^2.4.0",
+    "xmldom-alpha": "^0.1.28",
+    "xpath": "^0.0.27"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

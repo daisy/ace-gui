@@ -10,6 +10,7 @@ require('electron-debug')();
 const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
 
 import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWindows} from './kb';
+import {axeRunnerInitEvents} from './axe-runner';
 
 function openAllDevTools() {
   for (const wc of webContents.getAllWebContents()) {
@@ -83,6 +84,7 @@ function createWindow() {
 app.on('ready', () => {
   let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
   const kbRootPath = isDev ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");
+  axeRunnerInitEvents();
   startKnowledgeBaseServer(kbRootPath).then(() => {
     createWindow();
   }).catch((err) => {
