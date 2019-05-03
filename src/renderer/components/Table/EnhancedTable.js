@@ -186,7 +186,6 @@ export default class EnhancedTable extends React.Component {
           option.label = head.l10n ?
             (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(option.value, {ignoreMissingKey})) :
             option.value;
-          console.log(option.label);
         });
       }
       if (filter.values) {
@@ -194,7 +193,6 @@ export default class EnhancedTable extends React.Component {
           value.label = head.l10n ?
             (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + value.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(value.value, {ignoreMissingKey})) :
             value.value;
-          console.log(value.label);
         });
       }
     });
