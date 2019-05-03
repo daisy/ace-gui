@@ -62,3 +62,20 @@ Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guidelin
 ## License
 
 This project is licensed under the MIT License - see the [license file](LICENSE.md) for details
+
+## Clean slate build for Electron
+
+* `yarn run clean`
+* `rm -rf dist`
+* `rm -rf node_modules`
+* `yarn cache clean`
+* `git branch`
+* `git status`
+* `git pull`
+* `rm yarn.lock`
+* `yarn install`
+* `open node_modules/@daisy`
+* `yarn build`
+* `yarn start`
+
+
