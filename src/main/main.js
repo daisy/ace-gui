@@ -36,7 +36,20 @@ function openTopLevelDevTools() {
 let win;
 function createWindow() {
 
-  win = new BrowserWindow({ show: false });
+  win = new BrowserWindow(
+    {
+      show: false,
+      webPreferences: {
+          allowRunningInsecureContent: false,
+          contextIsolation: false,
+          nodeIntegration: true,
+          nodeIntegrationInWorker: false,
+          sandbox: false,
+          webSecurity: true,
+          webviewTag: false,
+      }
+    }
+  );
   win.maximize();
   let sz = win.getSize();
   const sz0 = sz[0];
