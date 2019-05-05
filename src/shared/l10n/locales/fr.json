@@ -57,8 +57,8 @@
         "history": "Historique",
         "export": "Exporter",
         "settings": "Préférences",
-        "minimize": "Minimizer le Menu Latéral",
-        "maximize": "Maximizer le Menu Latéral"
+        "minimize": "Réduire la barre latérale",
+        "maximize": "Agrandir la barre latérale"
     },
     "splash": {
         "title": "Ace, par DAISY",
