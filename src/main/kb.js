@@ -419,6 +419,7 @@ function buildMenuTemplate(win) {
                 //   click: () => win.setFullScreen(!win.isFullScreen())
                 // },
                 {
+                    // label: localize('menu.togglefullscreen'),
                     role: "togglefullscreen",
                 },
                 {

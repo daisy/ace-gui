@@ -12,7 +12,6 @@
         "rerunAce": "Rerun Ace",
         "exportReport": "Export Report",
         "closeReport": "Close Report",
-        "toggleFullScreen": "Toggle Full Screen",
         "gotoSummary": "Go to Summary",
         "gotoViolations": "Go to Violations",
         "gotoMetadata": "Go to Metadata",

@@ -12,7 +12,6 @@
         "rerunAce": "Relancer Ace",
         "exportReport": "Exporter le rapport",
         "closeReport": "Fermer le rapport",
-        "toggleFullScreen": "Activer/désactiver le plein écran",
         "gotoSummary": "Aller au Résumé",
         "gotoViolations": "Aller aux Violations",
         "gotoMetadata": "Aller aux Métadonnées",
