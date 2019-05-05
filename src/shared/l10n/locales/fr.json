@@ -142,7 +142,7 @@
         "loadfailreport": "ERREUR: Impossible de charger {{p}}"
     },
     "dialog": {
-        "savereport": "Enregistrer le Rapport",
+        "savereport": "Enregistrer le rapport",
         "ziparchive": "Archive Zip",
         "choosedir": "Sélectionner un dossier",
         "select": "Sélectionner",
