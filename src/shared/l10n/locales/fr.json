@@ -94,7 +94,7 @@
         },
         "outlinesSection": {
             "toc": "Table des Matières EPUB",
-            "headings": "Structure d'entêtes",
+            "headings": "Structure de titres",
             "html": "Structure HTML"
         },
         "summarySection": {
