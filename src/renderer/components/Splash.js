@@ -9,6 +9,9 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { withStyles } from '@material-ui/core/styles';
 
+import { localizer } from './../../shared/l10n/localize';
+const { localize } = localizer;
+
 const styles = theme => ({
   buttonProcessing: {
     position: 'absolute',
@@ -73,6 +76,20 @@ class Splash extends React.Component {
   render() {
     let {classes, processing} = this.props;
     let disabled = processing ? 'disabled' : '';
+
+    const orDropSidebar = localize("splash.orDropSidebar");
+    const orDropSidebarArray = orDropSidebar.split("__");
+    const orDropSidebar1 = orDropSidebarArray[0].trim();
+    const orDropSidebar2 = orDropSidebarArray[1].trim();
+
+    // "browseForFileOrFolder": "browse for a __file__ or a __folder__ ."
+    const browseForFileOrFolder = localize("splash.browseForFileOrFolder");
+    const browseForFileOrFolderArray = browseForFileOrFolder.split("__");
+    const browseForFileOrFolder1 = browseForFileOrFolderArray[0].trim();
+    const browseForFileOrFolder2 = browseForFileOrFolderArray[1].trim();
+    const browseForFileOrFolder3 = browseForFileOrFolderArray[2].trim();
+    const browseForFileOrFolder4 = browseForFileOrFolderArray[3].trim();
+    const browseForFileOrFolder5 = browseForFileOrFolderArray[4].trim();
     return (
         <div className={`splash
             ${this.state.fileHover ? 'hover' : ''}
@@ -82,22 +99,20 @@ class Splash extends React.Component {
           onDragLeave={this.onDragLeave}
           onDragEnd={this.onDragEnd}>
 
-          <h1>Ace, by DAISY</h1>
+          <h1>{localize("splash.title")}</h1>
           <div style={{position: 'relative'}}>
             <img src={`${AceLogo}`} alt="" width="150" height="150"/>
             {processing && <CircularProgress size={178} className={classes.buttonProcessing}/>}
           </div>
           {!processing &&
-          <p>Drop an EPUB file or directory here,<br/>
-            or on the&nbsp;
+          <p>{localize("splash.dropHere")}<br/>
+            {orDropSidebar1}&nbsp;
               <AddCircleOutlineIcon titleAccess="“New”" fontSize='inherit' style={{position: 'relative', bottom: '-0.15em'}}/>
-              &nbsp;button in the sidebar, <br/>
-              or
+              &nbsp;{orDropSidebar2}<br/>
+              {localize("splash.or")}
               {process.platform == 'darwin'
-                ? <span> <a href="#"onClick={this.onBrowseFileOrFolderClick}>click to browse.</a></span>
-                : <span> browse for
-                a <a href="#" onClick={this.onBrowseFileClick}>file</a> or
-                a <a href="#" onClick={this.onBrowseFolderClick}>folder</a>.
+                ? <span> <a href="#"onClick={this.onBrowseFileOrFolderClick}>{localize("splash.clickToBrowse")}</a></span>
+                : <span> {browseForFileOrFolder1} <a href="#" onClick={this.onBrowseFileClick}>{browseForFileOrFolder2}</a> {browseForFileOrFolder3} <a href="#" onClick={this.onBrowseFolderClick}>{browseForFileOrFolder4}</a>{browseForFileOrFolder5}
                 </span>
               }
           </p>
@@ -108,8 +123,9 @@ class Splash extends React.Component {
 }
 
 function mapStateToProps(state) {
-  let { app: {processing: {ace}} } = state;
+  let { app: {processing: {ace}}, preferences: {language} } = state;
   return {
+    language,
     processing: ace
   };
 }

@@ -8,6 +8,9 @@ import {
 import {selectTab} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 import * as AboutBoxHelper from './../shared/helpers/about';
+
+import { localizer } from './../shared/l10n/localize';
+const { getCurrentLanguage, localize } = localizer;
 import {KnowledgeBase} from './kb';
 
 export default class MenuBuilder {
@@ -17,23 +20,41 @@ export default class MenuBuilder {
     this.store = store;
     this.stateValues = {
       isReportOpen: false,
-      ready: true
-    };
+      ready: true,
 
-    // listen for when a report is open
-    this.store.subscribe(() => {
-      let currIsReportOpen = this.stateValues.isReportOpen;
-      let currReady = this.stateValues.ready;
-      let newIsReportOpen = this.store.getState().app.report != null;
-      let newReady = !this.store.getState().app.processing.ace;
-      if (currIsReportOpen != newIsReportOpen || currReady != newReady) {
-        this.stateValues = {
-          isReportOpen: newIsReportOpen,
-          ready: newReady
-        };
-        this.refreshMenuItemsEnabled();
-      }
-    })
+      language: getCurrentLanguage() // this.store.getState().preferences.language
+    };
+  }
+
+  // store.subscribe(() => { ... });
+  // storeHasChanged() is called AFTER the central store.subscribe() in store-persist.js (initialized from main.js)
+  // this ensures that app-wide UI language is ready in localizer
+  storeHasChanged() {
+    let needsRefresh = false;
+    let needsRebuild = false;
+
+    const currLanguage = this.stateValues.language;
+    const newLanguage = getCurrentLanguage(); // this.store.getState().preferences.language
+    if (newLanguage !== currLanguage) {
+      this.stateValues.language = newLanguage;
+      needsRebuild = true;
+    }
+
+    let currIsReportOpen = this.stateValues.isReportOpen;
+    let currReady = this.stateValues.ready;
+    let newIsReportOpen = this.store.getState().app.report != null;
+    let newReady = !this.store.getState().app.processing.ace;
+    if (currIsReportOpen != newIsReportOpen || currReady != newReady) {
+      this.stateValues.ready = newReady;
+      this.stateValues.isReportOpen = newIsReportOpen;
+      needsRefresh = true;
+    }
+
+    if (needsRebuild) {
+      this.rebuildMenu(); // calls this.refreshMenuItemsEnabled()
+    } else if (needsRefresh) {
+      this.refreshMenuItemsEnabled();
+    }
   }
   refreshMenuItemsEnabled() {
     let {isReportOpen, ready} = this.stateValues;
@@ -59,10 +80,10 @@ export default class MenuBuilder {
 
     const defaultTemplate = {
       subMenuFile: {
-        label: 'File',
+        label: localize('menu.file'),
         submenu: [
           {
-            label: 'Check EPUB...',
+            label: localize('menu.checkEpub'),
             id: 'checkEpub',
             accelerator: 'CmdOrCtrl+O',
             click: () => process.platform == 'darwin'
@@ -70,7 +91,7 @@ export default class MenuBuilder {
               :FileDialogHelpers.showEpubFileBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
           },
           {
-            label: 'Open Report...',
+            label: localize('menu.openReport'),
             id: 'openReport',
             click: () => FileDialogHelpers.showReportFileBrowseDialog(filepath => this.store.dispatch(openReport(filepath)))
           },
@@ -78,7 +99,7 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            label: 'Rerun Ace',
+            label: localize('menu.rerunAce'),
             id: 'rerunAce',
             accelerator: 'CmdOrCtrl+Shift+R',
             click: () => this.store.dispatch(runAce(this.store.getState().app.inputPath))
@@ -87,7 +108,7 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            label: 'Export Report',
+            label: localize('menu.exportReport'),
             id: 'exportReport',
             accelerator: 'CmdOrCtrl+Shift+E',
             click: () => FileDialogHelpers.showExportReportDialog(filepath => this.store.dispatch(exportReport(filepath)))
@@ -96,7 +117,7 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            label: 'Close Report',
+            label: localize('menu.closeReport'),
             id: 'closeReport',
             accelerator: 'CmdOrCtrl+Shift+C',
             click: () => this.store.dispatch(closeReport())
@@ -104,34 +125,34 @@ export default class MenuBuilder {
         ]
       },
       subMenuView: {
-        label: 'View',
+        label: localize('menu.view'),
         submenu: [
           {
-            label: 'Go to Summary',
+            label: localize('menu.gotoSummary'),
             id: 'gotoSummary',
             accelerator: 'CmdOrCtrl+Shift+S',
             click: () => this.store.dispatch(selectTab(0))
           },
           {
-            label: 'Go to Violations',
+            label: localize('menu.gotoViolations'),
             id: 'gotoViolations',
             accelerator: 'CmdOrCtrl+Shift+V',
             click: () => this.store.dispatch(selectTab(1))
           },
           {
-            label: 'Go to Metadata',
+            label: localize('menu.gotoMetadata'),
             id: 'gotoMetadata',
             accelerator: 'CmdOrCtrl+Shift+M',
             click: () => this.store.dispatch(selectTab(2))
           },
           {
-            label: 'Go to Outlines',
+            label: localize('menu.gotoOutlines'),
             id: 'gotoOutlines',
             accelerator: 'CmdOrCtrl+Shift+O',
             click: () => this.store.dispatch(selectTab(3))
           },
           {
-            label: 'Go to Images',
+            label: localize('menu.gotoImages'),
             id: 'gotoImages',
             accelerator: 'CmdOrCtrl+Shift+I',
             click: () => this.store.dispatch(selectTab(4))
@@ -140,7 +161,7 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            label: process.platform == 'darwin' ? 'Show in Finder' : 'Show in Explorer',
+            label: process.platform == 'darwin' ? localize('menu.showInFinder') : localize('menu.showInExplorer'),
             id: 'showInFinder',
             accelerator: 'CmdOrCtrl+Shift+F',
             click: () => shell.showItemInFolder(this.store.getState().app.reportPath)
@@ -148,46 +169,47 @@ export default class MenuBuilder {
         ]
       },
       subMenuEdit: {
-        label: 'Edit',
+        label: localize('menu.edit'),
         submenu: [
             {
-                label: "Undo",
+                label: localize('menu.undo'),
                 accelerator: "CmdOrCtrl+Z",
                 selector: "undo:"
             },
             {
-                label: "Redo",
+                label: localize('menu.redo'),
                 accelerator: "Shift+CmdOrCtrl+Z",
                 selector: "redo:"
             },
             { type: "separator" },
             {
-                label: "Cut",
+                label: localize('menu.cut'),
                 accelerator: "CmdOrCtrl+X",
                 selector: "cut:"
             },
             {
-                label: "Copy",
+                label: localize('menu.copy'),
                 accelerator: "CmdOrCtrl+C",
                 selector: "copy:"
             },
             {
-                label: "Paste",
+                label: localize('menu.paste'),
                 accelerator: "CmdOrCtrl+V",
                 selector: "paste:"
             },
             {
-                label: "Select All",
+                label: localize('menu.selectall'),
                 accelerator: "CmdOrCtrl+A",
                 selector: "selectAll:"
             },
         ],
       },
       subMenuDev: {
-        label: 'Dev',
+        label: localize('menu.dev'),
         submenu: [
           {
-            label: 'Reload',
+            label: localize('menu.reload'),
+            id: 'reload',
             accelerator: 'CmdOrCtrl+R',
             click: () => {
               const bw = BrowserWindow.getFocusedWindow();
@@ -211,7 +233,8 @@ export default class MenuBuilder {
             }
           },
           {
-            label: 'Toggle Developer Tools',
+            label: localize('menu.toggleDevTools'),
+            id: 'toggleDevTools',
             accelerator: 'Alt+CmdOrCtrl+I',
             click: () => {
               // this.mainWindow.toggleDevTools();
@@ -241,20 +264,21 @@ export default class MenuBuilder {
         ]
       },
       subMenuHelp: {
-        label: 'Help',
+        label: localize('menu.help'),
         role: 'help',
         submenu: [
           {
-            label: 'Knowledge Base',
+            label: localize('menu.knowledgeBase'),
+            id: 'knowledgeBase',
             submenu: [
               {
-                label: 'Local (offline)',
+                label: localize('menu.knowledgeBaseOffline'),
                 click: () => {
                   new KnowledgeBase(this.mainWindow, undefined);
                 }
               },
               {
-                label: 'Web (online)',
+                label: localize('menu.knowledgeBaseOnline'),
                 click: () => {
                   shell.openExternal('http://kb.daisy.org/publishing/docs/index.html');
                 }
@@ -262,15 +286,18 @@ export default class MenuBuilder {
             ]
           },
           {
-            label: 'Learn more',
+            label: localize('menu.learnMore'),
+            id: 'learnMore',
             click: () => shell.openExternal('http://daisy.github.io/ace')
           },
           {
-            label: 'Report an Issue',
+            label: localize('menu.reportIssue'),
+            id: 'reportIssue',
             click: () => shell.openExternal('http://github.com/DAISY/ace-gui/issues')
           },
           {
-            label: 'Copy Message Output',
+            label: localize('menu.copyMessageOutput'),
+            id: 'copyMessageOutput',
             click: () => {
               let messages = this.store.getState().app.messages;
               let msgstr = messages.join('\n');
@@ -280,18 +307,19 @@ export default class MenuBuilder {
         ]
       },
       subMenuAbout: {
-        label: 'Ace',
+        label: localize('menu.ace'),
         submenu: [
           {
-            label: 'About Ace',
-            id: 'about',
+            label: localize('menu.about'),
+            id: 'about2',
             click: () => AboutBoxHelper.showAbout()
           },
           {
             type: 'separator'
           },
           {
-            // label: 'Services',
+            // label: localize('menu.services'),
+            id: 'services',
             role: 'services',
             submenu: []
           },
@@ -299,29 +327,34 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            // label: 'Hide Ace',
-            // accelerator: 'CmdOrCtrl+H',
+            // label: localize('menu.hideAce'),
+            id: 'hideAce',
+            // accelerator: 'Command+H',
             role: 'hide'
           },
           {
-            // label: 'Hide Others',
-            // accelerator: 'CmdOrCtrl+Alt+H',
+            // label: localize('menu.hideOthers'),
+            id: 'hideOthers',
+            // accelerator: 'Command+Alt+H',
             role: 'hideothers'
           },
           {
-            // label: 'Show All',
+            // label: localize('menu.showAll'),
+            id: 'showAll',
             role: 'unhide'
           },
           {
             type: 'separator'
           },
           {
+            label: localize('menu.quit'),
+            id: 'quit2',
             role: 'quit'
           }
         ]
       },
       subMenuWindow: {
-        label: 'Window',
+        label: localize('menu.window'),
         role: 'window',
         submenu: [
           // {
@@ -333,10 +366,13 @@ export default class MenuBuilder {
           //   click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
           // },
           {
-              role: "togglefullscreen",
+            // label: localize('menu.togglefullscreen'),
+            role: "togglefullscreen",
           },
           {
-              role: "minimize",
+            // label: localize('menu.minimize'),
+            id: 'minimize',
+            role: 'minimize'
           },
           {
               role: "close",
@@ -347,7 +383,8 @@ export default class MenuBuilder {
           // },
           { type: 'separator' },
           {
-            // label: 'Bring All to Front',
+            // label: localize('menu.bringToFront'),
+            id: 'bringToFront',
             role: 'front'
           }
         ]
@@ -360,7 +397,7 @@ export default class MenuBuilder {
     if (process.platform === 'linux' || process.platform === 'win32') {
       // insert item into File submenu
       defaultTemplate.subMenuFile.submenu.unshift({
-        label: 'Check EPUB Folder ... ',
+        label: localize('menu.checkEpubFolder'),
         click: () => FileDialogHelpers.showEpubFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
       });
 
@@ -370,8 +407,8 @@ export default class MenuBuilder {
           type: 'separator'
         },
         {
-          label: 'About Ace',
-          id: 'about',
+          label: localize('menu.about'),
+          id: 'about1',
           click: () => AboutBoxHelper.showAbout()
         }
       );
@@ -384,7 +421,8 @@ export default class MenuBuilder {
             type: 'separator'
         },
         {
-        label: 'Quit',
+        label: localize('menu.quit'),
+        id: 'quit1',
         click: () => app.quit()
       });
     }
@@ -419,7 +457,7 @@ export default class MenuBuilder {
 
       Menu.buildFromTemplate([
         {
-          label: 'Inspect element',
+          label: 'Inspect element', // NOT LOCALIZED (debug/dev only)
           click: () => {
             this.mainWindow.inspectElement(x, y);
           }
@@ -428,20 +466,23 @@ export default class MenuBuilder {
     });
   }
 
+  rebuildMenu() {
+    const template = this.buildTemplate();
+    const menu = Menu.buildFromTemplate(template);
+
+    Menu.setApplicationMenu(menu); // necessary for app-wide menu on MacOS
+    // win.setMenu(menu);
+
+    this.refreshMenuItemsEnabled();
+    return menu;
+  }
+
   buildMenu(win) {
     let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
     if (isDev) {
       this.setupDevelopmentEnvironment();
     }
 
-    const template = this.buildTemplate();
-    const menu = Menu.buildFromTemplate(template);
-
-    Menu.setApplicationMenu(menu); // necessary for app-wide menu on MacOS
-    // win.setMenu(menu);
-    
-    this.refreshMenuItemsEnabled();
-    return menu;
+    return this.rebuildMenu();
   }
-
 }

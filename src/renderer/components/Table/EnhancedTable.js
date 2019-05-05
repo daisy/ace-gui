@@ -16,6 +16,9 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
+
 function desc(a, b, orderBy, head) {
   let aValue = head.hasOwnProperty('sortOn') ? head.sortOn(a[orderBy]) : a[orderBy];
   let bValue = head.hasOwnProperty('sortOn') ? head.sortOn(b[orderBy]) : b[orderBy];
@@ -82,18 +85,28 @@ export default class EnhancedTable extends React.Component {
   };
 
   state = {
-    filters: Object.keys(this.props.filters).map(key => ({
+    filters: Object.keys(this.props.filters).map(key => {
+      let head = this.props.heads.find(h => h.id === key);
+      return {
       ...this.props.filters[key],
       id: key,
       options: this.props.rows.reduce(
         (uniqueValues, row) => {
-          let head = this.props.heads.find(h => h.id === key);
           let rowValue = head.filterOn(row[key]);
           return rowValue != null && uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
         },
       [])
-      .map(option => {return {value: option, label: option}; } ),
-      }))
+      .map(option => {
+        const ignoreMissingKey = (head.l10n && head.l10n.ignoreMissingKey) ? true : false;
+        return {
+          value: option,
+          label: head.l10n ?
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(option, {ignoreMissingKey})) :
+            option
+        };
+      })
+      ,
+      };})
       .reduce((activeFilters, filter) =>
         filter.options.length != 0 ? activeFilters.concat(filter) : activeFilters, []) // don't include filters with no options
   };
@@ -161,6 +174,29 @@ export default class EnhancedTable extends React.Component {
     const filteredRows = this.filterRows();
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
+    // ensure correct language
+    filters.forEach((filter) => {
+      let head = this.props.heads.find(h => h.id === filter.id);
+      if (!head) {
+        return;
+      }
+      const ignoreMissingKey = (head.l10n && head.l10n.ignoreMissingKey) ? true : false;
+      if (filter.options) {
+        filter.options.forEach((option) => {
+          option.label = head.l10n ?
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(option.value, {ignoreMissingKey})) :
+            option.value;
+        });
+      }
+      if (filter.values) {
+        filter.values.forEach((value) => {
+          value.label = head.l10n ?
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + value.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(value.value, {ignoreMissingKey})) :
+            value.value;
+        });
+      }
+    });
+
     return (
       <div>
       {filters.length > 0 ?
@@ -170,11 +206,11 @@ export default class EnhancedTable extends React.Component {
           classes={{expanded: 'expanded'}}
           onChange={(e, v) => this.onChangeExpanded(v)}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Filter by</Typography>
+            <Typography>{localize("enhancedTable.filterBy")}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className="table-filters">
-            {filters.map((filter, idx) =>
-              <Select
+            {filters.map((filter, idx) => 
+            <Select
                 key={idx}
                 options={filter.options}
                 value={filter.values}
@@ -200,7 +236,7 @@ export default class EnhancedTable extends React.Component {
                   sortDirection={head.sortable && orderBy === head.id ? order : false}>
                   {head.sortable ?
                   <Tooltip
-                  title={'Sort by ' + head.label}
+                  title={localize("enhancedTable.sortBy") + head.label}
                   placement={'bottom-start'}
                   enterDelay={300}>
                     <TableSortLabel
@@ -247,6 +283,8 @@ export default class EnhancedTable extends React.Component {
               onChangePage={this.onChangePage}
               onChangeRowsPerPage={this.onChangeRowsPerPage}
               ActionsComponent={TablePaginationActionsWrapped}
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
+              labelRowsPerPage={localize("enhancedTable.rowsPerPage")}
             />
           </TableRow>
         </TableFooter>

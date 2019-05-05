@@ -4,8 +4,9 @@ import Images from './../../components/ReportSections/Images';
 import * as ReportViewActions from './../../../shared/actions/reportView';
 
 const mapStateToProps = state => {
-  let {app: {report, reportPath}, reportView: {filters, sort, pagination, expandFilters}} = state;
+  let {app: {report, reportPath}, reportView: {filters, sort, pagination, expandFilters}, preferences: {language}} = state;
   return {
+    language,
     images: report.data.images == undefined ? [] : report.data.images,
     filters: filters['images'],
     pagination: pagination['images'],

@@ -5,6 +5,9 @@ import zip from '../helpers/zip';
 
 import {axeRunner} from '../axe-runner';
 
+import { localizer } from '../l10n/localize';
+const { getCurrentLanguage, localize } = localizer;
+
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";
 export const EXPORT_REPORT = "EXPORT_REPORT";
@@ -52,7 +55,7 @@ export function openFile(filepath) {
       dispatch(openReport(filepath));
     }
     else if (type == -1) {
-      dispatch(addMessage(`ERROR: File type of ${filepath} not supported`));
+      dispatch(addMessage(localize("message.filetypenotsupported", {filepath, interpolation: { escapeValue: false }})));
     }
   }
 }
@@ -60,13 +63,15 @@ export function openFile(filepath) {
 export function runAce(inputPath) {
   return (dispatch, getState) => {
     dispatch(setProcessing(PROCESSING_TYPE.ACE, true));
-    dispatch(addMessage(`Running Ace on ${inputPath}`));
+    dispatch(addMessage(localize("message.runningace", {inputPath, interpolation: { escapeValue: false }})));
     let outdir = prepareOutdir(inputPath, getState().preferences);
 
     if (outdir.success) {
-      ace(inputPath, {outdir: outdir.value}, axeRunner)
+      const language = getCurrentLanguage();
+      
+      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: true}, axeRunner)
       .then(() => {
-        dispatch(addMessage('Ace check complete'));
+        dispatch(addMessage(localize("message.checkcomplete")));
         let reportPath = outdir.value + '/report.json';
         dispatch(openReport(reportPath, inputPath));
       })
@@ -105,15 +110,15 @@ export function exportReport(outfile) {
     // - ensure outdir exists
     // - ensure outdir is overwriteable
     dispatch(setProcessing(PROCESSING_TYPE.EXPORT, true));
-    dispatch(addMessage(`Saving report to ${outfile}…`));
+    dispatch(addMessage(localize("message.savingreport", {outfile, interpolation: { escapeValue: false }})));
     zip(path.dirname(reportPath), outfile)
     .then(() => {
-      dispatch(addMessage(`Saved report to ${outfile}…`));
+      dispatch(addMessage(localize("message.savedreport", {outfile, interpolation: { escapeValue: false }})));
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
     })
     .catch(error => {
       dispatch(addMessage(error));
-      dispatch(addMessage(`ERROR: couldn't save report to ${outfile}`));
+      dispatch(addMessage(localize("message.failsavereport", {outfile, interpolation: { escapeValue: false }})));
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
     });
   };
@@ -136,9 +141,8 @@ function prepareOutdir(filepath, prefs) {
       .map(file => path.join(outdir, file))
       .filter(fs.existsSync);
     if (overrides.length > 0) {
-      let msg = `Output directory is not empty. Running Ace would overwrite the following files or directories:
-      ${overrides.map(file => `  - ${file}`).join('\n')}. Enable the option 'Overwrite' to allow this.`;
-      return {success: false, value: msg};
+      const val = overrides.map(file => `  - ${file}`).join('\n');
+      return {success: false, value: localize("message.overwrite", {val, interpolation: { escapeValue: false }})};
     }
   }
   return {success: true, value: outdir};

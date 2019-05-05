@@ -2,9 +2,12 @@ const path = require('path');
 const { app, BrowserWindow, webContents} = require('electron');
 
 import MenuBuilder from './menu';
-import configureStore from './../shared/store/configureStore';
+
+import {initPersistentStore} from './store-persist';
 
 require('electron-debug')();
+
+const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
 
 import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWindows} from './kb';
 import {axeRunnerInitEvents} from './axe-runner';
@@ -30,9 +33,9 @@ function openTopLevelDevTools() {
   }
 }
 
-const store = configureStore(undefined, 'main');
 let win;
 function createWindow() {
+
   win = new BrowserWindow({ show: false });
   win.maximize();
   let sz = win.getSize();
@@ -48,12 +51,19 @@ function createWindow() {
   const menuBuilder = new MenuBuilder(win, store);
   menuBuilder.buildMenu(win);
 
+  const cb = () => {
+    menuBuilder.storeHasChanged();
+  };
+  storeSubscribe(cb);
+  
   win.loadURL(`file://${__dirname}/index.html`);
 
   win.on('closed', function () {
-      win = null;
-      app.quit();
+      
+      storeUnsubscribe(cb);
 
+      win = null;
+      
       // closeKnowledgeBaseWindows();
 
       // // about box
@@ -62,11 +72,14 @@ function createWindow() {
       //     bw.close();
       // });
 
-      // will trigger window-all-closed event => app quit
+      // the above triggers window-all-closed event => app quit
+
+      app.quit();
   });
 }
 
-app.setAccessibilitySupportEnabled(true);
+// Is enabled automatically when screen reader is detected
+// app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', () => {
   let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -98,5 +111,4 @@ app.on('activate', function () {
 });
 
 app.on('before-quit', function() {
-  // TODO persist anything that needs persisting
 });

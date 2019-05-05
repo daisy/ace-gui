@@ -3,6 +3,9 @@ const fs = require('fs');
 const { BrowserWindow, webContents } = require('electron');
 import { app, shell, session, ipcMain, Menu } from 'electron';
 
+import { localizer } from './../shared/l10n/localize';
+const { localize } = localizer;
+
 import * as AboutBoxHelper from './../shared/helpers/about';
 
 import * as express from "express";
@@ -157,7 +160,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
 
             const toMatch1 = "document.location.host == 'localhost'";
             const toMatch2 = "KB.prototype.generateFooter = function () {";
-            const link = "GO ONLINE";
+            const link = localize("kbgoonline");
             const online = `
 var zhref = document.location.href.replace('${rootUrl}/', 'http://kb.daisy.org/');
 var zdiv = document.createElement('div');
@@ -245,70 +248,72 @@ function buildMenuTemplate(win) {
 
     const defaultTemplate = {
         subMenuEdit: {
-            label: 'Edit',
+            label: localize('menu.edit'),
             submenu: [
                 {
-                    label: "Undo",
+                    label: localize('menu.undo'),
                     accelerator: "CmdOrCtrl+Z",
                     selector: "undo:"
                 },
                 {
-                    label: "Redo",
+                    label: localize('menu.redo'),
                     accelerator: "Shift+CmdOrCtrl+Z",
                     selector: "redo:"
                 },
                 { type: "separator" },
                 {
-                    label: "Cut",
+                    label: localize('menu.cut'),
                     accelerator: "CmdOrCtrl+X",
                     selector: "cut:"
                 },
                 {
-                    label: "Copy",
+                    label: localize('menu.copy'),
                     accelerator: "CmdOrCtrl+C",
                     selector: "copy:"
                 },
                 {
-                    label: "Paste",
+                    label: localize('menu.paste'),
                     accelerator: "CmdOrCtrl+V",
                     selector: "paste:"
                 },
                 {
-                    label: "Select All",
+                    label: localize('menu.selectall'),
                     accelerator: "CmdOrCtrl+A",
                     selector: "selectAll:"
                 },
             ],
         },
         subMenuDev: {
-            label: 'Dev',
+            label: localize('menu.dev'),
             submenu: [
                 {
-                    label: 'Reload',
+                    label: localize('menu.reload'),
+                    id: 'reload',
                     accelerator: 'CmdOrCtrl+R',
                     click: () => {
-                      const bw = BrowserWindow.getFocusedWindow();
-                      if (bw) {
-                          bw.webContents.reload();
-                      } else {
-                          win.webContents.reload();
-        
-                          // const arr = BrowserWindow.getAllWindows();
-                          // arr.forEach((bww) => {
-                          //     bww.webContents.openDevTools({ mode: "detach" });
-                          // });
-        
-                          // for (const wc of webContents.getAllWebContents()) {
-                          //   // if (wc.hostWebContents &&
-                          //   //     wc.hostWebContents.id === win.webContents.id) {
-                          //   // }
-                          //   wc.openDevTools({ mode: "detach" });
-                          // }
-                      }
+                        const bw = BrowserWindow.getFocusedWindow();
+                        if (bw) {
+                            bw.webContents.reload();
+                        } else {
+                            win.webContents.reload();
+
+                            // const arr = BrowserWindow.getAllWindows();
+                            // arr.forEach((bww) => {
+                            //     bww.webContents.openDevTools({ mode: "detach" });
+                            // });
+
+                            // for (const wc of webContents.getAllWebContents()) {
+                            //   // if (wc.hostWebContents &&
+                            //   //     wc.hostWebContents.id === win.webContents.id) {
+                            //   // }
+                            //   wc.openDevTools({ mode: "detach" });
+                            // }
+                        }
                     }
                 },
                 {
-                    label: 'Toggle Developer Tools',
+                    label: localize('menu.toggleDevTools'),
+                    id: 'toggleDevTools',
                     accelerator: 'Alt+CmdOrCtrl+I',
                     click: () => {
                         // win.toggleDevTools();
@@ -338,32 +343,35 @@ function buildMenuTemplate(win) {
             ]
         },
         subMenuHelp: {
-            label: 'Help',
+            label: localize('menu.help'),
             role: 'help',
             submenu: [
                 {
-                    label: 'Learn more',
+                    label: localize('menu.learnMore'),
+                    id: 'learnMore',
                     click: () => shell.openExternal('http://daisy.github.io/ace')
                 },
                 {
-                    label: 'Report an Issue',
+                    label: localize('menu.reportIssue'),
+                    id: 'reportIssue',
                     click: () => shell.openExternal('http://github.com/DAISY/ace-gui/issues')
-                },
+                }
             ]
         },
         subMenuAbout: {
-            label: 'Ace',
+            label: localize('menu.ace'),
             submenu: [
                 {
-                    label: 'About Ace',
-                    id: 'about',
+                    label: localize('menu.about'),
+                    id: 'about2',
                     click: () => AboutBoxHelper.showAbout()
                 },
                 {
                     type: 'separator'
                 },
                 {
-                    // label: 'Services',
+                    // label: localize('menu.services'),
+                    id: 'services',
                     role: 'services',
                     submenu: []
                 },
@@ -371,44 +379,52 @@ function buildMenuTemplate(win) {
                     type: 'separator'
                 },
                 {
-                    // label: 'Hide Ace',
-                    // accelerator: 'CmdOrCtrl+H',
+                    // label: localize('menu.hideAce'),
+                    id: 'hideAce',
+                    // accelerator: 'Command+H',
                     role: 'hide'
                 },
                 {
-                    // label: 'Hide Others',
-                    // accelerator: 'CmdOrCtrl+Alt+H',
+                    // label: localize('menu.hideOthers'),
+                    id: 'hideOthers',
+                    // accelerator: 'Command+Alt+H',
                     role: 'hideothers'
                 },
                 {
-                    // label: 'Show All',
+                    // label: localize('menu.showAll'),
+                    id: 'showAll',
                     role: 'unhide'
                 },
                 {
                     type: 'separator'
                 },
                 {
+                    label: localize('menu.quit'),
+                    id: 'quit2',
                     role: 'quit'
                 }
             ]
         },
         subMenuWindow: {
-            label: 'Window',
+            label: localize('menu.window'),
             role: 'window',
             submenu: [
                 // {
-                //     label: 'Toggle Full Screen',
-                //     type: 'checkbox',
-                //     accelerator: process.platform === 'darwin'
-                //         ? 'Ctrl+Command+F'
-                //         : 'F11',
-                //     click: () => win.setFullScreen(!win.isFullScreen())
+                //   label: 'Toggle Full Screen',
+                //   type: 'checkbox',
+                //   accelerator: process.platform === 'darwin'
+                //     ? 'Ctrl+Command+F'
+                //     : 'F11',
+                //   click: () => win.setFullScreen(!win.isFullScreen())
                 // },
                 {
+                    // label: localize('menu.togglefullscreen'),
                     role: "togglefullscreen",
                 },
                 {
-                    role: "minimize",
+                    // label: localize('menu.minimize'),
+                    id: 'minimize',
+                    role: 'minimize'
                 },
                 {
                     role: "close",
@@ -419,7 +435,8 @@ function buildMenuTemplate(win) {
                 // },
                 { type: 'separator' },
                 {
-                    // label: 'Bring All to Front',
+                    // label: localize('menu.bringToFront'),
+                    id: 'bringToFront',
                     role: 'front'
                 }
             ]
@@ -437,8 +454,8 @@ function buildMenuTemplate(win) {
                 type: 'separator'
             },
             {
-                label: 'About Ace',
-                id: 'about',
+                label: localize('menu.about'),
+                id: 'about1',
                 click: () => AboutBoxHelper.showAbout()
             }
         );

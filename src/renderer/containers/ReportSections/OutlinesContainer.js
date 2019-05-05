@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import Outlines from './../../components/ReportSections/Outlines';
 
 const mapStateToProps = state => {
-  let {app: {report}} = state;
+  let {app: {report}, preferences: {language}} = state;
   return {
+    language,
     outlines: report.outlines
   };
 };

@@ -1,0 +1,157 @@
+{
+    "menu": {
+        "file": "Fichier",
+        "view": "Présentation",
+        "dev": "Développement",
+        "help": "Aide",
+        "ace": "Ace",
+        "window": "Fenêtre",
+        "checkEpub": "Vérifier un EPUB...",
+        "checkEpubFolder": "Vérifier un dossier EPUB...",
+        "openReport": "Ouvrir un rapport...",
+        "rerunAce": "Relancer Ace",
+        "exportReport": "Exporter le rapport",
+        "closeReport": "Fermer le rapport",
+        "gotoSummary": "Aller au Résumé",
+        "gotoViolations": "Aller aux Violations",
+        "gotoMetadata": "Aller aux Métadonnées",
+        "gotoOutlines": "Aller à la Structure",
+        "gotoImages": "Aller aux Images",
+        "showInFinder": "Afficher dans le Finder",
+        "showInExplorer": "Afficher dans l'Explorateur de fichiers",
+        "reload": "Recharger",
+        "toggleDevTools": "Afficher/Fermer les outils de développement",
+        "knowledgeBase": "Base de Connaissances",
+        "knowledgeBaseOffline": "Local (hors-ligne)",
+        "knowledgeBaseOnline": "Web (en-ligne)",
+        "learnMore": "En savoir plus…",
+        "reportIssue": "Faire un rapport de bug",
+        "copyMessageOutput": "Copier les messages",
+        "about": "À propos de Ace",
+        "quit": "Quitter",
+        "edit": "Édition",
+        "undo": "Annuler",
+        "redo": "Rétablir",
+        "copy": "Copier",
+        "cut": "Couper",
+        "paste": "Coller",
+        "selectall": "Tout sélectionner"
+    },
+    "preferences": {
+        "title": "Préférences de Ace",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "internalReportStorage": "Stockage interne des rapports",
+        "reportsDataDirectory": "Dossiers des rapports",
+        "reportsDataDirectoryButton": "Sélectionner",
+        "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
+        "overwriteExistingReports": "Écraser les rapports existants",
+        "overwriteExistingReportsTip": "(écraser les rapports existants avec les nouveaux ?)",
+        "userInterfaceLanguage": "Langue",
+        "userInterfaceLanguageTip": "(selectionner la langue des labels et messages d'interface)"
+    },
+    "sidebar": {
+        "checkEPUB": "Vérifier un EPUB",
+        "reRun": "Relancer",
+        "history": "Historique",
+        "export": "Exporter",
+        "settings": "Préférences",
+        "minimize": "Réduire la barre latérale",
+        "maximize": "Agrandir la barre latérale"
+    },
+    "splash": {
+        "title": "Ace, par DAISY",
+        "dropHere": "Déposer ici un fichier EPUB ou un dossier,",
+        "orDropSidebar": "ou sur le bouton __ dans le menu latéral,",
+        "or": "ou",
+        "clickToBrowse": "cliquer pour sélectionner.",
+        "browseForFileOrFolder": "sélectionner un __fichier__ ou un __dossier__."
+    },
+    "report": {
+        "title": "Rapport",
+        "summary": "Résumé",
+        "violations": "Violations",
+        "metadata": "Métadonnées",
+        "outlines": "Structures",
+        "images": "Images",
+        "imagesSection": {
+            "noImages": "Aucune image dans cette publication.",
+            "NA": "N/D",
+            "role": "Rôle",
+            "location": "Référence",
+            "associatedFigcaption": "'figcaption' associée",
+            "ariaDescribedbyContent": "contenu 'aria-describedby'",
+            "altAttribute": "Attribut 'alt'",
+            "image": "Image"
+        },
+        "metadataSection": {
+            "name": "Nom",
+            "value": "Valeur",
+            "a11y": "Accessibilité",
+            "allPresent": "Toutes les métadonnées requises sont présentes.",
+            "missing": "Métadonnées d'accessibilité manquantes :"
+        },
+        "outlinesSection": {
+            "toc": "Table des Matières EPUB",
+            "headings": "Structure de titres",
+            "html": "Structure HTML"
+        },
+        "summarySection": {
+            "type": "Type",
+            "critical": "Critique",
+            "serious": "Sérieux",
+            "moderate": "Modéré",
+            "minor": "Mineur",
+            "best-practice": "Bonne Pratique",
+            "other": "Autre",
+            "total": "Total"
+        },
+        "violationsSection": {
+            "impact": "Impact",
+            "noViolations": "Aucune Violation.",
+            "ruleset": "Catégorie de Règles",
+            "rule": "Règles",
+            "location": "Référence",
+            "details": "Détails",
+            "learnAbout": "En savoir plus :",
+            "via": "Via :"
+        }
+    },
+    "enhancedTable": {
+        "filterBy": "Filtrer par :",
+        "sortBy": "Trier par : ",
+        "rowsPerPage": "Lignes par page :"
+    },
+    "tablePagination": {
+        "firstPage": "Première page",
+        "lastPage": "Dernière page",
+        "previousPage": "Page précédente",
+        "nextPage": "Page suivante"
+    },
+    "message": {
+        "filetypenotsupported": "ERREUR: Type de fichier non supporté {{filepath}}",
+        "runningace": "Lancement de Ace sur {{inputPath}}",
+        "checkcomplete": "Vérification Ace terminée",
+        "savingreport": "Sauvegarde du rapport dans {{outfile}} ...",
+        "savedreport": "Rapport sauvegardé dans {{outfile}}",
+        "failsavereport": "ERREUR: échec de sauvegarde du rapport dans {{outfile}}",
+        "overwrite": "Le dossier de sauvegarde n'est pas vide. Ace doit pouvoir écraser les dossiers ou fichiers suivant: \n{{val}}.\nConfigurer l'option 'Écraser' pour autoriser ceci.",
+        "closedreport": "Rapport fermé {{reportPath}}",
+        "loadedreport": "Rapport ouvert {{reportPath}}",
+        "loadfailreport": "ERREUR: Impossible de charger {{p}}"
+    },
+    "dialog": {
+        "savereport": "Enregistrer le rapport",
+        "ziparchive": "Archive Zip",
+        "choosedir": "Sélectionner un dossier",
+        "select": "Sélectionner",
+        "allfiles": "Tous les fichiers",
+        "chooseepub": "Sélectionner un fichier ou dossier EPUB",
+        "chooseepubfile": "Sélectionner un fichier EPUB",
+        "chooseepubdir": "Sélectionner un dossier EPUB",
+        "check": "Vérifier",
+        "open": "Ouvrir",
+        "choosereport": "Sélectionner un rapport Ace"
+    },
+    "kbgoonline": "ALLER EN LIGNE"
+}

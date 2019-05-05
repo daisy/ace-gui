@@ -3,56 +3,59 @@ const electron = require('electron');
 const dialog = electron.dialog || electron.remote.dialog;
 const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
 
+const { localizer } = require('../l10n/localize');
+const { localize } = localizer;
+
 module.exports = {
   showExportReportDialog: callback => {
     return showSaveDialog({
-      title: "Save Report",
-      filters: [{name: 'Zip Archive', extensions: ['zip']}],
+      title: localize("dialog.savereport"),
+      filters: [{name: localize("dialog.ziparchive"), extensions: ['zip']}],
     }, callback);
   },
 
   showFolderBrowseDialog: callback => {
     return showOpenDialog({
-      title: "Choose a directory",
-      buttonLabel: "Select",
+      title: localize("dialog.choosedir"),
+      buttonLabel: localize("dialog.select"),
       properties: ['openDirectory', 'createDirectory'],
-      filters: [{name: 'All Files', extensions: ['*']}],
+      filters: [{name: localize("dialog.allfiles"), extensions: ['*']}],
     }, callback);
   },
 
   showEpubFileOrFolderBrowseDialog: callback => {
     return showOpenDialog({
-      title: "Choose an EPUB file or folder",
-      buttonLabel: "Check",
+      title: localize("dialog.chooseepub"),
+      buttonLabel: localize("dialog.check"),
       properties: ['openFile', 'openDirectory'],
-      filters: [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}],
+      filters: [{name: 'EPUB', extensions: ['epub']}, {name: localize("dialog.allfiles"), extensions: ['*']}],
     }, callback);
   },
 
   showEpubFileBrowseDialog: callback => {
     return showOpenDialog({
-      title: "Choose an EPUB file",
-      buttonLabel: "Check",
+      title: localize("dialog.chooseepubfile"),
+      buttonLabel: localize("dialog.check"),
       properties: ['openFile'],
-      filters: [{name: 'EPUB', extensions: ['epub']}, {name: 'All Files', extensions: ['*']}],
+      filters: [{name: 'EPUB', extensions: ['epub']}, {name: localize("dialog.allfiles"), extensions: ['*']}],
     }, callback);
   },
 
   showEpubFolderBrowseDialog: callback => {
     return showOpenDialog({
-      title: "Choose an EPUB directory",
-      buttonLabel: "Select",
+      title: localize("dialog.chooseepubdir"),
+      buttonLabel: localize("dialog.check"),
       properties: ['openDirectory'],
-      filters: [{name: 'All Files', extensions: ['*']}],
+      filters: [{name: localize("dialog.allfiles"), extensions: ['*']}],
     }, callback);
   },
 
   showReportFileBrowseDialog: callback => {
     return showOpenDialog({
-      title: "Choose an Ace report",
-      buttonLabel: "Open",
+      title: localize("dialog.choosereport"),
+      buttonLabel: localize("dialog.open"),
       properties: ['openFile'],
-      filters: [{name: 'JSON', extensions: ['json']}, {name: 'All Files', extensions: ['*']}],
+      filters: [{name: 'JSON', extensions: ['json']}, {name: localize("dialog.allfiles"), extensions: ['*']}],
     }, callback);
   },
 };

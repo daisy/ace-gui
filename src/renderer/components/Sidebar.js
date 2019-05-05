@@ -26,6 +26,9 @@ import {showPreferences} from './../../shared/actions/preferences';
 import * as AppActions from './../../shared/actions/app';
 import * as FileDialogHelpers from "../../shared/helpers/fileDialogs";
 
+import { localizer } from './../../shared/l10n/localize';
+const { localize } = localizer;
+
 const drawerWidth = 240;
 
 const sidebarTheme = createMuiTheme({
@@ -158,7 +161,7 @@ class Sidebar extends React.Component {
         >
           <div className={classes.toggle}>
             <IconButton onClick={this.toggleDrawer}
-              aria-label={`${this.state.open?'Minimize':'Maximise'} Sidebar`}>
+              aria-label={`${this.state.open? localize("sidebar.minimize") : localize("sidebar.maximize")}`}>
               {(theme.direction === 'rtl' && this.state.open || !this.state.open)
                 ?<ChevronRightIcon />
                 : <ChevronLeftIcon />}
@@ -176,7 +179,7 @@ class Sidebar extends React.Component {
               <ListItemIcon>
                 <AddCircleOutlineIcon/>
               </ListItemIcon>
-              <ListItemText primary="Check EPUB" />
+              <ListItemText primary={localize("sidebar.checkEPUB")} />
               {processing.ace && reportPath &&
                 <CircularProgress size={40} className={classes.buttonProcessing} />}
             </ListItem>
@@ -186,13 +189,13 @@ class Sidebar extends React.Component {
               <ListItemIcon>
                 <RefreshIcon />
               </ListItemIcon>
-              <ListItemText primary="Rerun" />
+              <ListItemText primary={localize("sidebar.reRun")} />
             </ListItem>
             <ListItem button disabled>
               <ListItemIcon>
                 <HistoryIcon />
               </ListItemIcon>
-              <ListItemText primary="History" />
+              <ListItemText primary={localize("sidebar.history")} />
             </ListItem>
             <ListItem button
               disabled={!reportPath}
@@ -200,7 +203,7 @@ class Sidebar extends React.Component {
               <ListItemIcon>
                 <SaveAltIcon />
               </ListItemIcon>
-              <ListItemText primary="Export" />
+              <ListItemText primary={localize("sidebar.export")} />
               {processing.export && <CircularProgress size={40} className={classes.buttonProcessing} />}
             </ListItem>
           </List>
@@ -211,7 +214,7 @@ class Sidebar extends React.Component {
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
-              <ListItemText primary="Settings"/>
+              <ListItemText primary={localize("sidebar.settings")}/>
             </ListItem>
           </List>
         </Drawer>
@@ -220,8 +223,9 @@ class Sidebar extends React.Component {
   }
 }
 function mapStateToProps(state) {
-  let { app: {processing, inputPath, reportPath} } = state;
+  let { app: {processing, inputPath, reportPath}, preferences: {language} } = state;
   return {
+    language,
     inputPath,
     reportPath,
     processing,
