@@ -77,7 +77,7 @@
         "images": "Images",
         "imagesSection": {
             "noImages": "Aucune image dans cette publication.",
-            "NA": "Non renseigné",
+            "NA": "N/D",
             "role": "Rôle",
             "location": "Référence",
             "associatedFigcaption": "'figcaption' associée",
