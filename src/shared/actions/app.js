@@ -3,6 +3,8 @@ import fs from 'fs';
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';
 
+import {axeRunner} from '../axe-runner';
+
 import { localizer } from '../l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
 import {axeRunner} from '../axe-runner';
