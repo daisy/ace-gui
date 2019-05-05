@@ -236,17 +236,20 @@ new Promise((resolve, reject) => {
                     },
                 });
 
-                browserWindow.maximize();
-                let sz = browserWindow.getSize();
-                const sz0 = sz[0];
-                const sz1 = sz[1];
-                browserWindow.unmaximize();
-                browserWindow.setSize(Math.min(Math.round(sz0 * .75), 1200), Math.min(Math.round(sz1 * .85), 800));
-                // browserWindow.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
-                browserWindow.setPosition(Math.round(sz0 * 0.5 - browserWindow.getSize()[0] * 0.5), Math.round(sz1 * 0.5 - browserWindow.getSize()[1] * 0.5));
-                if (showWindow) {
-                    browserWindow.show();
-                }
+                browserWindow.setSize(1024, 768);
+                browserWindow.setPosition(0, 0);
+
+                // browserWindow.maximize();
+                // let sz = browserWindow.getSize();
+                // const sz0 = sz[0];
+                // const sz1 = sz[1];
+                // browserWindow.unmaximize();
+                // browserWindow.setSize(Math.min(Math.round(sz0 * .75), 1200), Math.min(Math.round(sz1 * .85), 800));
+                // // browserWindow.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
+                // browserWindow.setPosition(Math.round(sz0 * 0.5 - browserWindow.getSize()[0] * 0.5), Math.round(sz1 * 0.5 - browserWindow.getSize()[1] * 0.5));
+                // if (showWindow) {
+                //     browserWindow.show();
+                // }
 
                 browserWindow.webContents.setAudioMuted(true);
 
