@@ -7,7 +7,7 @@
         "ace" : "Ace",
         "window" : "Fenêtre",
         "checkEpub": "Vérifier un EPUB...",
-        "checkEpubFolder": "Vérifier répertoire EPUB...",
+        "checkEpubFolder": "Vérifier un dossier EPUB...",
         "openReport": "Ouvrir un rapport...",
         "rerunAce": "Relancer Ace",
         "exportReport": "Exporter le rapport",
