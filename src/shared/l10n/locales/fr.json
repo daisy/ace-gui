@@ -41,7 +41,7 @@
     "preferences": {
         "title": "Préférences de Ace",
         "cancel": "Annuler",
-        "save": "Sauvegarder",
+        "save": "Enregistrer",
         "internalReportStorage": "Stockage interne des rapports",
         "reportsDataDirectory": "Dossiers des rapports",
         "reportsDataDirectoryButton": "Sélectionner",
