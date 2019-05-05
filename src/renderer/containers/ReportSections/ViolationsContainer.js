@@ -5,8 +5,9 @@ import * as ReportViewActions from './../../../shared/actions/reportView';
 import {createFlatListOfViolations} from "../../../shared/helpers/violations";
 
 const mapStateToProps = state => {
-  let {app: {report}, reportView: {filters, sort, pagination, expandFilters}} = state;
+  let {app: {report}, reportView: {filters, sort, pagination, expandFilters}, preferences: {language}} = state;
   return {
+    language,
     violations: createFlatListOfViolations(report.assertions),
     filters: filters['violations'],
     pagination: pagination['violations'],

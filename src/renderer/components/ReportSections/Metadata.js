@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
+
 // the metadata page of the report
 export default class Metadata extends React.Component {
 
@@ -36,7 +39,7 @@ export default class Metadata extends React.Component {
     let heads = [
       {
         id: 'name',
-        label: "Name",
+        label: localize("report.metadataSection.name"),
         numeric: false,
         sortable: true,
         filterOn: obj => obj,
@@ -47,7 +50,7 @@ export default class Metadata extends React.Component {
       },
       {
         id: 'value',
-        label: "Value",
+        label: localize("report.metadataSection.value"),
         numeric: false,
         sortable: false,
         makeCell: (row, idx) =>
@@ -63,7 +66,7 @@ export default class Metadata extends React.Component {
       },
       {
         id: 'a11y',
-        label: 'A11Y',
+        label: localize("report.metadataSection.a11y"),
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
@@ -75,7 +78,7 @@ export default class Metadata extends React.Component {
 
     return (
       <section className="report-section metadata">
-        <h2>Metadata</h2>
+        <h2>{localize("report.metadata")}</h2>
         <EnhancedTable
           rows={metadata}
           heads={heads}
@@ -91,7 +94,7 @@ export default class Metadata extends React.Component {
           onExpandFilters={setTableFiltersExpanded}
         />
 
-      <h2>Missing A11Y Metadata</h2>
+      <h2>{localize("report.metadataSection.missing")}</h2>
       {hasMissingOrEmpty ?
         <ul>
           {a11ymetadata.missing.map((data, idx) => {
@@ -102,7 +105,7 @@ export default class Metadata extends React.Component {
           })}
         </ul>
         :
-        <p>All required accessibility metadata is present.</p>
+        <p>{localize("report.metadataSection.allPresent")}</p>
       }
      </section>
     );

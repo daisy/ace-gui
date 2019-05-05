@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
+
 const actionsStyles = theme => ({
   root: {
     flexShrink: 0,
@@ -43,28 +46,28 @@ class TablePaginationActions extends React.Component {
         <IconButton
           onClick={this.handleFirstPageButtonClick}
           disabled={page === 0}
-          aria-label="First Page"
+          aria-label={localize("tablePagination.firstPage")}
         >
           {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
         </IconButton>
         <IconButton
           onClick={this.handleBackButtonClick}
           disabled={page === 0}
-          aria-label="Previous Page"
+          aria-label={localize("tablePagination.previousPage")}
         >
           {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
         </IconButton>
         <IconButton
           onClick={this.handleNextButtonClick}
           disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="Next Page"
+          aria-label={localize("tablePagination.nextPage")}
         >
           {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
         </IconButton>
         <IconButton
           onClick={this.handleLastPageButtonClick}
           disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="Last Page"
+          aria-label={localize("tablePagination.lastPage")}
         >
           {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
         </IconButton>

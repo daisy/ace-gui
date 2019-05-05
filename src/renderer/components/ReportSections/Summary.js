@@ -2,6 +2,9 @@ import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/cor
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
+
 // the summary page of the report
 export default class Summary extends React.Component {
 
@@ -11,25 +14,26 @@ export default class Summary extends React.Component {
 
   render() {
     let {summary} = this.props;
+    const keyPrefix = "report.summarySection.";
     return (
       <section className="report-section summary">
-        <h2>Summary</h2>
+        <h2>{localize("report.summary")}</h2>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Type</TableCell>
-              <TableCell>Critical</TableCell>
-              <TableCell>Serious</TableCell>
-              <TableCell>Moderate</TableCell>
-              <TableCell>Minor</TableCell>
-              <TableCell>Total</TableCell>
+              <TableCell>{localize("report.summarySection.type")}</TableCell>
+              <TableCell>{localize("report.summarySection.critical")}</TableCell>
+              <TableCell>{localize("report.summarySection.serious")}</TableCell>
+              <TableCell>{localize("report.summarySection.moderate")}</TableCell>
+              <TableCell>{localize("report.summarySection.minor")}</TableCell>
+              <TableCell>{localize("report.summarySection.total")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Object.keys(summary).map((key, idx) => {
               return (
                 <TableRow key={idx}>
-                  <TableCell>{key}</TableCell>
+                  <TableCell>{localize(keyPrefix+key, {ignoreMissingKey: true}).replace(keyPrefix, "")}</TableCell>
                   <TableCell>{summary[key]['critical']}</TableCell>
                   <TableCell>{summary[key]['serious']}</TableCell>
                   <TableCell>{summary[key]['moderate']}</TableCell>

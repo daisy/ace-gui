@@ -47,7 +47,19 @@
     "postinstall": "electron-builder install-app-deps",
     "release": "build -mw -p always",
     "start": "node build/start.js",
-    "test": "echo TODO test the app"
+    "test": "echo TODO test the app",
+    "__replace-ace-packages": "npm run __rap1 && npm run __rap2 && npm run __rap3 && npm run __rap4 && npm run __rap5 && npm run __rap6 && npm run __rap7 && npm run __rap8 && npm run __rap9 && npm run __rap10 && npm run __rap11",
+    "__rap1": "rimraf \"node_modules/@daisy/puppeteer-utils/lib/**/*\" && cpy --cwd=\"../ace/packages/puppeteer-utils/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/puppeteer-utils/lib/\" && cpy \"../ace/packages/puppeteer-utils/package.json\" \"./node_modules/@daisy/puppeteer-utils/\"",
+    "__rap2": "rimraf \"node_modules/@daisy/epub-utils/lib/**/*\" && cpy --cwd=\"../ace/packages/epub-utils/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/epub-utils/lib/\" && cpy \"../ace/packages/epub-utils/package.json\" \"./node_modules/@daisy/epub-utils/\"",
+    "__rap3": "rimraf \"node_modules/@daisy/ace-report-axe/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-report-axe/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-report-axe/lib/\" && cpy \"../ace/packages/ace-report-axe/package.json\" \"./node_modules/@daisy/ace-report-axe/\"",
+    "__rap4": "rimraf \"node_modules/@daisy/ace-report/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-report/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-report/lib/\" && cpy \"../ace/packages/ace-report/package.json\" \"./node_modules/@daisy/ace-report/\"",
+    "__rap5": "rimraf \"node_modules/@daisy/ace-core/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-core/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-core/lib/\" && cpy \"../ace/packages/ace-core/package.json\" \"./node_modules/@daisy/ace-core/\"",
+    "__rap6": "rimraf \"node_modules/@daisy/ace-config/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-config/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-config/lib/\" && cpy \"../ace/packages/ace-config/package.json\" \"./node_modules/@daisy/ace-config/\"",
+    "__rap7": "rimraf \"node_modules/@daisy/ace-logger/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-logger/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-logger/lib/\" && cpy \"../ace/packages/ace-logger/package.json\" \"./node_modules/@daisy/ace-logger/\"",
+    "__rap8": "cpy \"../ace/packages/ace-meta/package.json\" \"./node_modules/@daisy/ace-meta/\"",
+    "__rap9": "rimraf \"node_modules/@daisy/ace-localize/lib/**/*\" && cpy --cwd=\"../ace/packages/ace-localize/lib/\" --parents --no-dir \"./**/*\" \"../../../../ace-gui/node_modules/@daisy/ace-localize/lib/\" && cpy \"../ace/packages/ace-localize/package.json\" \"./node_modules/@daisy/ace-localize/\"",
+    "__rap10": "cpy --cwd=\"../ace/node_modules/\" --parents --no-dir \"./axe-core/**/*\" \"../../ace-gui/node_modules/\"",
+    "__rap11": "cpy --cwd=\"../ace/node_modules/\" --parents --no-dir \"./i18next/**/*\" \"../../ace-gui/node_modules/\""
   },
   "dependencies": {
     "@daisy/ace-config": "^1.0.0",
@@ -58,6 +70,7 @@
     "about-window": "^1.12.1",
     "electron-debug": "^2.0.0",
     "electron-redux": "^1.3.1",
+    "electron-store": "^2.0.0",
     "express": "^4.16.4",
     "fs-jetpack": "^2.1.0",
     "jszip": "^3.1.5",

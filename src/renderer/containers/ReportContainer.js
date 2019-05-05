@@ -4,8 +4,9 @@ import Report from './../components/Report';
 import * as ReportViewActions from './../../shared/actions/reportView';
 
 const mapStateToProps = state => {
-  let { reportView: {selectedTab} } = state;
+  let { reportView: {selectedTab}, preferences: {language} } = state;
   return {
+    language,
     selectedTab
   };
 }
