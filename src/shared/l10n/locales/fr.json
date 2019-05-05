@@ -36,7 +36,7 @@
         "copy": "Copier",
         "cut": "Couper",
         "paste": "Coller",
-        "selectall": "Sélectionner Tout"
+        "selectall": "Tout sélectionner"
     },
     "preferences": {
         "title": "Préférences de Ace",
