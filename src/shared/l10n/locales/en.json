@@ -29,13 +29,7 @@
         "reportIssue": "Report an Issue",
         "copyMessageOutput": "Copy Message Output",
         "about" : "About Ace",
-        "services": "Services",
-        "hideAce": "Hide Ace",
-        "hideOthers": "Hide Others",
-        "showAll": "Show All",
         "quit": "Quit",
-        "minimize": "Minimize",
-        "bringToFront": "Bring All to Front",
         "edit": "Edit",
         "undo": "Undo",
         "redo": "Redo",
@@ -54,7 +48,7 @@
         "reportsDataDirectoryTip": "(where Ace stores reports internally)",
         "overwriteExistingReports": "Overwrite existing reports",
         "overwriteExistingReportsTip": "(allow writing new reports over previous ones?)",
-        "userInterfaceLanguage": "User Interface Language",
+        "userInterfaceLanguage": "Language",
         "userInterfaceLanguageTip": "(select the language for UI labels and messages)"
     },
     "sidebar": {
