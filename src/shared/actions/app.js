@@ -7,6 +7,9 @@ import { localizer } from '../l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
 import {axeRunner} from '../axe-runner';
 
+import { localizer } from '../l10n/localize';
+const { getCurrentLanguage, localize } = localizer;
+
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";
 export const EXPORT_REPORT = "EXPORT_REPORT";

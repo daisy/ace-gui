@@ -1,49 +1,48 @@
 {
     "menu": {
-        "file" : "Fichier",
-        "view" : "Affichage",
-        "dev" : "Dev",
-        "help" : "Aide",
-        "ace" : "Ace",
-        "window" : "Fenêtre",
+        "file": "Fichier",
+        "view": "Présentation",
+        "dev": "Développement",
+        "help": "Aide",
+        "ace": "Ace",
+        "window": "Fenêtre",
         "checkEpub": "Vérifier un EPUB...",
         "checkEpubFolder": "Vérifier un dossier EPUB...",
         "openReport": "Ouvrir un rapport...",
         "rerunAce": "Relancer Ace",
         "exportReport": "Exporter le rapport",
         "closeReport": "Fermer le rapport",
-        "toggleFullScreen": "Activer/désactiver le plein écran",
         "gotoSummary": "Aller au Résumé",
         "gotoViolations": "Aller aux Violations",
         "gotoMetadata": "Aller aux Métadonnées",
         "gotoOutlines": "Aller à la Structure",
         "gotoImages": "Aller aux Images",
-        "showInFinder": "Afficher dans le Finder (explorateur de fichiers)",
+        "showInFinder": "Afficher dans le Finder",
         "showInExplorer": "Afficher dans l'Explorateur de fichiers",
-        "reload": "Charger à nouveau",
-        "toggleDevTools": "Activer/Désactiver les outils de développement",
+        "reload": "Recharger",
+        "toggleDevTools": "Afficher/Fermer les outils de développement",
         "knowledgeBase": "Base de Connaissances",
         "knowledgeBaseOffline": "Local (hors-ligne)",
         "knowledgeBaseOnline": "Web (en-ligne)",
-        "learnMore": "En savoir Plus",
+        "learnMore": "En savoir plus…",
         "reportIssue": "Faire un rapport de bug",
-        "copyMessageOutput": "Copier les Messages",
-        "about" : "À propos de Ace",
+        "copyMessageOutput": "Copier les messages",
+        "about": "À propos de Ace",
         "quit": "Quitter",
-        "edit": "Edition",
-        "undo": "Défaire",
-        "redo": "Refaire",
+        "edit": "Édition",
+        "undo": "Annuler",
+        "redo": "Rétablir",
         "copy": "Copier",
         "cut": "Couper",
         "paste": "Coller",
-        "selectall": "Sélectionner Tout"
+        "selectall": "Tout sélectionner"
     },
     "preferences": {
         "title": "Préférences de Ace",
         "cancel": "Annuler",
-        "save": "Sauvegarder",
-        "internalReportStorage": "Stockage Interne des Rapports",
-        "reportsDataDirectory": "Dossiers des Rapports",
+        "save": "Enregistrer",
+        "internalReportStorage": "Stockage interne des rapports",
+        "reportsDataDirectory": "Dossiers des rapports",
         "reportsDataDirectoryButton": "Sélectionner",
         "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
         "overwriteExistingReports": "Écraser les rapports existants",
@@ -57,8 +56,8 @@
         "history": "Historique",
         "export": "Exporter",
         "settings": "Préférences",
-        "minimize": "Minimizer le Menu Latéral",
-        "maximize": "Maximizer le Menu Latéral"
+        "minimize": "Réduire la barre latérale",
+        "maximize": "Agrandir la barre latérale"
     },
     "splash": {
         "title": "Ace, par DAISY",
@@ -90,7 +89,7 @@
             "value": "Valeur",
             "a11y": "Accessibilité",
             "allPresent": "Toutes les métadonnées requises sont présentes.",
-            "missing": "Métadonnées d'accessibilité manquantes:"
+            "missing": "Métadonnées d'accessibilité manquantes :"
         },
         "outlinesSection": {
             "toc": "Table des Matières EPUB",
@@ -114,20 +113,20 @@
             "rule": "Règles",
             "location": "Référence",
             "details": "Détails",
-            "learnAbout": "En savoir plus:",
-            "via": "Via:"
+            "learnAbout": "En savoir plus :",
+            "via": "Via :"
         }
     },
     "enhancedTable": {
-        "filterBy": "Filtrer Par",
-        "sortBy": "Trier Par: ",
-        "rowsPerPage": "Lignes par page:"
+        "filterBy": "Filtrer par :",
+        "sortBy": "Trier par : ",
+        "rowsPerPage": "Lignes par page :"
     },
     "tablePagination": {
-        "firstPage": "Première Page",
-        "lastPage": "Dernière Page",
-        "previousPage": "Page Précédente",
-        "nextPage": "Page Suivante"
+        "firstPage": "Première page",
+        "lastPage": "Dernière page",
+        "previousPage": "Page précédente",
+        "nextPage": "Page suivante"
     },
     "message": {
         "filetypenotsupported": "ERREUR: Type de fichier non supporté {{filepath}}",
@@ -142,7 +141,7 @@
         "loadfailreport": "ERREUR: Impossible de charger {{p}}"
     },
     "dialog": {
-        "savereport": "Enregistrer le Rapport",
+        "savereport": "Enregistrer le rapport",
         "ziparchive": "Archive Zip",
         "choosedir": "Sélectionner un dossier",
         "select": "Sélectionner",

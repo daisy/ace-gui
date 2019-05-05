@@ -366,7 +366,8 @@ export default class MenuBuilder {
           //   click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
           // },
           {
-              role: "togglefullscreen",
+            // label: localize('menu.togglefullscreen'),
+            role: "togglefullscreen",
           },
           {
             // label: localize('menu.minimize'),
