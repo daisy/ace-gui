@@ -3,6 +3,8 @@ import fs from 'fs';
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';
 
+import {axeRunner} from '../axe-runner';
+
 import { localizer } from '../l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
 
@@ -67,7 +69,7 @@ export function runAce(inputPath) {
     if (outdir.success) {
       const language = getCurrentLanguage();
       
-      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: true})
+      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: true}, axeRunner)
       .then(() => {
         dispatch(addMessage(localize("message.checkcomplete")));
         let reportPath = outdir.value + '/report.json';
