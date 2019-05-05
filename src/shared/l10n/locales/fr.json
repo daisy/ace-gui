@@ -42,7 +42,7 @@
         "title": "Préférences de Ace",
         "cancel": "Annuler",
         "save": "Sauvegarder",
-        "internalReportStorage": "Stockage Interne des Rapports",
+        "internalReportStorage": "Stockage interne des rapports",
         "reportsDataDirectory": "Dossiers des Rapports",
         "reportsDataDirectoryButton": "Sélectionner",
         "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
