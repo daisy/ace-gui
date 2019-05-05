@@ -35,7 +35,7 @@ export const axeRunner = {
         //     ipcRenderer.send('AXE_RUNNER_CLOSE', {});
         // });
     },
-    run: function (url, scripts, basedir) {
+    run: function (url, scripts, scriptContents, basedir) {
         if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner will run ...`);
 
         return new Promise((resolve, reject) => {
@@ -54,6 +54,7 @@ export const axeRunner = {
             ipcRenderer.send('AXE_RUNNER_RUN', {
                 url,
                 scripts,
+                scriptContents,
                 basedir,
             });
         });
