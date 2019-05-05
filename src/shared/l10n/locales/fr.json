@@ -20,7 +20,7 @@
         "showInFinder": "Afficher dans le Finder",
         "showInExplorer": "Afficher dans l'Explorateur de fichiers",
         "reload": "Recharger",
-        "toggleDevTools": "Activer/Désactiver les outils de développement",
+        "toggleDevTools": "Afficher/Fermer les outils de développement",
         "knowledgeBase": "Base de Connaissances",
         "knowledgeBaseOffline": "Local (hors-ligne)",
         "knowledgeBaseOnline": "Web (en-ligne)",
