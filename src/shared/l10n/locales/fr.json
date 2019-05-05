@@ -43,7 +43,7 @@
         "cancel": "Annuler",
         "save": "Sauvegarder",
         "internalReportStorage": "Stockage Interne des Rapports",
-        "reportsDataDirectory": "Répertoires des Rapports",
+        "reportsDataDirectory": "Dossiers des Rapports",
         "reportsDataDirectoryButton": "Sélectionner",
         "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
         "overwriteExistingReports": "Écraser les rapports existants",
@@ -62,11 +62,11 @@
     },
     "splash": {
         "title": "Ace, par DAISY",
-        "dropHere": "Déposer un fichier EPUB ou un répertoire ici,",
+        "dropHere": "Déposer ici un fichier EPUB ou un dossier,",
         "orDropSidebar": "ou sur le bouton __ dans le menu latéral,",
         "or": "ou",
         "clickToBrowse": "cliquer pour sélectionner.",
-        "browseForFileOrFolder": "sélectionner un __fichier__ ou un __répertoire__."
+        "browseForFileOrFolder": "sélectionner un __fichier__ ou un __dossier__."
     },
     "report": {
         "title": "Rapport",
@@ -136,7 +136,7 @@
         "savingreport": "Sauvegarde du rapport dans {{outfile}} ...",
         "savedreport": "Rapport sauvegardé dans {{outfile}}",
         "failsavereport": "ERREUR: échec de sauvegarde du rapport dans {{outfile}}",
-        "overwrite": "Le répertoire de sauvegarde n'est pas vide. Ace doit pouvoir écraser les répertoires ou fichiers suivant: \n{{val}}.\nConfigurer l'option 'Écraser' pour autoriser ceci.",
+        "overwrite": "Le dossier de sauvegarde n'est pas vide. Ace doit pouvoir écraser les dossiers ou fichiers suivant: \n{{val}}.\nConfigurer l'option 'Écraser' pour autoriser ceci.",
         "closedreport": "Rapport fermé {{reportPath}}",
         "loadedreport": "Rapport ouvert {{reportPath}}",
         "loadfailreport": "ERREUR: Impossible de charger {{p}}"
@@ -144,12 +144,12 @@
     "dialog": {
         "savereport": "Enregistrer le Rapport",
         "ziparchive": "Archive Zip",
-        "choosedir": "Sélectionner un répertoire",
+        "choosedir": "Sélectionner un dossier",
         "select": "Sélectionner",
         "allfiles": "Tous les fichiers",
-        "chooseepub": "Sélectionner un fichier ou répertoire EPUB",
+        "chooseepub": "Sélectionner un fichier ou dossier EPUB",
         "chooseepubfile": "Sélectionner un fichier EPUB",
-        "chooseepubdir": "Sélectionner un répertoire EPUB",
+        "chooseepubdir": "Sélectionner un dossier EPUB",
         "check": "Vérifier",
         "open": "Ouvrir",
         "choosereport": "Sélectionner un rapport Ace"
