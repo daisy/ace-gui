@@ -144,16 +144,18 @@ export function axeRunnerInitEvents() {
     ipcMain.on('AXE_RUNNER_RUN', (event, arg) => {
 
         const basedir = arg.basedir;
-        const u = arg.url;
+        const uarel = arg.url;
         const scripts = arg.scripts;
         const scriptContents = arg.scriptContents;
-        
-        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner running ... ${basedir} ${u}`);
+
+        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner running ... ${basedir} ${uarel}`);
 
         function doRun() {
 
-            const p = decodeURI(url.parse(u).pathname);
-            const httpUrl = rootUrl + p.replace(basedir, "");
+             // windows! file://C:\aa\bb\chapter.xhtml
+            const uarelObj = url.parse(uarel.replace(/\\/g, "/"));
+            const windowsDrive = uarelObj.hostname ? `${uarelObj.hostname.toUpperCase()}:` : "";
+            const httpUrl = rootUrl + (windowsDrive + decodeURI(uarelObj.pathname)).replace(basedir.replace(/\\/g, "/"), "");
 
             let replySent = false;
 
@@ -174,16 +176,24 @@ new Promise((resolve, reject) => {
                 browserWindow.webContents.executeJavaScript(js, true)
                     .then((ok) => {
                         if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner done.`);
-                        // console.log(ok);
-                        // console.log(JSON.stringify(ok, null, "  "));
+                        if (replySent) {
+                            if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner WAS TIMEOUT!`);
+                            return;
+                        }
                         replySent = true;
+
                         event.sender.send("AXE_RUNNER_RUN_", {
                             ok
                         });
                     })
                     .catch((err) => {
                         if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner fail!`);
+                        if (replySent) {
+                            if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} axeRunner WAS TIMEOUT!`);
+                            return;
+                        }
                         replySent = true;
+
                         event.sender.send("AXE_RUNNER_RUN_", {
                             err
                         });
@@ -203,7 +213,7 @@ new Promise((resolve, reject) => {
                 event.sender.send("AXE_RUNNER_RUN_", {
                     err: "Timeout :("
                 });
-            }, 3000);
+            }, 10000);
         }
 
         if (!httpServer) { // lazy init
@@ -253,7 +263,7 @@ new Promise((resolve, reject) => {
     });
 }
 
-export function startAxeServer(epubRootPath, scripts, scriptContents) {
+export function startAxeServer(basedir, scripts, scriptContents) {
 
     return new Promise((resolve, reject) => {
 
@@ -298,7 +308,7 @@ export function startAxeServer(epubRootPath, scripts, scriptContents) {
             if (req.query[HTTP_QUERY_PARAM]) {
                 if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTTP intercept ${req.url}`);
 
-                let html = fs.readFileSync(path.join(epubRootPath, url.parse(req.url).pathname), { encoding: "utf8" });
+                let html = fs.readFileSync(path.join(basedir, url.parse(req.url).pathname), { encoding: "utf8" });
 
                 if (html.match(/<\/head>/)) {
                     html = html.replace(/<\/head>/, `${scriptsMarkup}</head>`);
@@ -332,8 +342,8 @@ export function startAxeServer(epubRootPath, scripts, scriptContents) {
             //     setResponseCORS(res);
             // },
         };
-        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTTP static path ${epubRootPath}`);
-        expressApp.use("/", express.static(epubRootPath, staticOptions));
+        if (LOG_DEBUG) console.log(`${AXE_LOG_PREFIX} HTTP static path ${basedir}`);
+        expressApp.use("/", express.static(basedir, staticOptions));
 
         const startHttp = function () {
             generateSelfSignedData().then((certData) => {
