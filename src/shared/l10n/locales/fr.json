@@ -1,11 +1,11 @@
 {
     "menu": {
-        "file" : "Fichier",
-        "view" : "Présentation",
-        "dev" : "Développement",
-        "help" : "Aide",
-        "ace" : "Ace",
-        "window" : "Fenêtre",
+        "file": "Fichier",
+        "view": "Présentation",
+        "dev": "Développement",
+        "help": "Aide",
+        "ace": "Ace",
+        "window": "Fenêtre",
         "checkEpub": "Vérifier un EPUB...",
         "checkEpubFolder": "Vérifier un dossier EPUB...",
         "openReport": "Ouvrir un rapport...",
@@ -28,7 +28,7 @@
         "learnMore": "En savoir plus…",
         "reportIssue": "Faire un rapport de bug",
         "copyMessageOutput": "Copier les messages",
-        "about" : "À propos de Ace",
+        "about": "À propos de Ace",
         "quit": "Quitter",
         "edit": "Édition",
         "undo": "Annuler",
@@ -90,7 +90,7 @@
             "value": "Valeur",
             "a11y": "Accessibilité",
             "allPresent": "Toutes les métadonnées requises sont présentes.",
-            "missing": "Métadonnées d'accessibilité manquantes:"
+            "missing": "Métadonnées d'accessibilité manquantes :"
         },
         "outlinesSection": {
             "toc": "Table des Matières EPUB",
@@ -114,20 +114,20 @@
             "rule": "Règles",
             "location": "Référence",
             "details": "Détails",
-            "learnAbout": "En savoir plus:",
-            "via": "Via:"
+            "learnAbout": "En savoir plus :",
+            "via": "Via :"
         }
     },
     "enhancedTable": {
-        "filterBy": "Filtrer Par",
-        "sortBy": "Trier Par: ",
-        "rowsPerPage": "Lignes par page:"
+        "filterBy": "Filtrer par :",
+        "sortBy": "Trier par : ",
+        "rowsPerPage": "Lignes par page :"
     },
     "tablePagination": {
-        "firstPage": "Première Page",
-        "lastPage": "Dernière Page",
-        "previousPage": "Page Précédente",
-        "nextPage": "Page Suivante"
+        "firstPage": "Première page",
+        "lastPage": "Dernière page",
+        "previousPage": "Page précédente",
+        "nextPage": "Page suivante"
     },
     "message": {
         "filetypenotsupported": "ERREUR: Type de fichier non supporté {{filepath}}",
