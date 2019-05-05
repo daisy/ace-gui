@@ -115,7 +115,7 @@
         },
         "violationsSection": {
             "impact": "Impact",
-            "noViolations": "Pas de violations.",
+            "noViolations": "Aucune Violation.",
             "ruleset": "Catégorie de Règles",
             "rule": "Règles",
             "location": "Référence",
