@@ -76,7 +76,7 @@
         "outlines": "Structures",
         "images": "Images",
         "imagesSection": {
-            "noImages": "Pas d'images dans cette publication.",
+            "noImages": "Aucune image dans cette publication.",
             "NA": "Non renseigné",
             "role": "Rôle",
             "location": "Référence",
