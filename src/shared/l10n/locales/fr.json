@@ -6,7 +6,7 @@
         "help" : "Aide",
         "ace" : "Ace",
         "window" : "Fenêtre",
-        "checkEpub": "Vérifier EPUB...",
+        "checkEpub": "Vérifier un EPUB...",
         "checkEpubFolder": "Vérifier répertoire EPUB...",
         "openReport": "Ouvrir Rapport...",
         "rerunAce": "Relancer Ace",
@@ -58,7 +58,7 @@
         "userInterfaceLanguageTip": "(selectionner la langue des labels et messages d'interface)"
     },
     "sidebar": {
-        "checkEPUB": "Vérifier EPUB",
+        "checkEPUB": "Vérifier un EPUB",
         "reRun": "Relancer",
         "history": "Historique",
         "export": "Exporter",
