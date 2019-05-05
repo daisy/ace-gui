@@ -50,7 +50,7 @@
         "save": "Sauver",
         "internalReportStorage": "Stockage Interne des Rapports",
         "reportsDataDirectory": "Répertoires des Rapports",
-        "reportsDataDirectoryButton": "Choisir",
+        "reportsDataDirectoryButton": "Sélectionner",
         "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
         "overwriteExistingReports": "Ecraser les rapports existants",
         "overwriteExistingReportsTip": "(écraser les rapports existants avec les nouveaux ?)",
@@ -71,8 +71,8 @@
         "dropHere": "Déposer un fichier EPUB ou un répertoire ici,",
         "orDropSidebar": "ou sur le bouton __ dans le menu latéral,",
         "or": "ou",
-        "clickToBrowse": "cliquer pour choisir.",
-        "browseForFileOrFolder": "choisir un __fichier__ ou un __répertoire__."
+        "clickToBrowse": "cliquer pour sélectionner.",
+        "browseForFileOrFolder": "sélectionner un __fichier__ ou un __répertoire__."
     },
     "report": {
         "title": "Rapport",
@@ -150,15 +150,15 @@
     "dialog": {
         "savereport": "Enregistrer le Rapport",
         "ziparchive": "Archive Zip",
-        "choosedir": "Choisir un répertoire",
+        "choosedir": "Sélectionner un répertoire",
         "select": "Sélectionner",
         "allfiles": "Tous les fichiers",
-        "chooseepub": "Choisir un fichier ou répertoire EPUB",
-        "chooseepubfile": "Choisir un fichier EPUB",
-        "chooseepubdir": "Choisir un répertoire EPUB",
+        "chooseepub": "Sélectionner un fichier ou répertoire EPUB",
+        "chooseepubfile": "Sélectionner un fichier EPUB",
+        "chooseepubdir": "Sélectionner un répertoire EPUB",
         "check": "Vérifier",
         "open": "Ouvrir",
-        "choosereport": "Choisir un rapport Ace"
+        "choosereport": "Sélectionner un rapport Ace"
     },
     "kbgoonline": "ALLER EN LIGNE"
 }
