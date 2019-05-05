@@ -43,7 +43,7 @@
         "cancel": "Annuler",
         "save": "Sauvegarder",
         "internalReportStorage": "Stockage interne des rapports",
-        "reportsDataDirectory": "Dossiers des Rapports",
+        "reportsDataDirectory": "Dossiers des rapports",
         "reportsDataDirectoryButton": "Sélectionner",
         "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
         "overwriteExistingReports": "Écraser les rapports existants",
