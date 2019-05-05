@@ -48,7 +48,7 @@
         "reportsDataDirectoryTip": "(where Ace stores reports internally)",
         "overwriteExistingReports": "Overwrite existing reports",
         "overwriteExistingReportsTip": "(allow writing new reports over previous ones?)",
-        "userInterfaceLanguage": "User Interface Language",
+        "userInterfaceLanguage": "Language",
         "userInterfaceLanguageTip": "(select the language for UI labels and messages)"
     },
     "sidebar": {

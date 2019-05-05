@@ -48,7 +48,7 @@
         "reportsDataDirectoryTip": "(l'endroit où Ace stocke les rapports)",
         "overwriteExistingReports": "Écraser les rapports existants",
         "overwriteExistingReportsTip": "(écraser les rapports existants avec les nouveaux ?)",
-        "userInterfaceLanguage": "Langue d'Interface Utilisateur",
+        "userInterfaceLanguage": "Langue",
         "userInterfaceLanguageTip": "(selectionner la langue des labels et messages d'interface)"
     },
     "sidebar": {
