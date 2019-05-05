@@ -1,7 +1,7 @@
 {
     "menu": {
         "file" : "Fichier",
-        "view" : "Affichage",
+        "view" : "Présentation",
         "dev" : "Dev",
         "help" : "Aide",
         "ace" : "Ace",
