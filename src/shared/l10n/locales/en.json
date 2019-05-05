@@ -2,7 +2,7 @@
     "menu": {
         "file" : "File",
         "view" : "View",
-        "dev" : "Dev",
+        "dev" : "Development",
         "help" : "Help",
         "ace" : "Ace",
         "window" : "Window",
