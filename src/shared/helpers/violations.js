@@ -64,8 +64,15 @@ function createFlatListOfViolations(violations) {
           applicableRulesetTag = tag;
         }
       });
-      let cfi = item["earl:result"]["earl:pointer"] ?
-        `#epubcfi(${item["earl:result"]["earl:pointer"]["cfi"]})` : '';
+      let cfi = '';
+      if (item["earl:result"]["earl:pointer"]) {
+        let singleCfi = item["earl:result"]["earl:pointer"]["cfi"];
+        if (Array.isArray(singleCfi)) { // this should always be true (same with ["earl:result"]["earl:pointer"]["css"])
+          singleCfi = singleCfi[0];
+        }
+        cfi = `#epubcfi(${singleCfi})`;
+      }
+      
       let html = item["earl:result"]["html"] ? escape(item["earl:result"]["html"]) : '';
       let desc = item["earl:result"]["dct:description"];
       desc = desc.replace("Fix all of the following:", "");
