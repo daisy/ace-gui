@@ -1,5 +1,5 @@
 const path = require('path');
-const { app, BrowserWindow, webContents} = require('electron');
+const { app, BrowserWindow, webContents, ipcMain } = require('electron');
 
 import MenuBuilder from './menu';
 
@@ -10,7 +10,11 @@ require('electron-debug')();
 const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
 
 import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWindows} from './kb';
-import {axeRunnerInitEvents} from './axe-runner';
+
+// const prepareLaunch = require('@daisy/ace-axe-runner-electron/lib/init').prepareLaunch;
+import { prepareLaunch } from '@daisy/ace-axe-runner-electron/lib/init';
+const CONCURRENT_INSTANCES = 1; // same as the Puppeteer Axe runner
+prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
 
 function openAllDevTools() {
   for (const wc of webContents.getAllWebContents()) {
@@ -97,7 +101,6 @@ function createWindow() {
 app.on('ready', () => {
   let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
   const kbRootPath = isDev ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");
-  axeRunnerInitEvents();
   startKnowledgeBaseServer(kbRootPath).then(() => {
     createWindow();
   }).catch((err) => {

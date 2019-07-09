@@ -44,6 +44,7 @@
   },
   "@daisy/ace-core": "^1.0.2",
   "dependencies": {
+    "@daisy/ace-axe-runner-electron": "file:../ace/packages/ace-axe-runner-electron",
     "@daisy/ace-core": "file:../ace/packages/ace-core",
     "@daisy/ace-localize": "file:../ace/packages/ace-localize",
     "@daisy/ace-logger": "file:../ace/packages/ace-logger",

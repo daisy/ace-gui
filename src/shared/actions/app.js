@@ -3,7 +3,12 @@ import fs from 'fs';
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';
 
-import {axeRunner} from '../axe-runner';
+import { ipcRenderer } from 'electron';
+
+// const createAxeRunner = require('@daisy/ace-axe-runner-electron').createAxeRunner;
+import { createAxeRunner } from '@daisy/ace-axe-runner-electron';
+const CONCURRENT_INSTANCES = 1; // same as the Puppeteer Axe runner
+const axeRunner = createAxeRunner(ipcRenderer, CONCURRENT_INSTANCES);
 
 import { localizer } from '../l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
