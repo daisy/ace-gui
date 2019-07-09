@@ -13,7 +13,7 @@ import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWin
 
 // const prepareLaunch = require('@daisy/ace-axe-runner-electron/lib/init').prepareLaunch;
 import { prepareLaunch } from '@daisy/ace-axe-runner-electron/lib/init';
-const CONCURRENT_INSTANCES = 1; // same as the Puppeteer Axe runner
+const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
 
 function openAllDevTools() {
