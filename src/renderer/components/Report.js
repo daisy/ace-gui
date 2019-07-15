@@ -21,7 +21,6 @@ export default class Report extends React.Component {
 
 
   render() {
-    console.log("rendering report");
     let {selectedTab, selectTab} = this.props;
 
     return (
