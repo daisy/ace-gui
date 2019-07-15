@@ -214,7 +214,7 @@ export default class EnhancedTable extends React.Component {
                 key={idx}
                 options={filter.options}
                 value={filter.values}
-                onChange={(values, {action, removedValue}) => this.onChangeFilter(filter.id, values, {action, removedValue})}
+                onChange={(values, {action, removedValue}) => this.onChangeFilter(filter.id, values || [], {action, removedValue})}
                 name={heads.find(head => head.id == filter.id).label}
                 closeMenuOnSelect={true}
                 isMulti={true}
