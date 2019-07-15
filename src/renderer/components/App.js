@@ -1,4 +1,5 @@
 import './../styles/App.scss';
+// import 'react-splitter-layout/lib/index.css';
 
 import MessagesContainer from './../containers/MessagesContainer';
 import PropTypes from 'prop-types';
@@ -7,6 +8,7 @@ import ModalRoot from './ModalRoot';
 import ReportContainer from './../containers/ReportContainer';
 import Sidebar from './../components/Sidebar';
 import Splash from './Splash';
+
 import SplitterLayout from 'react-splitter-layout';
 
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
