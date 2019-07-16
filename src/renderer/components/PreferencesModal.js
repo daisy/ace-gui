@@ -64,10 +64,10 @@ const styles = theme => ({
   },
   prefsGroup: {
     '&& > h3': {
-      'margin-bottom': `${theme.spacing.unit*2}px`,
+      'margin-bottom': `${theme.spacing(2)}px`,
     },
     '&& > * + *': {
-      'margin-left': `${theme.spacing.unit*2}px`,
+      'margin-left': `${theme.spacing(2)}px`,
     },
   },
   dialogActions: {
@@ -148,7 +148,7 @@ class PreferencesModal extends React.Component {
           <FormControl variant="outlined" margin="dense" fullWidth
           classes={{ root: classes.prefsGroup }}
           >
-            <Typography variant="subheading">{localize("preferences.internalReportStorage")}</Typography>
+            <Typography variant="h6">{localize("preferences.internalReportStorage")}</Typography>
             <FormControl 
               aria-describedby="preferences-dialog-reports-dir-helper-text"
               variant="outlined"
@@ -217,7 +217,7 @@ class PreferencesModal extends React.Component {
           <FormControl variant="outlined" margin="dense" fullWidth
           classes={{ root: classes.prefsGroup }}
           >
-            <Typography variant="subheading">{localize("preferences.userInterfaceLanguage")}</Typography>
+            <Typography variant="h6">{localize("preferences.userInterfaceLanguage")}</Typography>
             <FormControl aria-describedby='preferences-dialog-user-interface-language-helper-text'
               margin="dense">
               <Select

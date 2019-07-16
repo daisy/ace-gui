@@ -17,7 +17,7 @@ export default class Outlines extends React.Component {
     return (
       <section className="report-section outlines">
         <h2>{localize("report.outlines")}</h2>
-        <Grid container spacing={24}>
+        <Grid container spacing={10}>
           <Grid item xs>
             <h3>{localize("report.outlinesSection.toc")}</h3>
             <div dangerouslySetInnerHTML={createMarkup(outlines.toc)}/>

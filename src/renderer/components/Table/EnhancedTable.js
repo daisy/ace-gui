@@ -232,7 +232,7 @@ export default class EnhancedTable extends React.Component {
               return (
                 <TableCell
                   key={head.id}
-                  numeric={head.numeric}
+                  numeric={head.numeric.toString()}
                   sortDirection={head.sortable && orderBy === head.id ? order : false}>
                   {head.sortable ?
                   <Tooltip
