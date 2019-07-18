@@ -12,3 +12,5 @@ Thumbs.db
 /app/background.js
 /app/logo.svg
 /app/**/*.map
+
+.env
