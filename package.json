@@ -18,7 +18,7 @@
       "sign": false
     },
     "mac": {
-      "category": "my.category",
+      "category": "public.app-category.developer-tools",
       "icon": "build/icons/icon.icns",
       "target": "dmg",
       "hardenedRuntime": true,
@@ -34,7 +34,6 @@
     "nsis": {
       "oneClick": false
     },
-    "asar": false,
     "publish": {
       "provider": "github",
       "owner": "daisy",
