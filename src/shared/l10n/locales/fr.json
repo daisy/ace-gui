@@ -153,5 +153,11 @@
         "open": "Ouvrir",
         "choosereport": "Sélectionner un rapport Ace"
     },
+    "versionCheck": {
+        "softwareUpdate": "Mise à jour du logiciel",
+        "newVersionAvailable": "Une mise à jour du logiciel est disponible, desirez-vous la télécharger?",
+        "yes": "Oui",
+        "no": "Non"
+    },
     "kbgoonline": "ALLER EN LIGNE"
 }

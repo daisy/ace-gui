@@ -153,5 +153,11 @@
         "open": "Open",
         "choosereport": "Choose an Ace report"
     },
+    "versionCheck": {
+        "softwareUpdate": "Software update",
+        "newVersionAvailable": "A software update is available, would you like to download it?",
+        "yes": "Yes",
+        "no": "No"
+    },
     "kbgoonline": "GO ONLINE"
 }

@@ -312,7 +312,7 @@ export default class MenuBuilder {
           {
             label: localize('menu.about'),
             id: 'about2',
-            click: () => AboutBoxHelper.showAbout()
+            click: () => AboutBoxHelper.showAbout(this.mainWindow)
           },
           {
             type: 'separator'
@@ -409,7 +409,7 @@ export default class MenuBuilder {
         {
           label: localize('menu.about'),
           id: 'about1',
-          click: () => AboutBoxHelper.showAbout()
+          click: () => AboutBoxHelper.showAbout(this.mainWindow)
         }
       );
     }

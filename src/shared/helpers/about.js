@@ -4,10 +4,17 @@ const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
 const openAboutWindow = require('about-window').default;
 const join = require('path').join;
 
+// import {checkLatestVersion} from './versionCheck';
+const checkLatestVersion = require('./versionCheck').checkLatestVersion;
+
 let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 module.exports = {
-  showAbout: callback => {
+  showAbout: (browserWindow) => {
+    setTimeout(() => {
+      checkLatestVersion(browserWindow);
+    }, 500);
+
     return openAboutWindow({
         icon_path: join(__dirname, 'logo.svg'),
         copyright: 'Copyright (c) 2018 DAISY Consortium',

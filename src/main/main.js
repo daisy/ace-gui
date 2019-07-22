@@ -5,6 +5,8 @@ import MenuBuilder from './menu';
 
 import {initPersistentStore} from './store-persist';
 
+import {checkLatestVersion} from '../shared/helpers/versionCheck';
+
 require('electron-debug')();
 
 const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
@@ -64,6 +66,10 @@ function createWindow() {
   // win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
   win.setPosition(Math.round(sz0*0.5-win.getSize()[0]*0.5), Math.round(sz1*0.5-win.getSize()[1]*0.5));
   win.show();
+
+  setTimeout(() => {
+    checkLatestVersion(win);
+  }, 1000);
 
   const menuBuilder = new MenuBuilder(win, store);
   menuBuilder.buildMenu(win);

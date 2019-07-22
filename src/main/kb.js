@@ -364,7 +364,7 @@ function buildMenuTemplate(win) {
                 {
                     label: localize('menu.about'),
                     id: 'about2',
-                    click: () => AboutBoxHelper.showAbout()
+                    click: () => AboutBoxHelper.showAbout(win)
                 },
                 {
                     type: 'separator'
@@ -456,7 +456,7 @@ function buildMenuTemplate(win) {
             {
                 label: localize('menu.about'),
                 id: 'about1',
-                click: () => AboutBoxHelper.showAbout()
+                click: () => AboutBoxHelper.showAbout(win)
             }
         );
     }
