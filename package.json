@@ -1,14 +1,14 @@
 {
   "name": "ace-gui",
-  "productName": "Ace by DAISY",
   "description": "Ace, the EPUB accessibility checker by the DAISY Consortium (desktop application)",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.1",
   "author": "DAISY Consortium",
   "homepage": "http://daisy.github.io/ace",
   "repository": "daisy/ace-gui",
   "license": "MIT",
   "main": "app/main.js",
   "build": {
+    "productName": "Ace by DAISY",
     "appId": "org.daisy.ace",
     "files": [
       "node_modules/",
@@ -21,14 +21,33 @@
       "renderer.js.map",
       "userprefs.json"
     ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
     "directories": {
       "buildResources": "build/icons",
       "output": "dist",
       "app": "app"
     },
+    "fileAssociations": {
+      "ext": "epub"
+    },
     "afterSign": "build/notarize.js",
     "dmg": {
-      "sign": false
+      "sign": false,
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
     },
     "mac": {
       "category": "public.app-category.developer-tools",
@@ -37,6 +56,16 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "desktop": {
+        "MimeType": "application/epub+zip"
+      },
+      "executableName": "Ace by DAISY"
     },
     "win": {
       "appId": "DaisyConsortium.Ace",
