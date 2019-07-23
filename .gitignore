@@ -15,5 +15,7 @@ Thumbs.db
 /app/logo.svg
 /app/**/*.map
 /app/package.json
+/app/yarn.lock
+/app/kb/*
 
 .env
