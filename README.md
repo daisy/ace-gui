@@ -107,13 +107,13 @@ At the moment, Ace App depends on a special branch of the Ace core project, inst
 * `yarn test-electron`
 * `yarn test-electron-cli` (this one should fail, this is "normal")
 
-### Quick Start
+### Build, Run, Package
 
 * `cd MY_ACE_FOLDER` (same filesystem location as specified in the above [Preflight section](#preflight))
 * `git clone https://github.com/daisy/ace-gui.git`
 * `cd ace-gui`
 * `git checkout master`
-* `git submodule init && git submodule update` (this will setup the DAISY Knowledge Base [Git submodule](https://github.com/daisy/kb))
+* `git submodule init && git submodule update` (this sets up the DAISY Knowledge Base [Git submodule](https://github.com/daisy/kb))
 * `rm -rf node_modules` (this is really only needed if `yarn install` was already invoked)
 * `rm yarn.lock` (this is necessary to reset the file paths of the local NPM dependencies)
 * `yarn cache clean` (this is an optional, but strongly-recommended step, as local packages are cached too)
