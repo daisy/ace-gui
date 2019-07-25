@@ -67,7 +67,7 @@ The Ace App is not aimed at users who wish to check the accessibility of many pu
 
 ### Dependencies
 
-The source code for the latest `ace-gui` release is [tagged](https://github.com/daisy/ace-gui/tree/v1.0.0-rc.1) as `v1.0.0-rc.1`. Under the hood, the [latest version](https://github.com/daisy/ace/releases/tag/v1.1.1) of Ace is used (`v1.1.1`). However, instead of using the official [NPM packages](https://www.npmjs.com/org/daisy), the Ace App is based on a special [code branch](https://github.com/daisy/ace/pull/229) of the core Ace project, which satisfies the technical requirements of the desktop graphical user interface. This branch includes a slightly more up to date [version of Axe](https://github.com/dequelabs/axe-core/blob/develop/CHANGELOG.md#331-2019-07-23).
+The source code for the latest `ace-gui` release is [tagged](https://github.com/daisy/ace-gui/tree/v1.0.0-rc.1) as `v1.0.0-rc.1`. Under the hood, the [latest version](https://github.com/daisy/ace/releases/tag/v1.1.1) of Ace is used (`v1.1.1`). However, instead of using the official [NPM packages](https://www.npmjs.com/org/daisy), the Ace App is based on a special [code branch](https://github.com/daisy/ace/pull/229) of the core Ace project, which satisfies the technical requirements of the desktop graphical user interface. This branch includes a slightly more [up to date version](https://github.com/dequelabs/axe-core/blob/develop/CHANGELOG.md#331-2019-07-23) of Axe.
 
 ### Technologies
 
@@ -85,12 +85,27 @@ The source code for the latest `ace-gui` release is [tagged](https://github.com/
 
 ### Preflight
 
-At the moment, Ace App depends on a special branch of the Ace core project, instead of the official NPM packages. The following steps are therefore necessary:
+At the moment, Ace App depends on a special branch of the Ace core project, instead of the official NPM packages (see the above [Dependencies section](#dependencies)). The following steps are therefore necessary:
 
-* `cd MY_ACE_FOLDER`
+* `cd MY_ACE_FOLDER` (choose your folder name / filesystem location)
 * `git clone https://github.com/daisy/ace.git`
 * `cd ace`
+* `git checkout pr-merge/223+227` (the branch name is not meaningful, this is in fact [this Pull Request](https://github.com/daisy/ace/pull/229))
+* `rm -rf node_modules && rm -rf packages/*/node_modules` (this is really only needed if `yarn install` was already invoked) 
+* `rm -rf packages/*/lib` (this is really only needed if `yarn build` was already invoked)
+* `rm yarn.lock` (this is necessary to reset the file paths of the local NPM dependencies)
+* `yarn cache clean` (this is an optional, but strongly-recommended step, as local packages are cached too)
 * `yarn install`
+* `git status && git --no-pager diff` (this should show `yarn.lock` changes)
+* `rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy`
+* `VERBOSE=1 yarn build` (this builds the source code into the local `packages/*/lib` folders)
+* `yarn upgrade`
+* `git status && git --no-pager diff` (this should show `yarn.lock` changes)
+* `rm -rf packages/*/node_modules`
+* `yarn test`
+* `yarn test-cli`
+* `yarn test-electron`
+* `yarn test-electron-cli` (this one should fail, this is "normal")
 
 ### Quick Start
 
