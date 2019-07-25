@@ -32,7 +32,7 @@ The Ace App currently features a software update notification system. Future ver
 
 Please use the [issue tracker](https://github.com/daisy/ace-gui/issues) to report problems, suggest features, etc. The most notable caveats in this pre-production release are:
 
-* User documentation: lack of step-by-step instructions, quick-start guide and in-depth tutorial
+* User documentation: lack of step-by-step instructions, in-depth tutorial (only quick-start guide)
 * Visual presentation: sub-optimal user interface layout and report rendering (table view needs more "responsive design")
 * Accessibility: less-then-ideal support for keyboard usage, and compatibility with screen readers
 * Windows: security warnings due to present lack of code signing certificate, missing permissions to access configuration folder
