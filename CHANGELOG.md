@@ -1,3 +1,8 @@
+<a name="1.0.0-rc.1"></a>
+# 1.0.0-rc.1 (2019-07-23)
+
+Please visit the [release page](https://github.com/daisy/ace-gui/releases/tag/v1.0.0-rc.1).
+
 <a name="1.0.0-beta.0"></a>
 # 1.0.0-beta.0 (2018-10-11)
 
