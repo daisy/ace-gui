@@ -1,69 +1,102 @@
 <img src="./src/renderer/assets/logo.svg" alt="" width="150" align="left"/>
 
-# Ace, the desktop application 
+# Ace By DAISY App
 
-A desktop graphical user interface for [Ace](https://daisy.github.io/ace), the EPUB accessibility checker by the [DAISY Consortium](http://daisy.org).
+Ace by DAISY App is the official graphical user interface for the EPUB accessibility checker developed by the [DAISY Consortium](http://daisy.org). The Ace App is available for the Windows, MacOS and Linux desktop operating systems.
 
 <br/>
+<br/>
 
+## Latest Version
 
-## Getting started
+The most recent version of Ace App is `v1.0.0-rc.1` (first "Release Candidate"). Please visit the [release page](https://github.com/daisy/ace-gui/releases/tag/v1.0.0-rc.1) for more information.
 
-The Ace application is distributed as a self-contained application package; there is no prerequisite to install the application.
+The Ace App currently features a software update notification system. Future versions may support a more sophisticated auto-update mechanism. Until then, users are prompted to download and install the latest release manually.
 
-After you download the application from the [release page](https://github.com/daisy/ace-gui/releases), please follow the instructions below:
+## Installation
 
-- **on macOS**: open the disk image (`.dmg` file), then copy or drag-and-drop the application to your installation folder of choice (we recommand installing Ace to your default `/Applications` folder).
-- **on Windows**: open the executable installer (`.exe`), and follow the step-by-step installation process. Ace will launch automatically after the installation; shortcuts will be created on the desktop and in the application menu.
+* **MacOS**: download the [DMG file](https://github.com/daisy/ace-gui/releases/download/v1.0.0-rc.1/Ace.by.DAISY-1.0.0-rc.1.dmg), open it, and drag the `Ace by DAISY.app` file into your Applications folder.
+* **Windows**: download the [NSIS installer](https://github.com/daisy/ace-gui/releases/download/v1.0.0-rc.1/Ace.by.DAISY.Setup.1.0.0-rc.1.exe), and follow the step-by-step instructions. Please ignore the security warning messages, they are due to the application [not being signed yet](https://github.com/daisy/ace-gui/issues/15).
+* **Linux**: download the [AppImage file](https://github.com/daisy/ace-gui/releases/download/v1.0.0-rc.1/Ace.by.DAISY-1.0.0-rc.1.AppImage), and double-click the icon to immediately start using the application. Alternatively, you may download the [Debian package](https://github.com/daisy/ace-gui/releases/download/v1.0.0-rc.1/ace-gui_1.0.0-rc.1_amd64.deb) to install the app via your package manager (e.g. `sudo apt install ace-gui_1.0.0-rc.1_amd64.deb`).
 
-The first time Ace launches, it may take a few seconds to render a usable user interface (this is a know issue, we’re still in beta!). Once loaded, you’ll see an invitation to open an EPUB, which can be done by pressing the "Check EPUB" button, the "Check EPUB" menu item, or by drag-and-dropping an EPUB to the main window. Once an EPUB is opened, Ace will automatically start checking it and render the report.
+## Notable Features
 
-## Development
+* Online/Offline integration of the [DAISY Knowledge Base](http://kb.daisy.org/publishing/docs/).
+* English and French [localization](https://github.com/daisy/ace-gui/wiki/Localization).
+* Latest [Ace](https://github.com/daisy/ace/releases/tag/v1.1.1) and [Axe](https://github.com/dequelabs/axe-core/blob/develop/CHANGELOG.md#331-2019-07-23) libs.
+* Reduced application size (Axe now runs via Electron itself, the Puppeteer dependency has been removed)
+* Signed and Notarized DMG for MacOS, using the official DAISY Code Signing Certificate (the Windows NSIS installer will be signed at a later stage).
+* Software update notifications.
 
-### Technology stack
+## Known Limitations
 
-The Ace desktop application is based on the following technologies:
+Please use the [issue tracker](https://github.com/daisy/ace-gui/issues) to report problems, suggest features, etc. The most notable caveats in this pre-production release are:
 
-- [Electron](https://electronjs.org/), an open source library to build cross-platform applications with HTML, CSS, and Javascript.
-- [React](https://reactjs.org/), a component-based library fo building user interfaces.
-- [Redux](https://redux.js.org/), a state-container for Javascript appllications.
-- [Material UI](https://material-ui.com/), a set of React components that implement the Material Design guidelines
+* User documentation: lack of step-by-step instructions, quick-start guide and in-depth tutorial
+* Visual presentation: sub-optimal user interface layout and report rendering (table view needs more "responsive design")
+* Accessibility: less-then-ideal support for keyboard usage, and compatibility with screen readers
+* Windows: security warnings due to present lack of code signing certificate, missing permissions to access configuration folder
+* Multiple, successive evaluations: the state of the report table view is not reset, drag-and-drop support is limited
+* Language localization: some menu items are not translated automatically, the platform language is not taken into account when starting the app, and only English and French are currently supported
 
-The application's build system is based on:
-- [Webpack](https://webpack.js.org), a static module bundler for Javascript applications.
-- [Electron Builder](https://www.electron.build/), a solution to package and build Electron applications with installers and updaters.
+## Documentation
 
-### Building
+A quick-start guide with step-by-step instructions is available in [this wiki page](https://github.com/daisy/ace-gui/wiki/Quick-Start). More in-depth tutorials will be added at a future stage.
 
-To compile and launch Ace in development mode, run:
+Documentation about the core projects (command line, HTTP interface, etc.) is available at the [Ace support website](https://daisy.github.io/ace). The [Inclusive Publishing](https://inclusivepublishing.org/toolbox/accessibility-checker/) hub also provides useful guidance.
 
-```
-yarn start
-```
+## Development Plan
 
-### Releasing
+The Ace App is under active development. The short-term plan is to iron-out bugs, improve the responsiveness and accessibility of the user interface, write documentation and tutorials, and provide additional language packs.
 
-To package the application for your local environment, run:
+## Language localizations
 
-```
-yarn build
-```
+Please visit [this wiki page](https://github.com/daisy/ace-gui/wiki/Localization) to learn about user interface translations.
 
-To package the application for macOS and Windows, and release it to GitHub, run:
+## Target Audience, Design Goals
 
-```
-yarn release
-```
+The "Ace by DAISY" [command line tool](https://daisy.github.io/ace) is designed for technical users, who are comfortable dealing with shell commands and low-level filesystem access. On the other hand, the Ace App aims to simplify usage of the accessibility evaluator by providing a familiar graphical user interface. This includes: file drag and drop, structured menus, user preferences, interactive display of the evaluation results (search, filter, sort), integration with the [DAISY Knowledge Base](http://kb.daisy.org/publishing/docs/), language localizations, etc.
 
-### Contributing
+Under the hood, the Ace App is powered by the same core components used by the command line tool. Although the desktop app displays the results of the accessibility evaluation in a rich, interactive user interface control (tabulated view), advanced users can export reports in the same format as those generated by the command line tool (i.e. HTML and JSON files).
 
-Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guidelines](CONTRIBUTIN.md) for details on how to contribute to this project, and the process for submitting issues or pull requests. We’re welcoming any kind of contributions 😊, feel free to get in touch with us!
+The Ace App is suitable for novice users who wish to discover the functionality of the accessibility evaluator, before transitioning to more advanced command line usage (for example, in order to implement automated processing, using shell scripts).
 
-## License
+The Ace App is not aimed at users who wish to check the accessibility of many publications in a row. This use-case is better served by the command line tool, which can be invoked multiple times in an automated manner (i.e. with minimal user interaction).
 
-This project is licensed under the MIT License - see the [license file](LICENSE.md) for details
+## Developer Notes
 
-## Clean slate build for Electron
+### Dependencies
+
+The source code for the latest `ace-gui` release is [tagged](https://github.com/daisy/ace-gui/tree/v1.0.0-rc.1) as `v1.0.0-rc.1`. Under the hood, the [latest version](https://github.com/daisy/ace/releases/tag/v1.1.1) of Ace is used (`v1.1.1`). However, instead of using the official [NPM packages](https://www.npmjs.com/org/daisy), the Ace App is based on a special [code branch](https://github.com/daisy/ace/pull/229) of the core Ace project, which satisfies the technical requirements of the desktop graphical user interface. This branch includes a slightly more up to date [version of Axe](https://github.com/dequelabs/axe-core/blob/develop/CHANGELOG.md#331-2019-07-23).
+
+### Technologies
+
+- [Electron](https://electronjs.org)
+- [React](https://reactjs.org)
+- [Redux](https://redux.js.org)
+- [Material UI](https://material-ui.com)
+- [Webpack](https://webpack.js.org)
+- [Electron Builder](https://www.electron.build)
+
+### Prerequisites
+
+* [NodeJS and NPM](https://nodejs.org)
+* [Yarn](https://yarnpkg.com)
+
+### Preflight
+
+At the moment, Ace App depends on a special branch of the Ace core project, instead of the official NPM packages. The following steps are therefore necessary:
+
+* `cd MY_ACE_FOLDER`
+* `git clone https://github.com/daisy/ace.git`
+* `cd ace`
+* `yarn install`
+
+### Quick Start
+
+* `git clone https://github.com/daisy/ace-gui.git`
+* `yarn clean`
+* `yarn start:dev`
 
 * `yarn run clean`
 * `rm -rf dist`
@@ -78,4 +111,10 @@ This project is licensed under the MIT License - see the [license file](LICENSE.
 * `yarn build`
 * `yarn start`
 
+## Contributing
 
+Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guidelines](CONTRIBUTING.md) for details on how to contribute to this project, and the process for submitting issues or pull requests. We’re welcoming any kind of contributions 😊, feel free to get in touch with us!
+
+## License
+
+This project is licensed under the MIT License - see the [license file](LICENSE.md) for details
