@@ -109,22 +109,24 @@ At the moment, Ace App depends on a special branch of the Ace core project, inst
 
 ### Quick Start
 
+* `cd MY_ACE_FOLDER` (same filesystem location as specified in the above [Preflight section](#preflight))
 * `git clone https://github.com/daisy/ace-gui.git`
-* `yarn clean`
-* `yarn start:dev`
-
-* `yarn run clean`
-* `rm -rf dist`
-* `rm -rf node_modules`
-* `yarn cache clean`
-* `git branch`
-* `git status`
-* `git pull`
-* `rm yarn.lock`
+* `cd ace-gui`
+* `git checkout master`
+* `git submodule init && git submodule update` (this will setup the DAISY Knowledge Base [Git submodule](https://github.com/daisy/kb))
+* `rm -rf node_modules` (this is really only needed if `yarn install` was already invoked)
+* `rm yarn.lock` (this is necessary to reset the file paths of the local NPM dependencies)
+* `yarn cache clean` (this is an optional, but strongly-recommended step, as local packages are cached too)
 * `yarn install`
-* `open node_modules/@daisy`
-* `yarn build`
-* `yarn start`
+* `git status && git --no-pager diff` (this should show `yarn.lock` changes)
+* `yarn clean`
+* `yarn start:dev` (launches the app after compiling in development mode, with a file watcher)
+* `yarn start:dev_` (launches the app after compiling in development mode, no file watcher)
+* `yarn start:prod` (launches the app after compiling in production mode, no file watcher)
+* `yarn start` (launches the app without compilation, so requires prior manual invokation of `yarn build:prod` or `yarn build:dev`)
+* `yarn package:linux` (creates the Linux distributable Debian package and AppImage)
+* `yarn package:windows` (creates the Windows NSIS installer, currently unsigned)
+* `yarn package:mac` (creates the MacOS DMG installer, requires the DAISY EV Code Signing Certificate and invokes the Apple Notarization process)
 
 ## Contributing
 
