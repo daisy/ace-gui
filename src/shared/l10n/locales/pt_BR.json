@@ -1,0 +1,157 @@
+{
+    "menu": {
+        "file": "Arquivo",
+        "view": "Visualizar",
+        "dev": "Desenvolvimento",
+        "help": "Ajuda",
+        "ace": "Ace",
+        "window": "Janela",
+        "checkEpub": "Verificar EPUB...",
+        "checkEpubFolder": "Verificar a pasta EPUB...",
+        "openReport": "Abrir Relatório...",
+        "rerunAce": "Reexecutar ACE",
+        "exportReport": "Exportar Relatório",
+        "closeReport": "Fechar Relatório",
+        "gotoSummary": "Ir para Resumo",
+        "gotoViolations": "Ir para Violaçõe",
+        "gotoMetadata": "Ir para Metadados",
+        "gotoOutlines": "Ir para Títulos",
+        "gotoImages": "Ir para Imagens",
+        "showInFinder": "Mostrar no Finder",
+        "showInExplorer": "Mostrar no Explorer",
+        "reload": "Recarregar",
+        "toggleDevTools": "Habilitar Ferramentas do Desenvolvedor",
+        "knowledgeBase": "Base de Conhecimento",
+        "knowledgeBaseOffline": "Local (offline)",
+        "knowledgeBaseOnline": "Web (online)",
+        "learnMore": "Saiba mais",
+        "reportIssue": "Reportar um Erro",
+        "copyMessageOutput": "Copiar Mensagens",
+        "about": "Sobre o Ace",
+        "quit": "Fechar",
+        "edit": "Editar",
+        "undo": "Desfazer",
+        "redo": "Refazer",
+        "copy": "Copiar",
+        "cut": "Recortar",
+        "paste": "Colar",
+        "selectall": "Selecionar tudo"
+    },
+    "preferences": {
+        "title": "Preferências do Ace",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "internalReportStorage": "Armazenamento Interno do Relatório",
+        "reportsDataDirectory": "Diretório de Dados dos Relatórios",
+        "reportsDataDirectoryButton": "Selecionar",
+        "reportsDataDirectoryTip": "(onde o Ace armazena os relatórios internamente)",
+        "overwriteExistingReports": "Sobrescrever relatórios existentes",
+        "overwriteExistingReportsTip": "(permitir gravar novos relatórios sobre os antigos?)",
+        "userInterfaceLanguage": "Idioma",
+        "userInterfaceLanguageTip": "(selecione o idioma para rótulos e mensagens)"
+    },
+    "sidebar": {
+        "checkEPUB": "Verificar EPUB",
+        "reRun": "Reexecutar",
+        "history": "Histórico",
+        "export": "Exportar",
+        "settings": "Configurações",
+        "minimize": "Minimizar Barra Lateral",
+        "maximize": "Maximizar Barra Lateral"
+    },
+    "splash": {
+        "title": "Ace, by DAISY",
+        "dropHere": "Arraste e solte um arquivo EPUB ou pasta aqui,",
+        "orDropSidebar": "ou no botão __ na barra lateral,",
+        "or": "ou",
+        "clickToBrowse": "clique para selecionar.",
+        "browseForFileOrFolder": "selecione um __arquivo__ ou __pasta__ ."
+    },
+    "report": {
+        "title": "Relatório",
+        "summary": "Resumo",
+        "violations": "Violações",
+        "metadata": "Metadados",
+        "outlines": "Estruturas",
+        "images": "Imagens",
+        "imagesSection": {
+            "noImages": "Nenhuma imagem encontrada nesta publicação.",
+            "NA": "N/D",
+            "role": "Role",
+            "location": "Localização",
+            "associatedFigcaption": "'figcaption' associada",
+            "ariaDescribedbyContent": "conteúdo do 'aria-describedby'",
+            "altAttribute": "atributo 'alt'",
+            "image": "Imagem"
+        },
+        "metadataSection": {
+            "name": "Nome",
+            "value": "Valor",
+            "a11y": "Acessibilidade",
+            "allPresent": "Todos os metadados de acessibilidades necessários estão presentes.",
+            "missing": "Metadados de acessibilidade ausentes::"
+        },
+        "outlinesSection": {
+            "toc": "Índice do EPUB",
+            "headings": "Estrutura dos Títulos",
+            "html": "Estrutura HTML"
+        },
+        "summarySection": {
+            "type": "Tipo",
+            "critical": "Crítica",
+            "serious": "Séria",
+            "moderate": "Moderada",
+            "minor": "Baixa",
+            "best-practice": "Boas Práticas",
+            "other": "Outro",
+            "total": "Total"
+        },
+        "violationsSection": {
+            "impact": "Impacto",
+            "noViolations": "Nenhuma violação reportada.",
+            "ruleset": "Conjunto de regras",
+            "rule": "Regra",
+            "location": "Localização",
+            "details": "Detalhes",
+            "learnAbout": "Saiba mais:",
+            "via": "Via:"
+        }
+    },
+    "enhancedTable": {
+        "filterBy": "Filtrar por",
+        "sortBy": "Classificar por: ",
+        "rowsPerPage": "Linhas por página:"
+    },
+    "tablePagination": {
+        "firstPage": "Primeira Página",
+        "lastPage": "Última Página",
+        "previousPage": "Página Anterior",
+        "nextPage": "Próxima Página"
+    },
+    "message": {
+        "filetypenotsupported": "ERRO: Tipo de arquivo de {filepath}} não é suportado",
+        "runningace": "Executando Ace em {{inputPath}}",
+        "checkcomplete": "Verificação do Ace completa",
+        "savingreport": "Salvando relatório em {{outfile}} ...",
+        "savedreport": "Relatório salvo em {{outfile}}",
+        "failsavereport": "ERRO: não foi possível salvar o relatório em {{outfile}}",
+        "overwrite": "O diretório de saída não está vazio. Executar o Ace iria sobrescrever os seguintes arquivos ou diretórios: \n{{val}}.\nHabilite a opção 'Sobrescrever' para permitir isso.",
+        "closedreport": "Fechado relatório {{reportPath}}",
+        "loadedreport": "Carregado relatório {{reportPath}}",
+        "loadfailreport": "ERRO: Não foi possível abrir {{p}}"
+    },
+    "dialog": {
+        "savereport": "Salvar Relatório",
+        "ziparchive": "Arquivo Zip",
+        "choosedir": "Escolha um diretório",
+        "select": "Selecione",
+        "allfiles": "Todos os arquivos",
+        "chooseepub": "Escolha um arquivo EPUB ou pasta",
+        "chooseepubfile": "Escolha um arquivo EPUB",
+        "chooseepubdir": "Escolha uma pasta EPUB",
+        "check": "Verificar",
+        "open": "Abrir",
+        "choosereport": "Escolher um relatório ACE"
+    },
+    "kbgoonline": "FIQUE ONLINE"
+}
