@@ -105,7 +105,7 @@ At the moment, Ace App depends on a special branch of the Ace core project, inst
 * `yarn test`
 * `yarn test-cli`
 * `yarn test-electron`
-* `yarn test-electron-cli` (this one should fail, this is "normal")
+* `yarn test-electron-cli`
 
 ### Build, Run, Package
 
