@@ -153,5 +153,11 @@
         "lastPage": "Última Página",
         "nextPage": "Próxima Página",
         "previousPage": "Página Anterior"
+    },
+    "versionCheck": {
+        "newVersionAvailable": "",
+        "no": "",
+        "softwareUpdate": "",
+        "yes": ""
     }
 }
