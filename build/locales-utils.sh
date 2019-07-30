@@ -18,8 +18,8 @@ find ./src -maxdepth 100 -type f -name "*.json" -regex "\./src/shared/l10n/local
     echo "${relativefilepath} ===> ${filename}"
 
     #jq -S "${JQ_PARAM}" --indent 4 "${relativefilepath}"
-    #jq -S "${JQ_PARAM}" --indent 4 "${relativefilepath}" > "${relativefilepath}.tmp" && mv "${relativefilepath}.tmp" "${relativefilepath}"
-    #git --no-pager diff "${relativefilepath}"
+    jq -S "${JQ_PARAM}" --indent 4 "${relativefilepath}" > "${relativefilepath}.tmp" && mv "${relativefilepath}.tmp" "${relativefilepath}"
+    git --no-pager diff "${relativefilepath}"
 done
 # < <(FIND_COMMAND_HERE)
 
