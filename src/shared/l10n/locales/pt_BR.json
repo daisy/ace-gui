@@ -155,9 +155,9 @@
         "previousPage": "Página Anterior"
     },
     "versionCheck": {
-        "newVersionAvailable": "",
-        "no": "",
-        "softwareUpdate": "",
-        "yes": ""
+        "newVersionAvailable": "Uma atualização está disponível. Gostaria de baixá-la?",
+        "no": "Não",
+        "softwareUpdate": "Atualização",
+        "yes": "Sim"
     }
 }
