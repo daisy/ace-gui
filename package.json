@@ -115,7 +115,7 @@
     "package:linux": "electron-builder --publish never --linux",
     "prepackage:mac": "yarn run prepackage",
     "package:mac": "electron-builder --publish never --mac",
-    "i18n": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es --space 4 --finalnewline --newkeysempty",
+    "i18n": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR --space 4 --finalnewline --newkeysempty",
     "i18n-check": "yarn run i18n --check",
     "i18n-help": "sync-i18n --help"
   },

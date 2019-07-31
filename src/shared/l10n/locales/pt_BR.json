@@ -1,0 +1,163 @@
+{
+    "dialog": {
+        "allfiles": "Todos os arquivos",
+        "check": "Verificar",
+        "choosedir": "Escolha um diretório",
+        "chooseepub": "Escolha um arquivo EPUB ou pasta",
+        "chooseepubdir": "Escolha uma pasta EPUB",
+        "chooseepubfile": "Escolha um arquivo EPUB",
+        "choosereport": "Escolher um relatório ACE",
+        "open": "Abrir",
+        "savereport": "Salvar Relatório",
+        "select": "Selecione",
+        "ziparchive": "Arquivo Zip"
+    },
+    "enhancedTable": {
+        "filterBy": "Filtrar por",
+        "rowsPerPage": "Linhas por página:",
+        "sortBy": "Classificar por: "
+    },
+    "kbgoonline": "FIQUE ONLINE",
+    "menu": {
+        "about": "Sobre o Ace",
+        "ace": "Ace",
+        "checkEpub": "Verificar EPUB...",
+        "checkEpubFolder": "Verificar a pasta EPUB...",
+        "closeReport": "Fechar Relatório",
+        "copy": "Copiar",
+        "copyMessageOutput": "Copiar Mensagens",
+        "cut": "Recortar",
+        "dev": "Desenvolvimento",
+        "edit": "Editar",
+        "exportReport": "Exportar Relatório",
+        "file": "Arquivo",
+        "gotoImages": "Ir para Imagens",
+        "gotoMetadata": "Ir para Metadados",
+        "gotoOutlines": "Ir para Títulos",
+        "gotoSummary": "Ir para Resumo",
+        "gotoViolations": "Ir para Violaçõe",
+        "help": "Ajuda",
+        "knowledgeBase": "Base de Conhecimento",
+        "knowledgeBaseOffline": "Local (offline)",
+        "knowledgeBaseOnline": "Web (online)",
+        "learnMore": "Saiba mais",
+        "openReport": "Abrir Relatório...",
+        "paste": "Colar",
+        "quit": "Fechar",
+        "redo": "Refazer",
+        "reload": "Recarregar",
+        "reportIssue": "Reportar um Erro",
+        "rerunAce": "Reexecutar ACE",
+        "selectall": "Selecionar tudo",
+        "showInExplorer": "Mostrar no Explorer",
+        "showInFinder": "Mostrar no Finder",
+        "toggleDevTools": "Habilitar Ferramentas do Desenvolvedor",
+        "undo": "Desfazer",
+        "view": "Visualizar",
+        "window": "Janela"
+    },
+    "message": {
+        "checkcomplete": "Verificação do Ace completa",
+        "closedreport": "Fechado relatório {{reportPath}}",
+        "failsavereport": "ERRO: não foi possível salvar o relatório em {{outfile}}",
+        "filetypenotsupported": "ERRO: Tipo de arquivo de {filepath}} não é suportado",
+        "loadedreport": "Carregado relatório {{reportPath}}",
+        "loadfailreport": "ERRO: Não foi possível abrir {{p}}",
+        "overwrite": "O diretório de saída não está vazio. Executar o Ace iria sobrescrever os seguintes arquivos ou diretórios: \n{{val}}.\nHabilite a opção 'Sobrescrever' para permitir isso.",
+        "runningace": "Executando Ace em {{inputPath}}",
+        "savedreport": "Relatório salvo em {{outfile}}",
+        "savingreport": "Salvando relatório em {{outfile}} ..."
+    },
+    "preferences": {
+        "cancel": "Cancelar",
+        "internalReportStorage": "Armazenamento Interno do Relatório",
+        "overwriteExistingReports": "Sobrescrever relatórios existentes",
+        "overwriteExistingReportsTip": "(permitir gravar novos relatórios sobre os antigos?)",
+        "reportsDataDirectory": "Diretório de Dados dos Relatórios",
+        "reportsDataDirectoryButton": "Selecionar",
+        "reportsDataDirectoryTip": "(onde o Ace armazena os relatórios internamente)",
+        "save": "Salvar",
+        "title": "Preferências do Ace",
+        "userInterfaceLanguage": "Idioma",
+        "userInterfaceLanguageTip": "(selecione o idioma para rótulos e mensagens)"
+    },
+    "report": {
+        "images": "Imagens",
+        "imagesSection": {
+            "NA": "N/D",
+            "altAttribute": "atributo 'alt'",
+            "ariaDescribedbyContent": "conteúdo do 'aria-describedby'",
+            "associatedFigcaption": "'figcaption' associada",
+            "image": "Imagem",
+            "location": "Localização",
+            "noImages": "Nenhuma imagem encontrada nesta publicação.",
+            "role": "Role"
+        },
+        "metadata": "Metadados",
+        "metadataSection": {
+            "a11y": "Acessibilidade",
+            "allPresent": "Todos os metadados de acessibilidades necessários estão presentes.",
+            "missing": "Metadados de acessibilidade ausentes::",
+            "name": "Nome",
+            "value": "Valor"
+        },
+        "outlines": "Estruturas",
+        "outlinesSection": {
+            "headings": "Estrutura dos Títulos",
+            "html": "Estrutura HTML",
+            "toc": "Índice do EPUB"
+        },
+        "summary": "Resumo",
+        "summarySection": {
+            "best-practice": "Boas Práticas",
+            "critical": "Crítica",
+            "minor": "Baixa",
+            "moderate": "Moderada",
+            "other": "Outro",
+            "serious": "Séria",
+            "total": "Total",
+            "type": "Tipo"
+        },
+        "title": "Relatório",
+        "violations": "Violações",
+        "violationsSection": {
+            "details": "Detalhes",
+            "impact": "Impacto",
+            "learnAbout": "Saiba mais:",
+            "location": "Localização",
+            "noViolations": "Nenhuma violação reportada.",
+            "rule": "Regra",
+            "ruleset": "Conjunto de regras",
+            "via": "Via:"
+        }
+    },
+    "sidebar": {
+        "checkEPUB": "Verificar EPUB",
+        "export": "Exportar",
+        "history": "Histórico",
+        "maximize": "Maximizar Barra Lateral",
+        "minimize": "Minimizar Barra Lateral",
+        "reRun": "Reexecutar",
+        "settings": "Configurações"
+    },
+    "splash": {
+        "browseForFileOrFolder": "selecione um __arquivo__ ou __pasta__ .",
+        "clickToBrowse": "clique para selecionar.",
+        "dropHere": "Arraste e solte um arquivo EPUB ou pasta aqui,",
+        "or": "ou",
+        "orDropSidebar": "ou no botão __ na barra lateral,",
+        "title": "Ace, by DAISY"
+    },
+    "tablePagination": {
+        "firstPage": "Primeira Página",
+        "lastPage": "Última Página",
+        "nextPage": "Próxima Página",
+        "previousPage": "Página Anterior"
+    },
+    "versionCheck": {
+        "newVersionAvailable": "Uma atualização está disponível. Gostaria de baixá-la?",
+        "no": "Não",
+        "softwareUpdate": "Atualização",
+        "yes": "Sim"
+    }
+}
