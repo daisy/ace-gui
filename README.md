@@ -22,7 +22,7 @@ The Ace App currently features a software update notification system. Future ver
 ## Notable Features
 
 * Online/Offline integration of the [DAISY Knowledge Base](http://kb.daisy.org/publishing/docs/).
-* English and French [localization](https://github.com/daisy/ace-gui/wiki/Localization).
+* English, French and Spanish [localization](https://github.com/daisy/ace-gui/wiki/Localization).
 * Latest [Ace](https://github.com/daisy/ace/releases/tag/v1.1.1) and [Axe](https://github.com/dequelabs/axe-core/blob/develop/CHANGELOG.md#331-2019-07-23) libs.
 * Reduced application size (Axe now runs via Electron itself, the Puppeteer dependency has been removed)
 * Signed and Notarized DMG for MacOS, using the official DAISY Code Signing Certificate (the Windows NSIS installer will be signed at a later stage).
@@ -37,7 +37,7 @@ Please use the [issue tracker](https://github.com/daisy/ace-gui/issues) to repor
 * Accessibility: less-then-ideal support for keyboard usage, and compatibility with screen readers
 * Windows: security warnings due to present lack of code signing certificate, missing permissions to access configuration folder
 * Multiple, successive evaluations: the state of the report table view is not reset, drag-and-drop support is limited
-* Language localization: some menu items are not translated automatically, the platform language is not taken into account when starting the app, and only English and French are currently supported
+* Language localization: some menu items are not translated automatically, the platform language is not taken into account when starting the app.
 
 ## Documentation
 

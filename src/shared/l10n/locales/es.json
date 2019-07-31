@@ -1,0 +1,163 @@
+{
+    "dialog": {
+        "allfiles": "Todos los Archivos",
+        "check": "Comprobar",
+        "choosedir": "Elegir carpeta",
+        "chooseepub": "Elegir un archivo o carpeta EPUB",
+        "chooseepubdir": "Elegir un directorio EPUB",
+        "chooseepubfile": "Elegir un archivo EPUB",
+        "choosereport": "Elegir un informe de Ace",
+        "open": "Abrir",
+        "savereport": "Guardar Informe",
+        "select": "Seleccionar",
+        "ziparchive": "Archivo Zip"
+    },
+    "enhancedTable": {
+        "filterBy": "Filtrar Por",
+        "rowsPerPage": "Filas por página:",
+        "sortBy": "Ordenar Por"
+    },
+    "kbgoonline": "CONECTARSE A INTERNET",
+    "menu": {
+        "about": "Acerca de Ace",
+        "ace": "Ace",
+        "checkEpub": "Comprobar EPUB...",
+        "checkEpubFolder": "Comprobar Carpeta de EPUB...",
+        "closeReport": "Cerrar Informe",
+        "copy": "Copiar",
+        "copyMessageOutput": "Copiar Salida de Mensajes",
+        "cut": "Cortar",
+        "dev": "Desarrollo",
+        "edit": "Editar",
+        "exportReport": "Exportar Informe",
+        "file": "Archivo",
+        "gotoImages": "Ir a Imágenes",
+        "gotoMetadata": "Ir a Metadatos",
+        "gotoOutlines": "Ir a Estructuras",
+        "gotoSummary": "Ir al resumen",
+        "gotoViolations": "Ir a las violaciones",
+        "help": "Ayuda",
+        "knowledgeBase": "Base de Conocimiento",
+        "knowledgeBaseOffline": "Local (sin conexión)",
+        "knowledgeBaseOnline": "Web (en línea)",
+        "learnMore": "Saber más",
+        "openReport": "Abrir Informe...",
+        "paste": "Pegar",
+        "quit": "Salir",
+        "redo": "Rehacer",
+        "reload": "Recargar",
+        "reportIssue": "Notificar Incidencia",
+        "rerunAce": "Ejecutar de nuevo Ace",
+        "selectall": "Seleccionar Todo",
+        "showInExplorer": "Mostrar en el Explorador",
+        "showInFinder": "Mostrar en el Buscador",
+        "toggleDevTools": "Conmutar Herramientas del Desarrollador",
+        "undo": "Deshacer",
+        "view": "Ver",
+        "window": "Ventana"
+    },
+    "message": {
+        "checkcomplete": "Comprobación de Ace completada",
+        "closedreport": "Se ha cerrado el informe {{reportPath}}",
+        "failsavereport": "ERROR: no se ha podido guardar el informe en {{outfile}}",
+        "filetypenotsupported": "ERROR: tipo de archivo de {{filepath}} no admitido",
+        "loadedreport": "Se ha cargado el informe {{reportPath}}",
+        "loadfailreport": "ERROR: no se ha podido abrir {{p}}",
+        "overwrite": "El directorio de salida no está vacío. Ejecutar Ace sobrescribiría los siguientes archivos o directorios: \n{{val}}.\nActivar la opción 'Sobrescribir' para permitirlo.",
+        "runningace": "Ejecutando Ace en {{inputPath}}",
+        "savedreport": "Informe guardado en {{outfile}}",
+        "savingreport": "Guardando informe en {{outfile}}..."
+    },
+    "preferences": {
+        "cancel": "Cancelar",
+        "internalReportStorage": "Almacenamiento Interno de Informes",
+        "overwriteExistingReports": "Sobrescribir informes existentes",
+        "overwriteExistingReportsTip": "(¿permitir escribir informes nuevos sobre anteriores?)",
+        "reportsDataDirectory": "Directorio para Datos de Informes",
+        "reportsDataDirectoryButton": "Examinar",
+        "reportsDataDirectoryTip": "(donde Ace almacena internamente los informes)",
+        "save": "Guardar",
+        "title": "Preferencias de Ace",
+        "userInterfaceLanguage": "Idioma",
+        "userInterfaceLanguageTip": "(seleccionar el idioma para etiquetas y mensajes de la interfaz)"
+    },
+    "report": {
+        "images": "Imágenes",
+        "imagesSection": {
+            "NA": "No disponible",
+            "altAttribute": "Atributo 'alt'",
+            "ariaDescribedbyContent": "Contenido de 'aria-describedby'",
+            "associatedFigcaption": "'figcaption' asociado",
+            "image": "Imagen",
+            "location": "Ubicación",
+            "noImages": "No se han encontrado imágenes en esta publicación.",
+            "role": "Rol"
+        },
+        "metadata": "Metadatos",
+        "metadataSection": {
+            "a11y": "Accesibilidad",
+            "allPresent": "Están presentes todos los metadatos de accesibilidad requeridos.",
+            "missing": "Metadatos de accesibilidad ausentes:",
+            "name": "Nombre",
+            "value": "Valor"
+        },
+        "outlines": "Estructuras",
+        "outlinesSection": {
+            "headings": "Estructura de encabezados",
+            "html": "Estructura HTML",
+            "toc": "Tabla de Contenido de EPUB"
+        },
+        "summary": "Resumen",
+        "summarySection": {
+            "best-practice": "Buena Práctica",
+            "critical": "Crítico",
+            "minor": "Leve",
+            "moderate": "Moderado",
+            "other": "Otro",
+            "serious": "Grave",
+            "total": "Total",
+            "type": "Tipo"
+        },
+        "title": "Informe",
+        "violations": "Violaciones",
+        "violationsSection": {
+            "details": "Detalles",
+            "impact": "Repercusión",
+            "learnAbout": "Más información:",
+            "location": "Ubicación",
+            "noViolations": "No se ha informado de violaciones.",
+            "rule": "Regla",
+            "ruleset": "Conjunto de reglas",
+            "via": "Vía:"
+        }
+    },
+    "sidebar": {
+        "checkEPUB": "Comprobar EPUB",
+        "export": "Exportar",
+        "history": "Historial",
+        "maximize": "Maximizar Barra Lateral",
+        "minimize": "Minimizar Barra Lateral",
+        "reRun": "Ejecutar de nuevo",
+        "settings": "Opciones de configuración"
+    },
+    "splash": {
+        "browseForFileOrFolder": "buscar __archivo__ o __carpeta__.",
+        "clickToBrowse": "clic para examinar.",
+        "dropHere": "Soltar aquí un archivo o directorio EPUB,",
+        "or": "o",
+        "orDropSidebar": "o en el botón __ de la barra lateral,",
+        "title": "Ace, creado por DAISY"
+    },
+    "tablePagination": {
+        "firstPage": "Primera Página",
+        "lastPage": "Última Página",
+        "nextPage": "Página Siguiente",
+        "previousPage": "Página Anterior"
+    },
+    "versionCheck": {
+        "newVersionAvailable": "Hay disponible una actualización del software, ¿te gustaría descargarla?",
+        "no": "No",
+        "softwareUpdate": "Actualización del software",
+        "yes": "Sí"
+    }
+}

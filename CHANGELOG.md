@@ -1,3 +1,10 @@
+<a name="v-next"></a>
+# v-next
+
+Code diff since previous version:
+
+https://github.com/daisy/ace-gui/compare/v1.0.0-rc.1...master
+
 <a name="1.0.0-rc.1"></a>
 # 1.0.0-rc.1 (2019-07-23)
 
