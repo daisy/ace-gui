@@ -5,6 +5,11 @@ import React from 'react'
 import configureStore from './../shared/store/configureStore';
 import {render} from 'react-dom'
 
+import { ipcRenderer } from 'electron';
+import {
+  runAce
+} from './../shared/actions/app';
+
 import { localizer } from './../shared/l10n/localize';
 const { getDefaultLanguage, setCurrentLanguage } = localizer;
 
@@ -22,6 +27,11 @@ store.subscribe(() => {
   if (prefs.language) {
     setCurrentLanguage(prefs.language);
   }
+});
+
+ipcRenderer.on('RUN_ACE', (event, filepath) => {
+  // this.props.openFile(filepath);
+  store.dispatch(runAce(filepath));
 });
 
 render(

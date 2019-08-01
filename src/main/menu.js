@@ -1,6 +1,5 @@
 import { app, Menu, shell, dialog, clipboard, webContents, BrowserWindow } from 'electron';
 import {
-  runAce,
   openReport,
   closeReport,
   exportReport
@@ -76,6 +75,10 @@ export default class MenuBuilder {
     }
   }
 
+  runAceInRendererProcess(filepath) {
+    this.mainWindow.webContents.send('RUN_ACE', filepath);
+  }
+  
   buildTemplate() {
 
     const defaultTemplate = {
@@ -87,13 +90,13 @@ export default class MenuBuilder {
             id: 'checkEpub',
             accelerator: 'CmdOrCtrl+O',
             click: () => process.platform == 'darwin'
-              ?FileDialogHelpers.showEpubFileOrFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
-              :FileDialogHelpers.showEpubFileBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
+              ?FileDialogHelpers.showEpubFileOrFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
+              :FileDialogHelpers.showEpubFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
           },
           {
             label: localize('menu.openReport'),
             id: 'openReport',
-            click: () => FileDialogHelpers.showReportFileBrowseDialog(filepath => this.store.dispatch(openReport(filepath)))
+            click: () => FileDialogHelpers.showReportFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
           },
           {
             type: 'separator'
@@ -102,7 +105,7 @@ export default class MenuBuilder {
             label: localize('menu.rerunAce'),
             id: 'rerunAce',
             accelerator: 'CmdOrCtrl+Shift+R',
-            click: () => this.store.dispatch(runAce(this.store.getState().app.inputPath))
+            click: () => this.runAceInRendererProcess(this.store.getState().app.inputPath)
           },
           {
             type: 'separator'
@@ -398,7 +401,7 @@ export default class MenuBuilder {
       // insert item into File submenu
       defaultTemplate.subMenuFile.submenu.unshift({
         label: localize('menu.checkEpubFolder'),
-        click: () => FileDialogHelpers.showEpubFolderBrowseDialog(filepath => this.store.dispatch(runAce(filepath)))
+        click: () => FileDialogHelpers.showEpubFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
       });
 
       // insert item into Help submenu

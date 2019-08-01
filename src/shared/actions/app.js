@@ -8,7 +8,7 @@ import { ipcRenderer } from 'electron';
 // const createAxeRunner = require('@daisy/ace-axe-runner-electron').createAxeRunner;
 import { createAxeRunner } from '@daisy/ace-axe-runner-electron';
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
-const axeRunner = createAxeRunner(ipcRenderer, CONCURRENT_INSTANCES);
+const axeRunner = ipcRenderer ? createAxeRunner(ipcRenderer, CONCURRENT_INSTANCES) : undefined;
 
 import { localizer } from '../l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
@@ -67,6 +67,11 @@ export function openFile(filepath) {
 
 export function runAce(inputPath) {
   return (dispatch, getState) => {
+    if (!axeRunner) {
+      dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
+      dispatch(addMessage("!axeRunner Electron renderer process?"));
+      return;
+    }
     dispatch(setProcessing(PROCESSING_TYPE.ACE, true));
     dispatch(addMessage(localize("message.runningace", {inputPath, interpolation: { escapeValue: false }})));
     let outdir = prepareOutdir(inputPath, getState().preferences);
