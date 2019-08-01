@@ -117,7 +117,8 @@
     "package:mac": "electron-builder --publish never --mac",
     "i18n": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR --space 4 --finalnewline --newkeysempty",
     "i18n-check": "yarn run i18n --check",
-    "i18n-help": "sync-i18n --help"
+    "i18n-help": "sync-i18n --help",
+    "i18n-scan": "node ./build/translate-scan.js \"src\" \"src/shared/l10n/locales/temp.json\" && sync-i18n --files 'src/shared/l10n/locales/*.json' --primary temp --languages en fr es pt_BR --space 4 --finalnewline --newkeysempty && rimraf \"src/shared/l10n/locales/temp.json\""
   },
   "dependencies": {
     "@daisy/ace-axe-runner-electron": "file:../ace/packages/ace-axe-runner-electron",

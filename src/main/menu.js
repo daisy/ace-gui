@@ -321,7 +321,7 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            // label: localize('menu.services'),
+            // label: localize(x'menu.services'),
             id: 'services',
             role: 'services',
             submenu: []
@@ -330,19 +330,19 @@ export default class MenuBuilder {
             type: 'separator'
           },
           {
-            // label: localize('menu.hideAce'),
+            // label: localize(x'menu.hideAce'),
             id: 'hideAce',
             // accelerator: 'Command+H',
             role: 'hide'
           },
           {
-            // label: localize('menu.hideOthers'),
+            // label: localize(x'menu.hideOthers'),
             id: 'hideOthers',
             // accelerator: 'Command+Alt+H',
             role: 'hideothers'
           },
           {
-            // label: localize('menu.showAll'),
+            // label: localize(x'menu.showAll'),
             id: 'showAll',
             role: 'unhide'
           },
@@ -369,11 +369,11 @@ export default class MenuBuilder {
           //   click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
           // },
           {
-            // label: localize('menu.togglefullscreen'),
+            // label: localize(x'menu.togglefullscreen'),
             role: "togglefullscreen",
           },
           {
-            // label: localize('menu.minimize'),
+            // label: localize(x'menu.minimize'),
             id: 'minimize',
             role: 'minimize'
           },
@@ -386,7 +386,7 @@ export default class MenuBuilder {
           // },
           { type: 'separator' },
           {
-            // label: localize('menu.bringToFront'),
+            // label: localize(x'menu.bringToFront'),
             id: 'bringToFront',
             role: 'front'
           }
