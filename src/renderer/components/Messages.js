@@ -10,11 +10,12 @@ export default class Messages extends React.Component {
   };
   componentDidUpdate() {
   //  this.scrollToBottom();
+  this.props.messages.length = 0;
   }
 
   render() {
     let messages = this.props.messages.join("\n");
-    return(<div className="messages">
+    return(<div className="messages" aria-live="polite" role="complementary">
       <pre>
         <code>
           {messages}
