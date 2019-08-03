@@ -18,6 +18,7 @@ const store = configureStore(initialState, 'renderer');
 
 const initLanguage = store.getState().preferences.language || getDefaultLanguage();
 setCurrentLanguage(initLanguage);
+document.documentElement.setAttribute("lang", initLanguage);
 
 store.subscribe(() => {
   const state = store.getState();
@@ -26,6 +27,7 @@ store.subscribe(() => {
 
   if (prefs.language) {
     setCurrentLanguage(prefs.language);
+    document.documentElement.setAttribute("lang", prefs.language);
   }
 });
 
