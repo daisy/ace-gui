@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const fsOriginal = require('original-fs');
 const { BrowserWindow, webContents } = require('electron');
 import { app, shell, session, ipcMain, Menu } from 'electron';
 
@@ -183,6 +184,42 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
             res.send(js);
             // next();
         });
+
+        expressApp.use("/", (req, res, next) => {
+            const filePath = path.join(kbRootPath, req.url);
+            fsOriginal.exists(filePath, (exists) => {
+                if (exists) {
+                    if (LOG_DEBUG) {
+                        console.log(`${KB_LOG_PREFIX} HTTP OK fsOriginal.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                    }
+                    next();
+                } else {
+                    fs.exists(filePath, (exists) => {
+                        if (exists) {
+                            fs.readFile(filePath, undefined, (err, data) => {
+                                if (err) {
+                                    if (LOG_DEBUG) {
+                                        console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
+                                    }
+                                    res.status(404).send(err.toString());
+                                } else {
+                                    if (LOG_DEBUG) {
+                                        console.log(`${KB_LOG_PREFIX} HTTP OK !fsOriginal.exists && fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                                    }
+                                    res.send(data);
+                                }
+                            });
+                        } else {
+                            if (LOG_DEBUG) {
+                                console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                            }
+                            res.status(404).end();
+                        }
+                    });
+                }
+            });
+        });
+
         // https://expressjs.com/en/4x/api.html#express.static
         const staticOptions = {
             dotfiles: "ignore",
