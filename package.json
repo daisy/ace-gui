@@ -162,7 +162,7 @@
     "css-loader": "^3.2.0",
     "devtron": "^1.4.0",
     "dotenv": "^8.0.0",
-    "electron": "^5.0.8",
+    "electron": "^6.0.1",
     "electron-builder": "^21.2.0",
     "electron-notarize": "^0.1.1",
     "electron-react-devtools": "^0.5.3",
