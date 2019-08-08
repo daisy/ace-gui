@@ -14,6 +14,8 @@ import {
   replayActionRenderer,
 } from 'electron-redux';
 
+const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
+
 /**
  * @param  {Object} initialState
  * @param  {String} [scope='main|renderer']
@@ -31,7 +33,7 @@ export default function configureStore(initialState, scope = 'main') {
     promise,
   ];
 
-  if (!process.env.NODE_ENV) {
+  if (isDev) {
     // middleware.push(logger);
   }
 
@@ -54,7 +56,7 @@ export default function configureStore(initialState, scope = 'main') {
     applyMiddleware(...middleware),
   ];
 
-  // if (/*! process.env.NODE_ENV && */scope === 'renderer') {
+  // if (/*isDev && */scope === 'renderer') {
   //   enhanced.push(DevTools.instrument());
   //   enhanced.push(persistState(
   //     window.location.href.match(
@@ -67,7 +69,7 @@ export default function configureStore(initialState, scope = 'main') {
   const enhancer = compose(...enhanced);
   const store = createStore(rootReducer, initialState, enhancer);
 
-  if (!process.env.NODE_ENV && module.hot) {
+  if (isDev && module.hot) {
     module.hot.accept('../reducers', () => {
       store.replaceReducer(require('../reducers'));
     });

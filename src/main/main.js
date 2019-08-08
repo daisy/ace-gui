@@ -15,6 +15,9 @@ import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWin
 
 // const prepareLaunch = require('@daisy/ace-axe-runner-electron/lib/init').prepareLaunch;
 import { prepareLaunch } from '@daisy/ace-axe-runner-electron/lib/init';
+
+const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
+
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
 
@@ -48,6 +51,7 @@ function createWindow() {
       webPreferences: {
           allowRunningInsecureContent: false,
           contextIsolation: false,
+          devTools: isDev,
           nodeIntegration: true,
           nodeIntegrationInWorker: false,
           sandbox: false,
@@ -105,8 +109,12 @@ function createWindow() {
 // app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', () => {
-  let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-  const kbRootPath = isDev ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");
+  // The Electron app is always run from the ./app/main.js folder which contains a subfolder copy of the KB
+  // ... so this is not needed (and __dirname works in ASAR and non-ASAR mode)
+  // const isNotPackaged = process && process.env && process.env.ACE_IS_NOT_PACKAGED === 'true';
+  // const kbRootPath = isNotPackaged ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");
+  const kbRootPath = path.join(__dirname, "kb");
+
   startKnowledgeBaseServer(kbRootPath).then(() => {
     createWindow();
   }).catch((err) => {

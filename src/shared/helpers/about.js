@@ -7,7 +7,7 @@ const join = require('path').join;
 // import {checkLatestVersion} from './versionCheck';
 const checkLatestVersion = require('./versionCheck').checkLatestVersion;
 
-let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
 module.exports = {
   showAbout: (browserWindow) => {

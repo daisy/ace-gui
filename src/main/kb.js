@@ -16,6 +16,8 @@ import * as https from "https";
 
 import {generateSelfSignedData} from "./selfsigned";
 
+const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
+
 const LOG_DEBUG = false;
 const KB_LOG_PREFIX = "[KB]";
 
@@ -88,6 +90,8 @@ export function stopKnowledgeBaseServer() {
         });
     }
 }
+
+const filePathsExpressStaticNotExist = {};
 export function startKnowledgeBaseServer(kbRootPath) {
 
     app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
@@ -185,40 +189,59 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
             // next();
         });
 
-        expressApp.use("/", (req, res, next) => {
-            const filePath = path.join(kbRootPath, req.url);
-            fsOriginal.exists(filePath, (exists) => {
-                if (exists) {
-                    if (LOG_DEBUG) {
-                        console.log(`${KB_LOG_PREFIX} HTTP OK fsOriginal.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                    }
-                    next();
-                } else {
-                    fs.exists(filePath, (exists) => {
-                        if (exists) {
-                            fs.readFile(filePath, undefined, (err, data) => {
-                                if (err) {
-                                    if (LOG_DEBUG) {
-                                        console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
-                                    }
-                                    res.status(404).send(err.toString());
-                                } else {
-                                    if (LOG_DEBUG) {
-                                        console.log(`${KB_LOG_PREFIX} HTTP OK !fsOriginal.exists && fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                                    }
-                                    res.send(data);
-                                }
-                            });
-                        } else {
-                            if (LOG_DEBUG) {
-                                console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                            }
-                            res.status(404).end();
-                        }
-                    });
+        if (isDev) { // handle WebInspector JS maps etc.
+            expressApp.use("/", (req, res, next) => {
+                const filePath = path.join(kbRootPath, req.url);
+                if (filePathsExpressStaticNotExist[filePath]) {
+                    res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+                    return;
                 }
+                fsOriginal.exists(filePath, (exists) => {
+                    if (exists) {
+                        fsOriginal.readFile(filePath, undefined, (err, data) => {
+                            if (err) {
+                                if (LOG_DEBUG) {
+                                    console.log(`${KB_LOG_PREFIX} HTTP FAIL fsOriginal.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
+                                }
+                                filePathsExpressStaticNotExist[filePath] = err.toString();
+                                res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+                            } else {
+                                // if (LOG_DEBUG) {
+                                //     console.log(`${KB_LOG_PREFIX} HTTP OK fsOriginal.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                                // }
+                                next();
+                                // res.send(data);
+                            }
+                        });
+                    } else {
+                        fs.exists(filePath, (exists) => {
+                            if (exists) {
+                                fs.readFile(filePath, undefined, (err, data) => {
+                                    if (err) {
+                                        if (LOG_DEBUG) {
+                                            console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
+                                        }
+                                        filePathsExpressStaticNotExist[filePath] = err.toString();
+                                        res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+                                    } else {
+                                        if (LOG_DEBUG) {
+                                            console.log(`${KB_LOG_PREFIX} HTTP OK !fsOriginal.exists && fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                                        }
+                                        next();
+                                        // res.send(data);
+                                    }
+                                });
+                            } else {
+                                if (LOG_DEBUG) {
+                                    console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                                }
+                                res.status(404).end();
+                            }
+                        });
+                    }
+                });
             });
-        });
+        }
 
         // https://expressjs.com/en/4x/api.html#express.static
         const staticOptions = {
@@ -498,8 +521,6 @@ function buildMenuTemplate(win) {
         );
     }
 
-    let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-
     let menuTemplate = process.platform === 'darwin' ?
         [
             defaultTemplate.subMenuAbout,
@@ -536,7 +557,7 @@ export class KnowledgeBase {
             webPreferences: {
                 allowRunningInsecureContent: false,
                 contextIsolation: false,
-                // devTools: true,
+                devTools: isDev,
                 nodeIntegration: false,
                 nodeIntegrationInWorker: false,
                 sandbox: false,

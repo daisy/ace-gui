@@ -12,6 +12,8 @@ import { localizer } from './../shared/l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
 import {KnowledgeBase} from './kb';
 
+const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
+
 export default class MenuBuilder {
 
   constructor(mainWindow, store) {
@@ -430,8 +432,6 @@ export default class MenuBuilder {
       });
     }
 
-    let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-
     let menuTemplate = process.platform === 'darwin' ?
       [
         defaultTemplate.subMenuAbout,
@@ -481,7 +481,6 @@ export default class MenuBuilder {
   }
 
   buildMenu(win) {
-    let isDev = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
     if (isDev) {
       this.setupDevelopmentEnvironment();
     }
