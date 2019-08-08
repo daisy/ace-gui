@@ -125,7 +125,7 @@ At the moment, Ace App depends on a special branch of the Ace core project, inst
 * `yarn start:prod` (launches the app after compiling in production mode, no file watcher)
 * `yarn start` (launches the app without compilation, so requires prior manual invokation of `yarn build:prod` or `yarn build:dev`)
 * `yarn package:linux` (creates the Linux distributable Debian package and AppImage)
-* `yarn package:windows` (creates the Windows NSIS installer, currently unsigned)
+* `yarn package:win` (creates the Windows NSIS installer, currently unsigned)
 * `yarn package:mac` (creates the MacOS DMG installer, requires the DAISY EV Code Signing Certificate and invokes the Apple Notarization process)
 
 ## Contributing
