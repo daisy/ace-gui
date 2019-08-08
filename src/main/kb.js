@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const fsOriginal = require('original-fs');
+const url = require('url');
 const { BrowserWindow, webContents } = require('electron');
 import { app, shell, session, ipcMain, Menu } from 'electron';
 
@@ -191,7 +192,11 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
 
         if (isDev) { // handle WebInspector JS maps etc.
             expressApp.use("/", (req, res, next) => {
-                const filePath = path.join(kbRootPath, req.url);
+                // const url = new URL(`https://fake.org${req.url}`);
+                // const pathname = url.pathname;
+                const pathname = url.parse(req.url).pathname;
+
+                const filePath = path.join(kbRootPath, pathname);
                 if (filePathsExpressStaticNotExist[filePath]) {
                     res.status(404).send(filePathsExpressStaticNotExist[filePath]);
                     return;
