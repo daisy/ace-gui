@@ -63,70 +63,9 @@ The Ace App is suitable for novice users who wish to discover the functionality 
 
 The Ace App is not aimed at users who wish to check the accessibility of many publications in a row. This use-case is better served by the command line tool, which can be invoked multiple times in an automated manner (i.e. with minimal user interaction).
 
-## Developer Notes
+## Developer Workflow
 
-### Dependencies
-
-The source code for the latest `ace-gui` release is [tagged](https://github.com/daisy/ace-gui/tree/v1.0.0-rc.1) as `v1.0.0-rc.1`. Under the hood, the [latest version](https://github.com/daisy/ace/releases/tag/v1.1.1) of Ace is used (`v1.1.1`). However, instead of using the official [NPM packages](https://www.npmjs.com/org/daisy), the Ace App is based on a special [code branch](https://github.com/daisy/ace/pull/229) of the core Ace project, which satisfies the technical requirements of the desktop graphical user interface. This branch includes a slightly more [up to date version](https://github.com/dequelabs/axe-core/blob/develop/CHANGELOG.md#331-2019-07-23) of Axe.
-
-### Technologies
-
-- [Electron](https://electronjs.org)
-- [React](https://reactjs.org)
-- [Redux](https://redux.js.org)
-- [Material UI](https://material-ui.com)
-- [Webpack](https://webpack.js.org)
-- [Electron Builder](https://www.electron.build)
-
-### Prerequisites
-
-* [NodeJS and NPM](https://nodejs.org)
-* [Yarn](https://yarnpkg.com)
-
-### Preflight
-
-At the moment, Ace App depends on a special branch of the Ace core project, instead of the official NPM packages (see the above [Dependencies section](#dependencies)). The following steps are therefore necessary:
-
-* `cd MY_ACE_FOLDER` (choose your folder name / filesystem location)
-* `git clone https://github.com/daisy/ace.git`
-* `cd ace`
-* `git checkout pr-merge/223+227` (the branch name is not meaningful, this is in fact [this Pull Request](https://github.com/daisy/ace/pull/229))
-* `rm -rf node_modules && rm -rf packages/*/node_modules` (this is really only needed if `yarn install` was already invoked) 
-* `rm -rf packages/*/lib` (this is really only needed if `yarn build` was already invoked)
-* `rm yarn.lock` (this is necessary to reset the file paths of the local NPM dependencies)
-* `yarn cache clean` (this is an optional, but strongly-recommended step, as local packages are cached too)
-* `yarn install`
-* `git status && git --no-pager diff` (this should show `yarn.lock` changes)
-* `rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy`
-* `VERBOSE=1 yarn build` (this builds the source code into the local `packages/*/lib` folders)
-* `yarn upgrade`
-* `git status && git --no-pager diff` (this should show `yarn.lock` changes)
-* `rm -rf packages/*/node_modules`
-* `yarn test`
-* `yarn test-cli`
-* `yarn test-electron`
-* `yarn test-electron-cli`
-
-### Build, Run, Package
-
-* `cd MY_ACE_FOLDER` (same filesystem location as specified in the above [Preflight section](#preflight))
-* `git clone https://github.com/daisy/ace-gui.git`
-* `cd ace-gui`
-* `git checkout master`
-* `git submodule init && git submodule update` (this sets up the DAISY Knowledge Base [Git submodule](https://github.com/daisy/kb))
-* `rm -rf node_modules` (this is really only needed if `yarn install` was already invoked)
-* `rm yarn.lock` (this is necessary to reset the file paths of the local NPM dependencies)
-* `yarn cache clean` (this is an optional, but strongly-recommended step, as local packages are cached too)
-* `yarn install`
-* `git status && git --no-pager diff` (this should show `yarn.lock` changes)
-* `yarn clean`
-* `yarn start:dev` (launches the app after compiling in development mode, with a file watcher)
-* `yarn start:dev_` (launches the app after compiling in development mode, no file watcher)
-* `yarn start:prod` (launches the app after compiling in production mode, no file watcher)
-* `yarn start` (launches the app without compilation, so requires prior manual invokation of `yarn build:prod` or `yarn build:dev`)
-* `yarn package:linux` (creates the Linux distributable Debian package and AppImage)
-* `yarn package:win` (creates the Windows NSIS installer, currently unsigned)
-* `yarn package:mac` (creates the MacOS DMG installer, requires the DAISY EV Code Signing Certificate and invokes the Apple Notarization process)
+Please visit [this wiki page](https://github.com/daisy/ace-gui/wiki/Developer-Workflow) for detailed developer-oriented information.
 
 ## Contributing
 
