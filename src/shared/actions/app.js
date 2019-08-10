@@ -25,7 +25,8 @@ export const PROCESSING_TYPE = {
 
 function checkType(filepath) {
   // crude way to check filetype
-  if (path.extname(filepath) == '.epub') {
+  const isEPUB = /\.epub[3]?$/.test(path.extname(filepath));
+  if (isEPUB) {
     return 1;
   }
   else if (path.extname(filepath) == '.json') {
