@@ -35,7 +35,9 @@
       "app": "app"
     },
     "fileAssociations": {
-      "ext": "epub"
+      "ext": ["epub", "epub3"],
+      "description": "EPUB publications",
+      "role": "Viewer"
     },
     "afterSign": "build/notarize.js",
     "dmg": {
@@ -104,7 +106,9 @@
     "start:prod": "cross-env NODE_ENV=\"production\" DEBUG_PROD=\"false\" electron .",
     "prerelease": "yarn run build:prod",
     "release": "electron-builder --publish always",
-    "prepackage": "yarn run build:prod && rimraf \"app/package.json\" && cpy \"./package-asar.json\" \"./app\" --rename \"package.json\"",
+    "prepackage:json": "rimraf \"app/package.json\" && cpy \"./package-asar.json\" \"./app\" --rename \"package.json\"",
+    "prepackage": "yarn run build:prod && yarn run prepackage:json",
+    "prepackage:debug": "yarn run build:dev && yarn run prepackage:json",
     "prepackage:dir": "yarn run prepackage",
     "package:dir": "electron-builder --publish never --dir",
     "prepackage:all": "yarn run prepackage",
@@ -115,6 +119,8 @@
     "package:linux": "electron-builder --publish never --linux",
     "prepackage:mac": "yarn run prepackage",
     "package:mac": "electron-builder --publish never --mac",
+    "prepackage:mac:debug": "yarn run prepackage:debug",
+    "package:mac:debug": "cross-env SKIP_NOTARIZE=1 electron-builder --publish never --mac",
     "i18n-sort": "node ./build/locales-sort.js",
     "i18n-scan": "node ./build/translate-scan.js \"src\" \"src/shared/l10n/locales/temp.json\" && sync-i18n --files 'src/shared/l10n/locales/*.json' --primary temp --languages en fr es pt_BR --space 4 --finalnewline --newkeysempty && rimraf \"src/shared/l10n/locales/temp.json\"",
     "i18n-check": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR --space 4 --finalnewline --newkeysempty"
