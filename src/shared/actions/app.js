@@ -73,7 +73,12 @@ export function runAce(inputPath) {
       dispatch(addMessage("!axeRunner Electron renderer process?"));
       return;
     }
-    dispatch(setProcessing(PROCESSING_TYPE.ACE, true));
+    if (getState().app && getState().app.processing && getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
+      const p = getState().app.processing[PROCESSING_TYPE.ACE]; // getState().app.inputPath;
+      dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${inputPath})`, interpolation: { escapeValue: false }})));
+      return;
+    }
+    dispatch(setProcessing(PROCESSING_TYPE.ACE, inputPath));
     dispatch(addMessage(localize("message.runningace", {inputPath, interpolation: { escapeValue: false }})));
     let outdir = prepareOutdir(inputPath, getState().preferences);
 

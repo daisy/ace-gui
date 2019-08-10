@@ -1,5 +1,5 @@
 const path = require('path');
-const { app, BrowserWindow, webContents, ipcMain } = require('electron');
+const { dialog, app, BrowserWindow, webContents, ipcMain } = require('electron');
 
 import MenuBuilder from './menu';
 
@@ -11,10 +11,18 @@ require('electron-debug')();
 
 const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
 
+import {
+  PROCESSING_TYPE,
+  addMessage,
+} from '../shared/actions/app';
+
 import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWindows} from './kb';
 
 // const prepareLaunch = require('@daisy/ace-axe-runner-electron/lib/init').prepareLaunch;
 import { prepareLaunch } from '@daisy/ace-axe-runner-electron/lib/init';
+
+import { localizer } from './../shared/l10n/localize';
+const { localize } = localizer;
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
@@ -77,7 +85,7 @@ function createWindow() {
 
   const menuBuilder = new MenuBuilder(win, store);
   menuBuilder.buildMenu(win);
-
+  
   const cb = () => {
     menuBuilder.storeHasChanged();
   };
@@ -107,6 +115,72 @@ function createWindow() {
 
 // Is enabled automatically when screen reader is detected
 // app.setAccessibilitySupportEnabled(true);
+
+app.on('will-finish-launching', () => {
+  app.on('open-file', (ev, filepath) => {
+    ev.preventDefault();
+    app.whenReady().then(() => {
+      function askCheckEPUB() {
+
+        if (store.getState() && store.getState().app && store.getState().app.processing && store.getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
+          const p = store.getState().app.processing[PROCESSING_TYPE.ACE]; // store.getState().app.inputPath;
+          store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
+
+          dialog.showMessageBox({
+            win,
+            type: "warning",
+            buttons: [
+                localize("versionCheck.yes")
+            ],
+            defaultId: 0,
+            cancelId: 0,
+            title: localize('menu.checkEpub'),
+            message: localize('message.runningace'),
+            detail: `${p} (... ${filepath})`,
+            noLink: true,
+            normalizeAccessKeys: false,
+          }, (i) => {
+          });
+
+          return;
+        }
+
+        dialog.showMessageBox({
+          win,
+          type: "question",
+          buttons: [
+              localize("versionCheck.yes"),
+              localize("versionCheck.no"),
+          ],
+          defaultId: 0,
+          cancelId: 1,
+          title: localize('menu.checkEpub'),
+          message: localize('menu.checkEpub'),
+          detail: filepath,
+          noLink: true,
+          normalizeAccessKeys: false,
+        }, (i) => {
+            if (i === 0) {
+              // menuBuilder.runAceInRendererProcess(filepath);
+              win.webContents.send('RUN_ACE', filepath);
+            }
+        });
+      }
+      function checkWin() {
+        if (win) {
+          setTimeout(() => {
+            askCheckEPUB();
+          }, 200);
+        } else {
+          setTimeout(() => {
+            checkWin();
+          }, 600);
+        }
+      }
+      checkWin();
+    });
+  });
+});
 
 app.on('ready', () => {
   // The Electron app is always run from the ./app/main.js folder which contains a subfolder copy of the KB
