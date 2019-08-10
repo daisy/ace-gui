@@ -97,7 +97,7 @@ class Splash extends React.Component {
           onDrop={this.onDrop}
           onDragOver={this.onDragOver}
           onDragLeave={this.onDragLeave}
-          onDragEnd={this.onDragEnd}>
+          onDragEnd={this.onDragEnd} role="main">
 
           <h1>{localize("splash.title")}</h1>
           <div style={{position: 'relative'}}>

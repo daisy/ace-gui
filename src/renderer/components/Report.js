@@ -24,7 +24,7 @@ export default class Report extends React.Component {
     let {selectedTab, selectTab} = this.props;
 
     return (
-      <section className="ace-report">
+      <section className="ace-report" role="main">
         <h1>{localize("report.title")}</h1>
         <Tabs onChange={(e, idx) => selectTab(idx)} value={selectedTab}>
             <Tab className="pick-section-tab" label={localize("report.summary")}/>
