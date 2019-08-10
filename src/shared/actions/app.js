@@ -79,7 +79,7 @@ export function runAce(inputPath) {
     if (outdir.success) {
       const language = getCurrentLanguage();
       
-      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: false}, axeRunner)
+      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: true, fileName: "ace-gui.log"}, axeRunner)
       .then(() => {
         dispatch(addMessage(localize("message.checkcomplete")));
         let reportPath = outdir.value + '/report.json';
