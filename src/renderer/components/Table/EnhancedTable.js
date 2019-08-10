@@ -225,7 +225,7 @@ export default class EnhancedTable extends React.Component {
         </ExpansionPanelDetails>
       </ExpansionPanel>
       : ''}
-      <Table>
+      <Table aria-live="polite">
         <TableHead>
           <TableRow>
             {heads.map(head => {
