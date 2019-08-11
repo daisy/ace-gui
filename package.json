@@ -34,17 +34,19 @@
       "output": "dist",
       "app": "app"
     },
-    "fileAssociations": [{
-      	"ext": "epub",
-      	"mimeType": "application/epub+zip",
-      	"description": "EPUB publication",
-      	"role": "Viewer"
-    	}, {
-      	"ext": "epub3",
-      	"mimeType": "application/epub+zip",
-      	"description": "EPUB publication",
-      	"role": "Viewer"
-    	}
+    "fileAssociations": [
+      {
+        "ext": "epub",
+        "mimeType": "application/epub+zip",
+        "description": "EPUB publication",
+        "role": "Viewer"
+      },
+      {
+        "ext": "epub3",
+        "mimeType": "application/epub+zip",
+        "description": "EPUB publication",
+        "role": "Viewer"
+      }
     ],
     "afterSign": "build/notarize.js",
     "dmg": {
