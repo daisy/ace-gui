@@ -96,6 +96,19 @@ function handleStartupFileCheck(filepath) {
   });
 }
 
+function handleArgv(argv) {
+  console.log(JSON.stringify(argv));
+    if (argv) {
+      const args = argv.slice(isDev ? 2 : 1); // TODO: isDev should really be isPackaged (installed app)
+      for (let i = 0; i < args.length; i++) {
+          if (args[i] && !args[i].startsWith("--") && fs.existsSync(args[i])) {
+            handleStartupFileCheck(args[i]);
+            break;
+          }
+      }
+    }
+}
+
 if (process.platform === 'darwin') {
   app.on('will-finish-launching', () => {
     app.on('open-file', (ev, filepath) => {
@@ -110,19 +123,6 @@ if (process.platform === 'darwin') {
     });
   });
 } else {
-  function handleArgv(argv) {
-    console.log(JSON.stringify(argv));
-      if (argv) {
-        const args = argv.slice(isDev ? 2 : 1); // TODO: isDev should really be isPackaged (installed app)
-        for (let i = 0; i < args.length; i++) {
-            if (args[i] && !args[i].startsWith("--") && fs.existsSync(args[i])) {
-              handleStartupFileCheck(args[i]);
-              break;
-            }
-        }
-      }
-  }
-
   app.on('second-instance', (event, argv, workingDirectory) => {
       if (win) {
           if (win.isMinimized()) {
@@ -132,9 +132,9 @@ if (process.platform === 'darwin') {
       }
     handleArgv(argv);
   });
-
-  handleArgv(process.argv);
 }
+
+handleArgv(process.argv);
 
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
