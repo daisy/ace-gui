@@ -104,28 +104,28 @@ if (process.platform === 'darwin') {
     });
   });
 } else {
-	function handleArgv(argv) {
-  		if (argv) {
-    		const args = argv.slice(1);
-    		if (args[0]) {
-      			if (fs.existsSync(args[0])) {
-        			handleStartupFileCheck(args[0]);
-      			}
-    		}
-  		}
-	}
+  function handleArgv(argv) {
+      if (argv) {
+        const args = argv.slice(1);
+        if (args[0]) {
+            if (fs.existsSync(args[0])) {
+              handleStartupFileCheck(args[0]);
+            }
+        }
+      }
+  }
 
-	app.on('second-instance', (event, argv, workingDirectory) => {
-    	if (win) {
-      		if (win.isMinimized()) {
-      			win.restore();
-      		}
-      		win.focus();
-    	}
-		handleArgv(argv);
-	});
+  app.on('second-instance', (event, argv, workingDirectory) => {
+      if (win) {
+          if (win.isMinimized()) {
+            win.restore();
+          }
+          win.focus();
+      }
+    handleArgv(argv);
+  });
 
-	handleArgv(process.argv);
+  handleArgv(process.argv);
 }
 
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
