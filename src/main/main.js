@@ -100,6 +100,12 @@ if (process.platform === 'darwin') {
   app.on('will-finish-launching', () => {
     app.on('open-file', (ev, filepath) => {
       ev.preventDefault();
+      if (win) {
+          if (win.isMinimized()) {
+            win.restore();
+          }
+          win.focus();
+      }
       handleStartupFileCheck(filepath);
     });
   });
