@@ -28,7 +28,7 @@ const isDev = process && process.env && (process.env.NODE_ENV === 'development' 
 
 let win;
 
-const singleInstanceLock = process.platform === 'darwin' || app.requestSingleInstanceLock()
+const singleInstanceLock = process.platform === 'darwin' || app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
   app.quit();
 } else {
