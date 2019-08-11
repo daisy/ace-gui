@@ -1,13 +1,11 @@
 const path = require('path');
-const { dialog, app, BrowserWindow, webContents, ipcMain } = require('electron');
+const { dialog, app, BrowserWindow, webContents, ipcMain, Menu } = require('electron');
 
 import MenuBuilder from './menu';
 
 import {initPersistentStore} from './store-persist';
 
 import {checkLatestVersion} from '../shared/helpers/versionCheck';
-
-require('electron-debug')();
 
 const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
 
@@ -29,26 +27,26 @@ const isDev = process && process.env && (process.env.NODE_ENV === 'development' 
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
 
-function openAllDevTools() {
-  for (const wc of webContents.getAllWebContents()) {
-      // if (wc.hostWebContents &&
-      //     wc.hostWebContents.id === mainWin.webContents.id) {
-      // }
-      wc.openDevTools({ mode: "detach" });
-  }
-}
+// function openAllDevTools() {
+//   for (const wc of webContents.getAllWebContents()) {
+//       // if (wc.hostWebContents &&
+//       //     wc.hostWebContents.id === mainWin.webContents.id) {
+//       // }
+//       wc.openDevTools({ mode: "detach" });
+//   }
+// }
 
-function openTopLevelDevTools() {
-  const bw = BrowserWindow.getFocusedWindow();
-  if (bw) {
-      bw.webContents.openDevTools({ mode: "detach" });
-  } else {
-      const arr = BrowserWindow.getAllWindows();
-      arr.forEach((bww) => {
-          bww.webContents.openDevTools({ mode: "detach" });
-      });
-  }
-}
+// function openTopLevelDevTools() {
+//   const bw = BrowserWindow.getFocusedWindow();
+//   if (bw) {
+//       bw.webContents.openDevTools({ mode: "detach" });
+//   } else {
+//       const arr = BrowserWindow.getAllWindows();
+//       arr.forEach((bww) => {
+//           bww.webContents.openDevTools({ mode: "detach" });
+//       });
+//   }
+// }
 
 let win;
 function createWindow() {
@@ -91,6 +89,38 @@ function createWindow() {
   };
   storeSubscribe(cb);
   
+  if (isDev) {
+
+    // require('electron-debug')(); // also see electron-react-devtools
+  
+    const {
+      default: installExtension,
+      REACT_DEVELOPER_TOOLS,
+      REDUX_DEVTOOLS, // also see redux-devtools-extension
+    } = require("electron-devtools-installer");
+  
+    [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS].forEach((extension) => {
+      installExtension(extension)
+          .then((name) => console.log("Added Extension: ", name))
+          .catch((err) => console.log("An error occurred: ", err));
+    });
+    
+    win.openDevTools();
+
+    win.webContents.on('context-menu', (e, props) => {
+      const { x, y } = props;
+
+      Menu.buildFromTemplate([
+        {
+          label: 'Inspect element', // NOT LOCALIZED (debug/dev only)
+          click: () => {
+            win.inspectElement(x, y);
+          }
+        }
+      ]).popup(win);
+    });
+  }
+
   win.loadURL(`file://${__dirname}/index.html`);
 
   win.on('closed', function () {

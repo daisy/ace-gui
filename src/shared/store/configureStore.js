@@ -66,7 +66,14 @@ export default function configureStore(initialState, scope = 'main') {
   // }
 
   const rootReducer = getRootReducer(scope);
-  const enhancer = compose(...enhanced);
+
+  let enhancer = null;
+  if (isDev) {
+    const { composeWithDevTools } = require("redux-devtools-extension");
+    enhancer = composeWithDevTools(...enhanced);
+  } else {
+    enhancer = compose(...enhanced);
+  }
   const store = createStore(rootReducer, initialState, enhancer);
 
   if (isDev && module.hot) {
