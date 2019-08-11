@@ -13,6 +13,11 @@ import {
 import { localizer } from './../shared/l10n/localize';
 const { getDefaultLanguage, setCurrentLanguage } = localizer;
 
+const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
+if (isDev) {
+  require('devtron').install();
+}
+
 const initialState = getInitialStateRenderer();
 const store = configureStore(initialState, 'renderer');
 

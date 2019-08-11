@@ -41,6 +41,7 @@
     "typeface-roboto": "^0.0.75",
     "uuid": "^3.3.2",
 
+    "devtron": "^1.4.0",
     "electron-devtools-installer": "^2.2.4",
     "redux-devtools-extension": "^2.13.8"
   }
