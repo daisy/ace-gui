@@ -111,11 +111,13 @@ if (process.platform === 'darwin') {
   });
 } else {
   function handleArgv(argv) {
+    console.log(JSON.stringify(argv));
       if (argv) {
-        const args = argv.slice(1);
-        if (args[0]) {
-            if (fs.existsSync(args[0])) {
-              handleStartupFileCheck(args[0]);
+        const args = argv.slice(isDev ? 2 : 1); // TODO: isDev should really be isPackaged (installed app)
+        for (let i = 0; i < args.length; i++) {
+            if (args[i] && !args[i].startsWith("--") && fs.existsSync(args[i])) {
+              handleStartupFileCheck(args[i]);
+              break;
             }
         }
       }
