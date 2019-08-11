@@ -453,22 +453,6 @@ export default class MenuBuilder {
     return isDev ? menuTemplate.concat(defaultTemplate.subMenuDev) : menuTemplate;
   }
 
-  setupDevelopmentEnvironment() {
-    this.mainWindow.openDevTools();
-    this.mainWindow.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
-
-      Menu.buildFromTemplate([
-        {
-          label: 'Inspect element', // NOT LOCALIZED (debug/dev only)
-          click: () => {
-            this.mainWindow.inspectElement(x, y);
-          }
-        }
-      ]).popup(this.mainWindow);
-    });
-  }
-
   rebuildMenu() {
     const template = this.buildTemplate();
     const menu = Menu.buildFromTemplate(template);
@@ -481,10 +465,6 @@ export default class MenuBuilder {
   }
 
   buildMenu(win) {
-    if (isDev) {
-      this.setupDevelopmentEnvironment();
-    }
-
     return this.rebuildMenu();
   }
 }
