@@ -1,4 +1,6 @@
 const path = require('path');
+const fs = require('fs');
+
 const { dialog, app, BrowserWindow, webContents, ipcMain, Menu } = require('electron');
 
 import MenuBuilder from './menu';
@@ -24,6 +26,108 @@ const { localize } = localizer;
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
+let win;
+
+const singleInstanceLock = process.platform !== 'darwin' && app.requestSingleInstanceLock()
+if (!singleInstanceLock) {
+  app.quit();
+} else {
+
+function handleStartupFileCheck(filepath) {
+  app.whenReady().then(() => {
+    function askCheckEPUB() {
+      if (store.getState() && store.getState().app && store.getState().app.processing && store.getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
+        const p = store.getState().app.processing[PROCESSING_TYPE.ACE]; // store.getState().app.inputPath;
+        store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
+
+        dialog.showMessageBox({
+          win,
+          type: "warning",
+          buttons: [
+              localize("versionCheck.yes")
+          ],
+          defaultId: 0,
+          cancelId: 0,
+          title: localize('menu.checkEpub'),
+          message: localize('message.runningace'),
+          detail: `${p} (... ${filepath})`,
+          noLink: true,
+          normalizeAccessKeys: false,
+        }, (i) => {
+        });
+
+        return;
+      }
+
+      dialog.showMessageBox({
+        win,
+        type: "question",
+        buttons: [
+            localize("versionCheck.yes"),
+            localize("versionCheck.no"),
+        ],
+        defaultId: 0,
+        cancelId: 1,
+        title: localize('menu.checkEpub'),
+        message: localize('menu.checkEpub'),
+        detail: filepath,
+        noLink: true,
+        normalizeAccessKeys: false,
+      }, (i) => {
+          if (i === 0) {
+            // menuBuilder.runAceInRendererProcess(filepath);
+            win.webContents.send('RUN_ACE', filepath);
+          }
+      });
+    }
+
+    function checkWin() {
+      if (win) {
+        setTimeout(() => {
+          askCheckEPUB();
+        }, 200);
+      } else {
+        setTimeout(() => {
+          checkWin();
+        }, 600);
+      }
+    }
+    checkWin();
+  });
+}
+
+if (process.platform === 'darwin') {
+  app.on('will-finish-launching', () => {
+    app.on('open-file', (ev, filepath) => {
+      ev.preventDefault();
+      handleStartupFileCheck(filepath);
+    });
+  });
+} else {
+	function handleArgv(argv) {
+  		if (argv) {
+    		const args = argv.slice(1);
+    		if (args[0]) {
+      			if (fs.existsSync(args[0])) {
+        			handleStartupFileCheck(args[0]);
+      			}
+    		}
+  		}
+	}
+
+	app.on('second-instance', (event, argv, workingDirectory) => {
+    	if (win) {
+      		if (win.isMinimized()) {
+      			win.restore();
+      		}
+      		win.focus();
+    	}
+		handleArgv(argv);
+	});
+
+	handleArgv(process.argv);
+}
+
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
 
@@ -48,7 +152,6 @@ prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
 //   }
 // }
 
-let win;
 function createWindow() {
 
   win = new BrowserWindow(
@@ -146,105 +249,6 @@ function createWindow() {
 // Is enabled automatically when screen reader is detected
 // app.setAccessibilitySupportEnabled(true);
 
-function handleStartupFileCheck(filepath) {
-  app.whenReady().then(() => {
-    function askCheckEPUB() {
-      if (store.getState() && store.getState().app && store.getState().app.processing && store.getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
-        const p = store.getState().app.processing[PROCESSING_TYPE.ACE]; // store.getState().app.inputPath;
-        store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
-
-        dialog.showMessageBox({
-          win,
-          type: "warning",
-          buttons: [
-              localize("versionCheck.yes")
-          ],
-          defaultId: 0,
-          cancelId: 0,
-          title: localize('menu.checkEpub'),
-          message: localize('message.runningace'),
-          detail: `${p} (... ${filepath})`,
-          noLink: true,
-          normalizeAccessKeys: false,
-        }, (i) => {
-        });
-
-        return;
-      }
-
-      dialog.showMessageBox({
-        win,
-        type: "question",
-        buttons: [
-            localize("versionCheck.yes"),
-            localize("versionCheck.no"),
-        ],
-        defaultId: 0,
-        cancelId: 1,
-        title: localize('menu.checkEpub'),
-        message: localize('menu.checkEpub'),
-        detail: filepath,
-        noLink: true,
-        normalizeAccessKeys: false,
-      }, (i) => {
-          if (i === 0) {
-            // menuBuilder.runAceInRendererProcess(filepath);
-            win.webContents.send('RUN_ACE', filepath);
-          }
-      });
-    }
-
-    function checkWin() {
-      if (win) {
-        setTimeout(() => {
-          askCheckEPUB();
-        }, 200);
-      } else {
-        setTimeout(() => {
-          checkWin();
-        }, 600);
-      }
-    }
-    checkWin();
-  });
-}
-
-if (process.platform === 'darwin') {
-  app.on('will-finish-launching', () => {
-    app.on('open-file', (ev, filepath) => {
-      ev.preventDefault();
-      handleStartupFileCheck(filepath);
-    });
-  });
-} else {
-  if (process.argv) {
-    setTimeout(() => {
-      dialog.showMessageBox({
-        win,
-        type: "information",
-        buttons: [
-            localize("versionCheck.yes")
-        ],
-        defaultId: 0,
-        cancelId: 0,
-        title: "ARGS",
-        message: "ARGUMENTS",
-        detail: `${JSON.stringify(process.argv)}`,
-        noLink: true,
-        normalizeAccessKeys: false,
-      }, (i) => {
-      });
-    }, 5000);
-
-    const args = process.argv.slice(1);
-    if (args[0]) {
-      if (fs.existsSync(args[0])) {
-        handleStartupFileCheck(args[0]);
-      }
-    }
-  }
-}
-
 app.on('ready', () => {
   // The Electron app is always run from the ./app/main.js folder which contains a subfolder copy of the KB
   // ... so this is not needed (and __dirname works in ASAR and non-ASAR mode)
@@ -279,3 +283,5 @@ app.on('activate', function () {
 
 app.on('before-quit', function() {
 });
+
+} // singleInstanceLock
