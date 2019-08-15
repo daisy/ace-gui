@@ -97,7 +97,7 @@
   },
   "scripts": {
     "postinstall_": "electron-builder install-app-deps",
-    "clean": "npm --version && node --version && yarn --version && node -e \"console.log((new Date(Date.now())).toUTCString())\" && rimraf \"app/*.js\" && rimraf \"app/yarn.lock\" && rimraf \"app/node_modules\" && rimraf \"app/*.js.map\" && rimraf \"app/*.svg\" && rimraf \"app/kb\" && rimraf \"app/index.html\" && rimraf \"app/package.json\" && rimraf \"dist\"",
+    "clean": "npm --version && node --version && yarn --version && node -e \"console.log((new Date(Date.now())).toUTCString())\" && rimraf \"app\" && rimraf \"dist\"",
     "prebuild:prod": "yarn run clean",
     "prebuild:dev": "yarn run clean",
     "build:prod": "webpack --config=build/webpack.config.all.js --env=production",
