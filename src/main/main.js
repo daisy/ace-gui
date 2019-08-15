@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const util = require("util");
 
 const { dialog, app, BrowserWindow, webContents, ipcMain, Menu } = require('electron');
 
@@ -25,6 +26,10 @@ import { localizer } from './../shared/l10n/localize';
 const { localize } = localizer;
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
+
+if (isDev) {
+  console.log(util.inspect(process.versions, { colors: true, depth: null, compact: false }));
+}
 
 let win;
 
