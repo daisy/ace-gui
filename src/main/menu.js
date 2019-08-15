@@ -265,6 +265,21 @@ export default class MenuBuilder {
               //     // }
               // }
             }
+          },
+          {
+            label: "Inject React Axe a11y checker",
+            id: 'reactAxeA11y',
+            accelerator: 'Shift+Alt+CmdOrCtrl+A',
+            click: () => {
+              // this.mainWindow.toggleDevTools();
+              const arr = BrowserWindow.getAllWindows();
+              arr.forEach((bww) => {
+                bww.webContents.openDevTools({ mode: "detach" });
+                setTimeout(() => {
+                    bww.webContents.send("REACT_AXE_A11Y", {});
+                }, 300);
+              });
+            }
           }
         ]
       },
