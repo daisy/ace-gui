@@ -237,7 +237,17 @@ function createWindow() {
     });
   }
 
-  win.loadURL(`file://${__dirname}/index.html`);
+  let rendererUrl = __RENDERER_URL__;
+  if (rendererBaseUrl === "file://") {
+      // dist/prod mode (without WebPack HMR Hot Module Reload HTTP server)
+      rendererBaseUrl += path.normalize(path.join(__dirname, "index.html"));
+  } else {
+      // dev/debug mode (with WebPack HMR Hot Module Reload HTTP server)
+      rendererBaseUrl += "index.html";
+  }
+  rendererUrl = rendererUrl.replace(/\\/g, "/");
+
+  win.loadURL(rendererUrl); // `file://${__dirname}/index.html`
 
   win.on('closed', function () {
       
@@ -263,7 +273,7 @@ function createWindow() {
 // app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', () => {
-  // The Electron app is always run from the ./app/main.js folder which contains a subfolder copy of the KB
+  // The Electron app is always run from the ./app/main-bundle.js folder which contains a subfolder copy of the KB
   // ... so this is not needed (and __dirname works in ASAR and non-ASAR mode)
   // const isNotPackaged = process && process.env && process.env.ACE_IS_NOT_PACKAGED === 'true';
   // const kbRootPath = isNotPackaged ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");

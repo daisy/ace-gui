@@ -8,14 +8,12 @@ Thumbs.db
 /temp
 
 # ignore everything in 'app' folder what had been generated from 'src' folder
-/app/app.js
-/app/background.js
-/app/renderer.js
-/app/main.js
+/app/renderer-bundle.js
+/app/main-bundle.js
 /app/logo.svg
 /app/**/*.map
 /app/package.json
 /app/yarn.lock
-/app/kb/*
+/app/kb/**/*
 
 .env
