@@ -212,19 +212,21 @@ function createWindow() {
 
     // require('electron-debug')(); // also see electron-react-devtools
   
-    const {
-      default: installExtension,
-      REACT_DEVELOPER_TOOLS,
-      REDUX_DEVTOOLS, // also see redux-devtools-extension
-    } = require("electron-devtools-installer");
-  
-    [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS].forEach((extension) => {
-      installExtension(extension)
-          .then((name) => console.log("Added Extension: ", name))
-          .catch((err) => console.log("An error occurred: ", err));
-    });
+    win.webContents.on("did-finish-load", () => {
+      const {
+        default: installExtension,
+        REACT_DEVELOPER_TOOLS,
+        REDUX_DEVTOOLS, // also see redux-devtools-extension
+      } = require("electron-devtools-installer");
     
-    win.openDevTools();
+      [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS].forEach((extension) => {
+        installExtension(extension)
+            .then((name) => console.log("Added Extension: ", name))
+            .catch((err) => console.log("An error occurred: ", err));
+      });
+    });
+
+    win.openDevTools({ mode: "detach" });
 
     win.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;
