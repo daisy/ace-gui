@@ -716,7 +716,7 @@
 "@daisy/ace-axe-runner-electron@file:../ace/packages/ace-axe-runner-electron":
   version "1.0.0"
   dependencies:
-    "@daisy/ace-cli-shared" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-axe-runner-electron-1.0.0-a9e29a61-2d56-4479-a079-62a2aac04a18-1565865874212/node_modules/@daisy/ace-cli-shared"
+    "@daisy/ace-cli-shared" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-axe-runner-electron-1.0.0-5a0e3d97-ee56-40cc-ba3a-57ca6a555a81-1565873494631/node_modules/@daisy/ace-cli-shared"
     express "^4.17.1"
     portfinder "^1.0.21"
     selfsigned "^1.10.4"
@@ -725,10 +725,10 @@
 "@daisy/ace-cli-shared@file:../ace/packages/ace-cli-shared":
   version "1.0.0"
   dependencies:
-    "@daisy/ace-config" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-e7e2e162-5e64-4fea-827a-3e3f243b5b47-1565865874238/node_modules/@daisy/ace-config"
-    "@daisy/ace-core" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-e7e2e162-5e64-4fea-827a-3e3f243b5b47-1565865874238/node_modules/@daisy/ace-core"
-    "@daisy/ace-logger" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-e7e2e162-5e64-4fea-827a-3e3f243b5b47-1565865874238/node_modules/@daisy/ace-logger"
-    "@daisy/ace-meta" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-e7e2e162-5e64-4fea-827a-3e3f243b5b47-1565865874238/node_modules/@daisy/ace-meta"
+    "@daisy/ace-config" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-856f34c9-4e95-47b2-9240-76cc6b206648-1565873494658/node_modules/@daisy/ace-config"
+    "@daisy/ace-core" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-856f34c9-4e95-47b2-9240-76cc6b206648-1565873494658/node_modules/@daisy/ace-core"
+    "@daisy/ace-logger" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-856f34c9-4e95-47b2-9240-76cc6b206648-1565873494658/node_modules/@daisy/ace-logger"
+    "@daisy/ace-meta" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-cli-shared-1.0.0-856f34c9-4e95-47b2-9240-76cc6b206648-1565873494658/node_modules/@daisy/ace-meta"
     meow "^5.0.0"
     winston "^3.2.1"
 
@@ -742,12 +742,12 @@
 "@daisy/ace-core@file:../ace/packages/ace-core":
   version "1.1.1"
   dependencies:
-    "@daisy/ace-localize" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-62005c8f-5e83-4b00-a7d7-8cfbe49de14f-1565865874257/node_modules/@daisy/ace-localize"
-    "@daisy/ace-logger" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-62005c8f-5e83-4b00-a7d7-8cfbe49de14f-1565865874257/node_modules/@daisy/ace-logger"
-    "@daisy/ace-meta" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-62005c8f-5e83-4b00-a7d7-8cfbe49de14f-1565865874257/node_modules/@daisy/ace-meta"
-    "@daisy/ace-report" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-62005c8f-5e83-4b00-a7d7-8cfbe49de14f-1565865874257/node_modules/@daisy/ace-report"
-    "@daisy/ace-report-axe" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-62005c8f-5e83-4b00-a7d7-8cfbe49de14f-1565865874257/node_modules/@daisy/ace-report-axe"
-    "@daisy/epub-utils" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-62005c8f-5e83-4b00-a7d7-8cfbe49de14f-1565865874257/node_modules/@daisy/epub-utils"
+    "@daisy/ace-localize" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-620b4841-14c3-42c3-bbe4-1998742a6022-1565873494681/node_modules/@daisy/ace-localize"
+    "@daisy/ace-logger" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-620b4841-14c3-42c3-bbe4-1998742a6022-1565873494681/node_modules/@daisy/ace-logger"
+    "@daisy/ace-meta" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-620b4841-14c3-42c3-bbe4-1998742a6022-1565873494681/node_modules/@daisy/ace-meta"
+    "@daisy/ace-report" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-620b4841-14c3-42c3-bbe4-1998742a6022-1565873494681/node_modules/@daisy/ace-report"
+    "@daisy/ace-report-axe" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-620b4841-14c3-42c3-bbe4-1998742a6022-1565873494681/node_modules/@daisy/ace-report-axe"
+    "@daisy/epub-utils" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-core-1.1.1-620b4841-14c3-42c3-bbe4-1998742a6022-1565873494681/node_modules/@daisy/epub-utils"
     axe-core "^3.3.1"
     file-url "^3.0.0"
     h5o "^0.11.3"
@@ -764,7 +764,7 @@
 "@daisy/ace-logger@file:../ace/packages/ace-logger":
   version "1.1.0"
   dependencies:
-    "@daisy/ace-config" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-logger-1.1.0-682c1826-e691-4ab6-a116-be707e53d62b-1565865874256/node_modules/@daisy/ace-config"
+    "@daisy/ace-config" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-logger-1.1.0-09068cc3-cc28-40ff-899a-f27717acaedd-1565873494686/node_modules/@daisy/ace-config"
     fs-extra "^8.1.0"
     winston "^3.2.1"
 
@@ -774,17 +774,17 @@
 "@daisy/ace-report-axe@file:../ace/packages/ace-report-axe":
   version "1.1.1"
   dependencies:
-    "@daisy/ace-localize" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-axe-1.1.1-02ada466-4786-4dc6-88b0-e3478672ba76-1565865874272/node_modules/@daisy/ace-localize"
-    "@daisy/ace-report" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-axe-1.1.1-02ada466-4786-4dc6-88b0-e3478672ba76-1565865874272/node_modules/@daisy/ace-report"
+    "@daisy/ace-localize" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-axe-1.1.1-210f284e-6268-4aab-9e80-7e8bd9ed184e-1565873494690/node_modules/@daisy/ace-localize"
+    "@daisy/ace-report" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-axe-1.1.1-210f284e-6268-4aab-9e80-7e8bd9ed184e-1565873494690/node_modules/@daisy/ace-report"
     fs-extra "^8.1.0"
     winston "^3.2.1"
 
 "@daisy/ace-report@file:../ace/packages/ace-report":
   version "1.1.1"
   dependencies:
-    "@daisy/ace-config" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-1.1.1-a9587dc7-4b25-4df7-a489-042c4109851a-1565865874272/node_modules/@daisy/ace-config"
-    "@daisy/ace-localize" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-1.1.1-a9587dc7-4b25-4df7-a489-042c4109851a-1565865874272/node_modules/@daisy/ace-localize"
-    "@daisy/ace-meta" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-1.1.1-a9587dc7-4b25-4df7-a489-042c4109851a-1565865874272/node_modules/@daisy/ace-meta"
+    "@daisy/ace-config" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-1.1.1-a9d545ed-c217-4f89-8368-ba250dc272a0-1565873494690/node_modules/@daisy/ace-config"
+    "@daisy/ace-localize" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-1.1.1-a9d545ed-c217-4f89-8368-ba250dc272a0-1565873494690/node_modules/@daisy/ace-localize"
+    "@daisy/ace-meta" "file:../../../../Users/danielweck/Library/Caches/Yarn/v4/npm-@daisy-ace-report-1.1.1-a9d545ed-c217-4f89-8368-ba250dc272a0-1565873494690/node_modules/@daisy/ace-meta"
     escape-html "^1.0.3"
     fs-extra "^8.1.0"
     handlebars "^4.1.2"
@@ -3245,13 +3245,6 @@ error-ex@^1.2.0, error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-error-stack-parser@^1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/error-stack-parser/-/error-stack-parser-1.3.6.tgz#e0e73b93e417138d1cd7c0b746b1a4a14854c292"
-  integrity sha1-4Oc7k+QXE40c18C3RrGkoUhUwpI=
-  dependencies:
-    stackframe "^0.3.1"
-
 es-abstract@^1.5.1:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.13.0.tgz#ac86145fdd5099d8dd49558ccba2eaf9b88e24e9"
@@ -3500,6 +3493,11 @@ fast-json-stable-stringify@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/fast-json-stable-stringify/-/fast-json-stable-stringify-2.0.0.tgz#d5142c0caee6b1189f87d3a76111064f86c8bbf2"
   integrity sha1-1RQsDK7msRifh9OnYREGT4bIu/I=
+
+fast-levenshtein@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
+  integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
 fast-safe-stringify@^2.0.4:
   version "2.0.6"
@@ -5131,7 +5129,7 @@ lodash.mergewith@^4.6.2:
   resolved "https://registry.yarnpkg.com/lodash.mergewith/-/lodash.mergewith-4.6.2.tgz#617121f89ac55f59047c7aec1ccd6654c6590f55"
   integrity sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==
 
-lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.6.1, lodash@~4.17.10:
+lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@~4.17.10:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -6365,7 +6363,7 @@ promise-inflight@^1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha1-mEcocL8igTL8vdhoEputEsPAKeM=
 
-prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -6542,11 +6540,6 @@ react-axe@^3.2.0:
     axe-core "^3.0.0"
     requestidlecallback "^0.3.0"
 
-react-deep-force-update@^2.1.1:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-2.1.3.tgz#740612322e617bcced38f61794a4af75dc3d98e7"
-  integrity sha512-lqD4eHKVuB65RyO/hGbEST53E2/GPbcIPcFYyeW/p4vNngtH4G7jnKGlU6u1OqrFo0uNfIvwuBOg98IbLHlNEA==
-
 react-dom@^16.9.0:
   version "16.9.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.9.0.tgz#5e65527a5e26f22ae3701131bcccaee9fb0d3962"
@@ -6557,16 +6550,19 @@ react-dom@^16.9.0:
     prop-types "^15.6.2"
     scheduler "^0.15.0"
 
-react-hot-loader@3.*.*:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-3.1.3.tgz#6f92877326958c7cb0134b512474517869126082"
-  integrity sha512-d7nZf78irxoGN5PY4zd6CSgZiroOhvIWzRast3qwTn4sSnBwlt08kV8WMQ9mitmxEdlCTwZt+5ClrRSjxWguMQ==
+react-hot-loader@^4.12.11:
+  version "4.12.11"
+  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.11.tgz#06bd618d0a7343c8afa4a31206844f651193bae5"
+  integrity sha512-ySsg1hPwr/5dkZCJVp1nZRbwbpbEQ+3e2+bn/D681Wvr9+o+5bLKkTGq0TXskj8HgCS3ScysXddOng9Cg+JKzw==
   dependencies:
+    fast-levenshtein "^2.0.6"
     global "^4.3.0"
-    react-deep-force-update "^2.1.1"
-    react-proxy "^3.0.0-alpha.0"
-    redbox-react "^1.3.6"
-    source-map "^0.6.1"
+    hoist-non-react-statics "^3.3.0"
+    loader-utils "^1.1.0"
+    prop-types "^15.6.1"
+    react-lifecycles-compat "^3.0.4"
+    shallowequal "^1.1.0"
+    source-map "^0.7.3"
 
 react-input-autosize@^2.2.1:
   version "2.2.1"
@@ -6584,13 +6580,6 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
-
-react-proxy@^3.0.0-alpha.0:
-  version "3.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/react-proxy/-/react-proxy-3.0.0-alpha.1.tgz#4400426bcfa80caa6724c7755695315209fa4b07"
-  integrity sha1-RABCa8+oDKpnJMd1VpUxUgn6Swc=
-  dependencies:
-    lodash "^4.6.1"
 
 react-redux@^7.1.0:
   version "7.1.0"
@@ -6749,16 +6738,6 @@ readdirp@^2.2.1:
     graceful-fs "^4.1.11"
     micromatch "^3.1.10"
     readable-stream "^2.0.2"
-
-redbox-react@^1.3.6:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/redbox-react/-/redbox-react-1.6.0.tgz#e753ac02595bc1bf695b3935889a4f5b1b5a21a1"
-  integrity sha512-mLjM5eYR41yOp5YKHpd3syFeGq6B4Wj5vZr64nbLvTZW5ZLff4LYk7VE4ITpVxkZpCY6OZuqh0HiP3A3uEaCpg==
-  dependencies:
-    error-stack-parser "^1.3.6"
-    object-assign "^4.0.1"
-    prop-types "^15.5.4"
-    sourcemapped-stacktrace "^1.1.6"
 
 redent@^1.0.0:
   version "1.0.0"
@@ -7286,6 +7265,11 @@ shallow-clone@^3.0.0:
   dependencies:
     kind-of "^6.0.2"
 
+shallowequal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
+  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
+
 shebang-command@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/shebang-command/-/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"
@@ -7408,11 +7392,6 @@ source-map-url@^0.4.0:
   resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.0.tgz#3e935d7ddd73631b97659956d55128e87b5084a3"
   integrity sha1-PpNdfd1zYxuXZZlW1VEo6HtQhKM=
 
-source-map@0.5.6:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
-  integrity sha1-dc449SvwczxafwwRjYEzSiu19BI=
-
 source-map@^0.4.2:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.4.4.tgz#eba4f5da9c0dc999de68032d8b4f76173652036b"
@@ -7430,12 +7409,10 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-sourcemapped-stacktrace@^1.1.6:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/sourcemapped-stacktrace/-/sourcemapped-stacktrace-1.1.9.tgz#c744a99936b33b6891409f4d45c3d2b28ecded4a"
-  integrity sha512-N6SLOT+9OQZdoSpu1PkSjyrxx/B2SGom9LuxjbwZFNNz7+FpMEUpwb3JV+UpaxWvoGM/8k7guuOJxcB6BWEU9Q==
-  dependencies:
-    source-map "0.5.6"
+source-map@^0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.3.tgz#5302f8169031735226544092e64981f751750383"
+  integrity sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
 
 spawn-command@^0.0.2-1:
   version "0.0.2-1"
@@ -7534,11 +7511,6 @@ stack-trace@0.0.x:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
   integrity sha1-VHxws0fo0ytOEI6hoqFZ5f3eGcA=
-
-stackframe@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-0.3.1.tgz#33aa84f1177a5548c8935533cbfeb3420975f5a4"
-  integrity sha1-M6qE8Rd6VUjIk1Uzy/6zQgl19aQ=
 
 stat-mode@^0.3.0:
   version "0.3.0"

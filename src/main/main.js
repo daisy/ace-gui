@@ -106,7 +106,7 @@ function handleArgv(argv) {
     if (argv) {
       const args = argv.slice(isDev ? 2 : 1); // TODO: isDev should really be isPackaged (installed app)
       for (let i = 0; i < args.length; i++) {
-          if (args[i] && args[i]!== "." && !args[i].startsWith("--") && fs.existsSync(args[i])) {
+          if (args[i] && args[i] !== "." && !args[i].startsWith("--") && fs.existsSync(args[i])) {
             handleStartupFileCheck(args[i]);
             break;
           }

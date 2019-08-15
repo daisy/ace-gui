@@ -548,9 +548,8 @@ let winOffset = 0;
 
 export class KnowledgeBase {
 
-    win = null;
-
     constructor(mainWin, urlPath) {
+        this.win = null;
         this.mainWin = mainWin;
         this.urlPath = urlPath;
         this.launch();
