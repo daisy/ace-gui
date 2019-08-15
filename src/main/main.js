@@ -102,6 +102,7 @@ function handleStartupFileCheck(filepath) {
 }
 
 function handleArgv(argv) {
+  console.log("ARGV:");
   console.log(JSON.stringify(argv));
     if (argv) {
       const args = argv.slice(isDev ? 2 : 1); // TODO: isDev should really be isPackaged (installed app)
@@ -139,7 +140,9 @@ if (process.platform === 'darwin') {
   });
 }
 
-handleArgv(process.argv);
+if (__VSCODE_LAUNCH__ !== "true") {
+  handleArgv(process.argv);
+}
 
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
