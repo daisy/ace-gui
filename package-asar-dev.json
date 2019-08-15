@@ -14,9 +14,9 @@
   "license": "MIT",
   "main": "main-bundle.js",
   "dependencies": {
-    "@daisy/ace-axe-runner-electron": "file:../ace/packages/ace-axe-runner-electron",
-    "@daisy/ace-core": "file:../ace/packages/ace-core",
-    "@daisy/ace-localize": "file:../ace/packages/ace-localize",
+    "@daisy/ace-axe-runner-electron": "file:../../ace/packages/ace-axe-runner-electron",
+    "@daisy/ace-core": "file:../../ace/packages/ace-core",
+    "@daisy/ace-localize": "file:../../ace/packages/ace-localize",
     "@material-ui/core": "^4.3.2",
     "@material-ui/icons": "^4.2.1",
     "@mrmlnc/readdir-enhanced": "^2.2.1",
