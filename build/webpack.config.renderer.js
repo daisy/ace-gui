@@ -55,7 +55,7 @@ module.exports = (env) => {
             cacheDirectory: false,
             babelrc: false,
             // babelrc: path.join(__dirname, '..', 'babelrc'),
-            sourceMaps: true,
+            sourceMaps: isDev,
             presets: [
               [
                 "@babel/preset-env",
@@ -75,7 +75,7 @@ module.exports = (env) => {
             ],
             plugins: [
               "transform-class-properties",
-              ["transform-object-rest-spread", { "useBuiltIns": true }],
+              // ["transform-object-rest-spread", { "useBuiltIns": true }],
               // "react-hot-loader/babel",
             ]
           }
