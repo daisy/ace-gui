@@ -106,7 +106,7 @@ function handleArgv(argv) {
     if (argv) {
       const args = argv.slice(isDev ? 2 : 1); // TODO: isDev should really be isPackaged (installed app)
       for (let i = 0; i < args.length; i++) {
-          if (args[i] && !args[i].startsWith("--") && fs.existsSync(args[i])) {
+          if (args[i] && args[i]!== "." && !args[i].startsWith("--") && fs.existsSync(args[i])) {
             handleStartupFileCheck(args[i]);
             break;
           }
@@ -238,15 +238,16 @@ function createWindow() {
   }
 
   let rendererUrl = __RENDERER_URL__;
-  if (rendererBaseUrl === "file://") {
+  if (rendererUrl === "file://") {
       // dist/prod mode (without WebPack HMR Hot Module Reload HTTP server)
-      rendererBaseUrl += path.normalize(path.join(__dirname, "index.html"));
+      rendererUrl += path.normalize(path.join(__dirname, "index.html"));
   } else {
       // dev/debug mode (with WebPack HMR Hot Module Reload HTTP server)
-      rendererBaseUrl += "index.html";
+      rendererUrl += "index.html";
   }
   rendererUrl = rendererUrl.replace(/\\/g, "/");
 
+  console.log(rendererUrl);
   win.loadURL(rendererUrl); // `file://${__dirname}/index.html`
 
   win.on('closed', function () {
