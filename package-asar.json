@@ -12,7 +12,7 @@
   "homepage": "https://daisy.github.io/ace",
   "repository": "daisy/ace-gui",
   "license": "MIT",
-  "main": "main.js",
+  "main": "main-bundle.js",
   "dependencies": {
     "@daisy/ace-axe-runner-electron": "file:../../ace/packages/ace-axe-runner-electron",
     "@daisy/ace-core": "file:../../ace/packages/ace-core",

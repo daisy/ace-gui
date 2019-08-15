@@ -15,13 +15,8 @@ const { localize } = localizer;
 
 const JSON_URL = 'https://raw.githubusercontent.com/daisy/ace-gui/master/latest.json';
 
-let PACKAGE_JSON = undefined;
-
 export const checkLatestVersion = (browserWindow) => {
     try {
-        if (!PACKAGE_JSON) {
-            PACKAGE_JSON = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), { encoding: "utf8" }));
-        }
         const req = https.request(JSON_URL, (res) => {
             let data = '';
             res.on('data', (chunk) => {
@@ -41,7 +36,7 @@ export const checkLatestVersion = (browserWindow) => {
                             // const date = Date.parse(jsonInfo.date);
                             // console.log((new Date(date)).toUTCString());
                             
-                            if (semver.gt(jsonInfo.version, PACKAGE_JSON.version)) {
+                            if (semver.gt(jsonInfo.version, __APP_VERSION__)) {
                                 dialog.showMessageBox({
                                     browserWindow,
                                     type: "question",
@@ -53,7 +48,7 @@ export const checkLatestVersion = (browserWindow) => {
                                     cancelId: 1,
                                     title: localize("versionCheck.softwareUpdate"),
                                     message: localize("versionCheck.newVersionAvailable"),
-                                    detail: `[${PACKAGE_JSON.version}] ... [${jsonInfo.version}]`,
+                                    detail: `[${__APP_VERSION__}] ... [${jsonInfo.version}]`,
                                     noLink: true,
                                     normalizeAccessKeys: false,
                                 }, (i) => {

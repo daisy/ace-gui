@@ -2,20 +2,10 @@ node_modules
 .DS_Store
 Thumbs.db
 *.log
-.vscode
 
 /dist
 /temp
 
-# ignore everything in 'app' folder what had been generated from 'src' folder
-/app/app.js
-/app/background.js
-/app/renderer.js
-/app/main.js
-/app/logo.svg
-/app/**/*.map
-/app/package.json
-/app/yarn.lock
-/app/kb/*
+/app
 
 .env

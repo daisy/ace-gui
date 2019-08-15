@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "LAUNCH HOT",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/main/main.js",
+      "stopOnEntry": false,
+      "cwd": "${workspaceRoot}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "preLaunchTask__ASYNC": "launch:hot",
+      "args": [
+        "."
+      ],
+      "env": {
+        "DEBUG": "ace:*,ace-gui:*",
+        "NODE_ENV": "development",
+        "VSCODE_LAUNCH": "true"
+      },
+      "console": "internalConsole",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/app/main-bundle.js"
+      ],
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
+      "runtimeArgs": [
+        "--enable-logging"
+      ]
+    },
+    {
+      "name": "LAUNCH ATTACH",
+      "preLaunchTask": "launch:attach",
+      "timeout": 30000,
+      "type": "node",
+      "request": "attach",
+      "port": 25575
+    }
+  ]
+}

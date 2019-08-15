@@ -102,11 +102,12 @@ function handleStartupFileCheck(filepath) {
 }
 
 function handleArgv(argv) {
+  console.log("ARGV:");
   console.log(JSON.stringify(argv));
     if (argv) {
       const args = argv.slice(isDev ? 2 : 1); // TODO: isDev should really be isPackaged (installed app)
       for (let i = 0; i < args.length; i++) {
-          if (args[i] && !args[i].startsWith("--") && fs.existsSync(args[i])) {
+          if (args[i] && args[i] !== "." && !args[i].startsWith("--") && fs.existsSync(args[i])) {
             handleStartupFileCheck(args[i]);
             break;
           }
@@ -139,7 +140,9 @@ if (process.platform === 'darwin') {
   });
 }
 
-handleArgv(process.argv);
+if (__VSCODE_LAUNCH__ !== "true") {
+  handleArgv(process.argv);
+}
 
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
@@ -237,7 +240,18 @@ function createWindow() {
     });
   }
 
-  win.loadURL(`file://${__dirname}/index.html`);
+  let rendererUrl = __RENDERER_URL__;
+  if (rendererUrl === "file://") {
+      // dist/prod mode (without WebPack HMR Hot Module Reload HTTP server)
+      rendererUrl += path.normalize(path.join(__dirname, "index.html"));
+  } else {
+      // dev/debug mode (with WebPack HMR Hot Module Reload HTTP server)
+      rendererUrl += "index.html";
+  }
+  rendererUrl = rendererUrl.replace(/\\/g, "/");
+
+  console.log(rendererUrl);
+  win.loadURL(rendererUrl); // `file://${__dirname}/index.html`
 
   win.on('closed', function () {
       
@@ -263,7 +277,7 @@ function createWindow() {
 // app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', () => {
-  // The Electron app is always run from the ./app/main.js folder which contains a subfolder copy of the KB
+  // The Electron app is always run from the ./app/main-bundle.js folder which contains a subfolder copy of the KB
   // ... so this is not needed (and __dirname works in ASAR and non-ASAR mode)
   // const isNotPackaged = process && process.env && process.env.ACE_IS_NOT_PACKAGED === 'true';
   // const kbRootPath = isNotPackaged ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");
