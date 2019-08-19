@@ -124,15 +124,13 @@ module.exports = (env) => {
     config.output.pathinfo = true;
     config.output.publicPath = webpackConstants.rendererUrl;
     config.devtool = "source-map";
-    // config.devtool = "eval-source-map";
-    // config.devtool = 'inline-source-map';
 
     config.devServer = {
         contentBase: __dirname,
         headers: {
             "Access-Control-Allow-Origin": "*",
         },
-        // hot: true,
+        hot: true,
         watchContentBase: true,
         watchOptions: {
             ignored: [/app/, /build/, /doc/, /kb/, /node_modules/]
@@ -141,7 +139,7 @@ module.exports = (env) => {
         // inline: true
     };
 
-    // config.plugins.push(new webpack.HotModuleReplacementPlugin());
+    config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
     config.module.rules.push(
       // {

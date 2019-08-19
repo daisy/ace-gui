@@ -78,11 +78,11 @@ export default function configureStore(initialState, scope = 'main') {
   }
   const store = createStore(rootReducer, initialState, enhancer);
 
-  if (isDev && module.hot) {
-    module.hot.accept('../reducers', () => {
-      store.replaceReducer(require('../reducers'));
-    });
-  }
+  // if (isDev && module.hot) {
+  //   module.hot.accept('../reducers', () => {
+  //     store.replaceReducer(require('../reducers'));
+  //   });
+  // }
 
   if (scope === 'main') {
     replayActionMain(store);
