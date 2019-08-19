@@ -142,6 +142,7 @@ module.exports = (env) => {
     };
 
     // config.plugins.push(new webpack.HotModuleReplacementPlugin());
+
     config.module.rules.push(
       // {
       //   test: /\.scss$/,
@@ -173,6 +174,10 @@ module.exports = (env) => {
     //     ],
     // }
     );
+  } else {
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^devtron$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^react-axe$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^redux-devtools-extension$/ }));
   }
 
   console.log("-------------------- RENDERER config:");

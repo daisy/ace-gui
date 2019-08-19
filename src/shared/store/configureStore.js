@@ -69,6 +69,8 @@ export default function configureStore(initialState, scope = 'main') {
 
   let enhancer = null;
   if (isDev) {
+    // https://github.com/zalmoxisus/redux-devtools-extension#14-using-in-production
+    // redux-devtools-extension/developmentOnly
     const { composeWithDevTools } = require("redux-devtools-extension");
     enhancer = composeWithDevTools(...enhanced);
   } else {

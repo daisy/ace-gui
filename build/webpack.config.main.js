@@ -1,5 +1,6 @@
 const util = require('util');
 const path = require("path");
+const webpack = require("webpack");
 const nodeExternals = require("webpack-node-externals");
 const webpackConstants = require("./webpack.constants");
 
@@ -87,6 +88,9 @@ module.exports = (env) => {
     config.output.devtoolModuleFilenameTemplate = "[absolute-resource-path]";
     config.output.pathinfo = true;
     config.devtool = "source-map";
+  } else {
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^electron-devtools-installer$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^redux-devtools-extension$/ }));
   }
 
   console.log("-------------------- MAIN config:");
