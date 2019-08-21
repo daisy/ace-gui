@@ -159,7 +159,7 @@
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
     "jszip": "^3.2.2",
-    "portfinder": "^1.0.21",
+    "portfinder": "^1.0.23",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
@@ -173,7 +173,7 @@
     "selfsigned": "^1.10.4",
     "tmp": "^0.1.0",
     "typeface-roboto": "^0.0.75",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -183,14 +183,14 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
     "chalk": "^2.4.2",
-    "concurrently": "^4.1.1",
+    "concurrently": "^4.1.2",
     "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
     "css-hot-loader": "^1.4.4",
     "css-loader": "^3.2.0",
     "devtron": "^1.4.0",
-    "dotenv": "^8.0.0",
-    "electron": "^6.0.2",
+    "dotenv": "^8.1.0",
+    "electron": "^6.0.3",
     "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.4",
     "electron-notarize": "^0.1.1",
@@ -205,10 +205,10 @@
     "react-axe": "^3.2.0",
     "redux-devtools-extension": "^2.13.8",
     "rimraf": "^3.0.0",
-    "sass-loader": "^7.2.0",
+    "sass-loader": "^7.3.1",
     "style-loader": "^1.0.0",
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.6",
+    "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0",
     "webpack-node-externals": "^1.7.2"
   }
