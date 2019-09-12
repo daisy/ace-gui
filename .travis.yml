@@ -77,7 +77,7 @@ script:
 #  - 'ls -als node_modules'
   - 'env | grep -iE "DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_"'
   - 'if [[ "$TRAVIS_OS_NAME_" == "linux" ]] || [[ "$TRAVIS_OS_NAME_" == "osx" ]]; then
-    echo "TRAVIS_OS_SCRIPT" && pwd && ls -als && export MY_PWD=`pwd` && echo "PWD ${MY_PWD}" && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.17.3) || echo "YARN OK") && export PATH="$HOME/.yarn/bin:$PATH" && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd $MY_PWD && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff ;
+    echo "TRAVIS_OS_SCRIPT" && pwd && ls -als && export MY_PWD=`pwd` && echo "PWD ${MY_PWD}" && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.17.3) || echo "YARN OK") && export PATH="$HOME/.yarn/bin:$PATH" && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd $MY_PWD && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff ;
     fi'
   - 'if [[ "$TRAVIS_OS_NAME_" == "linux" ]]; then
     yarn run package:linux ;
@@ -91,7 +91,7 @@ script:
     -v ~/.cache/electron-builder:/root/.cache/electron-builder
     electronuserland/builder:wine
     /bin/bash
-    -c "pwd && ls -als && export MY_PWD=`pwd` && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.17.3) || echo YARN_OK) && export PATH=$HOME/.yarn/bin:$PATH && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd $MY_PWD && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff && npm rebuild node-sass && yarn run package:win";
+    -c "pwd && ls -als && export MY_PWD=`pwd` && echo $MY_PWD && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.17.3) || (npm --global install yarn || echo YARN_OK)) && export PATH=$HOME/.yarn/bin:$PATH && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd $MY_PWD && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff && npm rebuild node-sass && yarn run package:win";
     fi'
   # - set +e
 after_success:
@@ -110,7 +110,7 @@ after_failure:
 before_deploy:
   # - set -e
   - 'if [[ "$TRAVIS_OS_NAME_" == "windows" ]]; then
-    npm install --global @octokit/rest@latest
+    npm install --global @octokit/rest@latest ;
     fi'
   - export TRAVIS_TAG="latest-$TRAVIS_OS_NAME_"
   - node build/release-github.js
