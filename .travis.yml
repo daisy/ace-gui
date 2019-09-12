@@ -84,7 +84,7 @@ before_install:
 install:
   - set -e
   - echo "TRAVIS_ACE_6"
-  - git checkout master
+#  - git checkout master
 #  - git submodule init && git submodule update
   - ls -als kb
   - rm yarn.lock
