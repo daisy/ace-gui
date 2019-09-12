@@ -66,15 +66,16 @@ before_install:
   - ls -als
   - git checkout pr-merge/223+227
   - rm yarn.lock
+  - rm -rf node_modules
   - yarn install
   - rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy
   - VERBOSE=1 yarn build
   - yarn upgrade
   - rm -rf packages/*/node_modules
-  - yarn test
-  - yarn test-cli
-  - yarn test-electron
-  - yarn test-electron-cli
+  # - yarn test
+  # - yarn test-cli
+  # - yarn test-electron
+  # - yarn test-electron-cli
   - cd $MY_PWD
   - echo "TRAVIS_ACE_5"
   - pwd
@@ -84,9 +85,10 @@ install:
   - set -e
   - echo "TRAVIS_ACE_6"
   - git checkout master
-  - git submodule init && git submodule update
+#  - git submodule init && git submodule update
   - ls -als kb
   - rm yarn.lock
+  - rm -rf node_modules
   - yarn install
   - set +e
 # cache: false
