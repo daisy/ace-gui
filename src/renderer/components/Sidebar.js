@@ -170,7 +170,7 @@ class Sidebar extends React.Component {
           <Divider />
           <List className={classes.primaryActions}>
             <ListItem button
-              disabled={processing.ace}
+              disabled={processing.ace ? true : false}
               onClick={this.showOpenEPUBDialog}
               onDrop={this.onDrop}
               onDragOver={this.onDragOver}
@@ -185,7 +185,7 @@ class Sidebar extends React.Component {
             </ListItem>
             <ListItem button
               onClick={() => openFile(inputPath)}
-              disabled={!inputPath}>
+              disabled={!inputPath ? true : false}>
               <ListItemIcon>
                 <RefreshIcon />
               </ListItemIcon>
@@ -198,7 +198,7 @@ class Sidebar extends React.Component {
               <ListItemText primary={localize("sidebar.history")} />
             </ListItem>
             <ListItem button
-              disabled={!reportPath}
+              disabled={!reportPath ? true : false}
               onClick={this.showExportReportDialog}>
               <ListItemIcon>
                 <SaveAltIcon />
