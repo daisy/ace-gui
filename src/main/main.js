@@ -180,7 +180,7 @@ function createWindow() {
           nodeIntegration: true,
           nodeIntegrationInWorker: false,
           sandbox: false,
-          webSecurity: true,
+          webSecurity: isDev ? false : true,
           webviewTag: false,
       }
     }
