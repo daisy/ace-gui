@@ -21,6 +21,7 @@
     "@material-ui/icons": "^4.4.3",
     "@mrmlnc/readdir-enhanced": "^2.2.1",
     "about-window": "^1.13.1",
+    "classnames": "^2.2.6",
     "electron-redux": "^1.4.0",
     "electron-store": "^5.0.0",
     "express": "^4.17.1",
