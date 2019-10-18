@@ -18,22 +18,22 @@ env:
 matrix:
   include:
     - os: osx
-      osx_image: xcode9.4
+      osx_image: xcode11.2
       language: node_js
-      node_js: "10"
+      node_js: "node"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
     - os: linux
       language: node_js
-      node_js: "10"
+      node_js: "node"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
     - os: linux
       services: docker
       language: node_js
-      node_js: "10"
+      node_js: "node"
       env:
         - TRAVIS_OS_NAME_=windows
 # https://www.electron.build/multi-platform-build
@@ -41,13 +41,14 @@ matrix:
 # https://travis-ci.community/c/environments/windows
 # - os: windows
 #   language: node_js
-#   node_js: "10"
+#   node_js: "node"
 #   env:
 #     - ELECTRON_CACHE=$HOME/.cache/electron
 #     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 install:
   # - set -e
   - echo "TRAVIS_INSTALL"
+  - npm --global install npm@latest && npm --version
   - ls -als kb
   - git status
   - git --no-pager diff
@@ -147,9 +148,8 @@ deploy:
     - "dist/**/*.AppImage"
     - "dist/**/*.deb"
     - "dist/**/*.msi"
-    - "dist/**/*.exe"
+    - "dist/*.exe"
     - "dist/**/*.dmg"
-    - "!dist/**/elevate*"
   skip_cleanup: true
 # name: "[$TRAVIS_TAG] continuous test build (pre-release)"
   prerelease: true
