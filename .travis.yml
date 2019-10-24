@@ -17,20 +17,23 @@ env:
     - TRAVIS_OS_NAME_=$TRAVIS_OS_NAME
 matrix:
   include:
-    - os: osx
+    - if: type = push
+      os: osx
       osx_image: xcode11.2
       language: node_js
       node_js: "node"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+#if: type = push OR pull_request
     - os: linux
       language: node_js
       node_js: "node"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-    - os: linux
+    - if: type = push
+      os: linux
       services: docker
       language: node_js
       node_js: "node"
@@ -70,6 +73,9 @@ script:
   # - set -e
   - echo "TRAVIS_SCRIPT"
 #  - npm --no-git-tag-version version prepatch && git --no-pager diff
+  - 'sed -i -e "s/^  \"version\": \"\(.*\)\",$/  \"version\": \"\\1.${TRAVIS_BUILD_NUMBER}\",/g" package.json && cat package.json | grep -i VERSION'
+  - 'sed -i -e "s/^  \"version\": \"\(.*\)\",$/  \"version\": \"\\1.${TRAVIS_BUILD_NUMBER}\",/g" package-asar.json && cat package-asar.json | grep -i VERSION'
+  - 'sed -i -e "s/^  \"version\": \"\(.*\)\",$/  \"version\": \"\\1.${TRAVIS_BUILD_NUMBER}\",/g" package-asar-dev.json && cat package-asar-dev.json | grep -i VERSION'
   - 'npm --version'
   - 'yarn --version'
   - 'node --version'
@@ -77,10 +83,14 @@ script:
   - 'ls -als'
 #  - 'ls -als node_modules'
   - 'env | grep -iE "DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_"'
-  - 'if [[ "$TRAVIS_OS_NAME_" == "linux" ]] || [[ "$TRAVIS_OS_NAME_" == "osx" ]]; then
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn run build:prod; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+    if [[ "$TRAVIS_OS_NAME_" == "linux" ]] || [[ "$TRAVIS_OS_NAME_" == "osx" ]]; then
     echo "TRAVIS_OS_SCRIPT" && pwd && ls -als && export MY_PWD=`pwd` && echo "PWD ${MY_PWD}" && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.19.1) || echo "YARN OK") && export PATH="$HOME/.yarn/bin:$PATH" && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd $MY_PWD && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff ;
+    fi;
     fi'
-  - 'if [[ "$TRAVIS_OS_NAME_" == "linux" ]]; then
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+    if [[ "$TRAVIS_OS_NAME_" == "linux" ]]; then
     yarn run package:linux ;
     elif [[ "$TRAVIS_OS_NAME_" == "osx" ]]; then
     yarn run package:mac:skip-notarize ;
@@ -93,6 +103,7 @@ script:
     electronuserland/builder:wine
     /bin/bash
     -c "pwd && ls -als && npm --global install yarn && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd /project && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff && npm rebuild node-sass && yarn run package:win";
+    fi;
     fi'
   # - set +e
 after_success:
@@ -100,12 +111,18 @@ after_success:
   - 'pwd'
   - 'ls -als'
   - 'ls -als dist'
+  - 'ls -als dist/mac'
+  - 'ls -als dist/linux-unpacked'
+  - 'ls -als dist/win-unpacked'
   # - set +e
 after_failure:
   # - set -e
   - 'pwd'
   - 'ls -als'
   - 'ls -als dist'
+  - 'ls -als dist/mac'
+  - 'ls -als dist/linux-unpacked'
+  - 'ls -als dist/win-unpacked'
   # - set +e
 # https://docs.travis-ci.com/user/deployment/
 before_deploy:
