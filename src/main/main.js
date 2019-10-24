@@ -292,9 +292,22 @@ app.on('ready', () => {
     createWindow();
   });
 });
-app.on('quit', () => {
-  stopKnowledgeBaseServer();
-});
+
+async function willQuitCallback(evt) {
+  evt.preventDefault();
+  app.removeListener("will-quit", willQuitCallback);
+
+  console.log("stopKnowledgeBaseServer...");
+  try {
+    await stopKnowledgeBaseServer();
+  } catch (err) {
+    console.log(err);
+  }
+  console.log("stopKnowledgeBaseServer DONE now quitting...");
+
+  app.quit();
+}
+app.on("will-quit", willQuitCallback);
 
 app.on('window-all-closed', function () {
   // we could enable this typical macos behavior if we wanted but not sure it makes sense

@@ -56,7 +56,7 @@ function httpReady() {
     });
 }
 
-export function stopKnowledgeBaseServer() {
+export async function stopKnowledgeBaseServer() {
     // closeKnowledgeBaseWindows();
 
     if (httpServer) {
@@ -65,30 +65,36 @@ export function stopKnowledgeBaseServer() {
 
     const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
     if (sess) {
-        sess.clearCache(() => {
-            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} session cache cleared`);
-        });
+        try {
+            await sess.clearCache();
+        } catch (err) {
+          console.log(err);
+        }
+        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} session cache cleared`);
 
-        sess.clearStorageData({
-            origin: "*",
-            quotas: [
-                "temporary",
-                "persistent",
-                "syncable",
-            ],
-            storages: [
-                "appcache",
-                "cookies",
-                "filesystem",
-                "indexdb",
-                "localstorage",
-                "shadercache",
-                "websql",
-                "serviceworkers",
-            ],
-        }, () => {
-            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} session storage cleared`);
-        });
+        try {
+            await sess.clearStorageData({
+                origin: "*",
+                quotas: [
+                    "temporary",
+                    "persistent",
+                    "syncable",
+                ],
+                storages: [
+                    "appcache",
+                    "cookies",
+                    "filesystem",
+                    "indexdb",
+                    // "localstorage", BLOCKS!?
+                    "shadercache",
+                    "websql",
+                    "serviceworkers",
+                ],
+            });
+        } catch (err) {
+          console.log(err);
+        }
+        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} session storage cleared`);
     }
 }
 
