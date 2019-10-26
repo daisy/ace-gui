@@ -44,7 +44,7 @@ export default class Images extends React.Component {
         sortable: false,
         makeCell: (row, idx) =>
           {
-            const src = path.resolve(reportPath, `../data/${row.src}`);
+            const src = encodeURI(path.resolve(reportPath, `../data/${row.src}`));
             return <TableCell key={idx}><img src={`file://${src}`}/></TableCell>
           }
       },
@@ -79,7 +79,7 @@ export default class Images extends React.Component {
         sortable: true,
         filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="location"><pre>{row.location}</pre></TableCell>
+          <TableCell key={idx} className="location"><pre>{decodeURI(row.location)}</pre></TableCell>
       },
       {
         id: 'role',
