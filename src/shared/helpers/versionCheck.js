@@ -22,7 +22,7 @@ export const checkLatestVersion = (browserWindow) => {
             res.on('data', (chunk) => {
                 data += chunk;
             });
-            res.on('end', () => {
+            res.on('end', async () => {
                 const httpOk = res.statusCode >= 200 && res.statusCode <= 299; // assumes HTTP req followed redirects 30x
                 if (httpOk && data && data.length) {
                     let jsonInfo = undefined;
@@ -37,7 +37,7 @@ export const checkLatestVersion = (browserWindow) => {
                             // console.log((new Date(date)).toUTCString());
                             
                             if (semver.gt(jsonInfo.version, __APP_VERSION__)) {
-                                dialog.showMessageBox({
+                                const res = await dialog.showMessageBox({
                                     browserWindow,
                                     type: "question",
                                     buttons: [
@@ -51,11 +51,10 @@ export const checkLatestVersion = (browserWindow) => {
                                     detail: `[${__APP_VERSION__}] ... [${jsonInfo.version}]`,
                                     noLink: true,
                                     normalizeAccessKeys: false,
-                                }, (i) => {
-                                    if (i === 0) {
-                                        shell.openExternal(jsonInfo.url);
-                                    }
                                 });
+                                if (res.response === 0) {
+                                    shell.openExternal(jsonInfo.url);
+                                }
                             }
                         }
                     } catch (err) {

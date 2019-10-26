@@ -108,14 +108,22 @@ class Sidebar extends React.Component {
   };
 
   showOpenEPUBDialog = () => {
-    process.platform == 'darwin'
-      ? FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile)
-      : FileDialogHelpers.showEpubFileBrowseDialog(this.props.openFile)
+    setTimeout(async () => {
+      if (process.platform == 'darwin') {
+        await FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
+      } else {
+        await FileDialogHelpers.showEpubFileBrowseDialog(this.props.openFile);
+      }
+    }, 0);
     return false;
   };
 
   showExportReportDialog = () => {
-    FileDialogHelpers.showExportReportDialog(this.props.exportReport);
+    setTimeout(async () => {
+      await FileDialogHelpers.showExportReportDialog((filepath) => {
+        this.props.exportReport(filepath);
+      });
+    }, 0);
     return false;
   }
 

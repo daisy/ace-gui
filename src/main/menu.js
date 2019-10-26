@@ -91,14 +91,24 @@ export default class MenuBuilder {
             label: localize('menu.checkEpub'),
             id: 'checkEpub',
             accelerator: 'CmdOrCtrl+O',
-            click: () => process.platform == 'darwin'
-              ?FileDialogHelpers.showEpubFileOrFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
-              :FileDialogHelpers.showEpubFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
+            click: () => {
+              setTimeout(async () => {
+                if (process.platform == 'darwin') {
+                  await FileDialogHelpers.showEpubFileOrFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+                } else {
+                  await FileDialogHelpers.showEpubFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+                }
+              }, 0);
+            }
           },
           {
             label: localize('menu.openReport'),
             id: 'openReport',
-            click: () => FileDialogHelpers.showReportFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
+            click: () => {
+              setTimeout(async () => {
+                await FileDialogHelpers.showReportFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+              }, 0);
+            }
           },
           {
             type: 'separator'
@@ -116,7 +126,13 @@ export default class MenuBuilder {
             label: localize('menu.exportReport'),
             id: 'exportReport',
             accelerator: 'CmdOrCtrl+Shift+E',
-            click: () => FileDialogHelpers.showExportReportDialog(filepath => this.store.dispatch(exportReport(filepath)))
+            click: () => {
+              setTimeout(async () => {
+                await FileDialogHelpers.showExportReportDialog((filepath) => {
+                  this.store.dispatch(exportReport(filepath));
+                });
+              }, 0);
+            }
           },
           {
             type: 'separator'
@@ -418,7 +434,11 @@ export default class MenuBuilder {
       // insert item into File submenu
       defaultTemplate.subMenuFile.submenu.unshift({
         label: localize('menu.checkEpubFolder'),
-        click: () => FileDialogHelpers.showEpubFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath))
+        click: () => {
+          setTimeout(async () => {
+            await FileDialogHelpers.showEpubFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+          }, 0);
+        }
       });
 
       // insert item into Help submenu

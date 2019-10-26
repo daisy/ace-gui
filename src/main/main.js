@@ -40,12 +40,12 @@ if (!singleInstanceLock) {
 
 function handleStartupFileCheck(filepath) {
   app.whenReady().then(() => {
-    function askCheckEPUB() {
+    async function askCheckEPUB() {
       if (store.getState() && store.getState().app && store.getState().app.processing && store.getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
         const p = store.getState().app.processing[PROCESSING_TYPE.ACE]; // store.getState().app.inputPath;
         store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
 
-        dialog.showMessageBox({
+        const res = await dialog.showMessageBox({
           win,
           type: "warning",
           buttons: [
@@ -58,13 +58,15 @@ function handleStartupFileCheck(filepath) {
           detail: `${p} (... ${filepath})`,
           noLink: true,
           normalizeAccessKeys: false,
-        }, (i) => {
         });
+        if (res.response === 0) {
+          // noop
+        }
 
         return;
       }
 
-      dialog.showMessageBox({
+      const res = await dialog.showMessageBox({
         win,
         type: "question",
         buttons: [
@@ -78,18 +80,17 @@ function handleStartupFileCheck(filepath) {
         detail: filepath,
         noLink: true,
         normalizeAccessKeys: false,
-      }, (i) => {
-          if (i === 0) {
-            // menuBuilder.runAceInRendererProcess(filepath);
-            win.webContents.send('RUN_ACE', filepath);
-          }
       });
+      if (res.response === 0) {
+        // menuBuilder.runAceInRendererProcess(filepath);
+        win.webContents.send('RUN_ACE', filepath);
+      }
     }
 
     function checkWin() {
       if (win) {
-        setTimeout(() => {
-          askCheckEPUB();
+        setTimeout(async () => {
+          await askCheckEPUB();
         }, 200);
       } else {
         setTimeout(() => {

@@ -7,79 +7,100 @@ const { localizer } = require('../l10n/localize');
 const { localize } = localizer;
 
 module.exports = {
-  showExportReportDialog: callback => {
-    return showSaveDialog({
+  showExportReportDialog: async (callback) => {
+    const filePath = await showSaveDialog({
       title: localize("dialog.savereport"),
       filters: [{name: localize("dialog.ziparchive"), extensions: ['zip']}],
-    }, callback);
+    });
+    if (callback && filePath) {
+      callback(filePath);
+    }
   },
 
-  showFolderBrowseDialog: callback => {
-    return showOpenDialog({
+  showFolderBrowseDialog: async (callback) => {
+    const filePath = await showOpenDialog({
       title: localize("dialog.choosedir"),
       buttonLabel: localize("dialog.select"),
       properties: ['openDirectory', 'createDirectory'],
       filters: [{name: localize("dialog.allfiles"), extensions: ['*']}],
-    }, callback);
+    });
+    if (callback && filePath) {
+      callback(filePath);
+    }
   },
 
-  showEpubFileOrFolderBrowseDialog: callback => {
-    return showOpenDialog({
+  showEpubFileOrFolderBrowseDialog: async (callback) => {
+    const filePath = await showOpenDialog({
       title: localize("dialog.chooseepub"),
       buttonLabel: localize("dialog.check"),
       properties: ['openFile', 'openDirectory'],
       filters: [{name: 'EPUB', extensions: ['epub']}, {name: localize("dialog.allfiles"), extensions: ['*']}],
-    }, callback);
+    });
+    if (callback && filePath) {
+      callback(filePath);
+    }
   },
 
-  showEpubFileBrowseDialog: callback => {
-    return showOpenDialog({
+  showEpubFileBrowseDialog: async (callback) => {
+    const filePath = await showOpenDialog({
       title: localize("dialog.chooseepubfile"),
       buttonLabel: localize("dialog.check"),
       properties: ['openFile'],
       filters: [{name: 'EPUB', extensions: ['epub']}, {name: localize("dialog.allfiles"), extensions: ['*']}],
-    }, callback);
+    });
+    if (callback && filePath) {
+      callback(filePath);
+    }
   },
 
-  showEpubFolderBrowseDialog: callback => {
-    return showOpenDialog({
+  showEpubFolderBrowseDialog: async (callback) => {
+    const filePath = await showOpenDialog({
       title: localize("dialog.chooseepubdir"),
       buttonLabel: localize("dialog.check"),
       properties: ['openDirectory'],
       filters: [{name: localize("dialog.allfiles"), extensions: ['*']}],
-    }, callback);
+    });
+    if (callback && filePath) {
+      callback(filePath);
+    }
   },
 
-  showReportFileBrowseDialog: callback => {
-    return showOpenDialog({
+  showReportFileBrowseDialog: async (callback) => {
+    const filePath = await showOpenDialog({
       title: localize("dialog.choosereport"),
       buttonLabel: localize("dialog.open"),
       properties: ['openFile'],
       filters: [{name: 'JSON', extensions: ['json']}, {name: localize("dialog.allfiles"), extensions: ['*']}],
-    }, callback);
+    });
+    if (callback && filePath) {
+      callback(filePath);
+    }
   },
 };
 
-function showOpenDialog(options, callback) {
-  return dialog.showOpenDialog(
+async function showOpenDialog(options) {
+  const res = await dialog.showOpenDialog(
     BrowserWindow.getFocusedWindow(),
-    options,
-    (callback===undefined) ? undefined: (filenames) => {
-      if (filenames != undefined) {
-        callback(filenames[0]);
-      }
-    }
+    options
   );
+  if (res.canceled || !res.filePaths || !res.filePaths.length) {
+      return undefined;
+  }
+  const filePath = res.filePaths[0];
+  if (filePath) {
+    return filePath;
+  } else {
+    return undefined;
+  }
 }
 
-function showSaveDialog(options, callback) {
-  return dialog.showSaveDialog(
+async function showSaveDialog(options) {
+  const res = await dialog.showSaveDialog(
     BrowserWindow.getFocusedWindow(),
-    options,
-    (callback===undefined) ? undefined: (filename) => {
-      if (filename != undefined) {
-        callback(filename);
-      }
-    }
+    options
   );
+  if (res.canceled || !res.filePath) {
+    return undefined;
+  }
+  return res.filePath;
 }

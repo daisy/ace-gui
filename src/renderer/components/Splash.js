@@ -32,17 +32,23 @@ class Splash extends React.Component {
   };
 
   onBrowseFileOrFolderClick = e => {
-    FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
+    setTimeout(async () => {
+      await FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
+    }, 0);
     return false;
   };
 
   onBrowseFileClick = e => {
-    FileDialogHelpers.showEpubFileBrowseDialog(this.props.openFile);
+    setTimeout(async () => {
+      await FileDialogHelpers.showEpubFileBrowseDialog(this.props.openFile);
+    }, 0);
     return false;
   };
 
   onBrowseFolderClick = e => {
-    FileDialogHelpers.showEpubFolderBrowseDialog(this.props.openFile);
+    setTimeout(async () => {
+      await FileDialogHelpers.showEpubFolderBrowseDialog(this.props.openFile);
+    }, 0);
     return false;
   };
 
