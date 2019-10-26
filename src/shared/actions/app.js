@@ -3,6 +3,8 @@ import fs from 'fs';
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';
 
+import { resetInitialReportView } from './reportView';
+
 import { ipcRenderer } from 'electron';
 
 // const createAxeRunner = require('@daisy/ace-axe-runner-electron').createAxeRunner;
@@ -55,9 +57,15 @@ export function openFile(filepath) {
   return dispatch => {
     let type = checkType(filepath);
     if (type == 1) {
+      dispatch(closeReport());
+      dispatch(resetInitialReportView());
+
       dispatch(runAce(filepath));
     }
     else if (type == 2) {
+      dispatch(closeReport());
+      dispatch(resetInitialReportView());
+
       dispatch(openReport(filepath));
     }
     else if (type == -1) {

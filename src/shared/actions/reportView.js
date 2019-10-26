@@ -3,7 +3,13 @@ export const SET_TABLE_FILTER_VALUES = "SET_TABLE_FILTER_VALUES";
 export const SET_TABLE_SORT = "SET_TABLE_SORT";
 export const SET_TABLE_PAGINATION = "SET_TABLE_PAGINATION";
 export const SET_TABLE_FILTERS_EXPANDED = "SET_TABLE_FILTERS_EXPANDED";
+export const RESET_INITIAL_REPORT_VIEW = "RESET_INITIAL_REPORT_VIEW";
 
+export function resetInitialReportView() {
+  return {
+    type: RESET_INITIAL_REPORT_VIEW,
+  };
+}
 export function selectTab(tabIndex) {
   return {
     type: SELECT_TAB,

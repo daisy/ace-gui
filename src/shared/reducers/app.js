@@ -26,6 +26,8 @@ const initialState = {
 };
 
 export default function app(state = initialState, action) {
+  state = JSON.parse(JSON.stringify(state));
+
   switch (action.type) {
     case ADD_MESSAGE: {
       let messages = [...state.messages, action.payload];
@@ -35,8 +37,16 @@ export default function app(state = initialState, action) {
       };
     }
     case CLOSE_REPORT: {
-      let recents = addToRecents(state.reportPath, state.recents);
-      let messages = [...state.messages, localize("message.closedreport", {reportPath: state.reportPath, interpolation: { escapeValue: false }})];
+      let recents = state.recents;
+      let added = false;
+      if (recents && state.reportPath && recents.indexOf(state.reportPath) < 0) {
+        recents = addToRecents(state.reportPath, state.recents);
+        added = true;
+      }
+      let messages = state.messages;
+      if (added) {
+        messages = [...state.messages, localize("message.closedreport", {reportPath: state.reportPath, interpolation: { escapeValue: false }})];
+      }
       return {
         ...state,
         recents,

@@ -138,6 +138,7 @@ export default class EnhancedTable extends React.Component {
     let filter = filters.find(f=>f.id == id);
     filter.values = values;
     filters[id] = filter;
+    this.props.onChangePagination(this.props.id, {page: 0, rowsPerPage: this.props.pagination.rowsPerPage});
     this.setState({filters});
     this.props.onFilter(this.props.id, id, values);
   };

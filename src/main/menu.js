@@ -4,7 +4,7 @@ import {
   closeReport,
   exportReport
 } from './../shared/actions/app';
-import {selectTab} from './../shared/actions/reportView';
+import {selectTab, resetInitialReportView} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 import * as AboutBoxHelper from './../shared/helpers/about';
 
@@ -94,9 +94,19 @@ export default class MenuBuilder {
             click: () => {
               setTimeout(async () => {
                 if (process.platform == 'darwin') {
-                  await FileDialogHelpers.showEpubFileOrFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+                  await FileDialogHelpers.showEpubFileOrFolderBrowseDialog((filepath) => {
+                    this.store.dispatch(closeReport());
+                    this.store.dispatch(resetInitialReportView());
+                    
+                    this.runAceInRendererProcess(filepath);
+                  });
                 } else {
-                  await FileDialogHelpers.showEpubFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+                  await FileDialogHelpers.showEpubFileBrowseDialog((filepath) => {
+                    this.store.dispatch(closeReport());
+                    this.store.dispatch(resetInitialReportView());
+
+                    this.runAceInRendererProcess(filepath);
+                  });
                 }
               }, 0);
             }
@@ -106,7 +116,12 @@ export default class MenuBuilder {
             id: 'openReport',
             click: () => {
               setTimeout(async () => {
-                await FileDialogHelpers.showReportFileBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+                await FileDialogHelpers.showReportFileBrowseDialog((filepath) => {
+                  this.store.dispatch(closeReport());
+                  this.store.dispatch(resetInitialReportView());
+
+                  this.store.dispatch(openReport(filepath));
+                });
               }, 0);
             }
           },
@@ -117,7 +132,13 @@ export default class MenuBuilder {
             label: localize('menu.rerunAce'),
             id: 'rerunAce',
             accelerator: 'CmdOrCtrl+Shift+R',
-            click: () => this.runAceInRendererProcess(this.store.getState().app.inputPath)
+            click: () => {
+              const p = this.store.getState().app.inputPath;
+              this.store.dispatch(closeReport());
+              this.store.dispatch(resetInitialReportView());
+
+              this.runAceInRendererProcess(p);
+            }
           },
           {
             type: 'separator'
@@ -141,7 +162,10 @@ export default class MenuBuilder {
             label: localize('menu.closeReport'),
             id: 'closeReport',
             accelerator: 'CmdOrCtrl+Shift+C',
-            click: () => this.store.dispatch(closeReport())
+            click: () => {
+              this.store.dispatch(closeReport());
+              this.store.dispatch(resetInitialReportView());
+            }
           },
         ]
       },

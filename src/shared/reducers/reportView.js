@@ -4,7 +4,8 @@ import {
   SET_TABLE_FILTER_VALUES,
   SET_TABLE_SORT,
   SET_TABLE_PAGINATION,
-  SET_TABLE_FILTERS_EXPANDED
+  SET_TABLE_FILTERS_EXPANDED,
+  RESET_INITIAL_REPORT_VIEW,
 } from '../actions/reportView';
 
 
@@ -39,14 +40,19 @@ const initialState = {
   },
 
   pagination: {
-    "violations": {page: 0, rowsPerPage: 5},
-    "metadata": {page: 0, rowsPerPage: 5},
-    "images": {page: 0, rowsPerPage: 5}
+    "violations": {page: 0, rowsPerPage: 10},
+    "metadata": {page: 0, rowsPerPage: 10},
+    "images": {page: 0, rowsPerPage: 10}
   }
 };
 
 export default function reportView(state = initialState, action) {
+  state = JSON.parse(JSON.stringify(state));
+
   switch (action.type) {
+    case RESET_INITIAL_REPORT_VIEW: {
+      return initialState;
+    }
     case SELECT_TAB: {
       return {
         ...state,

@@ -6,6 +6,8 @@ const initialState = {
 }
   
 export default function modal(state = initialState, action) {
+  state = JSON.parse(JSON.stringify(state));
+
   switch (action.type) {
     case SHOW_MODAL:
       return {

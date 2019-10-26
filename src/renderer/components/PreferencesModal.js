@@ -107,7 +107,7 @@ class PreferencesModal extends React.Component {
 
   selectReportDir = () => {
     setTimeout(async () => {
-      await FileDialogHelpers.showFolderBrowseDialog(dir => {
+      await FileDialogHelpers.showFolderBrowseDialog((dir) => {
         this.setState({
           reports: {
             ...this.state.reports,
