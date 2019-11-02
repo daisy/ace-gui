@@ -118,28 +118,35 @@ module.exports = (env) => {
     ],
   };
   if (isDev) {
-    const httpPort = parseInt(webpackConstants.httpPort, 10);
+    if (!process.env.NO_WEBPACK_DEV_SERVER) {
 
-    config.output.devtoolModuleFilenameTemplate = "[absolute-resource-path]";
-    config.output.pathinfo = true;
-    config.output.publicPath = webpackConstants.rendererUrl;
-    config.devtool = "source-map";
+      config.output.devtoolModuleFilenameTemplate = "[absolute-resource-path]";
+      config.output.pathinfo = true;
+      config.output.publicPath = webpackConstants.rendererUrl;
+      config.devtool = "source-map";
 
-    config.devServer = {
-        contentBase: __dirname,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-        },
-        hot: true,
-        watchContentBase: true,
-        watchOptions: {
-            ignored: [/app/, /build/, /doc/, /kb/, /node_modules/]
-        },
-        port: httpPort,
-        // inline: true
-    };
+      config.devServer = {
+          contentBase: __dirname,
+          headers: {
+              "Access-Control-Allow-Origin": "*",
+          },
+          hot: true,
+          watchContentBase: true,
+          watchOptions: {
+              ignored: [/app/, /build/, /doc/, /kb/, /node_modules/]
+          },
+          port: parseInt(webpackConstants.httpPort, 10),
+          // inline: true
+      };
 
-    config.plugins.push(new webpack.HotModuleReplacementPlugin());
+      config.plugins.push(new webpack.HotModuleReplacementPlugin());
+
+    } else {
+      config.output.devtoolModuleFilenameTemplate = "[absolute-resource-path]";
+      config.output.pathinfo = true;
+      // config.output.publicPath = webpackConstants.rendererUrl;
+      config.devtool = "source-map";
+    }
 
     config.module.rules.push(
       // {
