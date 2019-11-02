@@ -36,9 +36,6 @@ if (isDev) {
 const initialState = getInitialStateRenderer();
 const store = configureStore(initialState, 'renderer');
 
-if (store.getState().preferences.language === undefined) {
-	store.getState().preferences.language = navigator.language;
-}
 const initLanguage = store.getState().preferences.language || getDefaultLanguage();
 setCurrentLanguage(initLanguage);
 document.documentElement.setAttribute("lang", getCurrentLanguage());

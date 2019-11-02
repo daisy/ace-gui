@@ -23,7 +23,7 @@ import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWin
 import { prepareLaunch } from '@daisy/ace-axe-runner-electron/lib/init';
 
 import { localizer } from './../shared/l10n/localize';
-const { localize } = localizer;
+const { localize, setCurrentLanguage, getRawResources, getDefaultLanguage } = localizer;
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
@@ -280,6 +280,17 @@ function createWindow() {
 // app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', () => {
+  const res = getRawResources()
+  const languageKeys = Object.keys(res);
+  if (store.getState().preferences.language === undefined) {
+    if (languageKeys.includes(app.getLocale()))  {
+      store.getState().preferences.language = app.getLocale();
+    } else {
+      store.getState().preferences.language = getDefaultLanguage();
+    }
+    setCurrentLanguage(store.getState().preferences.language);
+  }
+
   // The Electron app is always run from the ./app/main-bundle.js folder which contains a subfolder copy of the KB
   // ... so this is not needed (and __dirname works in ASAR and non-ASAR mode)
   // const isNotPackaged = process && process.env && process.env.ACE_IS_NOT_PACKAGED === 'true';
