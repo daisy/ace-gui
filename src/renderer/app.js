@@ -12,7 +12,7 @@ import {
 } from './../shared/actions/app';
 
 import { localizer } from './../shared/l10n/localize';
-const { getDefaultLanguage, setCurrentLanguage } = localizer;
+const { getDefaultLanguage, setCurrentLanguage, getCurrentLanguage } = localizer;
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 if (isDev) {
@@ -36,9 +36,12 @@ if (isDev) {
 const initialState = getInitialStateRenderer();
 const store = configureStore(initialState, 'renderer');
 
+if (store.getState().preferences.language === undefined) {
+	store.getState().preferences.language = navigator.language;
+}
 const initLanguage = store.getState().preferences.language || getDefaultLanguage();
 setCurrentLanguage(initLanguage);
-document.documentElement.setAttribute("lang", initLanguage);
+document.documentElement.setAttribute("lang", getCurrentLanguage());
 
 store.subscribe(() => {
   const state = store.getState();
@@ -47,7 +50,7 @@ store.subscribe(() => {
 
   if (prefs.language) {
     setCurrentLanguage(prefs.language);
-    document.documentElement.setAttribute("lang", prefs.language);
+    document.documentElement.setAttribute("lang", getCurrentLanguage());
   }
 });
 
