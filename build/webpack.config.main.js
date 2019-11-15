@@ -4,6 +4,8 @@ const webpack = require("webpack");
 const nodeExternals = require("webpack-node-externals");
 const webpackConstants = require("./webpack.constants");
 
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+
 const nodeEnv = process.env.NODE_ENV || "development";
 const isDev = nodeEnv === "development";
 
@@ -81,6 +83,12 @@ module.exports = (env) => {
       ]
     },
     plugins: [
+        new CopyWebpackPlugin([
+            {
+                from: path.join(__dirname, "..", "src", "renderer", "assets", "logo.svg"),
+                to: path.join("..", "app"),
+            }
+        ]),
         webpackConstants.definePlugin
     ],
   };
