@@ -10,8 +10,6 @@ import {initPersistentStore} from './store-persist';
 
 import {checkLatestVersion} from '../shared/helpers/versionCheck';
 
-const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
-
 import {
   PROCESSING_TYPE,
   addMessage,
@@ -29,9 +27,21 @@ const isDev = process && process.env && (process.env.NODE_ENV === 'development' 
 
 if (isDev) {
   console.log(util.inspect(process.versions, { colors: true, depth: null, compact: false }));
+
+  // this does not seem to work, Electron/Chromium bug?
+  // instead, modify package.json "start:dev:main:electron" by appending "--lang=es" (for example) to "electron ."
+  // app.commandLine.appendArgument('--lang=fr');
+  // app.commandLine.appendSwitch('lang', 'fr');
+  // app.commandLine.appendSwitch('lang', 'fr_FR, fr');
 }
 
-let win;
+// see createWindow() in app.on('ready', ...)
+let _win;
+
+// see initPersistentStore() in app.on('ready', ...)
+let _store;
+let _storeSubscribe;
+let _storeUnsubscribe;
 
 const singleInstanceLock = process.platform === 'darwin' || app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
@@ -41,12 +51,12 @@ if (!singleInstanceLock) {
 function handleStartupFileCheck(filepath) {
   app.whenReady().then(() => {
     async function askCheckEPUB() {
-      if (store.getState() && store.getState().app && store.getState().app.processing && store.getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
-        const p = store.getState().app.processing[PROCESSING_TYPE.ACE]; // store.getState().app.inputPath;
-        store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
+      if (_store.getState() && _store.getState().app && _store.getState().app.processing && _store.getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
+        const p = _store.getState().app.processing[PROCESSING_TYPE.ACE]; // _store.getState().app.inputPath;
+        _store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
 
         const res = await dialog.showMessageBox({
-          win,
+          _win,
           type: "warning",
           buttons: [
               localize("versionCheck.yes")
@@ -67,7 +77,7 @@ function handleStartupFileCheck(filepath) {
       }
 
       const res = await dialog.showMessageBox({
-        win,
+        _win,
         type: "question",
         buttons: [
             localize("versionCheck.yes"),
@@ -83,12 +93,12 @@ function handleStartupFileCheck(filepath) {
       });
       if (res.response === 0) {
         // menuBuilder.runAceInRendererProcess(filepath);
-        win.webContents.send('RUN_ACE', filepath);
+        _win.webContents.send('RUN_ACE', filepath);
       }
     }
 
     function checkWin() {
-      if (win) {
+      if (_win && _store) {
         setTimeout(async () => {
           await askCheckEPUB();
         }, 200);
@@ -120,22 +130,22 @@ if (process.platform === 'darwin') {
   app.on('will-finish-launching', () => {
     app.on('open-file', (ev, filepath) => {
       ev.preventDefault();
-      if (win) {
-          if (win.isMinimized()) {
-            win.restore();
+      if (_win) {
+          if (_win.isMinimized()) {
+            _win.restore();
           }
-          win.focus();
+          _win.focus();
       }
       handleStartupFileCheck(filepath);
     });
   });
 } else {
   app.on('second-instance', (event, argv, workingDirectory) => {
-      if (win) {
-          if (win.isMinimized()) {
-            win.restore();
+      if (_win) {
+          if (_win.isMinimized()) {
+            _win.restore();
           }
-          win.focus();
+          _win.focus();
       }
     handleArgv(argv);
   });
@@ -171,7 +181,7 @@ prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
 
 function createWindow() {
 
-  win = new BrowserWindow(
+  _win = new BrowserWindow(
     {
       show: false,
       webPreferences: {
@@ -186,34 +196,34 @@ function createWindow() {
       }
     }
   );
-  win.maximize();
-  let sz = win.getSize();
+  _win.maximize();
+  let sz = _win.getSize();
   const sz0 = sz[0];
   const sz1 = sz[1];
-  win.unmaximize();
+  _win.unmaximize();
   // open a window that's not quite full screen ... makes sense on mac, anyway
-  win.setSize(Math.min(Math.round(sz0 * .75),1200), Math.min(Math.round(sz1 * .85), 800));
-  // win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
-  win.setPosition(Math.round(sz0*0.5-win.getSize()[0]*0.5), Math.round(sz1*0.5-win.getSize()[1]*0.5));
-  win.show();
+  _win.setSize(Math.min(Math.round(sz0 * .75),1200), Math.min(Math.round(sz1 * .85), 800));
+  // _win.setPosition(Math.round(sz[0] * .10), Math.round(sz[1] * .10));
+  _win.setPosition(Math.round(sz0*0.5-_win.getSize()[0]*0.5), Math.round(sz1*0.5-_win.getSize()[1]*0.5));
+  _win.show();
 
   setTimeout(() => {
-    checkLatestVersion(win);
+    checkLatestVersion(_win);
   }, 1000);
 
-  const menuBuilder = new MenuBuilder(win, store);
-  menuBuilder.buildMenu(win);
+  const menuBuilder = new MenuBuilder(_win, _store);
+  menuBuilder.buildMenu(_win);
   
   const cb = () => {
     menuBuilder.storeHasChanged();
   };
-  storeSubscribe(cb);
+  _storeSubscribe(cb);
   
   if (isDev) {
 
     // require('electron-debug')(); // also see electron-react-devtools
   
-    win.webContents.on("did-finish-load", () => {
+    _win.webContents.on("did-finish-load", () => {
       const {
         default: installExtension,
         REACT_DEVELOPER_TOOLS,
@@ -227,19 +237,19 @@ function createWindow() {
       });
     });
 
-    win.openDevTools({ mode: "detach" });
+    _win.openDevTools({ mode: "detach" });
 
-    win.webContents.on('context-menu', (e, props) => {
+    _win.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;
 
       Menu.buildFromTemplate([
         {
           label: 'Inspect element', // NOT LOCALIZED (debug/dev only)
           click: () => {
-            win.inspectElement(x, y);
+            _win.inspectElement(x, y);
           }
         }
-      ]).popup(win);
+      ]).popup(_win);
     });
   }
 
@@ -254,13 +264,13 @@ function createWindow() {
   rendererUrl = rendererUrl.replace(/\\/g, "/");
 
   console.log(rendererUrl);
-  win.loadURL(rendererUrl); // `file://${__dirname}/index.html`
+  _win.loadURL(rendererUrl); // `file://${__dirname}/index.html`
 
-  win.on('closed', function () {
+  _win.on('closed', function () {
       
-      storeUnsubscribe(cb);
+      _storeUnsubscribe(cb);
 
-      win = null;
+      _win = null;
       
       // closeKnowledgeBaseWindows();
 
@@ -280,6 +290,12 @@ function createWindow() {
 // app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', () => {
+
+  const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
+  _store = store;
+  _storeSubscribe = storeSubscribe;
+  _storeUnsubscribe = storeUnsubscribe;
+
   // The Electron app is always run from the ./app/main-bundle.js folder which contains a subfolder copy of the KB
   // ... so this is not needed (and __dirname works in ASAR and non-ASAR mode)
   // const isNotPackaged = process && process.env && process.env.ACE_IS_NOT_PACKAGED === 'true';
@@ -319,7 +335,7 @@ app.on('window-all-closed', function () {
 });
 
 app.on('activate', function () {
-  if (win === null) {
+  if (_win === null) {
       createWindow();
   }
 });

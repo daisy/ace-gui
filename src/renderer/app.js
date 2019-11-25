@@ -12,7 +12,7 @@ import {
 } from './../shared/actions/app';
 
 import { localizer } from './../shared/l10n/localize';
-const { getDefaultLanguage, setCurrentLanguage } = localizer;
+const { getDefaultLanguage, setCurrentLanguage, getRawResources } = localizer;
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 if (isDev) {
@@ -36,9 +36,26 @@ if (isDev) {
 const initialState = getInitialStateRenderer();
 const store = configureStore(initialState, 'renderer');
 
-const initLanguage = store.getState().preferences.language || getDefaultLanguage();
-setCurrentLanguage(initLanguage);
-document.documentElement.setAttribute("lang", initLanguage);
+const appLocale = navigator.language;
+if (isDev) {
+    console.log(`>>> CHROMIUM NAVIGATOR LOCALE LANGUAGE (RENDERER PROCESS): ${appLocale}`);
+}
+const appLocaleSimpleCode = appLocale.split("-")[0];
+const storeLang = store.getState().preferences.language; // initial to Electron app.getLocale(), which normally is the same as navigator.language (for example when starting Electron with --lang=fr)
+if (isDev) {
+    console.log(`>>> STORE LOCALE LANGUAGE (RENDERER PROCESS): ${storeLang}`);
+}
+const langKeys = Object.keys(getRawResources());
+const initialLanguage = storeLang ||
+    langKeys.find((l) => l === appLocale) ||
+    langKeys.find((l) => l === appLocaleSimpleCode) ||
+    getDefaultLanguage(); // en
+if (isDev) {
+    console.log(`>>> --- INITIAL LOCALE LANGUAGE (RENDERER PROCESS): ${initialLanguage}`);
+}
+
+setCurrentLanguage(initialLanguage);
+document.documentElement.setAttribute("lang", initialLanguage);
 
 store.subscribe(() => {
   const state = store.getState();
