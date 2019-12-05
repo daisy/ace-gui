@@ -18,7 +18,8 @@ import Typography from '@material-ui/core/Typography';
 import * as FileDialogHelpers from "../../shared/helpers/fileDialogs";
 import { hideModal } from './../../shared/actions/modal';
 import { savePreferences } from './../../shared/actions/preferences';
-
+import { bindActionCreators } from 'redux';
+import {openFile} from './../../shared/actions/app';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { localizer } from './../../shared/l10n/localize';
@@ -80,7 +81,7 @@ class PreferencesModal extends React.Component {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
+    // dispatch: PropTypes.func.isRequired,
     modalType: PropTypes.string.isRequired,
     preferences: PropTypes.object.isRequired,
   };
@@ -100,7 +101,7 @@ class PreferencesModal extends React.Component {
 
   handleChangeLanguage = arg => (event) => {
     const newState = {
-      "language": event.target.value
+      language: event.target.value
     };
     this.setState(newState);
   };
@@ -120,9 +121,19 @@ class PreferencesModal extends React.Component {
   };
 
   savePrefs = () => {
-    const { dispatch } = this.props;
-    dispatch(savePreferences(this.state));
-    dispatch(hideModal());
+    const currentAppLanguage = this.props.preferences.language || getCurrentLanguage();
+    const chosenLanguage = this.state.language;
+
+    this.props.savePreferences(this.state);
+    this.props.hideModal();
+
+    if (!this.props.processing && this.props.inputPath && this.props.reportPath && chosenLanguage !== currentAppLanguage) {
+      const openFile = this.props.openFile;
+      const inputPath = this.props.inputPath;
+      setTimeout(() => {
+        openFile(inputPath);
+      }, 500);
+    }
   }
 
   render() {
@@ -136,13 +147,13 @@ class PreferencesModal extends React.Component {
       languageSelectMenuItems.push(<MenuItem key={i} value={languageKeys[i]}>{res[languageKeys[i]].name}</MenuItem>);
     }
 
-    const {classes, dispatch, modalType} = this.props;
+    const {classes, modalType} = this.props;
 
     return (
       <Dialog
         aria-labelledby="preferences-dialog-title"
         open={modalType != null}
-        onClose={() => dispatch(hideModal())}
+        onClose={() => this.props.hideModal()}
         onRendered={() => { this.forceUpdate() }}
         classes={{ paper: classes.paper }}>
         <DialogTitle id="preferences-dialog-title">{localize("preferences.title")}</DialogTitle>
@@ -239,7 +250,7 @@ class PreferencesModal extends React.Component {
           </FormControl>
         </DialogContent>
         <DialogActions classes={{ root: classes.dialogActions }}>
-          <Button onClick={() => dispatch(hideModal())}>
+          <Button onClick={() => this.props.hideModal()}>
             {localize("preferences.cancel")}
           </Button>
           <Button onClick={this.savePrefs} variant="contained" color="secondary">
@@ -252,11 +263,18 @@ class PreferencesModal extends React.Component {
 }
 
 function mapStateToProps(state) {
-  let { modal: {modalType}, preferences } = state;
+  let { app: {inputPath, reportPath, processing: {ace}}, modal: {modalType}, preferences } = state;
   return {
+    processing: ace,
+    inputPath,
+    reportPath,
     modalType,
     preferences
   };
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(PreferencesModal));
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({openFile, hideModal, savePreferences}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PreferencesModal));
