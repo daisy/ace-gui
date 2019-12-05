@@ -9,7 +9,7 @@ Ace by DAISY App is the official graphical user interface for the EPUB accessibi
 
 ## Latest Version
 
-The most recent version of Ace App is `v1.0.0` (first "Release Candidate"). Please visit the [release page](https://github.com/daisy/ace-gui/releases/tag/v1.0.0) for more information.
+The latest version of Ace App is `v1.0.0`. Please visit the [release page](https://github.com/daisy/ace-gui/releases/tag/v1.0.0) for more information.
 
 The Ace App currently features a software update notification system. Future versions may support a more sophisticated auto-update mechanism. Until then, users are prompted to download and install the latest release manually.
 
@@ -18,26 +18,6 @@ The Ace App currently features a software update notification system. Future ver
 * **MacOS**: download the [DMG file](https://github.com/daisy/ace-gui/releases/download/v1.0.0/Ace.by.DAISY-1.0.0.dmg), open it, and drag the `Ace by DAISY.app` file into your Applications folder.
 * **Windows**: download the [NSIS installer](https://github.com/daisy/ace-gui/releases/download/v1.0.0/Ace.by.DAISY.Setup.1.0.0.exe), and follow the step-by-step instructions. Please ignore the security warning messages, they are due to the application [not being signed yet](https://github.com/daisy/ace-gui/issues/15).
 * **Linux**: download the [AppImage file](https://github.com/daisy/ace-gui/releases/download/v1.0.0/Ace.by.DAISY-1.0.0.AppImage), and double-click the icon to immediately start using the application. Alternatively, you may download the [Debian package](https://github.com/daisy/ace-gui/releases/download/v1.0.0/ace-gui_1.0.0_amd64.deb) to install the app via your package manager (e.g. `sudo apt install ace-gui_1.0.0_amd64.deb`).
-
-## Notable Features
-
-* Online/Offline integration of the [DAISY Knowledge Base](http://kb.daisy.org/publishing/docs/).
-* English, French, Spanish and Portuguese (Brazil) [localization](https://github.com/daisy/ace-gui/wiki/Localization).
-* Latest [Ace](https://github.com/daisy/ace/releases/tag/v1.1.1) and [Axe](https://github.com/dequelabs/axe-core/blob/develop/CHANGELOG.md#331-2019-07-23) libs.
-* Reduced application size (Axe now runs via Electron itself, the Puppeteer dependency has been removed)
-* Signed and Notarized DMG for MacOS, using the official DAISY Code Signing Certificate (the Windows NSIS installer will be signed at a later stage).
-* Software update notifications.
-
-## Known Limitations
-
-Please use the [issue tracker](https://github.com/daisy/ace-gui/issues) to report problems, suggest features, etc. The most notable caveats in this pre-production release are:
-
-* User documentation: lack of step-by-step instructions, in-depth tutorial (only quick-start guide)
-* Visual presentation: sub-optimal user interface layout and report rendering (table view needs more "responsive design")
-* Accessibility: less-then-ideal support for keyboard usage, and compatibility with screen readers
-* Windows: security warnings due to present lack of code signing certificate, missing permissions to access configuration folder
-* Multiple, successive evaluations: the state of the report table view is not reset, drag-and-drop support is limited
-* Language localization: some menu items are not translated automatically, the platform language is not taken into account when starting the app.
 
 ## Documentation
 
