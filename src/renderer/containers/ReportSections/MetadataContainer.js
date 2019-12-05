@@ -17,7 +17,7 @@ const mapStateToProps = state => {
 
   // conformsTo lives in ['links'] so we have to add it separately to the table
   if (links != undefined && links != {} && 'dcterms:conformsTo' in links) {
-        let a11y = a11ymeta.present.indexOf(row.name) != -1 ? "Yes" : "";
+        let a11y = a11ymeta.present.indexOf(rows.name) != -1 ? "Yes" : "";
         rows.push({
           "name": "dcterms:conformsTo",
           "value": links['dcterms:conformsTo'],
