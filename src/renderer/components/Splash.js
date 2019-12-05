@@ -28,7 +28,6 @@ const styles = theme => ({
 class Splash extends React.Component {
 
   state = {
-    fileHover: false
   };
 
   onBrowseFileOrFolderClick = e => {
@@ -52,36 +51,8 @@ class Splash extends React.Component {
     return false;
   };
 
-  onDrop = e => {
-    e.preventDefault();
-    this.setState({fileHover: false});
-    if (!e.dataTransfer.files || !e.dataTransfer.files.length) {
-      return false;
-    }
-    let filepath = e.dataTransfer.files[0].path;
-    this.props.openFile(filepath);
-    return false;
-  };
-
-  onDragOver = e => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.setState({fileHover: true});
-    return false;
-  };
-
-  onDragLeave = e => {
-    this.setState({fileHover: false});
-    return false;
-  };
-
-  onDragEnd = e => {
-    return false;
-  };
-
   render() {
     let {classes, processing} = this.props;
-    let disabled = processing ? 'disabled' : '';
 
     const orDropSidebar = localize("splash.orDropSidebar");
     const orDropSidebarArray = orDropSidebar.split("__");
@@ -98,12 +69,8 @@ class Splash extends React.Component {
     const browseForFileOrFolder5 = browseForFileOrFolderArray[4].trim();
     return (
         <div className={`splash
-            ${this.state.fileHover ? 'hover' : ''}
             ${processing ? 'processing' : ''}`}
-          onDrop={this.onDrop}
-          onDragOver={this.onDragOver}
-          onDragLeave={this.onDragLeave}
-          onDragEnd={this.onDragEnd} role="main">
+          role="main">
 
           <h1>{localize("splash.title")}</h1>
           <div style={{position: 'relative'}}>
@@ -122,7 +89,7 @@ class Splash extends React.Component {
                 </span>
               }
           </p>
-        }
+          }
         </div>
     );
   }

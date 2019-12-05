@@ -53,14 +53,25 @@ export function setProcessing(type, value) {
   };
 }
 
+function checkAlreadyProcessing(dispatch, st, inputPath) {
+  if (st.app && st.app.processing && st.app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
+    const p = st.app.processing[PROCESSING_TYPE.ACE]; // st.app.inputPath;
+    dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${inputPath})`, interpolation: { escapeValue: false }})));
+    return true;
+  }
+  return false;
+}
+
 export function openFile(filepath) {
-  return dispatch => {
+  return (dispatch, getState) => {
     let type = checkType(filepath);
     if (type == 1) {
-      dispatch(closeReport());
-      dispatch(resetInitialReportView());
+      if (!checkAlreadyProcessing(dispatch, getState(), filepath)) {
+        dispatch(closeReport());
+        dispatch(resetInitialReportView());
 
-      dispatch(runAce(filepath));
+        dispatch(runAce(filepath));
+      }
     }
     else if (type == 2) {
       dispatch(closeReport());
@@ -81,11 +92,11 @@ export function runAce(inputPath) {
       dispatch(addMessage("!axeRunner Electron renderer process?"));
       return;
     }
-    if (getState().app && getState().app.processing && getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
-      const p = getState().app.processing[PROCESSING_TYPE.ACE]; // getState().app.inputPath;
-      dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${inputPath})`, interpolation: { escapeValue: false }})));
+
+    if (checkAlreadyProcessing(dispatch, getState(), inputPath)) {
       return;
     }
+
     dispatch(setProcessing(PROCESSING_TYPE.ACE, inputPath));
     dispatch(addMessage(localize("message.runningace", {inputPath, interpolation: { escapeValue: false }})));
     let outdir = prepareOutdir(inputPath, getState().preferences);

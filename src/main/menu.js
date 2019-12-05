@@ -43,8 +43,9 @@ export default class MenuBuilder {
 
     let currIsReportOpen = this.stateValues.isReportOpen;
     let currReady = this.stateValues.ready;
-    let newIsReportOpen = this.store.getState().app.report != null;
-    let newReady = !this.store.getState().app.processing.ace; // .app.processing[PROCESSING_TYPE.ACE]
+    const st = this.store.getState();
+    let newIsReportOpen = st.app.report != null;
+    let newReady = !st.app.processing.ace; // .app.processing[PROCESSING_TYPE.ACE]
     if (currIsReportOpen != newIsReportOpen || currReady != newReady) {
       this.stateValues.ready = newReady;
       this.stateValues.isReportOpen = newIsReportOpen;

@@ -51,8 +51,9 @@ if (!singleInstanceLock) {
 function handleStartupFileCheck(filepath) {
   app.whenReady().then(() => {
     async function askCheckEPUB() {
-      if (_store.getState() && _store.getState().app && _store.getState().app.processing && _store.getState().app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
-        const p = _store.getState().app.processing[PROCESSING_TYPE.ACE]; // _store.getState().app.inputPath;
+      const st = _store.getState();
+      if (st && st.app && st.app.processing && st.app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
+        const p = st.app.processing[PROCESSING_TYPE.ACE]; // st.app.inputPath;
         _store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
 
         const res = await dialog.showMessageBox({

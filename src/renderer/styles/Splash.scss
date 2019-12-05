@@ -14,37 +14,6 @@
   margin: 0 auto;
 }
 
-.splash::before, .splash::after {
-  content: '';
-  background-color: rgba(0, 0, 0, 0);
-  border-color: rgba(0, 0, 0, 0);
-}
-
-.splash.hover::before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
-  transition: background-color 0.5s ease;
-}
-.splash.hover::after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: calc(100% - 4em + 20px - 10px);
-  height: calc(100% - 4em + 20px - 10px);
-  margin: calc(2em - 10px);
-  border: 5px dashed rgba(0, 0, 0, 0.1);
-  border-radius: 50px;
-  transition: border-color 0.5s ease;
-}
-
 .splash.processing {
   background-color: rgba(128, 128, 128, .4) !important;
   pointer-events: none;

@@ -46,7 +46,6 @@ const sidebarTheme = createMuiTheme({
 });
 
 const styles = theme => ({
-
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
@@ -65,6 +64,7 @@ const styles = theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
+
   drawerPaperClose: {
     overflowX: 'hidden',
     transition: theme.transitions.create('width', {
@@ -104,7 +104,6 @@ class Sidebar extends React.Component {
 
   state = {
     open: true,
-    fileHover: false,
   };
 
   showOpenEPUBDialog = () => {
@@ -127,29 +126,6 @@ class Sidebar extends React.Component {
     return false;
   }
 
-  onDragOver = e => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.setState({fileHover: true});
-    return false;
-  };
-
-  onDragLeave = e => {
-    this.setState({fileHover: false});
-    return false;
-  };
-
-  onDrop = e => {
-    e.preventDefault();
-    this.setState({fileHover: false});
-    if (!e.dataTransfer.files || !e.dataTransfer.files.length) {
-      return false;
-    }
-    let filepath = e.dataTransfer.files[0].path;
-    this.props.openFile(filepath);
-    return false;
-  };
-
   toggleDrawer = () => {
     this.setState({ open: !this.state.open });
   };
@@ -157,6 +133,7 @@ class Sidebar extends React.Component {
 
   render() {
     const { classes, processing, theme, openFile, inputPath, reportPath } = this.props;
+
     return (
       <MuiThemeProvider
       theme={sidebarTheme}>
@@ -179,11 +156,7 @@ class Sidebar extends React.Component {
           <List className={classes.primaryActions}>
             <ListItem button
               disabled={processing.ace ? true : false}
-              onClick={this.showOpenEPUBDialog}
-              onDrop={this.onDrop}
-              onDragOver={this.onDragOver}
-              onDragLeave={this.onDragLeave}
-              selected={this.state.fileHover}>
+              onClick={this.showOpenEPUBDialog}>
               <ListItemIcon>
                 <AddCircleOutlineIcon/>
               </ListItemIcon>
