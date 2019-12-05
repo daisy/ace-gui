@@ -131,7 +131,7 @@ module.exports = (env) => {
           headers: {
               "Access-Control-Allow-Origin": "*",
           },
-          hot: true,
+          hot: false,
           watchContentBase: true,
           watchOptions: {
               ignored: [/app/, /build/, /doc/, /kb/, /node_modules/]
@@ -140,7 +140,7 @@ module.exports = (env) => {
           // inline: true
       };
 
-      config.plugins.push(new webpack.HotModuleReplacementPlugin());
+      // config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
     } else {
       config.output.devtoolModuleFilenameTemplate = "[absolute-resource-path]";
