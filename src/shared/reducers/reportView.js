@@ -51,7 +51,7 @@ export default function reportView(state = initialState, action) {
 
   switch (action.type) {
     case RESET_INITIAL_REPORT_VIEW: {
-      return initialState;
+      return Object.assign({}, initialState, { selectedTab: typeof state.selectedTab === "number" ? state.selectedTab : undefined});
     }
     case SELECT_TAB: {
       return {
