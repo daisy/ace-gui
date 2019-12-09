@@ -97,7 +97,7 @@
         "metadataSection": {
             "a11y": "Acessibilidade",
             "allPresent": "Todos os metadados de acessibilidades necessários estão presentes.",
-            "missing": "Metadados de acessibilidade ausentes::",
+            "missing": "Metadados de acessibilidade ausentes:",
             "name": "Nome",
             "value": "Valor"
         },
