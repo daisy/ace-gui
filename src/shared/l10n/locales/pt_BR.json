@@ -35,7 +35,7 @@
         "gotoMetadata": "Ir para Metadados",
         "gotoOutlines": "Ir para Títulos",
         "gotoSummary": "Ir para Resumo",
-        "gotoViolations": "Ir para Violaçõe",
+        "gotoViolations": "Ir para Violações",
         "help": "Ajuda",
         "knowledgeBase": "Base de Conhecimento",
         "knowledgeBaseOffline": "Local (offline)",
@@ -105,7 +105,7 @@
         "metadataSection": {
             "a11y": "Acessibilidade",
             "allPresent": "Todos os metadados de acessibilidades necessários estão presentes.",
-            "missing": "Metadados de acessibilidade ausentes::",
+            "missing": "Metadados de acessibilidade ausentes:",
             "name": "Nome",
             "value": "Valor"
         },
