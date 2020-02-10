@@ -131,11 +131,12 @@ export function runAce(inputPath) {
         });
       }
 
+      const epubBaseDirDEFAULT = path.join(outdir.value, "tmp_unzipped_EPUB");
       let epubBaseDir = inputPath;
       if (fs.statSync(inputPath).isFile()) {
 
         const epub = new epubUtils.EPUB(inputPath);
-        const epubBaseDir = path.join(outdir.value, "tmp_unzipped_EPUB");
+        epubBaseDir = epubBaseDirDEFAULT;
         if (!fs.existsSync(epubBaseDir)) {
           fs.ensureDirSync(epubBaseDir);
         }
@@ -155,7 +156,12 @@ export function runAce(inputPath) {
           dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
         });
       } else {
-        doAce(epubBaseDir);
+        if (epubBaseDir === epubBaseDirDEFAULT) {
+          doAce(epubBaseDir);
+        } else {
+          // TODO? copy exploded EPUB contents into app-managed folder? (epubBaseDirDEFAULT)
+          doAce(epubBaseDir);
+        }
       }
     }
     else { // error creating outdir (.value has the error message)

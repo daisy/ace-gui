@@ -111,7 +111,12 @@ export default class Violations extends React.Component {
                   );
               })}
             </ul>
-            <p><a className="external-link" onClick={() => this.onExternalLinkClick(row.details.kburl)}>{localize("report.violationsSection.learnAbout")} {row.details.kbtitle}</a></p>
+            <p><a
+              tabIndex={0}
+              className="external-link"
+              onKeyPress={(e) => { if (e.key === "Enter") { this.onExternalLinkClick(row.details.kburl); }}}
+              onClick={() => this.onExternalLinkClick(row.details.kburl)}
+            >{localize("report.violationsSection.learnAbout")} {row.details.kbtitle}</a></p>
           </TableCell>
       }
     ];

@@ -69,6 +69,7 @@
         "savingreport": "Saving report to {{outfile}} ..."
     },
     "metadata": {
+        "a11y": "Accessibility",
         "cancel": "Cancel",
         "edit": "edit",
         "metadata": "Metadata",

@@ -13,10 +13,15 @@ import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
 
 const {ipcRenderer} = require('electron');
+import classNames from 'classnames';
 
 const styles = theme => ({
   editButton: {
     'float': 'right',
+  },
+  kbLink: {
+    'text-align': 'right',
+    'display': 'block',
   },
 });
 
@@ -38,7 +43,8 @@ class Metadata extends React.Component {
     setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
-  onExternalLinkClick = url => {
+  onKB = () => {
+    const url = `${KB_BASE}docs/metadata/schema-org.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
   }
@@ -127,7 +133,12 @@ class Metadata extends React.Component {
             return (<li key={idx}>{data}</li>);
           })}
         </ul>
-        <p><a className="external-link" onClick={() => this.onExternalLinkClick(`${KB_BASE}docs/metadata/schema-org.html`)}>{localize("report.violationsSection.learnAbout")} {localize("report.metadata")}</a></p>
+        <a
+          tabIndex={0}
+          className={classNames(classes.kbLink, 'external-link')}
+          onKeyPress={(e) => { if (e.key === "Enter") { this.onKB(); }}}
+          onClick={() => this.onKB()}
+          >{localize("menu.knowledgeBase")}</a>
       </>
         :
         <p>{localize("report.metadataSection.allPresent")}</p>

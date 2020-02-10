@@ -1,5 +1,9 @@
 @import 'common';
 
+.external-link {
+  cursor: pointer;
+}
+
 .ace-report {
   margin-left: 20px;
   overflow: scroll;
@@ -29,10 +33,6 @@
         overflow: visible;
       }
     }
-  }
-
-  .external-link {
-    cursor: pointer;
   }
 
   .violations {

@@ -156,7 +156,7 @@ class PreferencesModal extends React.Component {
         aria-labelledby="preferences-dialog-title"
         open={modalType != null}
         onClose={() => this.props.hideModal()}
-        onRendered={() => { this.forceUpdate() }}
+        onRendered={() => { setTimeout(() => { this.forceUpdate(); }, 300) }}
         classes={{ paper: classes.paper }}>
         <DialogTitle id="preferences-dialog-title">{localize("preferences.title")}</DialogTitle>
         <DialogContent>
