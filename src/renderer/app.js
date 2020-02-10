@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 
 import { ipcRenderer } from 'electron';
 import {
-  runAce
+  openFile
 } from './../shared/actions/app';
 
 import { localizer } from './../shared/l10n/localize';
@@ -69,8 +69,8 @@ store.subscribe(() => {
 });
 
 ipcRenderer.on('RUN_ACE', (event, filepath) => {
-  // this.props.openFile(filepath);
-  store.dispatch(runAce(filepath));
+  store.dispatch(openFile(filepath));
+  // store.dispatch(runAce(filepath));
 });
 
 render(

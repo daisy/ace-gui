@@ -132,7 +132,7 @@ class Sidebar extends React.Component {
 
 
   render() {
-    const { classes, processing, theme, openFile, inputPath, reportPath } = this.props;
+    const { classes, processing, theme, openFile, inputPath, reportPath, epubBaseDir } = this.props;
 
     return (
       <MuiThemeProvider
@@ -165,7 +165,7 @@ class Sidebar extends React.Component {
                 <CircularProgress size={40} className={classes.buttonProcessing} />}
             </ListItem>
             <ListItem button
-              onClick={() => openFile(inputPath)}
+              onClick={() => openFile(epubBaseDir || inputPath)}
               disabled={!inputPath ? true : false}>
               <ListItemIcon>
                 <RefreshIcon />
@@ -204,11 +204,12 @@ class Sidebar extends React.Component {
   }
 }
 function mapStateToProps(state) {
-  let { app: {processing, inputPath, reportPath}, preferences: {language} } = state;
+  let { app: {processing, inputPath, reportPath, epubBaseDir}, preferences: {language} } = state;
   return {
     language,
     inputPath,
     reportPath,
+    epubBaseDir,
     processing,
   };
 }

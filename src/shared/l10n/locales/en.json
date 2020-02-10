@@ -68,6 +68,14 @@
         "savedreport": "Saved report to {{outfile}}",
         "savingreport": "Saving report to {{outfile}} ..."
     },
+    "metadata": {
+        "cancel": "Cancel",
+        "edit": "edit",
+        "metadata": "Metadata",
+        "name": "Name",
+        "save": "Save",
+        "value": "Value"
+    },
     "preferences": {
         "cancel": "Cancel",
         "internalReportStorage": "Internal Report Storage",

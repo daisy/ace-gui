@@ -3,11 +3,27 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TableCell from '@material-ui/core/TableCell';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import {showMetadataEditor} from './../../../shared/actions/metadata';
+
 import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
 
+const {ipcRenderer} = require('electron');
+
+const styles = theme => ({
+  editButton: {
+    'float': 'right',
+  },
+});
+
+const KB_BASE = 'http://kb.daisy.org/publishing/';
+
 // the metadata page of the report
-export default class Metadata extends React.Component {
+class Metadata extends React.Component {
 
   static propTypes = {
     metadata: PropTypes.array.isRequired,
@@ -22,8 +38,14 @@ export default class Metadata extends React.Component {
     setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
+  onExternalLinkClick = url => {
+    ipcRenderer.send('KB_URL', url);
+    // shell.openExternal(url);
+  }
+
   render() {
     let {
+      classes,
       metadata,
       a11ymetadata,
       filters,
@@ -96,6 +118,7 @@ export default class Metadata extends React.Component {
 
       <h2>{localize("report.metadataSection.missing")}</h2>
       {hasMissingOrEmpty ?
+      <>
         <ul>
           {a11ymetadata.missing.map((data, idx) => {
             return (<li key={idx}>{data}</li>);
@@ -104,10 +127,32 @@ export default class Metadata extends React.Component {
             return (<li key={idx}>{data}</li>);
           })}
         </ul>
+        <p><a className="external-link" onClick={() => this.onExternalLinkClick(`${KB_BASE}docs/metadata/schema-org.html`)}>{localize("report.violationsSection.learnAbout")} {localize("report.metadata")}</a></p>
+      </>
         :
         <p>{localize("report.metadataSection.allPresent")}</p>
       }
+
+      <hr/>
+      <Button onClick={this.props.showMetadataEditor} className={classes.editButton}>
+        {`${localize("metadata.edit")} ...`}
+      </Button>
+
      </section>
     );
   }
 }
+function mapStateToProps(state) {
+  let { app: {processing: {ace}, inputPath, reportPath, epubBaseDir} } = state;
+  return {
+    inputPath,
+    reportPath,
+    epubBaseDir,
+    processing: ace,
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({showMetadataEditor}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Metadata));

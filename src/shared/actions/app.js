@@ -1,7 +1,12 @@
 import path from 'path';
+
 import fs from 'fs';
+
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';
+
+import epubUtils from '@daisy/epub-utils';
+import logger from '@daisy/ace-logger';
 
 import { resetInitialReportView } from './reportView';
 
@@ -13,7 +18,7 @@ const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
 const axeRunner = ipcRenderer ? createAxeRunner(ipcRenderer, CONCURRENT_INSTANCES) : undefined;
 
 import { localizer } from '../l10n/localize';
-const { getCurrentLanguage, localize } = localizer;
+const { setCurrentLanguage, getCurrentLanguage, localize } = localizer;
 
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";
@@ -99,24 +104,59 @@ export function runAce(inputPath) {
 
     dispatch(setProcessing(PROCESSING_TYPE.ACE, inputPath));
     dispatch(addMessage(localize("message.runningace", {inputPath, interpolation: { escapeValue: false }})));
-    let outdir = prepareOutdir(inputPath, getState().preferences);
 
+    let outdir = prepareOutdir(inputPath, getState().preferences);
     if (outdir.success) {
+
       const language = getCurrentLanguage();
-      
-      ace(inputPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: true, fileName: "ace-gui.log"}, axeRunner)
-      .then(() => {
-        dispatch(addMessage(localize("message.checkcomplete")));
-        let reportPath = outdir.value + '/report.json';
-        dispatch(openReport(reportPath, inputPath));
-      })
-      .then(() => {
-        dispatch(setProcessing(PROCESSING_TYPE.ACE, false));
-      })
-      .catch(error =>  {// Ace execution error
-        dispatch(addMessage(error));
-        dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
-      });
+      if (language) {
+        setCurrentLanguage(language);
+      }
+      logger.initLogger({ verbose: true, silent: false, fileName: "ace-gui.log" });
+
+      function doAce(epubPath) {
+        ace(epubPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: false}, axeRunner)
+        .then((res) => {
+          dispatch(addMessage(localize("message.checkcomplete")));
+  
+          let reportPath = path.join(outdir.value, 'report.json');
+          dispatch(openReport(reportPath, inputPath, epubPath));
+        })
+        .then(() => {
+          dispatch(setProcessing(PROCESSING_TYPE.ACE, false));
+        })
+        .catch(error =>  {// Ace execution error
+          dispatch(addMessage(error));
+          dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
+        });
+      }
+
+      let epubBaseDir = inputPath;
+      if (fs.statSync(inputPath).isFile()) {
+
+        const epub = new epubUtils.EPUB(inputPath);
+        const epubBaseDir = path.join(outdir.value, "tmp_unzipped_EPUB");
+        if (!fs.existsSync(epubBaseDir)) {
+          fs.ensureDirSync(epubBaseDir);
+        }
+        epub.extract(epubBaseDir)
+        // .then((epb) => {
+        //   console.log(JSON.stringify(epb, null, 4));
+        //   return epb.parse();
+        // })
+        .then((epb) => {
+          // console.log(JSON.stringify(epb.metadata, null, 4));
+          doAce(epubBaseDir);
+        })
+        .catch((err) => {
+          console.log(`Unexpected error: ${(err.message !== undefined) ? err.message : err}`);
+          if (err.stack !== undefined) console.log(err.stack);
+          dispatch(addMessage(err));
+          dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
+        });
+      } else {
+        doAce(epubBaseDir);
+      }
     }
     else { // error creating outdir (.value has the error message)
       dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
@@ -124,10 +164,10 @@ export function runAce(inputPath) {
     }
   }
 }
-export function openReport(reportPath, inputPath) {
+export function openReport(reportPath, inputPath, epubBaseDir) {
   return {
     type: OPEN_REPORT,
-    payload: { reportPath, inputPath },
+    payload: { reportPath, inputPath, epubBaseDir },
   };
 }
 

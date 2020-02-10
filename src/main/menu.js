@@ -134,7 +134,7 @@ export default class MenuBuilder {
             id: 'rerunAce',
             accelerator: 'CmdOrCtrl+Shift+R',
             click: () => {
-              const p = this.store.getState().app.inputPath;
+              const p = this.store.getState().app.epubBaseDir || this.store.getState().app.inputPath;
               this.store.dispatch(closeReport());
               this.store.dispatch(resetInitialReportView());
 

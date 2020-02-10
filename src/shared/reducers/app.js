@@ -58,7 +58,7 @@ export default function app(state = initialState, action) {
     }
     case OPEN_REPORT: {
       try {
-        let {reportPath, inputPath } = action.payload;
+        let {reportPath, inputPath, epubBaseDir } = action.payload;
         let report = JSON.parse(fs.readFileSync(reportPath));
         if (inputPath === undefined && report['earl:testSubject'] !== undefined && report['earl:testSubject'].url !== undefined) {
           inputPath = path.resolve(reportPath, report['earl:testSubject'].url);
@@ -69,6 +69,7 @@ export default function app(state = initialState, action) {
           ...state,
           inputPath,
           reportPath,
+          epubBaseDir,
           report,
           messages
         };

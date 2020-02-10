@@ -68,6 +68,14 @@
         "savedreport": "Relatório salvo em {{outfile}}",
         "savingreport": "Salvando relatório em {{outfile}} ..."
     },
+    "metadata": {
+        "cancel": "Cancelar",
+        "edit": "editar",
+        "metadata": "Metadados",
+        "name": "Nome",
+        "save": "Salvar",
+        "value": "Valor"
+    },
     "preferences": {
         "cancel": "Cancelar",
         "internalReportStorage": "Armazenamento Interno do Relatório",

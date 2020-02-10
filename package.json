@@ -151,6 +151,8 @@
     "@daisy/ace-axe-runner-electron": "file:../ace/packages/ace-axe-runner-electron",
     "@daisy/ace-core": "file:../ace/packages/ace-core",
     "@daisy/ace-localize": "file:../ace/packages/ace-localize",
+    "@daisy/ace-logger": "file:../ace/packages/ace-core",
+    "@daisy/epub-utils": "file:../ace/packages/epub-utils",
     "@material-ui/core": "^4.7.1",
     "@material-ui/icons": "^4.5.1",
     "@mrmlnc/readdir-enhanced": "^2.2.1",

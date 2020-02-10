@@ -130,8 +130,10 @@ class PreferencesModal extends React.Component {
     if (!this.props.processing && this.props.inputPath && this.props.reportPath && chosenLanguage !== currentAppLanguage) {
       const openFile = this.props.openFile;
       const inputPath = this.props.inputPath;
+      const epubBaseDir = this.props.epubBaseDir;
+      
       setTimeout(() => {
-        openFile(inputPath);
+        openFile(epubBaseDir || inputPath);
       }, 500);
     }
   }
@@ -263,11 +265,12 @@ class PreferencesModal extends React.Component {
 }
 
 function mapStateToProps(state) {
-  let { app: {inputPath, reportPath, processing: {ace}}, modal: {modalType}, preferences } = state;
+  let { app: {inputPath, reportPath, epubBaseDir, processing: {ace}}, modal: {modalType}, preferences } = state;
   return {
     processing: ace,
     inputPath,
     reportPath,
+    epubBaseDir,
     modalType,
     preferences
   };
