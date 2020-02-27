@@ -3,13 +3,28 @@ import readdir from '@mrmlnc/readdir-enhanced';
 import fs from 'fs';
 import JSZip from 'jszip';
 
-export default function zip(dir, output) {
+export default function zip(dir, output, includes) {
   return new Promise((resolve, reject) => {
     var archive = new JSZip();
     readdir.stream(dir, {deep: true})
     .on('data', data => {})
     .on('file', file => {
-      archive.file(file, fs.createReadStream(path.resolve(dir,file)));
+      let doZip = true;
+      if (includes) {
+        doZip = false;
+        for (const regexp of includes) {
+          if (regexp.test(file)) {
+            doZip = true;
+            break;
+          }
+        }
+      }
+      if (doZip) {
+        console.log("ZIP included:", file);
+        archive.file(file, fs.createReadStream(path.resolve(dir,file)));
+      } else {
+        console.log("ZIP excluded:", file);
+      }
     })
     .on('error', reject)
     .on('end', () => {

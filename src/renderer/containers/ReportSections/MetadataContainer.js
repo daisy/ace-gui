@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import Metadata from './../../components/ReportSections/Metadata';
 import * as ReportViewActions from './../../../shared/actions/reportView';
 
+import { localizer } from './../../../shared/l10n/localize';
+const { localize } = localizer;
+
 const mapStateToProps = state => {
   let {app: {report}, reportView: {filters, sort, pagination, expandFilters}, preferences: {language}} = state;
   let rows = [];
@@ -11,18 +14,36 @@ const mapStateToProps = state => {
   let a11ymeta = report['a11y-metadata'];
 
   for (let key in metadata) {
-    let a11y = a11ymeta.present.indexOf(key) != -1 ? "Yes" : "";
+    let a11y = a11ymeta.present.indexOf(key) != -1 ? localize("versionCheck.yes") : "";
     rows.push({"name": key, "value": metadata[key], "a11y": a11y});
   }
 
   // conformsTo lives in ['links'] so we have to add it separately to the table
-  if (links != undefined && links != {} && 'dcterms:conformsTo' in links) {
-        let a11y = a11ymeta.present.indexOf("dcterms:conformsTo") != -1 ? "Yes" : "";
+  if (links) {
+    if ('dcterms:conformsTo' in links) {
+        let a11y = a11ymeta.present.indexOf("dcterms:conformsTo") != -1 ? localize("versionCheck.yes") : "";
         rows.push({
           "name": "dcterms:conformsTo",
           "value": links['dcterms:conformsTo'],
           "a11y": a11y
       });
+    }
+    if ('a11y:certifierReport' in links) {
+        let a11y = a11ymeta.present.indexOf("a11y:certifierReport") != -1 ? localize("versionCheck.yes") : "";
+        rows.push({
+          "name": "a11y:certifierReport",
+          "value": links['a11y:certifierReport'],
+          "a11y": a11y
+      });
+    }
+    if ('a11y:certifierCredential' in links) {
+        let a11y = a11ymeta.present.indexOf("a11y:certifierCredential") != -1 ? localize("versionCheck.yes") : "";
+        rows.push({
+          "name": "a11y:certifierCredential",
+          "value": links['a11y:certifierCredential'],
+          "a11y": a11y
+      });
+    }
   }
 
   return {

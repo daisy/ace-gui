@@ -22,6 +22,7 @@ const styles = theme => ({
   kbLink: {
     'text-align': 'right',
     'display': 'block',
+    'margin-right': '1em',
   },
 });
 
@@ -43,10 +44,19 @@ class Metadata extends React.Component {
     setTableFiltersExpanded: PropTypes.func.isRequired
   };
 
-  onKB = () => {
+  onKBSchemaOrg = () => {
     const url = `${KB_BASE}docs/metadata/schema-org.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
+  }
+  onKBEvaluation = () => {
+    const url = `${KB_BASE}docs/metadata/evaluation.html`;
+    ipcRenderer.send('KB_URL', url);
+    // shell.openExternal(url);
+  }
+  onKB = () => {
+    this.onKBSchemaOrg();
+    this.onKBEvaluation();
   }
 
   render() {
@@ -124,7 +134,6 @@ class Metadata extends React.Component {
 
       <h2>{localize("report.metadataSection.missing")}</h2>
       {hasMissingOrEmpty ?
-      <>
         <ul>
           {a11ymetadata.missing.map((data, idx) => {
             return (<li key={idx}>{data}</li>);
@@ -133,16 +142,15 @@ class Metadata extends React.Component {
             return (<li key={idx}>{data}</li>);
           })}
         </ul>
-        <a
+        :
+        <p>{localize("report.metadataSection.allPresent")}</p>
+      }
+      <a
           tabIndex={0}
           className={classNames(classes.kbLink, 'external-link')}
           onKeyPress={(e) => { if (e.key === "Enter") { this.onKB(); }}}
           onClick={() => this.onKB()}
-          >{localize("menu.knowledgeBase")}</a>
-      </>
-        :
-        <p>{localize("report.metadataSection.allPresent")}</p>
-      }
+          >{`${localize("menu.knowledgeBase")} (${localize("menu.help")})`}</a>
 
       <hr/>
       <Button onClick={this.props.showMetadataEditor} className={classes.editButton}>

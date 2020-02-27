@@ -74,7 +74,15 @@ function createFlatListOfViolations(violations) {
       }
       
       let html = item["earl:result"]["html"] ? escape(item["earl:result"]["html"]) : '';
+      
       let desc = item["earl:result"]["dct:description"];
+      if (item["earl:test"] && item["earl:test"]["dct:description"]) {
+        desc = `${desc} \n ${item["earl:test"]["dct:description"]}`;
+      }
+      if (item["earl:test"] && item["earl:test"]["help"] && item["earl:test"]["help"]["dct:description"]) {
+        desc = `${desc} \n ${item["earl:test"]["help"]["dct:description"]}`;
+      }
+
       desc = desc.replace("Fix all of the following:", "");
       desc = desc.replace("Fix any of the following:", "");
 

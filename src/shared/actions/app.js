@@ -10,7 +10,7 @@ import logger from '@daisy/ace-logger';
 
 import { resetInitialReportView } from './reportView';
 
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 
 // const createAxeRunner = require('@daisy/ace-axe-runner-electron').createAxeRunner;
 import { createAxeRunner } from '@daisy/ace-axe-runner-electron';
@@ -19,6 +19,8 @@ const axeRunner = ipcRenderer ? createAxeRunner(ipcRenderer, CONCURRENT_INSTANCE
 
 import { localizer } from '../l10n/localize';
 const { setCurrentLanguage, getCurrentLanguage, localize } = localizer;
+
+const _tmp_epub_unzip_subfolder = "unzipped_EPUB";
 
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLOSE_REPORT = "CLOSE_REPORT";
@@ -92,6 +94,11 @@ export function openFile(filepath) {
 
 export function runAce(inputPath) {
   return (dispatch, getState) => {
+
+    console.log(inputPath);
+    inputPath = fs.realpathSync(inputPath);
+    console.log(inputPath);
+    
     if (!axeRunner) {
       dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
       dispatch(addMessage("!axeRunner Electron renderer process?"));
@@ -131,15 +138,16 @@ export function runAce(inputPath) {
         });
       }
 
-      const epubBaseDirDEFAULT = path.join(outdir.value, "tmp_unzipped_EPUB");
+      const epubBaseDirDEFAULT = path.join(outdir.value, _tmp_epub_unzip_subfolder);
       let epubBaseDir = inputPath;
-      if (fs.statSync(inputPath).isFile()) {
+      if (fs.statSync(epubBaseDir).isFile()) {
 
-        const epub = new epubUtils.EPUB(inputPath);
+        const epub = new epubUtils.EPUB(epubBaseDir);
         epubBaseDir = epubBaseDirDEFAULT;
         if (!fs.existsSync(epubBaseDir)) {
           fs.ensureDirSync(epubBaseDir);
         }
+        remote.shell.showItemInFolder(epubBaseDir);
         epub.extract(epubBaseDir)
         // .then((epb) => {
         //   console.log(JSON.stringify(epb, null, 4));
@@ -156,6 +164,7 @@ export function runAce(inputPath) {
           dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
         });
       } else {
+        remote.shell.showItemInFolder(epubBaseDir);
         if (epubBaseDir === epubBaseDirDEFAULT) {
           doAce(epubBaseDir);
         } else {
@@ -182,7 +191,6 @@ export function closeReport() {
     type: CLOSE_REPORT,
   };
 }
-
 export function exportReport(outfile) {
   return (dispatch, getState) => {
     let {app: { reportPath }} = getState();
@@ -192,7 +200,15 @@ export function exportReport(outfile) {
     // - ensure outdir is overwriteable
     dispatch(setProcessing(PROCESSING_TYPE.EXPORT, true));
     dispatch(addMessage(localize("message.savingreport", {outfile, interpolation: { escapeValue: false }})));
-    zip(path.dirname(reportPath), outfile)
+    zip(path.dirname(reportPath), outfile,
+      // see prepareOutdir() overrides:
+      [
+        new RegExp(`^report.json`),
+        new RegExp(`^report.html`),
+        new RegExp(`^data[/\\\\]`),
+        new RegExp(`^js[/\\\\]`),
+      ]
+    )
     .then(() => {
       dispatch(addMessage(localize("message.savedreport", {outfile, interpolation: { escapeValue: false }})));
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
@@ -214,17 +230,50 @@ export function addMessage(message) {
 
 function prepareOutdir(filepath, prefs) {
   let outdir = prefs.reports.dir;
-  if (prefs.reports.organize) {
-    outdir = path.join(outdir, path.parse(filepath).name);
-  }
-  if (!prefs.reports.overwrite) {
-    const overrides = ['report.json', 'report.html', 'data', 'js']
-      .map(file => path.join(outdir, file))
-      .filter(fs.existsSync);
-    if (overrides.length > 0) {
-      const val = overrides.map(file => `  - ${file}`).join('\n');
-      return {success: false, value: localize("message.overwrite", {val, interpolation: { escapeValue: false }})};
+
+  console.log(`== PREPARE OUT DIR:`);
+
+  console.log(outdir);
+  outdir = fs.realpathSync(outdir);
+  console.log(outdir);
+
+  const within = filepath.startsWith(outdir);
+  const reRunFromUnzipped = within &&
+    path.basename(filepath) === _tmp_epub_unzip_subfolder;
+
+  if (reRunFromUnzipped) {
+    outdir = path.dirname(filepath);
+    console.log(`RE-RUN FROM OUT DIR => ${outdir}`);
+
+    fs.removeSync(path.join(outdir, 'report.json'));
+    fs.removeSync(path.join(outdir, 'report.html'));
+    fs.removeSync(path.join(outdir, 'data'));
+    fs.removeSync(path.join(outdir, 'js'));
+  } else {
+    if (prefs.reports.organize) {
+      outdir = path.join(outdir, path.parse(filepath).name);
+      console.log(`SUB OUT DIR => ${outdir}`);
+    }
+    if (!prefs.reports.overwrite) {
+      const overrides = ['report.json', 'report.html', 'data', 'js']
+        .map(file => path.join(outdir, file))
+        .filter(fs.existsSync);
+      if (overrides.length > 0) {
+        const val = overrides.map(file => `  - ${file}`).join('\n');
+        console.log(`CANNOT OVERRIDE in ${outdir} (${val})`);
+        return {success: false, value: localize("message.overwrite", {val, interpolation: { escapeValue: false }})};
+      }
+    } else {
+      if (!within) {
+        console.log(`DELETE OUT DIR: ${outdir}`);
+        if (fs.existsSync(outdir)) {
+          fs.removeSync(outdir);
+        }
+      } else {
+        console.log(`SKIP DELETE OUT DIR: ${outdir}`);
+      }
     }
   }
+
   return {success: true, value: outdir};
 }

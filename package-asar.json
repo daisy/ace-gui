@@ -43,6 +43,8 @@
     "selfsigned": "^1.10.7",
     "tmp": "^0.1.0",
     "typeface-roboto": "^0.0.75",
-    "uuid": "^7.0.1"
+    "uuid": "^7.0.1",
+    "xmldom-alpha": "^0.1.28",
+    "xpath": "^0.0.27"
   }
 }
