@@ -1,6 +1,6 @@
 import path from 'path';
 
-import fs from 'fs';
+import fs from 'fs-extra';
 
 import ace from '@daisy/ace-core';
 import zip from '../helpers/zip';

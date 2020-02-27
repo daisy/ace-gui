@@ -1,6 +1,6 @@
 
 import * as selfsigned from "selfsigned";
-import * as uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 export function generateSelfSignedData() {
     return new Promise((resolve, reject) => {
@@ -17,7 +17,7 @@ export function generateSelfSignedData() {
                 name: "subjectAltName",
             }],
         };
-        const rand = uuid.v4();
+        const rand = uuidv4();
         const attributes = [{ name: "commonName", value: "KB insecure server " + rand }];
 
         selfsigned.generate(attributes, opts, (err, keys) => {
