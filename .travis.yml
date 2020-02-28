@@ -86,7 +86,7 @@ script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn run build:prod; fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     if [[ "$TRAVIS_OS_NAME_" == "linux" ]] || [[ "$TRAVIS_OS_NAME_" == "osx" ]]; then
-    echo "TRAVIS_OS_SCRIPT" && pwd && ls -als && export MY_PWD=`pwd` && echo "PWD ${MY_PWD}" && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.19.1) || echo "YARN OK") && export PATH="$HOME/.yarn/bin:$PATH" && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd $MY_PWD && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff ;
+    echo "TRAVIS_OS_SCRIPT" && pwd && ls -als && export MY_PWD=`pwd` && echo "PWD ${MY_PWD}" && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.0) || echo "YARN OK") && export PATH="$HOME/.yarn/bin:$PATH" && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout pr-merge/223+227 && rm yarn.lock && rm -rf node_modules && yarn install && rm -rf node_modules/@daisy && rm -rf packages/*/node_modules/@daisy && VERBOSE=1 yarn build && yarn upgrade && rm -rf packages/*/node_modules && git --no-pager diff && cd $MY_PWD && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff ;
     fi;
     fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
