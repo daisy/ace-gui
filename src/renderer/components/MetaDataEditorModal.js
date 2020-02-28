@@ -100,16 +100,16 @@ const A11Y_META = {
     required: true,
     allowedValues: [
       'auditory',
+      'tactile',
+      'textual',
+      'visual',
       'chartOnVisual',
       'chemOnVisual',
       'colorDependent',
       'diagramOnVisual',
       'mathOnVisual',
       'musicOnVisual',
-      'tactile',
       'textOnVisual',
-      'textual',
-      'visual',
     ]
   },
   'schema:accessModeSufficient': {
@@ -119,6 +119,13 @@ const A11Y_META = {
       'tactile',
       'textual',
       'visual',
+      'chartOnVisual',
+      'chemOnVisual',
+      'colorDependent',
+      'diagramOnVisual',
+      'mathOnVisual',
+      'musicOnVisual',
+      'textOnVisual',
     ]
   },
   'schema:accessibilityAPI': {
@@ -133,6 +140,7 @@ const A11Y_META = {
       'fullSwitchControl',
       'fullTouchControl',
       'fullVideoControl',
+      'fullAudioControl',
       'fullVoiceControl',
     ]
   },
@@ -224,13 +232,31 @@ const styles = theme => ({
     width: '100%',
     "font-size": "90%",
   },
-  browseControlInputLabel: {
-    color: theme.palette.text.primary,
-    "font-size": "120%",
+  browseControlInputLabelRaised: {
+    color: '#333333',
+    'background-color': 'white',
+    'padding-left': '4px',
+    'padding-right': '4px',
+    "font-size": "130%",
+    'padding-top': '0px !important',
+  },
+  browseControlInputLabelRoot: {
+    color: '#333333',
+    'padding-top': '5px',
   },
   browseControlInputOutline: {
     'border-color': theme.palette.text.primary,
     // 'background-color': 'rgba(0,0,0,0.04)',
+  },
+  red: {
+    // color: 'red',
+    // 'background-color': 'red',
+    // 'border-color': 'red',
+    // 'outline-color': 'red',
+    // 'outline-style': 'solid',
+    // 'outline-width': '2px',
+    // 'outline-offset': '1px',
+    'box-shadow': '0px 0px 0px 2px rgb(219,28,28)',
   },
 });
 
@@ -427,6 +453,20 @@ class MetaDataEditorModal extends React.Component {
         }
       });
 
+      Object.keys(A11Y_META).forEach((name) => {
+        if (A11Y_META[name].required || A11Y_META[name].recommended) {
+          const found = metadata.find((md) => {
+            return md.name === name;
+          });
+          if (!found) {
+            metadata.push({
+              name,
+              content: "",
+            });
+          }
+        }
+      });
+
       metadata = metadata.sort((a, b) => {
         if (a.name > b.name) {
             return 1;
@@ -544,26 +584,79 @@ class MetaDataEditorModal extends React.Component {
       }
 
       const mdname = metadata.name;
-      const mdvalue = metadata.content;
+      let mdvalue = metadata.content;
+
+      const doPickSelect = (mdname in A11Y_META) && A11Y_META[mdname].allowedValues;
+      if (doPickSelect) {
+        if (mdvalue) {
+          mdvalue = mdvalue.trim();
+          if (mdvalue) {
+            mdvalue = mdvalue.split(",").filter(s => s.trim().length).map((v) => {
+              return {
+                label: v,
+                value: v,
+              };
+            });
+            if (!mdvalue || !mdvalue.length) {
+              mdvalue = null;
+            }
+          } else {
+            mdvalue = null;
+          }
+        }
+      }
+
+      let hasVal = false;
+      if (mdvalue) {
+        if (typeof mdvalue === "object" && mdvalue.value && mdvalue.value.trim()) {
+          hasVal = true;
+        } else if (mdvalue instanceof Array) {
+          hasVal = true;
+        } else if (mdvalue.trim()) {
+          hasVal = true;
+        }
+      }
+      let flagged = !hasVal &&
+        (mdname in A11Y_META) &&
+        (A11Y_META[mdname].required || A11Y_META[mdname].recommended);
+      if (!flagged && (mdname in A11Y_META) && A11Y_META[mdname].allowedValues && mdvalue && mdvalue instanceof Array) {
+        for (const obj of mdvalue) {
+          const notSupported = !A11Y_META[mdname].allowedValues.includes(obj.value); 
+          if (notSupported) {
+            flagged = true;
+            obj.notSupported = true;
+            // break;
+          }
+        }
+      }
 
       const jsx = (
-        <div key={`metadata_key_${idx}`} className={classes.browseControlInputGroup}>
+        <div key={`metadata_key_${idx}`} className={classNames(classes.browseControlInputGroup, flagged ? classes.red : undefined)}>
         <FormControl
           variant="outlined"
           margin="dense"
           className={classes.browseControl}>
           {
-          (mdname in A11Y_META) && A11Y_META[mdname].allowedValues ?
+          doPickSelect ?
           <ReactSelect
             className='react-select-container'
             classNamePrefix="react-select"
-
+            data-idx={idx}
+            ref={ref => {
+              if (ref) {
+                // const dataIndex = ref.props["data-idx"];
+                // const index = parseInt(dataIndex, 10);
+              }
+            }}
             components={{
               ValueContainer: CustomValueContainer
             }}
 
             menuPortalTarget={document.querySelector('body')}
             maxMenuHeight={100}
+
+            menuPosition={'fixed' /* 'absolute' */}
+            menuPlacement={'bottom' /* 'auto' | 'top' */}
 
             styles={{
               container: (provided, state) => {
@@ -602,9 +695,15 @@ class MetaDataEditorModal extends React.Component {
                 ...base,
                 zIndex: "9999 !important",
                 transform: 'translateZ(0)'
-              })
+              }),
+              multiValue: (styles, { data, isDisabled, isFocused, isSelected }) => {
+                console.log(data);
+                return {
+                  ...styles,
+                  ...(data.notSupported ? { border: '1px solid rgb(219,28,28)' } : {})
+                };
+              },
             }}
-
             options={
               A11Y_META[mdname].allowedValues.map((allowedValue) => {
                 return {
@@ -613,19 +712,43 @@ class MetaDataEditorModal extends React.Component {
                 };
               })
             }
-            value={
-              mdvalue ? 
-              {
-                label: mdvalue,
-                value: mdvalue,
-              } : null
-            }
-            onChange={(values, {action, removedValue}) => {
-              console.log(values);
-              console.log(action);
-              console.log(removedValue);
+            value={mdvalue}
+
+            name={`${mdname}_${idx}`}
+            onChange={(values, obj) => {
+
+              const dataIndex = obj.name.split("_")[1];
+              const index = parseInt(dataIndex, 10);
+              console.log(index);
+              
+              if (obj.action === "clear") {
+                const newMd = this.state.metadata;
+                newMd[index].content = "";
+                this.setState({
+                  metadata: newMd,
+                });
+              } else if (obj.action === "remove-value") {
+                const newMd = this.state.metadata;
+                // const arr = newMd[index].content.split(",").
+                //   filter(s => s.trim().length).
+                //   filter(s => s !== obj.removedValue.value);
+                // newMd[index].content = arr.join(",");
+                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
+                this.setState({
+                  metadata: newMd,
+                });
+              } else if (obj.action === "select-option") {
+                const newMd = this.state.metadata;
+                // const arr = newMd[index].content.split(",").
+                //   filter(s => s.trim().length).
+                //   concat([obj.option.value]);
+                // newMd[index].content = arr.join(",");
+                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
+                this.setState({
+                  metadata: newMd,
+                });
+              }
             }}
-            name={mdname}
             closeMenuOnSelect={true}
             isMulti={true}
             placeholder={mdname}
@@ -643,12 +766,16 @@ class MetaDataEditorModal extends React.Component {
                 }
               }
             }
-            classes={{ root: classes.browseControlInputLabel }}
+            classes={{
+              root: !mdvalue ? classes.browseControlInputLabelRoot : classes.browseControlInputLabelRaised,
+              focused: classes.browseControlInputLabelRaised
+            }}
           >{mdname}</InputLabel>
           <OutlinedInput 
             id={`metadata_${idx}`}
             inputProps={{"data-idx": `${idx}`}}
             value={mdvalue}
+            multiline={mdname === "schema:accessibilitySummary"}
             onChange={(event) => {
               const dataIndex = event.target.getAttribute("data-idx");
               const index = parseInt(dataIndex, 10);
@@ -725,7 +852,7 @@ class MetaDataEditorModal extends React.Component {
               setTimeout(() => { this.forceUpdate(); }, 500);
             }}
             aria-label={localize("metadata.add")}>
-            <AddIcon />
+            <AddBoxIcon />
           </IconButton>
       </FormControl>
       </div>

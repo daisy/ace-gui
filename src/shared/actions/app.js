@@ -95,9 +95,7 @@ export function openFile(filepath) {
 export function runAce(inputPath) {
   return (dispatch, getState) => {
 
-    console.log(inputPath);
-    inputPath = fs.realpathSync(inputPath);
-    console.log(inputPath);
+    inputPath = fs.existsSync(inputPath) ? fs.realpathSync(inputPath) : inputPath;
     
     if (!axeRunner) {
       dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
@@ -233,9 +231,7 @@ function prepareOutdir(filepath, prefs) {
 
   console.log(`== PREPARE OUT DIR:`);
 
-  console.log(outdir);
-  outdir = fs.realpathSync(outdir);
-  console.log(outdir);
+  outdir = fs.existsSync(outdir) ? fs.realpathSync(outdir) : outdir;
 
   const within = filepath.startsWith(outdir);
   const reRunFromUnzipped = within &&
