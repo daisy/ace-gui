@@ -63,3 +63,7 @@ a {
   border-radius: 50px;
   transition: border-color 0.5s ease;
 }
+
+.react-select__value-container {
+  overflow: visible !important;
+}

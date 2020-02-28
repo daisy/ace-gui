@@ -70,7 +70,9 @@
     },
     "metadata": {
         "a11y": "Accessibilité",
+        "add": "Ajouter",
         "cancel": "Annuler",
+        "delete": "Supprimer",
         "edit": "éditer",
         "metadata": "Métadonnées",
         "name": "Nom",

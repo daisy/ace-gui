@@ -5,11 +5,20 @@ const DOMParser = require('xmldom-alpha').DOMParser;
 const XMLSerializer = require('xmldom-alpha').XMLSerializer;
 const xpath = require('xpath');
 
+import ReactSelect from 'react-select';
+import { components } from "react-select";
+import CreatableSelect from 'react-select/creatable';
+
+import CancelIcon from '@material-ui/icons/Cancel';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import AddIcon from '@material-ui/icons/Add';
+import IconButton from '@material-ui/core/IconButton';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, withTheme } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -86,99 +95,99 @@ const a11yMeta = [
   "a11y:certifierCredential", //(MAY BE link in EPUB3)
 ].concat(a11yMeta_links);
 
-// const A11Y_META = {
-//   'schema:accessMode': {
-//     required: true,
-//     allowedValues: [
-//       'auditory',
-//       'chartOnVisual',
-//       'chemOnVisual',
-//       'colorDependent',
-//       'diagramOnVisual',
-//       'mathOnVisual',
-//       'musicOnVisual',
-//       'tactile',
-//       'textOnVisual',
-//       'textual',
-//       'visual',
-//     ]
-//   },
-//   'schema:accessModeSufficient': {
-//     recommended: true,
-//     allowedValues: [
-//       'auditory',
-//       'tactile',
-//       'textual',
-//       'visual',
-//     ]
-//   },
-//   'schema:accessibilityAPI': {
-//     allowedValues: [
-//       'ARIA'
-//     ]
-//   },
-//   'schema:accessibilityControl': {
-//     allowedValues: [
-//       'fullKeyboardControl',
-//       'fullMouseControl',
-//       'fullSwitchControl',
-//       'fullTouchControl',
-//       'fullVideoControl',
-//       'fullVoiceControl',
-//     ]
-//   },
-//   'schema:accessibilityFeature': {
-//     required: true,
-//     allowedValues: [
-//       'alternativeText',
-//       'annotations',
-//       'audioDescription',
-//       'bookmarks',
-//       'braille',
-//       'captions',
-//       'ChemML',
-//       'describedMath',
-//       'displayTransformability',
-//       'highContrastAudio',
-//       'highContrastDisplay',
-//       'index',
-//       'largePrint',
-//       'latex',
-//       'longDescription',
-//       'MathML',
-//       'none',
-//       'printPageNumbers',
-//       'readingOrder',
-//       'rubyAnnotations',
-//       'signLanguage',
-//       'structuralNavigation',
-//       'synchronizedAudioText',
-//       'tableOfContents',
-//       'taggedPDF',
-//       'tactileGraphic',
-//       'tactileObject',
-//       'timingControl',
-//       'transcript',
-//       'ttsMarkup',
-//       'unlocked',
-//     ],
-//   },
-//   'schema:accessibilityHazard': {
-//     allowedValues: [
-//       'flashing',
-//       'noFlashingHazard',
-//       'motionSimulation',
-//       'noMotionSimulationHazard',
-//       'sound',
-//       'noSoundHazard',
-//       'unknown',
-//       'none',
-//     ]
-//   },
-//   'schema:accessibilitySummary': {
-//     required: true,
-//   }
-// };
+const A11Y_META = {
+  'schema:accessMode': {
+    required: true,
+    allowedValues: [
+      'auditory',
+      'chartOnVisual',
+      'chemOnVisual',
+      'colorDependent',
+      'diagramOnVisual',
+      'mathOnVisual',
+      'musicOnVisual',
+      'tactile',
+      'textOnVisual',
+      'textual',
+      'visual',
+    ]
+  },
+  'schema:accessModeSufficient': {
+    recommended: true,
+    allowedValues: [
+      'auditory',
+      'tactile',
+      'textual',
+      'visual',
+    ]
+  },
+  'schema:accessibilityAPI': {
+    allowedValues: [
+      'ARIA'
+    ]
+  },
+  'schema:accessibilityControl': {
+    allowedValues: [
+      'fullKeyboardControl',
+      'fullMouseControl',
+      'fullSwitchControl',
+      'fullTouchControl',
+      'fullVideoControl',
+      'fullVoiceControl',
+    ]
+  },
+  'schema:accessibilityFeature': {
+    required: true,
+    allowedValues: [
+      'alternativeText',
+      'annotations',
+      'audioDescription',
+      'bookmarks',
+      'braille',
+      'captions',
+      'ChemML',
+      'describedMath',
+      'displayTransformability',
+      'highContrastAudio',
+      'highContrastDisplay',
+      'index',
+      'largePrint',
+      'latex',
+      'longDescription',
+      'MathML',
+      'none',
+      'printPageNumbers',
+      'readingOrder',
+      'rubyAnnotations',
+      'signLanguage',
+      'structuralNavigation',
+      'synchronizedAudioText',
+      'tableOfContents',
+      'taggedPDF',
+      'tactileGraphic',
+      'tactileObject',
+      'timingControl',
+      'transcript',
+      'ttsMarkup',
+      'unlocked',
+    ],
+  },
+  'schema:accessibilityHazard': {
+    allowedValues: [
+      'flashing',
+      'noFlashingHazard',
+      'motionSimulation',
+      'noMotionSimulationHazard',
+      'sound',
+      'noSoundHazard',
+      'unknown',
+      'none',
+    ]
+  },
+  'schema:accessibilitySummary': {
+    required: true,
+  }
+};
 
 const styles = theme => ({
   paper: {
@@ -209,17 +218,19 @@ const styles = theme => ({
   browseControlInputGroup: {
     color: theme.palette.text.primary,
     'grid-column': '1 / 2',
-    'margin-bottom': '1em',
+    'margin-bottom': '3em',
   },
   browseControlInput: {
     width: '100%',
+    "font-size": "90%",
   },
   browseControlInputLabel: {
     color: theme.palette.text.primary,
+    "font-size": "120%",
   },
   browseControlInputOutline: {
     'border-color': theme.palette.text.primary,
-    'background-color': 'rgba(0,0,0,0.04)',
+    // 'background-color': 'rgba(0,0,0,0.04)',
   },
 });
 
@@ -231,6 +242,19 @@ const errorHandler = {
   fatalError: fe => console.log(fe),
 }
 
+const CustomValueContainer = ({ children, ...props }) => {
+  return (
+    <components.ValueContainer {...props}>
+      <components.Placeholder {...props} isFocused={props.isFocused}>
+        {props.selectProps.placeholder}
+      </components.Placeholder>
+      {React.Children.map(children, child => {
+        return child && child.type !== components.Placeholder ? child : null;
+      })}
+    </components.ValueContainer>
+  );
+};
+
 class MetaDataEditorModal extends React.Component {
 
   static propTypes = {
@@ -240,6 +264,7 @@ class MetaDataEditorModal extends React.Component {
 
   state = {
     metadata: [],
+    metadataAdd: undefined,
   };
   isEPUB3 = false;
   packageOpfFilePath = undefined;
@@ -455,7 +480,7 @@ class MetaDataEditorModal extends React.Component {
       const useDublinCore = isDublinCore && this.isEPUB3;
 
       const isLink = a11yMeta_links.includes(md.name) ||
-        md.name === "a11y:certifierCredential" && /https?:\/\//.test(md.content.trim());
+        md.name === "a11y:certifierCredential" && /^https?:\/\//.test(md.content.trim());
       const useLink = isLink && this.isEPUB3;
 
       if (useDublinCore) {
@@ -527,11 +552,93 @@ class MetaDataEditorModal extends React.Component {
           variant="outlined"
           margin="dense"
           className={classes.browseControl}>
+          {
+          (mdname in A11Y_META) && A11Y_META[mdname].allowedValues ?
+          <ReactSelect
+            className='react-select-container'
+            classNamePrefix="react-select"
+
+            components={{
+              ValueContainer: CustomValueContainer
+            }}
+
+            menuPortalTarget={document.querySelector('body')}
+            maxMenuHeight={100}
+
+            styles={{
+              container: (provided, state) => {
+                // console.log(state);
+                return {
+                ...provided,
+                marginTop: 0,
+                paddingTop: 4,
+                border: state.isFocused ? "2px solid black" : "1px solid #333333",
+                borderRadius: 4,
+              }},
+              placeholder: (provided, state) => {
+                // console.log(state);
+                return {
+                ...provided,
+                background: "white",
+                color: "black",
+                paddingLeft: 4,
+                paddingRight: 4,
+                position: "absolute",
+                top: state.hasValue || state.selectProps.inputValue ? -9 : "50%",
+                transition: "top 0.1s, font-size 0.1s",
+                fontSize: (state.hasValue || state.selectProps.inputValue) && 14
+              }},
+              control: base => ({
+                ...base,
+                border: "none",
+                boxShadow: "0 !important"
+              }),
+              menu: base => ({
+                ...base,
+                zIndex: "9999 !important",
+                // position: 'fixed',
+              }),
+              menuPortal: base => ({
+                ...base,
+                zIndex: "9999 !important",
+                transform: 'translateZ(0)'
+              })
+            }}
+
+            options={
+              A11Y_META[mdname].allowedValues.map((allowedValue) => {
+                return {
+                  label: allowedValue,
+                  value: allowedValue,
+                };
+              })
+            }
+            value={
+              mdvalue ? 
+              {
+                label: mdvalue,
+                value: mdvalue,
+              } : null
+            }
+            onChange={(values, {action, removedValue}) => {
+              console.log(values);
+              console.log(action);
+              console.log(removedValue);
+            }}
+            name={mdname}
+            closeMenuOnSelect={true}
+            isMulti={true}
+            placeholder={mdname}
+            isSearchable={true}
+          />
+          :
+          <>
           <InputLabel htmlFor={`metadata_${idx}`}
             data-idx={idx}
             ref={(ref) => {
                 if (ref) {
-                  const k = `labelRef_${ref.getAttribute("data-idx")}`;
+                  const attr = ref.getAttribute("data-idx");
+                  const k = `labelRef_${attr}`;
                   this[k] = ReactDOM.findDOMNode(ref);
                 }
               }
@@ -540,19 +647,90 @@ class MetaDataEditorModal extends React.Component {
           >{mdname}</InputLabel>
           <OutlinedInput 
             id={`metadata_${idx}`}
+            inputProps={{"data-idx": `${idx}`}}
             value={mdvalue}
-            onChange={() => {}}
+            onChange={(event) => {
+              const dataIndex = event.target.getAttribute("data-idx");
+              const index = parseInt(dataIndex, 10);
+              const val = event.target.value;
+              
+              const newMd = this.state.metadata;
+              newMd[index].content = val;
+              this.setState({
+                metadata: newMd,
+              });
+            }}
             labelWidth={this[`labelRef_${idx}`] ? this[`labelRef_${idx}`].offsetWidth : 0}
             classes={{ 
               root: classes.browseControlInput,
               notchedOutline: classes.browseControlInputOutline,
             }}
             />
+            </>
+            }
+            <IconButton
+              data-idx={idx}
+              onClick={(event) => {
+                const dataIndex = event.currentTarget.getAttribute("data-idx");
+                const index = parseInt(dataIndex, 10);
+                const newMd = this.state.metadata;
+                newMd[index].deleted = true;
+                this.setState({
+                  metadata: newMd,
+                });
+              }}
+              aria-label={localize("metadata.delete")}>
+              <CancelIcon />
+            </IconButton>
         </FormControl>
         </div>
         );
       flattened.push(jsx);
     }
+    
+    // <InputLabel id="label_add">{localize("metadata.metadata")}</InputLabel>
+    // labelId="label_add"
+
+    const jsx = (
+      <div key={`addKey`} className={classes.browseControlInputGroup}>
+      <hr/>
+
+      <FormControl
+        variant="outlined"
+        margin="dense"
+        className={classes.browseControl}>
+          <Select id="selectMetadata" defaultValue={a11yMeta[0]}
+            onChange={(event) => {
+              this.setState({
+                metadataAdd: event.target.value,
+              });
+            }}>
+            {
+              a11yMeta.map((a, i) => {
+                return <MenuItem key={`select_option_${i}`} value={a}>{a}</MenuItem>;
+              })
+            }
+          </Select>
+          <IconButton
+            onClick={(event) => {
+              const name = this.state.metadataAdd || a11yMeta[0];
+              const newMd = this.state.metadata;
+              newMd.push({
+                name,
+                content: "",
+              });
+              this.setState({
+                metadata: newMd,
+              });
+              setTimeout(() => { this.forceUpdate(); }, 500);
+            }}
+            aria-label={localize("metadata.add")}>
+            <AddIcon />
+          </IconButton>
+      </FormControl>
+      </div>
+      );
+    flattened.push(jsx);
 
     return flattened;
   }

@@ -70,7 +70,9 @@
     },
     "metadata": {
         "a11y": "Accessibility",
+        "add": "Add",
         "cancel": "Cancel",
+        "delete": "Delete",
         "edit": "edit",
         "metadata": "Metadata",
         "name": "Name",
