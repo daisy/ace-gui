@@ -54,7 +54,8 @@ if (isDev) {
     console.log(`>>> --- INITIAL LOCALE LANGUAGE (RENDERER PROCESS): ${initialLanguage}`);
 }
 
-setCurrentLanguage(initialLanguage);
+const l10nDoneCallback1 = () => {}; // no need to async/await on this
+setCurrentLanguage(initialLanguage, l10nDoneCallback1);
 document.documentElement.setAttribute("lang", initialLanguage);
 
 store.subscribe(() => {
@@ -63,7 +64,8 @@ store.subscribe(() => {
   const prefs = state.preferences;
 
   if (prefs.language) {
-    setCurrentLanguage(prefs.language);
+    const l10nDoneCallback2 = () => {}; // no need to async/await on this
+    setCurrentLanguage(prefs.language, l10nDoneCallback2);
     document.documentElement.setAttribute("lang", prefs.language);
   }
 });

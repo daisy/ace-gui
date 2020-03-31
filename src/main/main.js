@@ -43,6 +43,8 @@ let _store;
 let _storeSubscribe;
 let _storeUnsubscribe;
 
+app.allowRendererProcessReuse = true;
+
 const singleInstanceLock = process.platform === 'darwin' || app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
   app.quit();

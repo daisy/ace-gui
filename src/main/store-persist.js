@@ -52,7 +52,8 @@ export function initPersistentStore() {
             }
         }
     };
-    setCurrentLanguage(initialState.preferences.language);
+    const l10nDoneCallback1 = () => {}; // no need to async/await on this
+    setCurrentLanguage(initialState.preferences.language, l10nDoneCallback1);
 
     const store = configureStore(initialState, 'main');
 
@@ -68,7 +69,8 @@ export function initPersistentStore() {
         } else {
             electronStore.set('language', defaultPreferences.language);
         }
-        setCurrentLanguage(electronStore.get('language'));
+        const l10nDoneCallback2 = () => {}; // no need to async/await on this
+        setCurrentLanguage(electronStore.get('language'), l10nDoneCallback2);
 
         if (prefs.reports) {
             if (prefs.reports.dir) {

@@ -113,9 +113,10 @@ export function runAce(inputPath) {
     let outdir = prepareOutdir(inputPath, getState().preferences);
     if (outdir.success) {
 
+      const l10nDoneCallback = () => {}; // no need to async/await on this
       const language = getCurrentLanguage();
       if (language) {
-        setCurrentLanguage(language);
+        setCurrentLanguage(language, l10nDoneCallback);
       }
       logger.initLogger({ verbose: true, silent: false, fileName: "ace-gui.log" });
 
