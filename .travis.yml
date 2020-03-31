@@ -83,7 +83,7 @@ script:
   - 'ls -als'
 #  - 'ls -als node_modules'
   - 'env | grep -iE "DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_"'
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn run build:prod; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn build:prod; fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     if [[ "$TRAVIS_OS_NAME_" == "linux" ]] || [[ "$TRAVIS_OS_NAME_" == "osx" ]]; then
     echo "TRAVIS_OS_SCRIPT" && pwd && ls -als && export MY_PWD=`pwd` && echo "PWD ${MY_PWD}" && ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.4) || echo "YARN OK") && export PATH="$HOME/.yarn/bin:$PATH" && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout ace-next-local-packs && yarn ace-app-prepare && cd $MY_PWD && pwd && ls -als && ls -als kb && rm -f yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff ;
@@ -91,9 +91,9 @@ script:
     fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
     if [[ "$TRAVIS_OS_NAME_" == "linux" ]]; then
-    yarn run package:linux ;
+    yarn package:linux ;
     elif [[ "$TRAVIS_OS_NAME_" == "osx" ]]; then
-    yarn run package:mac:skip-notarize ;
+    yarn package:mac:skip-notarize ;
     elif [[ "$TRAVIS_OS_NAME_" == "windows" ]]; then
     docker run --rm
     --env-file <(env | grep -iE "DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_")
@@ -102,7 +102,7 @@ script:
     -v ~/.cache/electron-builder:/root/.cache/electron-builder
     electronuserland/builder:wine
     /bin/bash
-    -c "pwd && ls -als && npm --global install yarn && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout ace-next-local-packs && yarn ace-app-prepare && cd /project && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff && npm rebuild node-sass && yarn run package:win";
+    -c "pwd && ls -als && npm --global install yarn && yarn --version && cd .. && pwd && ls -als && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls -als && git checkout ace-next-local-packs && yarn ace-app-prepare && cd /project && pwd && ls -als && ls -als kb && rm yarn.lock && rm -rf node_modules && yarn install && git --no-pager diff && npm rebuild node-sass && yarn package:win";
     fi;
     fi'
   # - set +e
