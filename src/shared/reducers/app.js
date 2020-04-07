@@ -5,6 +5,7 @@ import path from 'path';
 import {
   CLOSE_REPORT,
   ADD_MESSAGE,
+  CLEAR_MESSAGES,
   OPEN_REPORT,
   SET_PROCESSING,
   PROCESSING_TYPE,
@@ -29,11 +30,18 @@ export default function app(state = initialState, action) {
   state = JSON.parse(JSON.stringify(state));
 
   switch (action.type) {
+    
     case ADD_MESSAGE: {
       let messages = [...state.messages, action.payload];
       return {
         ...state,
         messages
+      };
+    }
+    case CLEAR_MESSAGES: {
+      return {
+        ...state,
+        messages: []
       };
     }
     case CLOSE_REPORT: {
@@ -43,9 +51,12 @@ export default function app(state = initialState, action) {
         recents = addToRecents(state.reportPath, state.recents);
         added = true;
       }
-      let messages = state.messages;
+      let messages = []; // state.messages;
       if (added) {
-        messages = [...state.messages, localize("message.closedreport", {reportPath: state.reportPath, interpolation: { escapeValue: false }})];
+        messages = [
+          //...state.messages,
+          localize("message.closedreport", {reportPath: state.reportPath, interpolation: { escapeValue: false }})
+        ];
       }
       return {
         ...state,
@@ -59,12 +70,16 @@ export default function app(state = initialState, action) {
     case OPEN_REPORT: {
       try {
         let {reportPath, inputPath, epubBaseDir } = action.payload;
+        const inpath = inputPath;
         let report = JSON.parse(fs.readFileSync(reportPath));
-        if (inputPath === undefined && report['earl:testSubject'] !== undefined && report['earl:testSubject'].url !== undefined) {
+        if (!inputPath && report['earl:testSubject'] !== undefined && report['earl:testSubject'].url !== undefined) {
           inputPath = path.resolve(reportPath, report['earl:testSubject'].url);
           if (!fs.existsSync(inputPath)) inputPath = null;
         }
-        let messages = [...state.messages, localize("message.loadedreport", {reportPath, interpolation: { escapeValue: false }})];
+        let messages = [
+          ...(inpath ? state.messages : []),
+          localize("message.loadedreport", {reportPath, interpolation: { escapeValue: false }})
+        ];
         return {
           ...state,
           inputPath,
@@ -75,7 +90,11 @@ export default function app(state = initialState, action) {
         };
       }
       catch(error) {
-        let messages = [...state.messages, error, localize("message.loadfailreport", {p: action.payload.reportPath, interpolation: { escapeValue: false }})];
+        let messages = [
+          ...state.messages,
+          `${error.message ? error.message : error}`,
+          localize("message.loadfailreport", {p: action.payload.reportPath, interpolation: { escapeValue: false }})
+        ];
         return {
           ...state,
           messages

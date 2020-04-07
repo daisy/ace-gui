@@ -1,7 +1,12 @@
 code {
   font-family: monospace;
   line-height: 1.5;
+  padding-bottom: 1em;
 }
 .messages {
-  height: 100%;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.messages pre {
+  margin: 0;
 }

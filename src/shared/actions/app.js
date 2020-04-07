@@ -23,6 +23,7 @@ const { setCurrentLanguage, getCurrentLanguage, localize } = localizer;
 const _tmp_epub_unzip_subfolder = "unzipped_EPUB";
 
 export const ADD_MESSAGE = "ADD_MESSAGE";
+export const CLEAR_MESSAGES = "CLEAR_MESSAGES";
 export const CLOSE_REPORT = "CLOSE_REPORT";
 export const EXPORT_REPORT = "EXPORT_REPORT";
 export const OPEN_REPORT = "OPEN_REPORT";
@@ -108,6 +109,7 @@ export function runAce(inputPath) {
     }
 
     dispatch(setProcessing(PROCESSING_TYPE.ACE, inputPath));
+    dispatch(clearMessages());
     dispatch(addMessage(localize("message.runningace", {inputPath, interpolation: { escapeValue: false }})));
 
     let outdir = prepareOutdir(inputPath, getState().preferences);
@@ -132,7 +134,11 @@ export function runAce(inputPath) {
           dispatch(setProcessing(PROCESSING_TYPE.ACE, false));
         })
         .catch(error =>  {// Ace execution error
-          dispatch(addMessage(error));
+
+          console.log(`Ace error: ${error.message ? error.message : error}`);
+          if (error.stack !== undefined) console.log(error.stack);
+
+          dispatch(addMessage(`${error.message ? error.message : error}`));
           dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
         });
       }
@@ -157,9 +163,10 @@ export function runAce(inputPath) {
           doAce(epubBaseDir);
         })
         .catch((err) => {
-          console.log(`Unexpected error: ${(err.message !== undefined) ? err.message : err}`);
+          console.log(`Unexpected error: ${err.message ? err.message : err}`);
           if (err.stack !== undefined) console.log(err.stack);
-          dispatch(addMessage(err));
+
+          dispatch(addMessage(`${err.message ? err.message : err}`));
           dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
         });
       } else {
@@ -213,7 +220,7 @@ export function exportReport(outfile) {
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
     })
     .catch(error => {
-      dispatch(addMessage(error));
+      dispatch(addMessage(`${error.message ? error.message : error}`));
       dispatch(addMessage(localize("message.failsavereport", {outfile, interpolation: { escapeValue: false }})));
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
     });
@@ -224,6 +231,11 @@ export function addMessage(message) {
   return {
     type: ADD_MESSAGE,
     payload: message,
+  };
+}
+export function clearMessages() {
+  return {
+    type: CLEAR_MESSAGES,
   };
 }
 
