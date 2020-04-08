@@ -7,7 +7,7 @@ import ViolationsContainer from './../containers/ReportSections/ViolationsContai
 import ImagesContainer from './../containers/ReportSections/ImagesContainer';
 import {Tabs, Tab} from '@material-ui/core';
 import './../styles/Report.scss';
-
+import ReactDOM from 'react-dom';
 import { localizer } from './../../shared/l10n/localize';
 const { localize } = localizer;
 
@@ -19,12 +19,22 @@ export default class Report extends React.Component {
     selectTab: PropTypes.func.isRequired
   };
 
+  componentDidUpdate(oldProps, prevState) {
+    if (oldProps.selectedTab !== this.props.selectedTab) {
+      if (this.domRef) {
+        this.domRef.scrollTop = 0; // this.domRef.scrollHeight
+        this.domRef.scrollLeft = 0;
+      }
+    }
+  }
 
   render() {
     let {selectedTab, selectTab} = this.props;
 
     return (
-      <section className="ace-report" role="main">
+      <section className="ace-report" role="main"
+        ref={ref => { this.domRef = ReactDOM.findDOMNode(ref) }}>
+
         <h1>{localize("report.title")}</h1>
         <Tabs onChange={(e, idx) => selectTab(idx)} value={selectedTab}>
             <Tab className="pick-section-tab" label={localize("report.summary")}/>

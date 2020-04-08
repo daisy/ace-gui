@@ -84,7 +84,7 @@ class Splash extends React.Component {
               &nbsp;{orDropSidebar2}<br/>
               {localize("splash.or")}
               {process.platform == 'darwin'
-                ? <span> <a href="#"onClick={this.onBrowseFileOrFolderClick}>{localize("splash.clickToBrowse")}</a></span>
+                ? <span> <a href="#" onClick={this.onBrowseFileOrFolderClick}>{localize("splash.clickToBrowse")}</a></span>
                 : <span> {browseForFileOrFolder1} <a href="#" onClick={this.onBrowseFileClick}>{browseForFileOrFolder2}</a> {browseForFileOrFolder3} <a href="#" onClick={this.onBrowseFolderClick}>{browseForFileOrFolder4}</a>{browseForFileOrFolder5}
                 </span>
               }

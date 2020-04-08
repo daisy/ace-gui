@@ -112,6 +112,7 @@ export default class Violations extends React.Component {
               })}
             </ul>
             <p><a
+              href="#"
               tabIndex={0}
               className="external-link"
               onKeyPress={(e) => { if (e.key === "Enter") { this.onExternalLinkClick(row.details.kburl); }}}

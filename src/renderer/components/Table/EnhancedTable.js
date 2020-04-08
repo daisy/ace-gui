@@ -85,30 +85,64 @@ export default class EnhancedTable extends React.Component {
   };
 
   state = {
-    filters: Object.keys(this.props.filters).map(key => {
-      let head = this.props.heads.find(h => h.id === key);
-      return {
-      ...this.props.filters[key],
-      id: key,
-      options: this.props.rows.reduce(
-        (uniqueValues, row) => {
-          let rowValue = head.filterOn(row[key]);
-          return rowValue != null && uniqueValues.indexOf(rowValue) == -1 ? uniqueValues.concat(rowValue) : uniqueValues;
-        },
-      [])
-      .map(option => {
-        const ignoreMissingKey = (head.l10n && head.l10n.ignoreMissingKey) ? true : false;
+    filters:
+      Object.keys(this.props.filters)
+      .map((key, _ind, filtersKeys) => {
+        let head = this.props.heads.find(h => h.id === key);
+        const options = this.props.rows
+          .reduce((uniqueValues, row) => {
+              let rowValue = head.filterOn(row[key]);
+              return (rowValue != null && uniqueValues.indexOf(rowValue) == -1) ?
+                uniqueValues.concat(rowValue) :
+                uniqueValues;
+            },
+          [])
+          .map(option => {
+            const ignoreMissingKey = (head.l10n && head.l10n.ignoreMissingKey) ? true : false;
+            return {
+              value: option,
+              label: head.l10n ?
+                (
+                  head.l10n.keyPrefix ?
+                  localize(head.l10n.keyPrefix + option, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") :
+                  localize(option, {ignoreMissingKey})
+                ) : option
+            };
+          });
+        const obj = this.props.filters[key];
+        // console.log("FILTERS obj init: ", key, JSON.stringify(obj, null, 4));
+        if (obj.valuesRegex) {
+          const regexp = new RegExp(obj.valuesRegex);
+          obj.values = options.reduce((acc, option) => {
+            if (regexp.test(option.value)) {
+              // console.log("FILTERS regexp match", option.value);
+              return acc.concat({
+                ...option,
+              });
+            }
+            // console.log("FILTERS regexp NO match", option.value);
+            return acc;
+          }, []);
+          // console.log("FILTERS obj valuesRegex: ", obj.valuesRegex, JSON.stringify(options, null, 4), JSON.stringify(obj.values, null, 4));
+        } else {
+          const oneWithRegex = filtersKeys.map(filterKey => this.props.filters[filterKey]).find(filtr => filtr.valuesRegex);
+          if (oneWithRegex) {
+            obj.values = []; // reset others, valuesRegex wins all
+          }
+        }
         return {
-          value: option,
-          label: head.l10n ?
-            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "") : localize(option, {ignoreMissingKey})) :
-            option
+          ...obj,
+          id: key,
+          options,
         };
       })
+
+      // don't include filters with no options
+      .filter(filter => filter.options.length)
+      // equivalent to the above filter
+      // .reduce((activeFilters, filter) =>
+      //   filter.options.length != 0 ? activeFilters.concat(filter) : activeFilters, [])
       ,
-      };})
-      .reduce((activeFilters, filter) =>
-        filter.options.length != 0 ? activeFilters.concat(filter) : activeFilters, []) // don't include filters with no options
   };
 
   onChangeSort = (id) => {
@@ -135,11 +169,13 @@ export default class EnhancedTable extends React.Component {
     // the state doesn't get recalculated on render
     // so either we could be really clever or just set it manually here:
     let filters = this.state.filters;
-    let filter = filters.find(f=>f.id == id);
+    let filter = filters.find(f => f.id == id);
     filter.values = values;
+    filter.valuesRegex = null;
     filters[id] = filter;
     this.props.onChangePagination(this.props.id, {page: 0, rowsPerPage: this.props.pagination.rowsPerPage});
     this.setState({filters});
+    // console.log("FILTERS onChangeFilter: ", JSON.stringify(filters, null, 4));
     this.props.onFilter(this.props.id, id, values);
   };
 
@@ -150,20 +186,31 @@ export default class EnhancedTable extends React.Component {
   filterRows() {
     let {rows, heads} = this.props;
     let {filters} = this.state;
+    // console.log("FILTERS filterRows: ", JSON.stringify(filters, null, 4));
     filters.forEach(filter => {
       if (filter.values.length > 0) {
-        rows = rows.reduce((filteredRows, row) => {
-          // the row property values might be strings or objects, so run the filterOn function to get the
-          // value the filter is based on
-          let head = heads.find(h=>h.id == filter.id);
+        rows = rows
+        .filter(row => {
+          let head = heads.find(h => h.id == filter.id);
           let rowValue = head.filterOn(row[filter.id]);
-          if (filter.values.find(sel => sel.value == rowValue)) {
-            return filteredRows.concat(row);
-          }
-          else {
-            return filteredRows;
-          }
-        }, []);
+          return filter.values.find(sel => {
+            return sel.value == rowValue;
+          });
+        })
+        // equivalent to the above filter
+        // .reduce((filteredRows, row) => {
+        //   // the row property values might be strings or objects, so run the filterOn function to get the
+        //   // value the filter is based on
+        //   let head = heads.find(h=>h.id == filter.id);
+        //   let rowValue = head.filterOn(row[filter.id]);
+        //   if (filter.values.find(sel => sel.value == rowValue)) {
+        //     return filteredRows.concat(row);
+        //   }
+        //   else {
+        //     return filteredRows;
+        //   }
+        // }, [])
+        ;
       }
     });
     return rows;
@@ -174,6 +221,8 @@ export default class EnhancedTable extends React.Component {
     const {filters, rows} = this.state;
     const filteredRows = this.filterRows();
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
+
+    // console.log("FILTERS render: ", JSON.stringify(filters, null, 4));
 
     // ensure correct language
     filters.forEach((filter) => {

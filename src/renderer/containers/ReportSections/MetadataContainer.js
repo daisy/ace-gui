@@ -46,7 +46,10 @@ const mapStateToProps = state => {
     }
   }
 
+  // see createFlatListOfViolations
+  const hasMetadataViolations = report.assertions.find(assertion => assertion.assertions.find(item => /^metadata.*/.test(item["earl:test"]["dct:title"]))) ? true : false;
   return {
+    hasMetadataViolations,
     language,
     metadata: rows,
     a11ymetadata: a11ymeta,

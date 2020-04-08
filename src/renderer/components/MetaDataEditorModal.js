@@ -1,18 +1,20 @@
 import path from 'path';
 import fs from 'fs-extra';
 
-const DOMParser = require('xmldom-alpha').DOMParser;
-const XMLSerializer = require('xmldom-alpha').XMLSerializer;
+const DOMParser = require('xmldom').DOMParser;
+const XMLSerializer = require('xmldom').XMLSerializer;
 const xpath = require('xpath');
 
 import ReactSelect from 'react-select';
 import { components } from "react-select";
 import CreatableSelect from 'react-select/creatable';
 
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import CancelIcon from '@material-ui/icons/Cancel';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -46,156 +48,15 @@ import {
 import epubUtils from '@daisy/epub-utils';
 import logger from '@daisy/ace-logger';
 
+import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
+
 // http://kb.daisy.org/publishing/docs/metadata/schema-org.html
 // http://kb.daisy.org/publishing/docs/metadata/evaluation.html
-//
-// <meta property="schema:accessibilitySummary">
-//     This publication conforms to WCAG 2.0 Level AA.
-// </meta>
-// <meta property="schema:accessMode">textual</meta>
-// <meta property="schema:accessMode">visual</meta>
-// <meta property="schema:accessModeSufficient">textual,visual</meta>
-// <meta property="schema:accessModeSufficient">textual</meta>
-// <meta property="schema:accessibilityFeature">structuralNavigation</meta>
-// <meta property="schema:accessibilityFeature">MathML</meta>
-// <meta property="schema:accessibilityFeature">alternativeText</meta>
-// <meta property="schema:accessibilityFeature">longDescriptions</meta>
-// <meta property="schema:accessibilityAPI">ARIA</meta>
-// <meta property="schema:accessibilityControl">fullKeyboardControl</meta>
-// <meta property="schema:accessibilityControl">fullMouseControl</meta>
-// <meta property="schema:accessibilityControl">fullTouchControl</meta>
-// <meta property="schema:accessibilityHazard">noFlashingHazard</meta>
-// <meta property="schema:accessibilityHazard">noSoundHazard</meta>
-// <meta property="schema:accessibilityHazard">noMotionSimulationHazard</meta>
-// <link property="dcterms:conformsTo" href="http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"/>
-// <meta property="a11y:certifiedBy">Dewey, Checkett and Howe</meta>
-// <meta property="a11y:certifierCredential">Certifiably Accessible</meta>
-// <link property="a11y:certifierReport" href="https://example.com/reports/a11y/pub.html"/>
-//
-// <meta name="schema:accessMode" content="textual"/>
-// ...
-// <meta name="dcterms:conformsTo" content="http://www.idpf.org/epub/a11y/accessibility-20170105.html#wcag-aa"/>
-// <meta name="a11y:certifiedBy" content="Dewey, Checkett and Howe"/>
-// <meta name="a11y:certifierCredential" content="Certifiably Accessible"/>
-// <meta name="a11y:certifierReport" content="https://example.com/reports/a11y/pub.html"/>
 
-const a11yMeta_links = [
-  "a11y:certifierReport", //(link in EPUB3)
-  "dcterms:conformsTo", //(link in EPUB3)
-];
-const a11yMeta = [
-  "schema:accessMode",
-  "schema:accessibilityFeature",
-  "schema:accessibilityHazard",
-  "schema:accessibilitySummary",
-  "schema:accessModeSufficient",
-  "schema:accessibilityAPI",
-  "schema:accessibilityControl",
-  "a11y:certifiedBy",
-  "a11y:certifierCredential", //(MAY BE link in EPUB3)
-].concat(a11yMeta_links);
-
-const A11Y_META = {
-  'schema:accessMode': {
-    required: true,
-    allowedValues: [
-      'auditory',
-      'tactile',
-      'textual',
-      'visual',
-      'chartOnVisual',
-      'chemOnVisual',
-      'colorDependent',
-      'diagramOnVisual',
-      'mathOnVisual',
-      'musicOnVisual',
-      'textOnVisual',
-    ]
-  },
-  'schema:accessModeSufficient': {
-    recommended: true,
-    allowedValues: [
-      'auditory',
-      'tactile',
-      'textual',
-      'visual',
-      'chartOnVisual',
-      'chemOnVisual',
-      'colorDependent',
-      'diagramOnVisual',
-      'mathOnVisual',
-      'musicOnVisual',
-      'textOnVisual',
-    ]
-  },
-  'schema:accessibilityAPI': {
-    allowedValues: [
-      'ARIA'
-    ]
-  },
-  'schema:accessibilityControl': {
-    allowedValues: [
-      'fullKeyboardControl',
-      'fullMouseControl',
-      'fullSwitchControl',
-      'fullTouchControl',
-      'fullVideoControl',
-      'fullAudioControl',
-      'fullVoiceControl',
-    ]
-  },
-  'schema:accessibilityFeature': {
-    required: true,
-    allowedValues: [
-      'alternativeText',
-      'annotations',
-      'audioDescription',
-      'bookmarks',
-      'braille',
-      'captions',
-      'ChemML',
-      'describedMath',
-      'displayTransformability',
-      'highContrastAudio',
-      'highContrastDisplay',
-      'index',
-      'largePrint',
-      'latex',
-      'longDescription',
-      'MathML',
-      'none',
-      'printPageNumbers',
-      'readingOrder',
-      'rubyAnnotations',
-      'signLanguage',
-      'structuralNavigation',
-      'synchronizedAudioText',
-      'tableOfContents',
-      'taggedPDF',
-      'tactileGraphic',
-      'tactileObject',
-      'timingControl',
-      'transcript',
-      'ttsMarkup',
-      'unlocked',
-    ],
-  },
-  'schema:accessibilityHazard': {
-    allowedValues: [
-      'flashing',
-      'noFlashingHazard',
-      'motionSimulation',
-      'noMotionSimulationHazard',
-      'sound',
-      'noSoundHazard',
-      'unknown',
-      'none',
-    ]
-  },
-  'schema:accessibilitySummary': {
-    required: true,
-  }
-};
+const conformsToURLs = a11yMetadata.conformsToURLs;
+const a11yMeta_links = a11yMetadata.a11yMeta_links;
+const a11yMeta = a11yMetadata.a11yMeta;
+const A11Y_META = a11yMetadata.A11Y_META;
 
 const styles = theme => ({
   paper: {
@@ -204,11 +65,13 @@ const styles = theme => ({
   dialogActions: {
     margin: '8px 24px 24px'
   },
-  kbLink: {
+  kbLinkContainer: {
     'text-align': 'right',
     'display': 'block',
     'margin-right': '1em',
-    'margin-bottom': '2em',
+  },
+  kbLink: {
+    'margin-left': '1em',
   },
   rootGroup: {
     '&& > h3': {
@@ -224,29 +87,10 @@ const styles = theme => ({
     'grid-column-gap': '10px',
   },
   browseControlInputGroup: {
-    color: theme.palette.text.primary,
+    // color: theme.palette.text.primary,
     'grid-column': '1 / 2',
     'margin-bottom': '3em',
-  },
-  browseControlInput: {
-    width: '100%',
-    "font-size": "90%",
-  },
-  browseControlInputLabelRaised: {
-    color: '#333333',
-    'background-color': 'white',
-    'padding-left': '4px',
-    'padding-right': '4px',
-    "font-size": "130%",
-    'padding-top': '0px !important',
-  },
-  browseControlInputLabelRoot: {
-    color: '#333333',
-    'padding-top': '5px',
-  },
-  browseControlInputOutline: {
-    'border-color': theme.palette.text.primary,
-    // 'background-color': 'rgba(0,0,0,0.04)',
+    'border-left': "6px solid transparent",
   },
   red: {
     // color: 'red',
@@ -256,7 +100,28 @@ const styles = theme => ({
     // 'outline-style': 'solid',
     // 'outline-width': '2px',
     // 'outline-offset': '1px',
-    'box-shadow': '0px 0px 0px 2px rgb(219,28,28)',
+    // 'box-shadow': '0px 0px 0px 2px rgb(219,28,28)',
+    'border-left': "6px solid rgb(219,28,28)",
+  },
+  browseControlInput: {
+    width: '100%',
+    "font-size": "90%",
+  },
+  browseControlInputLabelRaised: {
+    // color: '#333333',
+    'background-color': 'white',
+    'padding-left': '4px',
+    'padding-right': '4px',
+    "font-size": "130%",
+    'padding-top': '0px !important',
+  },
+  browseControlInputLabelRoot: {
+    // color: '#333333',
+    'padding-top': '5px',
+  },
+  browseControlInputOutline: {
+    'border-color': theme.palette.text.primary,
+    // 'background-color': 'rgba(0,0,0,0.04)',
   },
 });
 
@@ -321,9 +186,10 @@ class MetaDataEditorModal extends React.Component {
     this.packageOpfXmlDoc = undefined;
     this.packageOpfXPathSelect = undefined;
 
+    // const l10nDoneCallback = () => {}; // no need to async/await on this
     // const language = getCurrentLanguage();
     // if (language) {
-    //   setCurrentLanguage(language);
+    //   setCurrentLanguage(language, l10nDoneCallback);
     // }
     // logger.initLogger({ verbose: true, silent: false, fileName: "ace-gui.log" });
 
@@ -490,10 +356,11 @@ class MetaDataEditorModal extends React.Component {
       // this.props.addMessage("test");
     })
     .catch((err) => {
-      console.log(`Unexpected error: ${(err.message !== undefined) ? err.message : err}`);
+      console.log(`Unexpected error: ${err.message ? err.message : err}`);
       if (err.stack !== undefined) console.log(err.stack);
+
       this.props.hideModal();
-      this.props.addMessage(err);
+      this.props.addMessage(`${err.message ? err.message : err}`);
     });
   }
 
@@ -575,79 +442,249 @@ class MetaDataEditorModal extends React.Component {
 
     const flattened = [];
 
-    let idx = -1;
+    let mdIndex = -1;
     for (const metadata of metadatas) {
-      idx++;
+      mdIndex++;
 
       if (metadata.deleted) {
         continue;
       }
 
-      const mdname = metadata.name;
-      let mdvalue = metadata.content;
+      const mdName = metadata.name;
+      const mdContent = metadata.content;
+      const mdObj = {
+        name: mdName,
+        content: mdContent,
+        index: mdIndex,
+      };
+      
+      let doSingleSelect = null;
+      let doSingleSelectCustom = false;
 
-      const doPickSelect = (mdname in A11Y_META) && A11Y_META[mdname].allowedValues;
-      if (doPickSelect) {
-        if (mdvalue) {
-          mdvalue = mdvalue.trim();
-          if (mdvalue) {
-            mdvalue = mdvalue.split(",").filter(s => s.trim().length).map((v) => {
-              return {
-                label: v,
-                value: v,
-              };
-            });
-            if (!mdvalue || !mdvalue.length) {
-              mdvalue = null;
+      let doMultipleSelect = undefined; // not null!
+      if (mdName === "schema:accessModeSufficient") {
+        if (mdObj.content) {
+          mdObj.content = mdObj.content.trim();
+          if (mdObj.content) {
+            doMultipleSelect = mdObj.content.split(",")
+              .map(s => s.trim())
+              .filter(s => s.length)
+              .map(s => {
+                return {
+                  label: s,
+                  value: s,
+                  mdObj,
+                };
+              });
+            if (!doMultipleSelect.length) {
+              doMultipleSelect = null; // not undefined!
             }
           } else {
-            mdvalue = null;
+            doMultipleSelect = null; // not undefined!
           }
+        } else {
+          doMultipleSelect = null; // not undefined!
         }
+      } else if ((mdName in A11Y_META) && A11Y_META[mdName].allowedValues) {
+        doSingleSelectCustom = false;
+        doSingleSelect = A11Y_META[mdName].allowedValues.map((mdContent) => {
+          return {
+            mdContent,
+            mdIndex,
+          };
+        });
+      } else if (mdName === "dcterms:conformsTo") {
+        doSingleSelectCustom = true; // allow arbitrary user input
+        doSingleSelect = conformsToURLs.map((mdContent) => {
+          return {
+            mdContent,
+            mdIndex,
+          };
+        });
       }
 
       let hasVal = false;
-      if (mdvalue) {
-        if (typeof mdvalue === "object" && mdvalue.value && mdvalue.value.trim()) {
+      if (mdValue) {
+        if (typeof mdValue === "object" && mdValue.value && mdValue.value.trim()) {
           hasVal = true;
-        } else if (mdvalue instanceof Array) {
+        } else if (mdValue instanceof Array) {
           hasVal = true;
-        } else if (mdvalue.trim()) {
+        } else if (mdValue.trim()) {
           hasVal = true;
         }
       }
       let flagged = !hasVal &&
-        (mdname in A11Y_META) &&
-        (A11Y_META[mdname].required || A11Y_META[mdname].recommended);
-      if (!flagged && (mdname in A11Y_META) && A11Y_META[mdname].allowedValues && mdvalue && mdvalue instanceof Array) {
-        for (const obj of mdvalue) {
-          const notSupported = !A11Y_META[mdname].allowedValues.includes(obj.value); 
-          if (notSupported) {
-            flagged = true;
-            obj.notSupported = true;
-            // break;
+        (mdName in A11Y_META) &&
+        (A11Y_META[mdName].required || A11Y_META[mdName].recommended);
+      if (!flagged && (mdName in A11Y_META) && A11Y_META[mdName].allowedValues && mdValue) {
+        if (mdValue instanceof Array) {
+          for (const obj of mdValue) {
+            const notSupported = !A11Y_META[mdName].allowedValues.includes(obj.value); 
+            if (notSupported) {
+              flagged = true;
+              obj.notSupported = true;
+              // break;
+            }
           }
+        } else {
+          const notSupported = !A11Y_META[mdName].allowedValues.includes(mdValue); 
+            if (notSupported) {
+              flagged = true;
+            }
         }
       }
 
       const jsx = (
-        <div key={`metadata_key_${idx}`} className={classNames(classes.browseControlInputGroup, flagged ? classes.red : undefined)}>
+        <div key={`metadata_key_${mdIndex}`}
+          className={classNames(classes.browseControlInputGroup, flagged ? classes.red : undefined)}
+          >
         <FormControl
           variant="outlined"
           margin="dense"
           className={classes.browseControl}>
           {
-          doPickSelect ?
-          <ReactSelect
-            className='react-select-container'
-            classNamePrefix="react-select"
-            data-idx={idx}
-            ref={ref => {
-              if (ref) {
-                // const dataIndex = ref.props["data-idx"];
-                // const index = parseInt(dataIndex, 10);
+          doSingleSelect ?
+          (<>
+          <Autocomplete
+            data-name={mdName}
+            data-content={mdContent}
+            data-mdIndex={mdIndex}
+
+            value={mdObj}
+            options={doSingleSelect}
+
+            filterOptions={(options, params) => {
+              const i = options[0].mdIndex;
+              const mdContentCurrent = this.state.metadata[i].content;
+              if (!options.find((option) => option.mdContent === mdContentCurrent)) {
+                options.push({
+                  mdContent: mdContentCurrent,
+                  mdIndex: i,
+                });
+              }
+              const filtered = createFilterOptions()(options, params);
+              if (doSingleSelectCustom &&
+                params.inputValue &&
+                !filtered.find((option) => option.mdContent === params.inputValue)) {
+
+                filtered.push({
+                  mdContent: params.inputValue,
+                  mdIndex: i,
+                });
+              }
+    
+              return filtered;
+            }}
+            onBlur = {(event) => {
+              const ipt = event.currentTarget.querySelector("input");
+              if (!ipt) {
+                return;
+              }
+              const mdContent = ipt.value ? ipt.value : "";
+
+              const dataIndex = event.currentTarget.getAttribute("data-mdIndex");
+              const mdIndex = parseInt(dataIndex, 10);
+              const newMd = this.state.metadata;
+              newMd[mdIndex].content = mdContent;
+              console.log("Autocomplete onBlur", JSON.stringify(this.state.metadata));
+              this.setState({
+                metadata: newMd,
+              });
+            }}
+            onChange={(event, obj) => {
+              if (typeof obj === "string") {
+                const dataIndex = event.currentTarget.getAttribute("data-mdIndex");
+                const mdIndex = parseInt(dataIndex, 10);
+                obj = {
+                  mdContent: obj,
+                  mdIndex,
+                };
+              }
+              const newMd = this.state.metadata;
+              newMd[obj.mdIndex].content = obj.mdContent;
+              console.log("Autocomplete onChange", JSON.stringify(this.state.metadata));
+              this.setState({
+                metadata: newMd,
+              });
+            }}
+
+            getOptionLabel={option => option.mdContent}
+            renderInput={params =>
+              <TextField {...params}
+              inputProps={{
+                ...params.inputProps,
+                // onBlur: (e) => {
+                //   console.log(e.currentTarget);
+                // },
+              }}
+              label={mdName} variant="outlined" />
+            }
+
+            freeSolo={doSingleSelectCustom}
+            disableClearable={false}
+            includeInputInList={false}
+            disableListWrap={true}
+            autoSelect={false}
+            autoHighlight={false}
+
+            classes={
+              //root,focused,tag,tagSizeSmall,hasPopupIcon,hasClearIcon,inputRoot,input,inputFocused,endAdornment,clearIndicator,clearIndicatorDirty,popupIndicator,popupIndicatorOpen,popper,popperDisablePortal,paper,listbox,loading,noOptions,option,groupLabel,groupUl
+              {
+            }}
+            />
+          </>) :
+          (typeof doMultipleSelect !== "undefined" ?
+          (<ReactSelect
+            data-name={mdName}
+            data-content={mdContent}
+            data-mdIndex={mdIndex}
+
+            options={
+              A11Y_META[mdName].allowedValues.map((allowedValue) => {
+                return {
+                  label: allowedValue,
+                  value: allowedValue,
+                  mdObj,
+                };
+              })
+            }
+            value={doMultipleSelect}
+
+            onChange={(values, obj) => {
+
+              const dataIndex = obj.name.split("_")[1];
+              const index = parseInt(dataIndex, 10);
+              
+              if (obj.action === "clear") {
+                const newMd = this.state.metadata;
+                newMd[index].content = "";
+                this.setState({
+                  metadata: newMd,
+                });
+              } else if (obj.action === "remove-value") {
+                const newMd = this.state.metadata;
+                // const arr = newMd[index].content.split(",").
+                //   filter(s => s.trim().length).
+                //   filter(s => s !== obj.removedValue.value);
+                // newMd[index].content = arr.join(",");
+                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
+                this.setState({
+                  metadata: newMd,
+                });
+              } else if (obj.action === "select-option") {
+                const newMd = this.state.metadata;
+                // const arr = newMd[index].content.split(",").
+                //   filter(s => s.trim().length).
+                //   concat([obj.option.value]);
+                // newMd[index].content = arr.join(",");
+                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
+                console.log("ReactSelect onChange", JSON.stringify(this.state.metadata));
+                this.setState({
+                  metadata: newMd,
+                });
               }
             }}
+
             components={{
               ValueContainer: CustomValueContainer
             }}
@@ -657,6 +694,9 @@ class MetaDataEditorModal extends React.Component {
 
             menuPosition={'fixed' /* 'absolute' */}
             menuPlacement={'bottom' /* 'auto' | 'top' */}
+
+            className='react-select-container'
+            classNamePrefix="react-select"
 
             styles={{
               container: (provided, state) => {
@@ -697,87 +737,44 @@ class MetaDataEditorModal extends React.Component {
                 transform: 'translateZ(0)'
               }),
               multiValue: (styles, { data, isDisabled, isFocused, isSelected }) => {
-                console.log(data);
                 return {
                   ...styles,
                   ...(data.notSupported ? { border: '1px solid rgb(219,28,28)' } : {})
                 };
               },
             }}
-            options={
-              A11Y_META[mdname].allowedValues.map((allowedValue) => {
-                return {
-                  label: allowedValue,
-                  value: allowedValue,
-                };
-              })
-            }
-            value={mdvalue}
 
-            name={`${mdname}_${idx}`}
-            onChange={(values, obj) => {
-
-              const dataIndex = obj.name.split("_")[1];
-              const index = parseInt(dataIndex, 10);
-              console.log(index);
-              
-              if (obj.action === "clear") {
-                const newMd = this.state.metadata;
-                newMd[index].content = "";
-                this.setState({
-                  metadata: newMd,
-                });
-              } else if (obj.action === "remove-value") {
-                const newMd = this.state.metadata;
-                // const arr = newMd[index].content.split(",").
-                //   filter(s => s.trim().length).
-                //   filter(s => s !== obj.removedValue.value);
-                // newMd[index].content = arr.join(",");
-                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
-                this.setState({
-                  metadata: newMd,
-                });
-              } else if (obj.action === "select-option") {
-                const newMd = this.state.metadata;
-                // const arr = newMd[index].content.split(",").
-                //   filter(s => s.trim().length).
-                //   concat([obj.option.value]);
-                // newMd[index].content = arr.join(",");
-                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
-                this.setState({
-                  metadata: newMd,
-                });
-              }
-            }}
             closeMenuOnSelect={true}
             isMulti={true}
-            placeholder={mdname}
+            placeholder={mdName}
             isSearchable={true}
+            openMenuOnClick={true}
           />
+          )
           :
-          <>
-          <InputLabel htmlFor={`metadata_${idx}`}
-            data-idx={idx}
+          (<>
+          <InputLabel htmlFor={`metadata_${mdIndex}`}
+            data-mdIndex={mdIndex}
             ref={(ref) => {
                 if (ref) {
-                  const attr = ref.getAttribute("data-idx");
+                  const attr = ref.getAttribute("data-mdIndex");
                   const k = `labelRef_${attr}`;
                   this[k] = ReactDOM.findDOMNode(ref);
                 }
               }
             }
             classes={{
-              root: !mdvalue ? classes.browseControlInputLabelRoot : classes.browseControlInputLabelRaised,
+              root: !mdValue ? classes.browseControlInputLabelRoot : classes.browseControlInputLabelRaised,
               focused: classes.browseControlInputLabelRaised
             }}
-          >{mdname}</InputLabel>
+          >{mdName}</InputLabel>
           <OutlinedInput 
-            id={`metadata_${idx}`}
-            inputProps={{"data-idx": `${idx}`}}
-            value={mdvalue}
-            multiline={mdname === "schema:accessibilitySummary"}
+            id={`metadata_${mdIndex}`}
+            inputProps={{"data-mdIndex": `${mdIndex}`}}
+            value={mdValue}
+            multiline={mdName === "schema:accessibilitySummary"}
             onChange={(event) => {
-              const dataIndex = event.target.getAttribute("data-idx");
+              const dataIndex = event.target.getAttribute("data-mdIndex");
               const index = parseInt(dataIndex, 10);
               const val = event.target.value;
               
@@ -787,18 +784,19 @@ class MetaDataEditorModal extends React.Component {
                 metadata: newMd,
               });
             }}
-            labelWidth={this[`labelRef_${idx}`] ? this[`labelRef_${idx}`].offsetWidth : 0}
+            labelWidth={this[`labelRef_${mdIndex}`] ? this[`labelRef_${mdIndex}`].offsetWidth : 0}
             classes={{ 
               root: classes.browseControlInput,
               notchedOutline: classes.browseControlInputOutline,
             }}
             />
-            </>
+            </>)
+            )
             }
             <IconButton
-              data-idx={idx}
+              data-mdIndex={mdIndex}
               onClick={(event) => {
-                const dataIndex = event.currentTarget.getAttribute("data-idx");
+                const dataIndex = event.currentTarget.getAttribute("data-mdIndex");
                 const index = parseInt(dataIndex, 10);
                 const newMd = this.state.metadata;
                 newMd[index].deleted = true;
@@ -819,14 +817,16 @@ class MetaDataEditorModal extends React.Component {
     // labelId="label_add"
 
     const jsx = (
-      <div key={`addKey`} className={classes.browseControlInputGroup}>
+      <div key={`addKey`}
+      className={classNames(classes.browseControlInputGroup)}
+      >
       <hr/>
 
       <FormControl
         variant="outlined"
         margin="dense"
         className={classes.browseControl}>
-          <Select id="selectMetadata" defaultValue={a11yMeta[0]}
+          <Select defaultValue={a11yMeta[0]}
             onChange={(event) => {
               this.setState({
                 metadataAdd: event.target.value,
@@ -876,12 +876,27 @@ class MetaDataEditorModal extends React.Component {
         <DialogContent>
 
           <hr/>
-          <a
-            tabIndex={0}
-            className={classNames(classes.kbLink, 'external-link')}
-            onKeyPress={(e) => { if (e.key === "Enter") { this.onKB(); }}}
-            onClick={() => this.onKB()}
-            >{`${localize("menu.knowledgeBase")} (${localize("menu.help")})`}</a>
+
+          <div className={classNames(classes.kbLinkContainer)}>
+            <span>{`${localize("menu.knowledgeBase")} (${localize("menu.help")}):`}</span>
+
+            <a
+                href="#"
+                tabIndex={0}
+                className={classNames('external-link', classes.kbLink)}
+                onKeyPress={(e) => { if (e.key === "Enter") { this.onKBSchemaOrg(); }}}
+                onClick={() => this.onKBSchemaOrg()}
+                >{`#1`}</a>
+
+            <a
+                href="#"
+                tabIndex={0}
+                className={classNames('external-link', classes.kbLink)}
+                onKeyPress={(e) => { if (e.key === "Enter") { this.onKBEvaluation(); }}}
+                onClick={() => this.onKBEvaluation()}
+                >{`#2`}</a>
+
+          </div>
 
             {
             // <FormControl variant="outlined" margin="dense" fullWidth

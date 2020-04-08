@@ -8,21 +8,30 @@ import { bindActionCreators } from 'redux';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import {showMetadataEditor} from './../../../shared/actions/metadata';
-
+import {selectTab} from './../../../shared/actions/reportView';
 import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
+
+import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
 
 const {ipcRenderer} = require('electron');
 import classNames from 'classnames';
 
 const styles = theme => ({
   editButton: {
-    'float': 'right',
+    'float': 'left',
+    'font-size': '1.2em',
+    'margin-bottom': '1em',
+    'border': '2px solid silver',
+    'border-radius': '4px',
   },
-  kbLink: {
+  kbLinkContainer: {
     'text-align': 'right',
     'display': 'block',
     'margin-right': '1em',
+  },
+  kbLink: {
+    'margin-left': '1em',
   },
 });
 
@@ -30,129 +39,14 @@ const KB_BASE = 'http://kb.daisy.org/publishing/';
 
 // http://kb.daisy.org/publishing/docs/metadata/schema-org.html
 // http://kb.daisy.org/publishing/docs/metadata/evaluation.html
-//
-// const a11yMeta_links = [
-//   "a11y:certifierReport", //(link in EPUB3)
-//   "dcterms:conformsTo", //(link in EPUB3)
-// ];
-// const a11yMeta = [
-//   "schema:accessMode",
-//   "schema:accessibilityFeature",
-//   "schema:accessibilityHazard",
-//   "schema:accessibilitySummary",
-//   "schema:accessModeSufficient",
-//   "schema:accessibilityAPI",
-//   "schema:accessibilityControl",
-//   "a11y:certifiedBy",
-//   "a11y:certifierCredential", //(MAY BE link in EPUB3)
-// ].concat(a11yMeta_links);
 
-const A11Y_META = {
-  'schema:accessMode': {
-    required: true,
-    allowedValues: [
-      'auditory',
-      'tactile',
-      'textual',
-      'visual',
-      'chartOnVisual',
-      'chemOnVisual',
-      'colorDependent',
-      'diagramOnVisual',
-      'mathOnVisual',
-      'musicOnVisual',
-      'textOnVisual',
-    ]
-  },
-  'schema:accessModeSufficient': {
-    recommended: true,
-    allowedValues: [
-      'auditory',
-      'tactile',
-      'textual',
-      'visual',
-      'chartOnVisual',
-      'chemOnVisual',
-      'colorDependent',
-      'diagramOnVisual',
-      'mathOnVisual',
-      'musicOnVisual',
-      'textOnVisual',
-    ]
-  },
-  'schema:accessibilityAPI': {
-    allowedValues: [
-      'ARIA'
-    ]
-  },
-  'schema:accessibilityControl': {
-    allowedValues: [
-      'fullKeyboardControl',
-      'fullMouseControl',
-      'fullSwitchControl',
-      'fullTouchControl',
-      'fullVideoControl',
-      'fullAudioControl',
-      'fullVoiceControl',
-    ]
-  },
-  'schema:accessibilityFeature': {
-    required: true,
-    allowedValues: [
-      'alternativeText',
-      'annotations',
-      'audioDescription',
-      'bookmarks',
-      'braille',
-      'captions',
-      'ChemML',
-      'describedMath',
-      'displayTransformability',
-      'highContrastAudio',
-      'highContrastDisplay',
-      'index',
-      'largePrint',
-      'latex',
-      'longDescription',
-      'MathML',
-      'none',
-      'printPageNumbers',
-      'readingOrder',
-      'rubyAnnotations',
-      'signLanguage',
-      'structuralNavigation',
-      'synchronizedAudioText',
-      'tableOfContents',
-      'taggedPDF',
-      'tactileGraphic',
-      'tactileObject',
-      'timingControl',
-      'transcript',
-      'ttsMarkup',
-      'unlocked',
-    ],
-  },
-  'schema:accessibilityHazard': {
-    allowedValues: [
-      'flashing',
-      'noFlashingHazard',
-      'motionSimulation',
-      'noMotionSimulationHazard',
-      'sound',
-      'noSoundHazard',
-      'unknown',
-      'none',
-    ]
-  },
-  'schema:accessibilitySummary': {
-    required: true,
-  }
-};
+const A11Y_META = a11yMetadata.A11Y_META;
 
 // the metadata page of the report
 class Metadata extends React.Component {
 
   static propTypes = {
+    hasMetadataViolations: PropTypes.bool.isRequired,
     metadata: PropTypes.array.isRequired,
     a11ymetadata: PropTypes.object.isRequired,
     filters: PropTypes.object.isRequired,
@@ -182,6 +76,7 @@ class Metadata extends React.Component {
 
   render() {
     let {
+      hasMetadataViolations,
       classes,
       metadata,
       a11ymetadata,
@@ -235,6 +130,31 @@ class Metadata extends React.Component {
       }
     ];
 
+    // console.log("FILTERS metadata render: ", JSON.stringify(filters, null, 4));
+
+    const showMetadataViolations = () => {
+      // const stateTab = {
+      //   reportView: {
+      //     expandFilters: {
+      //       violations: true,
+      //     },
+      //     filters: {
+      //       violations: {
+      //         rule: {
+      //           values: [],
+      //         },
+      //       },
+      //     },
+      //   },
+      // };
+      setTableFiltersExpanded('violations', true);
+      setTableFilterValues('violations', 'rule', '^metadata.*');
+
+      setTimeout(() => {
+        this.props.selectTab(1);
+      }, 100);
+    };
+
     return (
       <section className="report-section metadata">
         <h2>{localize("report.metadata")}</h2>
@@ -280,13 +200,41 @@ class Metadata extends React.Component {
         :
         <p>{localize("report.metadataSection.allPresent")}</p>
       }
-      <a
-          tabIndex={0}
-          className={classNames(classes.kbLink, 'external-link')}
-          onKeyPress={(e) => { if (e.key === "Enter") { this.onKB(); }}}
-          onClick={() => this.onKB()}
-          >{`${localize("menu.knowledgeBase")} (${localize("menu.help")})`}</a>
+      <h2>{localize("report.violations")}</h2>
+      {hasMetadataViolations ?
+        <p>
+          <span>{`[ ${localize("versionCheck.yes")} ]`}</span>
+          <a
+            href="#"
+            tabIndex={0}
+            className={classNames('external-link', classes.kbLink)}
+            onKeyPress={(e) => { if (e.key === "Enter") { showMetadataViolations(); }}}
+            onClick={() => { showMetadataViolations(); }}
+            >{localize("menu.gotoViolations")}</a>
+        </p>
+        :
+        <p>{localize("report.violationsSection.noViolations")}</p>
+      }
+      <div className={classNames(classes.kbLinkContainer)}>
+        <span>{`${localize("menu.knowledgeBase")} (${localize("menu.help")}):`}</span>
 
+        <a
+            href="#"
+            tabIndex={0}
+            className={classNames('external-link', classes.kbLink)}
+            onKeyPress={(e) => { if (e.key === "Enter") { this.onKBSchemaOrg(); }}}
+            onClick={() => this.onKBSchemaOrg()}
+            >{`#1`}</a>
+
+        <a
+            href="#"
+            tabIndex={0}
+            className={classNames('external-link', classes.kbLink)}
+            onKeyPress={(e) => { if (e.key === "Enter") { this.onKBEvaluation(); }}}
+            onClick={() => this.onKBEvaluation()}
+            >{`#2`}</a>
+
+      </div>
       <hr/>
       <Button onClick={this.props.showMetadataEditor} className={classes.editButton}>
         {`${localize("metadata.edit")} ...`}
@@ -306,7 +254,7 @@ function mapStateToProps(state) {
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({showMetadataEditor}, dispatch);
+  return bindActionCreators({showMetadataEditor, selectTab}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Metadata));

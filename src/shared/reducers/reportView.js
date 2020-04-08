@@ -14,17 +14,17 @@ const initialState = {
   filters:
   {
     "violations": {
-      "impact": {values: []},
-      "rulesetTag": {values: []},
-      "rule": {values: []},
-      "location": {values: []},
+      "impact": {values: [], valuesRegex: null},
+      "rulesetTag": {values: [], valuesRegex: null},
+      "rule": {values: [], valuesRegex: null},
+      "location": {values: [], valuesRegex: null},
     },
     "metadata": {
-      "name": {values: []}
+      "name": {values: [], valuesRegex: null}
     },
     "images": {
-      "location": {values: []},
-      "role": {values: []}
+      "location": {values: [], valuesRegex: null},
+      "role": {values: [], valuesRegex: null}
     }
   },
   expandFilters:
@@ -51,7 +51,10 @@ export default function reportView(state = initialState, action) {
 
   switch (action.type) {
     case RESET_INITIAL_REPORT_VIEW: {
-      return Object.assign({}, initialState, { selectedTab: typeof state.selectedTab === "number" ? state.selectedTab : undefined});
+      return {
+        ...initialState,
+        selectedTab: typeof state.selectedTab === "number" ? state.selectedTab : undefined,
+      };
     }
     case SELECT_TAB: {
       return {
@@ -64,7 +67,13 @@ export default function reportView(state = initialState, action) {
       let tableFilters = state.filters;
       if (tableFilters.hasOwnProperty(tableId)) {
         if (tableFilters[tableId].hasOwnProperty(filterId)) {
-          tableFilters[tableId][filterId].values = filterValues;
+          if (typeof filterValues === "string") {
+            tableFilters[tableId][filterId].valuesRegex = filterValues;
+            tableFilters[tableId][filterId].values = [];
+          } else {
+            tableFilters[tableId][filterId].valuesRegex = null;
+            tableFilters[tableId][filterId].values = filterValues;
+          }
           return {
             ...state,
             filters: tableFilters
