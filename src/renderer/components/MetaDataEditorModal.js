@@ -7,12 +7,13 @@ const xpath = require('xpath');
 
 import ReactSelect from 'react-select';
 import { components } from "react-select";
-import CreatableSelect from 'react-select/creatable';
+// import CreatableSelect from 'react-select/creatable';
 
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import CancelIcon from '@material-ui/icons/Cancel';
-import AddBoxIcon from '@material-ui/icons/AddBox';
-import AddIcon from '@material-ui/icons/Add';
+// import AddBoxIcon from '@material-ui/icons/AddBox';
+// import AddIcon from '@material-ui/icons/Add';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 
@@ -21,32 +22,32 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import Checkbox from '@material-ui/core/Checkbox';
+// import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import { hideModal } from './../../shared/actions/modal';
 import { bindActionCreators } from 'redux';
 import {openFile} from './../../shared/actions/app';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { localizer } from './../../shared/l10n/localize';
-const { setCurrentLanguage, getCurrentLanguage, localize } = localizer;
+const { localize } = localizer; // setCurrentLanguage, getCurrentLanguage, 
 import classNames from 'classnames';
 import { ipcRenderer } from 'electron';
 import {
   addMessage,
 } from '../../shared/actions/app';
 import epubUtils from '@daisy/epub-utils';
-import logger from '@daisy/ace-logger';
+// import logger from '@daisy/ace-logger';
 
 import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
 
@@ -68,8 +69,10 @@ const A11Y_META = a11yMetadata.A11Y_META;
 // 'box-shadow': '0px 0px 0px 2px rgb(219,28,28)',
 const styles = theme => ({
   paper: {
-    minHeight: '90vh',
-    maxHeight: '90vh',
+    minWidth: '70vw',
+    maxWidth: '70vw',
+    minHeight: '95vh',
+    maxHeight: '95vh',
     'width': '50vw',
   },
   dialogActions: {
@@ -218,20 +221,9 @@ class MetaDataEditorModal extends React.Component {
     // }
     // logger.initLogger({ verbose: true, silent: false, fileName: "ace-gui.log" });
 
-    const p = epubBaseDir || inputPath;
-    const epub = new epubUtils.EPUB(p);
-    epub.extract(epubBaseDir)
-    .then((epb) => {
-      // console.log("before parse", JSON.stringify(epb, null, 4));
-      return epb.parse();
-    })
-    .then((epb) => {
-      // console.log("after parse", JSON.stringify(epb, null, 4));
-      // console.log("metadata", JSON.stringify(epb.metadata, null, 4));
+    let perfTime = performance.now();
 
-      this.packageOpfFilePath = path.join(epb.basedir, epb.packageDoc.src);
-      // console.log("OPF filepath", this.packageOpfFilePath);
-
+    const processOpf = () => {
       const fileStr = fs.readFileSync(this.packageOpfFilePath).toString();
       // console.log(fileStr);
       this.packageOpfXmlDoc = new DOMParser({errorHandler}).parseFromString(fileStr);
@@ -247,8 +239,10 @@ class MetaDataEditorModal extends React.Component {
 
       const toRemove = [];
 
-      let metadata = epb.metadata; // squished into unique key map with array values ... but we want to linearize for a 1-to-1 mapping with the editor UI list
-      metadata = [];
+      // squished into unique key map with array values ...
+      // but we want to linearize for a 1-to-1 mapping with the editor UI list
+      // let metadata = epb.metadata;
+      let metadata = [];
 
       // this.packageOpfXPathSelect('/opf:package/opf:metadata/dc:*[not(@refines)]', this.packageOpfXmlDoc).forEach((dcElem) => {
       //   let name = `dc:${dcElem.localName}`;
@@ -374,24 +368,83 @@ class MetaDataEditorModal extends React.Component {
         // elem.remove();
       }
 
+      const timeNow = performance.now();
+      const diffTime = timeNow - perfTime;
+      perfTime = timeNow;
+      console.log(`TIME: OPF METADATA ${diffTime}ms`);
+
       this.setState({
         metadata,
       });
-      
-      // this.props.addMessage("test");
-    })
-    .catch((err) => {
-      console.log(`Unexpected error: ${err.message ? err.message : err}`);
-      if (err.stack !== undefined) console.log(err.stack);
+    };
+    const setOpfPath = () => {
+      const containerXmlFilePath = path.join(epubBaseDir, "META-INF", "container.xml");
+      const fileStr = fs.readFileSync(containerXmlFilePath).toString();
+      const containerXmlDoc = new DOMParser({errorHandler}).parseFromString(fileStr);
+      const containerXmlXPathSelect = xpath.useNamespaces(
+        { ocf: 'urn:oasis:names:tc:opendocument:xmlns:container' });
 
-      this.props.hideModal();
-      this.props.addMessage(`${err.message ? err.message : err}`);
-    });
+      const rootfiles = containerXmlXPathSelect('/ocf:container/ocf:rootfiles/ocf:rootfile[@media-type="application/oebps-package+xml"]/@full-path', containerXmlDoc);
+      if (rootfiles.length > 0) {
+        this.packageOpfFilePath = path.join(epubBaseDir, decodeURI(rootfiles[0].nodeValue));
+        console.log("OPF filepath", this.packageOpfFilePath);
+      }
+      if (!this.packageOpfFilePath || !fs.existsSync(this.packageOpfFilePath)) {
+        // fs.realpathSync(outdir)
+        this.props.hideModal();
+        this.props.addMessage(`PACKAGE OPF !! ${this.packageOpfFilePath}`);
+      }
+      this.props.addMessage(`EPUB OPF: ${this.packageOpfFilePath}`);
+
+      const timeNow = performance.now();
+      const diffTime = timeNow - perfTime;
+      perfTime = timeNow;
+      console.log(`TIME: META INF CONTAINER XML ${diffTime}ms`);
+    };
+    setOpfPath();
+    processOpf();
+
+    // lazy setOpfPath(), using Ace core APIs (but VERY computationally expensive):
+    // const p = epubBaseDir || inputPath;
+    // const epub = new epubUtils.EPUB(p);
+    // epub.extract(epubBaseDir)
+    // .then((epb) => {
+    //   const timeNow = performance.now();
+    //   const diffTime = timeNow - perfTime;
+    //   perfTime = timeNow;
+    //   console.log(`TIME: EXTRACT ${diffTime}ms`);
+
+    //   // console.log("before parse", JSON.stringify(epb.metadata, null, 4));
+
+    //   return epb.parse();
+    // })
+    // .then((epb) => {
+    //   const timeNow = performance.now();
+    //   const diffTime = timeNow - perfTime;
+    //   perfTime = timeNow;
+    //   console.log(`TIME: PARSE ${diffTime}ms`);
+
+    //   // console.log("after parse", JSON.stringify(epb.metadata, null, 4));
+
+    //   this.packageOpfFilePath = path.join(epb.basedir, epb.packageDoc.src);
+    //   // console.log("OPF filepath", this.packageOpfFilePath);
+
+    //   processOpf();
+    // })
+    // .catch((err) => {
+    //   console.log(`Unexpected error: ${err.message ? err.message : err}`);
+    //   if (err.stack !== undefined) console.log(err.stack);
+
+    //   this.props.hideModal();
+    //   this.props.addMessage(`${err.message ? err.message : err}`);
+    // });
   }
 
   saveMetadata = () => {
 
     this.props.hideModal();
+
+    let perfTime = performance.now();
 
     // console.log(JSON.stringify(this.state.metadata, null, 4));
     
@@ -448,7 +501,12 @@ class MetaDataEditorModal extends React.Component {
 
     fs.writeFileSync(this.packageOpfFilePath, opfContent);
 
-    if (!this.props.processing && this.props.inputPath && this.props.reportPath) {
+    const timeNow = performance.now();
+    const diffTime = timeNow - perfTime;
+    perfTime = timeNow;
+    console.log(`TIME: PACKAGE OPF SAVE ${diffTime}ms`);
+
+    if (!this.props.processingAce && this.props.inputPath && this.props.reportPath) {
       const openFile = this.props.openFile;
       const inputPath = this.props.inputPath;
       const epubBaseDir = this.props.epubBaseDir;
@@ -546,7 +604,7 @@ class MetaDataEditorModal extends React.Component {
         flagged.isNotSupported = true;
       }
 
-      console.log(`RENDER METADATA: ${mdObj.index}`, JSON.stringify(mdObj, null, 4));
+      // console.log(`RENDER METADATA: ${mdObj.index}`, JSON.stringify(mdObj, null, 4));
       
       const doMultipleSelect = (mdObj.allowedValues && isAccessModeSufficient) ? mdObj : null;
       const doSingleSelect = (mdObj.allowedValues && !isAccessModeSufficient) ? mdObj : null;
@@ -577,7 +635,7 @@ class MetaDataEditorModal extends React.Component {
             getOptionLabel={option => option.content}
 
             filterOptions={(options, params) => {
-              console.log("Autocomplete filterOptions BEFORE", JSON.stringify(options, null, 4));
+              // console.log("Autocomplete filterOptions BEFORE", JSON.stringify(options, null, 4));
               const i = options[0].index;
               const mdContentCurrent = this.state.metadata[i].content;
               if (doSingleSelectCustom &&
@@ -588,10 +646,10 @@ class MetaDataEditorModal extends React.Component {
                   content: mdContentCurrent,
                   index: i,
                 });
-                console.log("Autocomplete filterOptions OPTIONS ADD", JSON.stringify(options[options.length-1], null, 4));
+                // console.log("Autocomplete filterOptions OPTIONS ADD", JSON.stringify(options[options.length-1], null, 4));
               }
               const filtered = createFilterOptions()(options, params);
-              console.log("Autocomplete filterOptions INIT", JSON.stringify(filtered, null, 4));
+              // console.log("Autocomplete filterOptions INIT", JSON.stringify(filtered, null, 4));
               const inVal = params.inputValue ? params.inputValue.trim() : "";
               if (doSingleSelectCustom &&
                 inVal &&
@@ -601,10 +659,10 @@ class MetaDataEditorModal extends React.Component {
                   content: inVal,
                   index: i,
                 });
-                console.log("Autocomplete filterOptions CUSTOM ADD", JSON.stringify(filtered[filtered.length-1], null, 4));
+                // console.log("Autocomplete filterOptions CUSTOM ADD", JSON.stringify(filtered[filtered.length-1], null, 4));
               }
     
-              console.log("Autocomplete filterOptions AFTER", JSON.stringify(filtered, null, 4));
+              // console.log("Autocomplete filterOptions AFTER", JSON.stringify(filtered, null, 4));
               return filtered;
             }}
 
@@ -614,14 +672,14 @@ class MetaDataEditorModal extends React.Component {
                 return;
               }
               const inVal = ipt.value ? ipt.value.trim() : "";
-              console.log("Autocomplete onBlur", JSON.stringify(inVal, null, 4));
+              // console.log("Autocomplete onBlur", JSON.stringify(inVal, null, 4));
               // if (!inVal) {
               //   return;
               // }
 
               if (inVal && !doSingleSelectCustom) {
                 if (mdObj.allowedValues && !mdObj.allowedValues.includes(inVal)) {
-                  console.log("Autocomplete onBlur !doSingleSelectCustom", JSON.stringify(mdObj, null, 4));
+                  // console.log("Autocomplete onBlur !doSingleSelectCustom", JSON.stringify(mdObj, null, 4));
                   return;
                 }
               }
@@ -630,14 +688,14 @@ class MetaDataEditorModal extends React.Component {
               const i = mdObj.index; // parseInt(dataIndex, 10);
               const newMd = this.state.metadata;
               newMd[i].content = inVal;
-              console.log("Autocomplete onBlur STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
+              // console.log("Autocomplete onBlur STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
             }}
 
             onChange={(event, obj) => {
-              console.log("Autocomplete onChange", JSON.stringify(obj, null, 4));
+              // console.log("Autocomplete onChange", JSON.stringify(obj, null, 4));
               
               // const dataIndex = event.currentTarget.getAttribute("data-mdindex");
               const i = mdObj.index; // parseInt(dataIndex, 10);
@@ -656,13 +714,13 @@ class MetaDataEditorModal extends React.Component {
 
               if (obj.content && !doSingleSelectCustom) {
                 if (mdObj.allowedValues && !mdObj.allowedValues.includes(obj.content)) {
-                  console.log("Autocomplete onChange !doSingleSelectCustom", JSON.stringify(mdObj, null, 4));
+                  // console.log("Autocomplete onChange !doSingleSelectCustom", JSON.stringify(mdObj, null, 4));
                   return;
                 }
               }
               const newMd = this.state.metadata;
               newMd[obj.index].content = obj.content;
-              console.log("Autocomplete onChange STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
+              // console.log("Autocomplete onChange STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
@@ -727,7 +785,7 @@ class MetaDataEditorModal extends React.Component {
             if (obj.action === "clear") {
               const newMd = this.state.metadata;
               newMd[index].content = "";
-              console.log("ReactSelect onChange clear STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
+              // console.log("ReactSelect onChange clear STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
@@ -738,7 +796,7 @@ class MetaDataEditorModal extends React.Component {
               //   filter(s => s !== obj.removedValue.value);
               // newMd[index].content = arr.join(",");
               newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
-              console.log("ReactSelect onChange remove-value STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
+              // console.log("ReactSelect onChange remove-value STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
@@ -749,7 +807,7 @@ class MetaDataEditorModal extends React.Component {
               //   concat([obj.option.value]);
               // newMd[index].content = arr.join(",");
               newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
-              console.log("ReactSelect onChange select-option STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
+              // console.log("ReactSelect onChange select-option STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
@@ -780,7 +838,7 @@ class MetaDataEditorModal extends React.Component {
               borderRadius: 4,
             }},
             placeholder: (provided, state) => {
-              console.log("ReactSelect placeholder STATE-METADATA", JSON.stringify(state, null, 4));
+              // console.log("ReactSelect placeholder STATE-METADATA", JSON.stringify(state, null, 4));
               return {
               ...provided,
               background: "white",
@@ -808,7 +866,7 @@ class MetaDataEditorModal extends React.Component {
               transform: 'translateZ(0)'
             }),
             multiValue: (styles, { data, isDisabled, isFocused, isSelected }) => {
-              console.log("ReactSelect multiValue STATE-METADATA", JSON.stringify(data, null, 4));
+              // console.log("ReactSelect multiValue STATE-METADATA", JSON.stringify(data, null, 4));
               return {
                 ...styles,
                 ...(data.isNotSupported ? { border: '1px solid rgb(219,28,28)' } : {})
@@ -883,6 +941,9 @@ class MetaDataEditorModal extends React.Component {
           if (md.name !== mdObj.name) {
             return false; // ignore different names
           }
+          // if (!md.content) {
+          //   return false; // ignore empties
+          // }
           return (md.name in A11Y_META) && A11Y_META[md.name].required;
         });
         if (!thereIsAnotherOne) {
@@ -980,8 +1041,8 @@ class MetaDataEditorModal extends React.Component {
           boxSizing: "border-box",
           paddingTop: "8px",
           paddingBottom: "8px",
-          paddingLeft: "10px",
-          paddingRight: "10px",
+          paddingLeft: "28px",
+          paddingRight: "28px",
         }}
           ref={ref => { this.domRef = ReactDOM.findDOMNode(ref) }}
         >
@@ -1014,8 +1075,9 @@ class MetaDataEditorModal extends React.Component {
               paddingRight: "10px",
               paddingLeft: "10px",
               paddingBottom: "4px",
-              border: "1px solid silver",
-              borderRadius: "4px",
+              // border: "1px solid silver",
+              // borderRadius: "4px",
+              marginRight: "100px",
             }}
             key={`addKey`}>
 
@@ -1085,13 +1147,11 @@ class MetaDataEditorModal extends React.Component {
                     }, 500);
                   }}
                   aria-label={localize("metadata.add")}>
-                  <AddBoxIcon />
+                  <AddCircleOutlineIcon />
                 </IconButton>
             </FormControl>
           </div>
-          <Button style={{
-              marginLeft: "6em",
-            }}
+          <Button
             onClick={() => this.props.hideModal()}>
             {localize("metadata.cancel")}
           </Button>
@@ -1107,7 +1167,7 @@ class MetaDataEditorModal extends React.Component {
 function mapStateToProps(state) {
   let { app: {inputPath, reportPath, epubBaseDir, processing: {ace}}, modal: {modalType} } = state;
   return {
-    processing: ace,
+    processingAce: ace,
     inputPath,
     reportPath,
     epubBaseDir,

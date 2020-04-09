@@ -8,7 +8,6 @@ import {
   CLEAR_MESSAGES,
   OPEN_REPORT,
   SET_PROCESSING,
-  PROCESSING_TYPE,
 } from '../actions/app';
 
 import { localizer } from '../l10n/localize';

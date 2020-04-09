@@ -20,7 +20,7 @@ const axeRunner = ipcRenderer ? createAxeRunner(ipcRenderer, CONCURRENT_INSTANCE
 import { localizer } from '../l10n/localize';
 const { setCurrentLanguage, getCurrentLanguage, localize } = localizer;
 
-const _tmp_epub_unzip_subfolder = "unzipped_EPUB";
+const _tmp_epub_unzip_subfolder = "_unzipped_EPUB_";
 
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const CLEAR_MESSAGES = "CLEAR_MESSAGES";
@@ -31,6 +31,7 @@ export const SET_PROCESSING = 'SET_PROCESSING';
 export const PROCESSING_TYPE = {
   ACE: 'ace',
   EXPORT: 'export',
+  ZIPEPUB: 'zipepub',
 }
 
 function checkType(filepath) {
@@ -62,8 +63,11 @@ export function setProcessing(type, value) {
 }
 
 function checkAlreadyProcessing(dispatch, st, inputPath) {
-  if (st.app && st.app.processing && st.app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
-    const p = st.app.processing[PROCESSING_TYPE.ACE]; // st.app.inputPath;
+  // check already running (for example, "file open..." event)
+  if (st.app && st.app.processing && st.app.processing.ace
+    && st.app.processing.ace !== 1 // see openFile() below, setProcessing(PROCESSING_TYPE.ACE, 1) for ASAP spinner (Ace core load EPUB can take a long time, blocking UI)
+    ) {
+    const p = st.app.processing.ace; // st.app.inputPath;
     dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${inputPath})`, interpolation: { escapeValue: false }})));
     return true;
   }
@@ -78,7 +82,10 @@ export function openFile(filepath) {
         dispatch(closeReport());
         dispatch(resetInitialReportView());
 
-        dispatch(runAce(filepath));
+        dispatch(setProcessing(PROCESSING_TYPE.ACE, 1));
+        setTimeout(() => {
+          dispatch(runAce(filepath));
+        }, 500);
       }
     }
     else if (type == 2) {
@@ -152,7 +159,7 @@ export function runAce(inputPath) {
         if (!fs.existsSync(epubBaseDir)) {
           fs.ensureDirSync(epubBaseDir);
         }
-        remote.shell.showItemInFolder(epubBaseDir);
+        // remote.shell.showItemInFolder(epubBaseDir);
         epub.extract(epubBaseDir)
         // .then((epb) => {
         //   console.log(JSON.stringify(epb, null, 4));
@@ -170,7 +177,7 @@ export function runAce(inputPath) {
           dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
         });
       } else {
-        remote.shell.showItemInFolder(epubBaseDir);
+        // remote.shell.showItemInFolder(epubBaseDir);
         if (epubBaseDir === epubBaseDirDEFAULT) {
           doAce(epubBaseDir);
         } else {
@@ -185,13 +192,81 @@ export function runAce(inputPath) {
     }
   }
 }
+
+export function zipEpub() {
+  return (dispatch, getState) => {
+
+    let {app: { inputPath, reportPath, epubBaseDir }} = getState();
+    
+    const parentDir = path.dirname(epubBaseDir);
+    let epubFileName = path.basename(epubBaseDir);
+    if (epubFileName === _tmp_epub_unzip_subfolder) {
+      epubFileName = path.basename(parentDir);
+    }
+    const epubZipPath = `${path.join(parentDir, epubFileName)}.epub`;
+
+    dispatch(setProcessing(PROCESSING_TYPE.ZIPEPUB, true));
+    dispatch(addMessage(`${localize("metadata.save")} (EPUB ${localize("dialog.ziparchive")}): ${epubBaseDir} => ${epubFileName}.epub`));
+    
+    let previousProgressFile = null;
+    let previousProgressPercent = -1;
+    let previousTimeDispatch = -1;
+    zip((progressPercent, progressFile) => {
+
+      const differentFile = previousProgressFile !== progressFile;
+      const differentPercent = previousProgressPercent !== progressPercent;
+      if (previousTimeDispatch === -1 ||
+        differentFile ||
+        differentPercent) {
+
+        previousProgressFile = progressFile;
+        previousProgressPercent = progressPercent;
+
+        let doDispatch = false;
+        if (previousTimeDispatch === -1) {
+          doDispatch = true;
+        } else {
+          const diff = performance.now() - previousTimeDispatch;
+          doDispatch = diff > 400;
+        }
+        if (doDispatch) {
+          previousTimeDispatch = performance.now();
+          console.log(progressPercent);
+          console.log(progressFile);
+          dispatch(setProcessing(PROCESSING_TYPE.ZIPEPUB, { progressFile, progressPercent }));
+        }
+      }
+      
+    }, epubBaseDir, epubZipPath,
+      null,
+      [
+        new RegExp(`^\\.DS_Store`),
+        new RegExp(`^__MACOSX[/\\\\]`),
+      ]
+    )
+    .then(() => {
+      remote.shell.showItemInFolder(epubZipPath);
+      
+      dispatch(addMessage(`${localize("dialog.open")} [${epubFileName}.epub]`));
+      dispatch(setProcessing(PROCESSING_TYPE.ZIPEPUB, false));
+    })
+    .catch(error => {
+      remote.shell.showItemInFolder(epubBaseDir);
+
+      dispatch(addMessage(`${error.message ? error.message : error}`));
+      dispatch(addMessage(`!!! EPUB ${localize("dialog.ziparchive")}: ${epubBaseDir} -- ${epubZipPath}`));
+      dispatch(setProcessing(PROCESSING_TYPE.ZIPEPUB, false));
+    });
+  }
+}
+
+
 export function openReport(reportPath, inputPath, epubBaseDir) {
   return {
     type: OPEN_REPORT,
     payload: { reportPath, inputPath, epubBaseDir },
   };
 }
-
 export function closeReport() {
   return {
     type: CLOSE_REPORT,
@@ -206,20 +281,25 @@ export function exportReport(outfile) {
     // - ensure outdir is overwriteable
     dispatch(setProcessing(PROCESSING_TYPE.EXPORT, true));
     dispatch(addMessage(localize("message.savingreport", {outfile, interpolation: { escapeValue: false }})));
-    zip(path.dirname(reportPath), outfile,
+    const dirToZip = path.dirname(reportPath);
+    zip(null, dirToZip, outfile,
       // see prepareOutdir() overrides:
       [
-        new RegExp(`^report.json`),
-        new RegExp(`^report.html`),
+        new RegExp(`^report\\.json`),
+        new RegExp(`^report\\.html`),
         new RegExp(`^data[/\\\\]`),
         new RegExp(`^js[/\\\\]`),
       ]
     )
     .then(() => {
+      remote.shell.showItemInFolder(outfile);
+
       dispatch(addMessage(localize("message.savedreport", {outfile, interpolation: { escapeValue: false }})));
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));
     })
     .catch(error => {
+      remote.shell.showItemInFolder(dirToZip);
+
       dispatch(addMessage(`${error.message ? error.message : error}`));
       dispatch(addMessage(localize("message.failsavereport", {outfile, interpolation: { escapeValue: false }})));
       dispatch(setProcessing(PROCESSING_TYPE.EXPORT, false));

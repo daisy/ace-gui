@@ -11,7 +11,6 @@ import {initPersistentStore} from './store-persist';
 import {checkLatestVersion} from '../shared/helpers/versionCheck';
 
 import {
-  PROCESSING_TYPE,
   addMessage,
 } from '../shared/actions/app';
 
@@ -54,8 +53,9 @@ function handleStartupFileCheck(filepath) {
   app.whenReady().then(() => {
     async function askCheckEPUB() {
       const st = _store.getState();
-      if (st && st.app && st.app.processing && st.app.processing[PROCESSING_TYPE.ACE]){ // check already running (for example, "file open..." event)
-        const p = st.app.processing[PROCESSING_TYPE.ACE]; // st.app.inputPath;
+      // check already running (for example, "file open..." event)
+      if (st && st.app && st.app.processing && st.app.processing.ace){
+        const p = st.app.processing.ace; // st.app.inputPath;
         _store.dispatch(addMessage(localize("message.runningace", {inputPath: `${p} (... ${filepath})`, interpolation: { escapeValue: false }})));
 
         const res = await dialog.showMessageBox({

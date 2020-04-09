@@ -127,7 +127,7 @@ class PreferencesModal extends React.Component {
     this.props.savePreferences(this.state);
     this.props.hideModal();
 
-    if (!this.props.processing && this.props.inputPath && this.props.reportPath && chosenLanguage !== currentAppLanguage) {
+    if (!this.props.processingAce && this.props.inputPath && this.props.reportPath && chosenLanguage !== currentAppLanguage) {
       const openFile = this.props.openFile;
       const inputPath = this.props.inputPath;
       const epubBaseDir = this.props.epubBaseDir;
@@ -267,7 +267,7 @@ class PreferencesModal extends React.Component {
 function mapStateToProps(state) {
   let { app: {inputPath, reportPath, epubBaseDir, processing: {ace}}, modal: {modalType}, preferences } = state;
   return {
-    processing: ace,
+    processingAce: ace,
     inputPath,
     reportPath,
     epubBaseDir,

@@ -52,7 +52,7 @@ class Splash extends React.Component {
   };
 
   render() {
-    let {classes, processing} = this.props;
+    let {classes, processingAce} = this.props;
 
     const orDropSidebar = localize("splash.orDropSidebar");
     const orDropSidebarArray = orDropSidebar.split("__");
@@ -69,15 +69,15 @@ class Splash extends React.Component {
     const browseForFileOrFolder5 = browseForFileOrFolderArray[4].trim();
     return (
         <div className={`splash
-            ${processing ? 'processing' : ''}`}
+            ${processingAce ? 'processing' : ''}`}
           role="main">
 
           <h1>{localize("splash.title")}</h1>
           <div style={{position: 'relative'}}>
             <img src={`${AceLogo}`} alt="" width="150" height="150"/>
-            {processing && <CircularProgress size={178} className={classes.buttonProcessing}/>}
+            {processingAce && <CircularProgress size={178} className={classes.buttonProcessing}/>}
           </div>
-          {!processing &&
+          {!processingAce &&
           <p>{localize("splash.dropHere")}<br/>
             {orDropSidebar1}&nbsp;
               <AddCircleOutlineIcon titleAccess="“New”" fontSize='inherit' style={{position: 'relative', bottom: '-0.15em'}}/>
@@ -99,7 +99,7 @@ function mapStateToProps(state) {
   let { app: {processing: {ace}}, preferences: {language} } = state;
   return {
     language,
-    processing: ace
+    processingAce: ace
   };
 }
 

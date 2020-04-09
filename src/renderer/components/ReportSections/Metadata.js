@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import {showMetadataEditor} from './../../../shared/actions/metadata';
 import {selectTab} from './../../../shared/actions/reportView';
+import {zipEpub} from './../../../shared/actions/app';
+
 import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
 
@@ -17,9 +19,28 @@ import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
 const {ipcRenderer} = require('electron');
 import classNames from 'classnames';
 
+import CircularProgress from '@material-ui/core/CircularProgress'
+
 const styles = theme => ({
+
+  buttonProcessing: {
+    // position: 'absolute',
+    // top: '50%',
+    // left: '50%',
+    // marginTop: -91,
+    marginLeft: "0.5em",
+    // height: 300,
+    // zIndex: 1,
+    color: '#22C7F0',
+  },
+  detailProcessing: {
+    fontSize: "0.94em",
+    fontFamily: "monospace",
+    verticalAlign: "super",
+    marginLeft: "1em",
+  },
   editButton: {
-    'font-size': '1.1em',
+    'font-size': '1em',
     'margin-bottom': '1em',
     'border': '2px solid silver',
     'border-radius': '4px',
@@ -153,6 +174,30 @@ class Metadata extends React.Component {
         this.props.selectTab(1);
       }, 100);
     };
+    const jsxZipProgress = () => {
+
+      if (!this.props.processingZipEpub) {
+        return (<></>);
+      }
+      // value={this.props.processingZipEpub.progressPercent}
+      // variant={"determinate"}
+      if (this.props.processingZipEpub.progressPercent) {
+        if (this.props.processingZipEpub.progressFile) {
+          return (<><CircularProgress size={28} className={classes.buttonProcessing}
+
+          /><span className={classes.detailProcessing}><strong>{`${this.props.processingZipEpub.progressPercent.toFixed(2)}% `}</strong>{` ${this.props.processingZipEpub.progressFile}`}</span></>);
+        } else {
+          return (<><CircularProgress size={28} className={classes.buttonProcessing}
+
+            /><span className={classes.detailProcessing}><strong>{`${this.props.processingZipEpub.progressPercent.toFixed(2)}%`}</strong></span></>);
+        }
+      } else if (this.props.processingZipEpub.progressFile) {
+        return (<><CircularProgress size={28} className={classes.buttonProcessing}
+        /><span className={classes.detailProcessing}>{`${this.props.processingZipEpub.progressFile}`}</span></>);
+      } else {
+        return (<CircularProgress size={28} className={classes.buttonProcessing}/>);
+      }
+    };
 
     return (
       <section className="report-section metadata">
@@ -235,25 +280,35 @@ class Metadata extends React.Component {
 
       </div>
       <hr/>
-      <Button onClick={this.props.showMetadataEditor} className={classes.editButton}>
+      <Button onClick={this.props.showMetadataEditor}
+        className={classes.editButton}>
         {`${localize("metadata.edit")} ...`}
       </Button>
-
+      <Button onClick={this.props.zipEpub}
+        style={{
+          marginLeft: "1em",
+        }}
+        className={classes.editButton}>
+        {`${localize("metadata.save")} (zip / EPUB)`}
+      </Button>
+      {
+        jsxZipProgress()
+      }
      </section>
     );
   }
 }
 function mapStateToProps(state) {
-  let { app: {processing: {ace}, inputPath, reportPath, epubBaseDir} } = state;
+  let { app: {processing: {zipepub}, inputPath, reportPath, epubBaseDir} } = state;
   return {
     inputPath,
     reportPath,
     epubBaseDir,
-    processing: ace,
+    processingZipEpub: zipepub,
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({showMetadataEditor, selectTab}, dispatch);
+  return bindActionCreators({showMetadataEditor, selectTab, zipEpub }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Metadata));

@@ -2,8 +2,9 @@ import { app, Menu, shell, dialog, clipboard, webContents, BrowserWindow } from 
 import {
   openReport,
   closeReport,
-  exportReport
+  exportReport,
 } from './../shared/actions/app';
+
 import {selectTab, resetInitialReportView} from './../shared/actions/reportView';
 import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
 import * as AboutBoxHelper from './../shared/helpers/about';
@@ -45,7 +46,7 @@ export default class MenuBuilder {
     let currReady = this.stateValues.ready;
     const st = this.store.getState();
     let newIsReportOpen = st.app.report != null;
-    let newReady = !st.app.processing.ace; // .app.processing[PROCESSING_TYPE.ACE]
+    let newReady = !st.app.processing.ace;
     if (currIsReportOpen != newIsReportOpen || currReady != newReady) {
       this.stateValues.ready = newReady;
       this.stateValues.isReportOpen = newIsReportOpen;
