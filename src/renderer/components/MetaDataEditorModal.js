@@ -68,15 +68,17 @@ const A11Y_META = a11yMetadata.A11Y_META;
 // 'box-shadow': '0px 0px 0px 2px rgb(219,28,28)',
 const styles = theme => ({
   paper: {
+    minHeight: '90vh',
+    maxHeight: '90vh',
     'width': '50vw',
   },
   dialogActions: {
-    margin: '8px 24px 24px'
+    margin: '8px 8px 8px 8px'
   },
   kbLinkContainer: {
     'text-align': 'right',
     'display': 'block',
-    'margin-right': '1em',
+    fontSize: '80%',
   },
   kbLink: {
     'margin-left': '1em',
@@ -527,6 +529,8 @@ class MetaDataEditorModal extends React.Component {
           if (!mdObj.contentSplit.length) {
             mdObj.contentSplit = null;
           }
+        } else {
+          mdObj.contentSplit = [];
         }
       }
 
@@ -554,11 +558,13 @@ class MetaDataEditorModal extends React.Component {
         // data-content={mdObj.content}
         // data-mdindex={mdObj.index}
         return (<Autocomplete
+            id={`metadata_${mdObj.index}`}
+
             value={mdObj}
 
-            options={mdObj.allowedValues.map(item => {
+            options={mdObj.allowedValues.map(allowedValue => {
               return {
-                content: item,
+                content: allowedValue,
                 index: mdObj.index,
               };
             })}
@@ -688,22 +694,30 @@ class MetaDataEditorModal extends React.Component {
       };
 
       const renderMultipleSelect = () => {
-        return <></>;
+        // return <></>;
         // data-name={mdObj.name}
         // data-content={mdObj.content}
         // data-mdindex={mdObj.index}
         return (<ReactSelect
-
+          id={`metadata_${mdObj.index}`}
           options={
             A11Y_META[mdObj.name].allowedValues.map((allowedValue) => {
               return {
                 label: allowedValue,
                 value: allowedValue,
-                mdObj,
+                index: mdObj.index,
               };
             })
           }
-          value={doMultipleSelect}
+          value={
+            mdObj.contentSplit.map(item => {
+              return {
+                label: item.content,
+                value: item.content,
+                isNotSupported: item.isNotSupported,
+              };
+            })
+          }
 
           onChange={(values, obj) => {
 
@@ -713,6 +727,7 @@ class MetaDataEditorModal extends React.Component {
             if (obj.action === "clear") {
               const newMd = this.state.metadata;
               newMd[index].content = "";
+              console.log("ReactSelect onChange clear STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
@@ -723,6 +738,7 @@ class MetaDataEditorModal extends React.Component {
               //   filter(s => s !== obj.removedValue.value);
               // newMd[index].content = arr.join(",");
               newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
+              console.log("ReactSelect onChange remove-value STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
@@ -733,7 +749,7 @@ class MetaDataEditorModal extends React.Component {
               //   concat([obj.option.value]);
               // newMd[index].content = arr.join(",");
               newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
-              console.log("ReactSelect onChange STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
+              console.log("ReactSelect onChange select-option STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
@@ -764,7 +780,7 @@ class MetaDataEditorModal extends React.Component {
               borderRadius: 4,
             }},
             placeholder: (provided, state) => {
-              // console.log(state);
+              console.log("ReactSelect placeholder STATE-METADATA", JSON.stringify(state, null, 4));
               return {
               ...provided,
               background: "white",
@@ -792,9 +808,10 @@ class MetaDataEditorModal extends React.Component {
               transform: 'translateZ(0)'
             }),
             multiValue: (styles, { data, isDisabled, isFocused, isSelected }) => {
+              console.log("ReactSelect multiValue STATE-METADATA", JSON.stringify(data, null, 4));
               return {
                 ...styles,
-                ...(data.notSupported ? { border: '1px solid rgb(219,28,28)' } : {})
+                ...(data.isNotSupported ? { border: '1px solid rgb(219,28,28)' } : {})
               };
             },
           }}
@@ -921,6 +938,7 @@ class MetaDataEditorModal extends React.Component {
 
   render() {
     const {classes, modalType} = this.props;
+    // className={classNames(classes.browseControlInputGroup)}
 
     const [metadataJsx, flagged] = this.renderMds();
     return (
@@ -931,10 +949,8 @@ class MetaDataEditorModal extends React.Component {
         open={modalType != null}
         onClose={() => this.props.hideModal()}
         classes={{ paper: classes.paper }}>
-        <DialogTitle id="metadata-dialog-title">{`${localize("metadata.metadata")} (${localize("metadata.a11y")})`}</DialogTitle>
-        <DialogContent>
-
-          <hr/>
+        <DialogTitle id="metadata-dialog-title">
+          {`${localize("metadata.metadata")} - ${localize("metadata.a11y")}`}
 
           <div className={classNames(classes.kbLinkContainer)}>
             <span>{`${localize("menu.knowledgeBase")} (${localize("menu.help")}):`}</span>
@@ -954,18 +970,29 @@ class MetaDataEditorModal extends React.Component {
                 onKeyPress={(e) => { if (e.key === "Enter") { this.onKBEvaluation(); }}}
                 onClick={() => this.onKBEvaluation()}
                 >{`#2`}</a>
-
           </div>
 
-          <hr className={classNames(classes.bottomMargin)}/>
+        </DialogTitle>
+        <DialogContent
+        style={{
+          borderBottom: "1px solid #333333",
+          borderTop: "1px solid #333333",
+          boxSizing: "border-box",
+          paddingTop: "8px",
+          paddingBottom: "8px",
+          paddingLeft: "10px",
+          paddingRight: "10px",
+        }}
+          ref={ref => { this.domRef = ReactDOM.findDOMNode(ref) }}
+        >
 
-
-<div
-          className={classNames(classes.notFlagged_,
-            (flagged.isMissingRequired || flagged.isNotSupported) ? classes.red_ : (flagged.isMissingRecommended ? classes.orange_ : undefined)
-            )}
->
+        <div
+        >
             {
+          // className={classNames(classes.notFlagged_,
+          //   (flagged.isMissingRequired || flagged.isNotSupported) ? classes.red_ : (flagged.isMissingRecommended ? classes.orange_ : undefined)
+          //   )}
+
             // <FormControl variant="outlined" margin="dense" fullWidth
             // classes={{ root: classes.rootGroup }}
             // >
@@ -977,52 +1004,95 @@ class MetaDataEditorModal extends React.Component {
             {
             // </FormControl>
             }
-</div>
-
-        <div key={`addKey`}
-          className={classNames(classes.browseControlInputGroup)}
-        >
-          <hr/>
-
-          <FormControl
-            variant="outlined"
-            margin="dense"
-            className={classes.browseControl}>
-              <Select defaultValue={a11yMeta[0]}
-                onChange={(event) => {
-                  this.setState({
-                    metadataAdd: event.target.value,
-                  });
-                }}>
-                {
-                  a11yMeta.map((a, i) => {
-                    return <MenuItem key={`select_option_${i}`} value={a}>{a}</MenuItem>;
-                  })
-                }
-              </Select>
-              <IconButton
-                onClick={(event) => {
-                  const name = this.state.metadataAdd || a11yMeta[0];
-                  const newMd = this.state.metadata;
-                  newMd.push({
-                    name,
-                    content: "",
-                  });
-                  this.setState({
-                    metadata: newMd,
-                  });
-                  setTimeout(() => { this.forceUpdate(); }, 500);
-                }}
-                aria-label={localize("metadata.add")}>
-                <AddBoxIcon />
-              </IconButton>
-          </FormControl>
-          <hr/>
         </div>
 
         </DialogContent>
         <DialogActions classes={{ root: classes.dialogActions }}>
-          <Button onClick={() => this.props.hideModal()}>
+
+          <div style={{
+              width: "100%",
+              paddingRight: "10px",
+              paddingLeft: "10px",
+              paddingBottom: "4px",
+              border: "1px solid silver",
+              borderRadius: "4px",
+            }}
+            key={`addKey`}>
+
+            <FormControl
+              variant="outlined"
+              margin="dense"
+              className={classes.browseControl}>
+                <Select defaultValue={a11yMeta[0]}
+                  onChange={(event) => {
+                    this.setState({
+                      metadataAdd: event.target.value,
+                    });
+                  }}>
+                  {
+                    a11yMeta.map((a, i) => {
+                      return <MenuItem key={`select_option_${i}`} value={a}>{a}</MenuItem>;
+                    })
+                  }
+                </Select>
+                <IconButton
+                  onClick={(event) => {
+                    const name = this.state.metadataAdd || a11yMeta[0];
+                    const newMd = this.state.metadata;
+                    newMd.push({
+                      name,
+                      content: "",
+                    });
+                    this.setState({
+                      metadata: newMd,
+                    });
+
+                    setTimeout(() => {
+                      if (this.domRef) {
+                        this.domRef.scrollTop = this.domRef.scrollHeight;
+                        this.domRef.scrollLeft = 0;
+                      }
+                      let found = -1;
+                      for (let j = this.state.metadata.length - 1; j >= 0; j--) {
+                        const md = this.state.metadata[j];
+                        if (md.deleted) {
+                          continue;
+                        }
+                        found = j;
+                        break;
+                      }
+                      if (found >= 0) {
+                        const el = document.getElementById(`metadata_${found}`);
+                        if (el) {
+                          const elName = el.nodeName.toLowerCase();
+                          if (elName === "input" || elName === "textarea") {
+                            el.focus();
+                          } else {
+                            let input = el.querySelector("input");
+                            if (!input) {
+                              input = el.querySelector("textarea");
+                            }
+                            if (input) {
+                              input.focus();
+                            }
+                          }
+                        }
+                      }
+                    }, 200);
+
+                    setTimeout(() => {
+                      this.forceUpdate();
+                    }, 500);
+                  }}
+                  aria-label={localize("metadata.add")}>
+                  <AddBoxIcon />
+                </IconButton>
+            </FormControl>
+          </div>
+          <Button style={{
+              marginLeft: "6em",
+            }}
+            onClick={() => this.props.hideModal()}>
             {localize("metadata.cancel")}
           </Button>
           <Button onClick={this.saveMetadata} variant="contained" color="secondary">

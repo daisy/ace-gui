@@ -67,3 +67,12 @@ a {
 .react-select__value-container {
   overflow: visible !important;
 }
+
+.react-select__placeholder {
+  font-family: Roboto, Helvetica, Arial, sans-serif !important;
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.react-select__control--is-focused .react-select__placeholder {
+  color: initial !important;
+}
