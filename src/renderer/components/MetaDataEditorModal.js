@@ -58,6 +58,14 @@ const a11yMeta_links = a11yMetadata.a11yMeta_links;
 const a11yMeta = a11yMetadata.a11yMeta;
 const A11Y_META = a11yMetadata.A11Y_META;
 
+// color: 'red',
+// 'background-color': 'red',
+// 'border-color': 'red',
+// 'outline-color': 'red',
+// 'outline-style': 'solid',
+// 'outline-width': '2px',
+// 'outline-offset': '1px',
+// 'box-shadow': '0px 0px 0px 2px rgb(219,28,28)',
 const styles = theme => ({
   paper: {
     'width': '50vw',
@@ -90,18 +98,33 @@ const styles = theme => ({
     // color: theme.palette.text.primary,
     'grid-column': '1 / 2',
     'margin-bottom': '3em',
+  },
+  bottomMargin: {
+    'margin-bottom': '2em',
+  },
+  notFlagged: {
     'border-left': "6px solid transparent",
   },
+  notFlagged_: {
+    'border-right': "6px solid transparent",
+  },
   red: {
-    // color: 'red',
-    // 'background-color': 'red',
-    // 'border-color': 'red',
-    // 'outline-color': 'red',
-    // 'outline-style': 'solid',
-    // 'outline-width': '2px',
-    // 'outline-offset': '1px',
-    // 'box-shadow': '0px 0px 0px 2px rgb(219,28,28)',
-    'border-left': "6px solid rgb(219,28,28)",
+    'border-left': "6px solid rgb(219,28,28) !important",
+  },
+  red_: {
+    'border-right': "6px solid rgb(219,28,28) !important",
+  },
+  orange: {
+    'border-left': "6px solid orange !important",
+  },
+  orange_: {
+    'border-right': "6px solid orange !important",
+  },
+  silver: {
+    'border-left': "6px solid silver !important",
+  },
+  silver_: {
+    'border-right': "6px solid silver !important",
   },
   browseControlInput: {
     width: '100%',
@@ -207,9 +230,9 @@ class MetaDataEditorModal extends React.Component {
       this.packageOpfFilePath = path.join(epb.basedir, epb.packageDoc.src);
       // console.log("OPF filepath", this.packageOpfFilePath);
 
-      const content = fs.readFileSync(this.packageOpfFilePath).toString();
-      // console.log(content);
-      this.packageOpfXmlDoc = new DOMParser({errorHandler}).parseFromString(content);
+      const fileStr = fs.readFileSync(this.packageOpfFilePath).toString();
+      // console.log(fileStr);
+      this.packageOpfXmlDoc = new DOMParser({errorHandler}).parseFromString(fileStr);
       this.packageOpfXPathSelect = xpath.useNamespaces(
         { opf: 'http://www.idpf.org/2007/opf',
           dc: 'http://purl.org/dc/elements/1.1/'});
@@ -387,27 +410,27 @@ class MetaDataEditorModal extends React.Component {
       const useDublinCore = isDublinCore && this.isEPUB3;
 
       const isLink = a11yMeta_links.includes(md.name) ||
-        md.name === "a11y:certifierCredential" && /^https?:\/\//.test(md.content.trim());
+        md.name === "a11y:certifierCredential" && /^https?:\/\//.test(md.content);
       const useLink = isLink && this.isEPUB3;
 
       if (useDublinCore) {
         childElement = this.packageOpfXmlDoc.createElementNS(
           'http://purl.org/dc/elements/1.1/',
           md.name);
-        childElement.appendChild(this.packageOpfXmlDoc.createTextNode(md.content.trim()));
+        childElement.appendChild(this.packageOpfXmlDoc.createTextNode(md.content));
       } else {
         childElement = this.packageOpfXmlDoc.createElementNS(
           'http://www.idpf.org/2007/opf',
           useLink ? "link" : "meta");
         if (useLink) {
           childElement.setAttribute("property", md.name);
-          childElement.setAttribute("href", md.content.trim());
+          childElement.setAttribute("href", md.content);
         } else if (this.isEPUB3) {
           childElement.setAttribute("property", md.name);
-          childElement.appendChild(this.packageOpfXmlDoc.createTextNode(md.content.trim()));
+          childElement.appendChild(this.packageOpfXmlDoc.createTextNode(md.content));
         } else {
           childElement.setAttribute("name", md.name);
-          childElement.setAttribute("content", md.content.trim());
+          childElement.setAttribute("content", md.content);
         }
       }
 
@@ -435,7 +458,10 @@ class MetaDataEditorModal extends React.Component {
   }
 
   renderMds() {
+
     const {classes} = this.props;
+
+    let flagged = {};
 
     // console.log(JSON.stringify(this.state, null, 4));
     const metadatas = this.state.metadata || [];
@@ -451,164 +477,191 @@ class MetaDataEditorModal extends React.Component {
       }
 
       const mdName = metadata.name;
-      const mdContent = metadata.content;
+      const isAccessibilitySummary = mdName === "schema:accessibilitySummary";
+      const isAccessModeSufficient = mdName === "schema:accessModeSufficient";
+      const isConformsTo = mdName === "dcterms:conformsTo";
+      const allowedValues = 
+        ((mdName in A11Y_META) && A11Y_META[mdName].allowedValues) ?
+        A11Y_META[mdName].allowedValues :
+        (isConformsTo ? conformsToURLs : null);
+      const mdContent = metadata.content; // can be empty string placeholder
       const mdObj = {
         name: mdName,
         content: mdContent,
+        contentSplit: null,
         index: mdIndex,
+
+        allowedValues,
+
+        isMissingRequired:
+          !mdContent &&
+          (mdName in A11Y_META) &&
+          A11Y_META[mdName].required,
+
+        isMissingRecommended:
+          !mdContent &&
+          (mdName in A11Y_META) &&
+          A11Y_META[mdName].recommended,
+
+        isNotSupported:
+          !isAccessModeSufficient && // updated below
+          !isConformsTo && // allow arbitrary value
+          mdContent &&
+          allowedValues && !allowedValues.includes(mdContent),
       };
+      if (isAccessModeSufficient) {
+        if (mdContent) {
+          mdObj.contentSplit = mdContent.split(",")
+            .map(s => s.trim())
+            .filter(s => s.length)
+            .map(s => {
+              const isNotSupported = allowedValues && !allowedValues.includes(s);
+              if (isNotSupported) {
+                mdObj.isNotSupported = true;
+              }
+              return {
+                content: s,
+                isNotSupported,
+              };
+            });
+          if (!mdObj.contentSplit.length) {
+            mdObj.contentSplit = null;
+          }
+        }
+      }
+
+      if (mdObj.isMissingRequired) {
+        flagged.isMissingRequired = true;
+      }
+
+      if (mdObj.isMissingRecommended) {
+        flagged.isMissingRecommended = true;
+      }
+
+      if (mdObj.isNotSupported) {
+        flagged.isNotSupported = true;
+      }
+
+      console.log(`RENDER METADATA: ${mdObj.index}`, JSON.stringify(mdObj, null, 4));
       
-      let doSingleSelect = null;
-      let doSingleSelectCustom = false;
+      const doMultipleSelect = (mdObj.allowedValues && isAccessModeSufficient) ? mdObj : null;
+      const doSingleSelect = (mdObj.allowedValues && !isAccessModeSufficient) ? mdObj : null;
 
-      let doMultipleSelect = undefined; // not null!
-      if (mdName === "schema:accessModeSufficient") {
-        if (mdObj.content) {
-          mdObj.content = mdObj.content.trim();
-          if (mdObj.content) {
-            doMultipleSelect = mdObj.content.split(",")
-              .map(s => s.trim())
-              .filter(s => s.length)
-              .map(s => {
-                return {
-                  label: s,
-                  value: s,
-                  mdObj,
-                };
-              });
-            if (!doMultipleSelect.length) {
-              doMultipleSelect = null; // not undefined!
-            }
-          } else {
-            doMultipleSelect = null; // not undefined!
-          }
-        } else {
-          doMultipleSelect = null; // not undefined!
-        }
-      } else if ((mdName in A11Y_META) && A11Y_META[mdName].allowedValues) {
-        doSingleSelectCustom = false;
-        doSingleSelect = A11Y_META[mdName].allowedValues.map((mdContent) => {
-          return {
-            mdContent,
-            mdIndex,
-          };
-        });
-      } else if (mdName === "dcterms:conformsTo") {
-        doSingleSelectCustom = true; // allow arbitrary user input
-        doSingleSelect = conformsToURLs.map((mdContent) => {
-          return {
-            mdContent,
-            mdIndex,
-          };
-        });
-      }
+      const renderSingleSelect = () => {
+        const doSingleSelectCustom = isConformsTo;
 
-      let hasVal = false;
-      if (mdValue) {
-        if (typeof mdValue === "object" && mdValue.value && mdValue.value.trim()) {
-          hasVal = true;
-        } else if (mdValue instanceof Array) {
-          hasVal = true;
-        } else if (mdValue.trim()) {
-          hasVal = true;
-        }
-      }
-      let flagged = !hasVal &&
-        (mdName in A11Y_META) &&
-        (A11Y_META[mdName].required || A11Y_META[mdName].recommended);
-      if (!flagged && (mdName in A11Y_META) && A11Y_META[mdName].allowedValues && mdValue) {
-        if (mdValue instanceof Array) {
-          for (const obj of mdValue) {
-            const notSupported = !A11Y_META[mdName].allowedValues.includes(obj.value); 
-            if (notSupported) {
-              flagged = true;
-              obj.notSupported = true;
-              // break;
-            }
-          }
-        } else {
-          const notSupported = !A11Y_META[mdName].allowedValues.includes(mdValue); 
-            if (notSupported) {
-              flagged = true;
-            }
-        }
-      }
-
-      const jsx = (
-        <div key={`metadata_key_${mdIndex}`}
-          className={classNames(classes.browseControlInputGroup, flagged ? classes.red : undefined)}
-          >
-        <FormControl
-          variant="outlined"
-          margin="dense"
-          className={classes.browseControl}>
-          {
-          doSingleSelect ?
-          (<>
-          <Autocomplete
-            data-name={mdName}
-            data-content={mdContent}
-            data-mdIndex={mdIndex}
-
+        // data-name={mdObj.name}
+        // data-content={mdObj.content}
+        // data-mdindex={mdObj.index}
+        return (<Autocomplete
             value={mdObj}
-            options={doSingleSelect}
+
+            options={mdObj.allowedValues.map(item => {
+              return {
+                content: item,
+                index: mdObj.index,
+              };
+            })}
+
+            getOptionSelected={
+              (option, value) => {
+                return value.content === option.content;
+              }
+            }
+            getOptionLabel={option => option.content}
 
             filterOptions={(options, params) => {
-              const i = options[0].mdIndex;
+              console.log("Autocomplete filterOptions BEFORE", JSON.stringify(options, null, 4));
+              const i = options[0].index;
               const mdContentCurrent = this.state.metadata[i].content;
-              if (!options.find((option) => option.mdContent === mdContentCurrent)) {
+              if (doSingleSelectCustom &&
+                mdContentCurrent &&
+                !options.find((option) => option.content === mdContentCurrent)) {
+
                 options.push({
-                  mdContent: mdContentCurrent,
-                  mdIndex: i,
+                  content: mdContentCurrent,
+                  index: i,
                 });
+                console.log("Autocomplete filterOptions OPTIONS ADD", JSON.stringify(options[options.length-1], null, 4));
               }
               const filtered = createFilterOptions()(options, params);
+              console.log("Autocomplete filterOptions INIT", JSON.stringify(filtered, null, 4));
+              const inVal = params.inputValue ? params.inputValue.trim() : "";
               if (doSingleSelectCustom &&
-                params.inputValue &&
-                !filtered.find((option) => option.mdContent === params.inputValue)) {
+                inVal &&
+                !filtered.find((option) => option.content === inVal)) {
 
                 filtered.push({
-                  mdContent: params.inputValue,
-                  mdIndex: i,
+                  content: inVal,
+                  index: i,
                 });
+                console.log("Autocomplete filterOptions CUSTOM ADD", JSON.stringify(filtered[filtered.length-1], null, 4));
               }
     
+              console.log("Autocomplete filterOptions AFTER", JSON.stringify(filtered, null, 4));
               return filtered;
             }}
-            onBlur = {(event) => {
+
+            onBlur={(event) => {
               const ipt = event.currentTarget.querySelector("input");
               if (!ipt) {
                 return;
               }
-              const mdContent = ipt.value ? ipt.value : "";
+              const inVal = ipt.value ? ipt.value.trim() : "";
+              console.log("Autocomplete onBlur", JSON.stringify(inVal, null, 4));
+              // if (!inVal) {
+              //   return;
+              // }
 
-              const dataIndex = event.currentTarget.getAttribute("data-mdIndex");
-              const mdIndex = parseInt(dataIndex, 10);
+              if (inVal && !doSingleSelectCustom) {
+                if (mdObj.allowedValues && !mdObj.allowedValues.includes(inVal)) {
+                  console.log("Autocomplete onBlur !doSingleSelectCustom", JSON.stringify(mdObj, null, 4));
+                  return;
+                }
+              }
+
+              // const dataIndex = event.currentTarget.getAttribute("data-mdindex");
+              const i = mdObj.index; // parseInt(dataIndex, 10);
               const newMd = this.state.metadata;
-              newMd[mdIndex].content = mdContent;
-              console.log("Autocomplete onBlur", JSON.stringify(this.state.metadata));
+              newMd[i].content = inVal;
+              console.log("Autocomplete onBlur STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
             }}
+
             onChange={(event, obj) => {
+              console.log("Autocomplete onChange", JSON.stringify(obj, null, 4));
+              
+              // const dataIndex = event.currentTarget.getAttribute("data-mdindex");
+              const i = mdObj.index; // parseInt(dataIndex, 10);
+
               if (typeof obj === "string") {
-                const dataIndex = event.currentTarget.getAttribute("data-mdIndex");
-                const mdIndex = parseInt(dataIndex, 10);
                 obj = {
-                  mdContent: obj,
-                  mdIndex,
+                  content: obj.trim(),
+                  index: i,
+                };
+              } else if (!obj) {
+                obj = {
+                  content: "",
+                  index: i,
                 };
               }
+
+              if (obj.content && !doSingleSelectCustom) {
+                if (mdObj.allowedValues && !mdObj.allowedValues.includes(obj.content)) {
+                  console.log("Autocomplete onChange !doSingleSelectCustom", JSON.stringify(mdObj, null, 4));
+                  return;
+                }
+              }
               const newMd = this.state.metadata;
-              newMd[obj.mdIndex].content = obj.mdContent;
-              console.log("Autocomplete onChange", JSON.stringify(this.state.metadata));
+              newMd[obj.index].content = obj.content;
+              console.log("Autocomplete onChange STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
               this.setState({
                 metadata: newMd,
               });
             }}
 
-            getOptionLabel={option => option.mdContent}
             renderInput={params =>
               <TextField {...params}
               inputProps={{
@@ -617,7 +670,7 @@ class MetaDataEditorModal extends React.Component {
                 //   console.log(e.currentTarget);
                 // },
               }}
-              label={mdName} variant="outlined" />
+              label={mdObj.name} variant="outlined" />
             }
 
             freeSolo={doSingleSelectCustom}
@@ -631,151 +684,155 @@ class MetaDataEditorModal extends React.Component {
               //root,focused,tag,tagSizeSmall,hasPopupIcon,hasClearIcon,inputRoot,input,inputFocused,endAdornment,clearIndicator,clearIndicatorDirty,popupIndicator,popupIndicatorOpen,popper,popperDisablePortal,paper,listbox,loading,noOptions,option,groupLabel,groupUl
               {
             }}
-            />
-          </>) :
-          (typeof doMultipleSelect !== "undefined" ?
-          (<ReactSelect
-            data-name={mdName}
-            data-content={mdContent}
-            data-mdIndex={mdIndex}
+        />);
+      };
 
-            options={
-              A11Y_META[mdName].allowedValues.map((allowedValue) => {
-                return {
-                  label: allowedValue,
-                  value: allowedValue,
-                  mdObj,
-                };
-              })
+      const renderMultipleSelect = () => {
+        return <></>;
+        // data-name={mdObj.name}
+        // data-content={mdObj.content}
+        // data-mdindex={mdObj.index}
+        return (<ReactSelect
+
+          options={
+            A11Y_META[mdObj.name].allowedValues.map((allowedValue) => {
+              return {
+                label: allowedValue,
+                value: allowedValue,
+                mdObj,
+              };
+            })
+          }
+          value={doMultipleSelect}
+
+          onChange={(values, obj) => {
+
+            // const dataIndex = obj.name.split("_")[1];
+            const index = mdObj.index; // parseInt(dataIndex, 10);
+            
+            if (obj.action === "clear") {
+              const newMd = this.state.metadata;
+              newMd[index].content = "";
+              this.setState({
+                metadata: newMd,
+              });
+            } else if (obj.action === "remove-value") {
+              const newMd = this.state.metadata;
+              // const arr = newMd[index].content.split(",").
+              //   filter(s => s.trim().length).
+              //   filter(s => s !== obj.removedValue.value);
+              // newMd[index].content = arr.join(",");
+              newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
+              this.setState({
+                metadata: newMd,
+              });
+            } else if (obj.action === "select-option") {
+              const newMd = this.state.metadata;
+              // const arr = newMd[index].content.split(",").
+              //   filter(s => s.trim().length).
+              //   concat([obj.option.value]);
+              // newMd[index].content = arr.join(",");
+              newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
+              console.log("ReactSelect onChange STATE-METADATA", JSON.stringify(this.state.metadata, null, 4));
+              this.setState({
+                metadata: newMd,
+              });
             }
-            value={doMultipleSelect}
+          }}
 
-            onChange={(values, obj) => {
+          components={{
+            ValueContainer: CustomValueContainer
+          }}
 
-              const dataIndex = obj.name.split("_")[1];
-              const index = parseInt(dataIndex, 10);
-              
-              if (obj.action === "clear") {
-                const newMd = this.state.metadata;
-                newMd[index].content = "";
-                this.setState({
-                  metadata: newMd,
-                });
-              } else if (obj.action === "remove-value") {
-                const newMd = this.state.metadata;
-                // const arr = newMd[index].content.split(",").
-                //   filter(s => s.trim().length).
-                //   filter(s => s !== obj.removedValue.value);
-                // newMd[index].content = arr.join(",");
-                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
-                this.setState({
-                  metadata: newMd,
-                });
-              } else if (obj.action === "select-option") {
-                const newMd = this.state.metadata;
-                // const arr = newMd[index].content.split(",").
-                //   filter(s => s.trim().length).
-                //   concat([obj.option.value]);
-                // newMd[index].content = arr.join(",");
-                newMd[index].content = !values ? "" : values.map((v) => v.value).join(",");
-                console.log("ReactSelect onChange", JSON.stringify(this.state.metadata));
-                this.setState({
-                  metadata: newMd,
-                });
-              }
-            }}
+          menuPortalTarget={document.querySelector('body')}
+          maxMenuHeight={100}
 
-            components={{
-              ValueContainer: CustomValueContainer
-            }}
+          menuPosition={'fixed' /* 'absolute' */}
+          menuPlacement={'bottom' /* 'auto' | 'top' */}
 
-            menuPortalTarget={document.querySelector('body')}
-            maxMenuHeight={100}
+          className='react-select-container'
+          classNamePrefix="react-select"
 
-            menuPosition={'fixed' /* 'absolute' */}
-            menuPlacement={'bottom' /* 'auto' | 'top' */}
+          styles={{
+            container: (provided, state) => {
+              // console.log(state);
+              return {
+              ...provided,
+              marginTop: 0,
+              paddingTop: 4,
+              border: state.isFocused ? "2px solid black" : "1px solid #333333",
+              borderRadius: 4,
+            }},
+            placeholder: (provided, state) => {
+              // console.log(state);
+              return {
+              ...provided,
+              background: "white",
+              color: "black",
+              paddingLeft: 4,
+              paddingRight: 4,
+              position: "absolute",
+              top: state.hasValue || state.selectProps.inputValue ? -9 : "50%",
+              transition: "top 0.1s, font-size 0.1s",
+              fontSize: (state.hasValue || state.selectProps.inputValue) && 14
+            }},
+            control: base => ({
+              ...base,
+              border: "none",
+              boxShadow: "0 !important"
+            }),
+            menu: base => ({
+              ...base,
+              zIndex: "9999 !important",
+              // position: 'fixed',
+            }),
+            menuPortal: base => ({
+              ...base,
+              zIndex: "9999 !important",
+              transform: 'translateZ(0)'
+            }),
+            multiValue: (styles, { data, isDisabled, isFocused, isSelected }) => {
+              return {
+                ...styles,
+                ...(data.notSupported ? { border: '1px solid rgb(219,28,28)' } : {})
+              };
+            },
+          }}
 
-            className='react-select-container'
-            classNamePrefix="react-select"
+          closeMenuOnSelect={true}
+          isMulti={true}
+          placeholder={mdObj.name}
+          isSearchable={true}
+          openMenuOnClick={true}
+        />);
+      };
 
-            styles={{
-              container: (provided, state) => {
-                // console.log(state);
-                return {
-                ...provided,
-                marginTop: 0,
-                paddingTop: 4,
-                border: state.isFocused ? "2px solid black" : "1px solid #333333",
-                borderRadius: 4,
-              }},
-              placeholder: (provided, state) => {
-                // console.log(state);
-                return {
-                ...provided,
-                background: "white",
-                color: "black",
-                paddingLeft: 4,
-                paddingRight: 4,
-                position: "absolute",
-                top: state.hasValue || state.selectProps.inputValue ? -9 : "50%",
-                transition: "top 0.1s, font-size 0.1s",
-                fontSize: (state.hasValue || state.selectProps.inputValue) && 14
-              }},
-              control: base => ({
-                ...base,
-                border: "none",
-                boxShadow: "0 !important"
-              }),
-              menu: base => ({
-                ...base,
-                zIndex: "9999 !important",
-                // position: 'fixed',
-              }),
-              menuPortal: base => ({
-                ...base,
-                zIndex: "9999 !important",
-                transform: 'translateZ(0)'
-              }),
-              multiValue: (styles, { data, isDisabled, isFocused, isSelected }) => {
-                return {
-                  ...styles,
-                  ...(data.notSupported ? { border: '1px solid rgb(219,28,28)' } : {})
-                };
-              },
-            }}
-
-            closeMenuOnSelect={true}
-            isMulti={true}
-            placeholder={mdName}
-            isSearchable={true}
-            openMenuOnClick={true}
-          />
-          )
-          :
-          (<>
-          <InputLabel htmlFor={`metadata_${mdIndex}`}
-            data-mdIndex={mdIndex}
+      const renderBasicInput = () => {
+        // data-mdindex={mdObj.index}
+        // inputProps={{"data-mdindex": `${mdObj.index}`}}
+        return (<>
+          <InputLabel htmlFor={`metadata_${mdObj.index}`}
             ref={(ref) => {
                 if (ref) {
-                  const attr = ref.getAttribute("data-mdIndex");
+                  const attr = mdObj.index; // ref.getAttribute("data-mdindex");
                   const k = `labelRef_${attr}`;
                   this[k] = ReactDOM.findDOMNode(ref);
                 }
               }
             }
             classes={{
-              root: !mdValue ? classes.browseControlInputLabelRoot : classes.browseControlInputLabelRaised,
+              root: mdObj.content ? classes.browseControlInputLabelRaised : classes.browseControlInputLabelRoot,
               focused: classes.browseControlInputLabelRaised
             }}
-          >{mdName}</InputLabel>
+          >{mdObj.name}</InputLabel>
+
           <OutlinedInput 
-            id={`metadata_${mdIndex}`}
-            inputProps={{"data-mdIndex": `${mdIndex}`}}
-            value={mdValue}
-            multiline={mdName === "schema:accessibilitySummary"}
+            id={`metadata_${mdObj.index}`}
+            value={mdObj.content}
+            multiline={isAccessibilitySummary}
             onChange={(event) => {
-              const dataIndex = event.target.getAttribute("data-mdIndex");
-              const index = parseInt(dataIndex, 10);
+              // const dataIndex = event.target.getAttribute("data-mdindex");
+              const index = mdObj.index; // parseInt(dataIndex, 10);
               const val = event.target.value;
               
               const newMd = this.state.metadata;
@@ -784,89 +841,91 @@ class MetaDataEditorModal extends React.Component {
                 metadata: newMd,
               });
             }}
-            labelWidth={this[`labelRef_${mdIndex}`] ? this[`labelRef_${mdIndex}`].offsetWidth : 0}
+            labelWidth={this[`labelRef_${mdObj.index}`] ? this[`labelRef_${mdObj.index}`].offsetWidth : 0}
             classes={{ 
               root: classes.browseControlInput,
               notchedOutline: classes.browseControlInputOutline,
             }}
             />
-            </>)
-            )
-            }
-            <IconButton
-              data-mdIndex={mdIndex}
-              onClick={(event) => {
-                const dataIndex = event.currentTarget.getAttribute("data-mdIndex");
-                const index = parseInt(dataIndex, 10);
-                const newMd = this.state.metadata;
-                newMd[index].deleted = true;
-                this.setState({
-                  metadata: newMd,
-                });
-              }}
-              aria-label={localize("metadata.delete")}>
-              <CancelIcon />
-            </IconButton>
+        </>);
+      };
+
+      const divLabel = (mdObj.isMissingRecommended || mdObj.isMissingRequired) ?
+        localize("report.metadataSection.missing") :
+        (mdObj.isNotSupported ? localize("report.violations") : undefined);
+
+      let allowDelete = true;
+      if ((mdObj.name in A11Y_META) && A11Y_META[mdObj.name].required) {
+        const thereIsAnotherOne = this.state.metadata.find((md, j) => {
+          if (md.deleted) {
+            return false; // skip already-deleted metadatas
+          }
+          if (j === mdObj.index) {
+            return false; // self => continue iteration
+          }
+          if (md.name !== mdObj.name) {
+            return false; // ignore different names
+          }
+          return (md.name in A11Y_META) && A11Y_META[md.name].required;
+        });
+        if (!thereIsAnotherOne) {
+          allowDelete = false;
+        }
+      }
+
+      // data-mdindex={mdObj.index}
+      const jsx = (
+        <div key={`metadata_key_${mdObj.index}`}
+          title={divLabel}
+          aria-label={divLabel}
+          className={classNames(classes.browseControlInputGroup, classes.notFlagged,
+            (mdObj.isMissingRequired || mdObj.isNotSupported) ? classes.red :
+              (mdObj.isMissingRecommended ? classes.orange : (!mdObj.content ? classes.silver : undefined)))}
+          >
+        <FormControl
+          variant="outlined"
+          margin="dense"
+          className={classes.browseControl}>
+
+          {
+          doSingleSelect ? renderSingleSelect() : (doMultipleSelect ? renderMultipleSelect() : renderBasicInput())
+          }
+          {
+          <IconButton
+            disabled={!allowDelete}
+            onClick={(event) => {
+              // const dataIndex = event.currentTarget.getAttribute("data-mdindex");
+              const index = mdObj.index; // parseInt(dataIndex, 10);
+
+              const newMd = this.state.metadata;
+              newMd[index].deleted = true;
+              this.setState({
+                metadata: newMd,
+              });
+            }}
+            aria-label={localize("metadata.delete")}>
+            <CancelIcon />
+          </IconButton>
+          }
         </FormControl>
         </div>
-        );
+      );
       flattened.push(jsx);
     }
     
     // <InputLabel id="label_add">{localize("metadata.metadata")}</InputLabel>
     // labelId="label_add"
 
-    const jsx = (
-      <div key={`addKey`}
-      className={classNames(classes.browseControlInputGroup)}
-      >
-      <hr/>
-
-      <FormControl
-        variant="outlined"
-        margin="dense"
-        className={classes.browseControl}>
-          <Select defaultValue={a11yMeta[0]}
-            onChange={(event) => {
-              this.setState({
-                metadataAdd: event.target.value,
-              });
-            }}>
-            {
-              a11yMeta.map((a, i) => {
-                return <MenuItem key={`select_option_${i}`} value={a}>{a}</MenuItem>;
-              })
-            }
-          </Select>
-          <IconButton
-            onClick={(event) => {
-              const name = this.state.metadataAdd || a11yMeta[0];
-              const newMd = this.state.metadata;
-              newMd.push({
-                name,
-                content: "",
-              });
-              this.setState({
-                metadata: newMd,
-              });
-              setTimeout(() => { this.forceUpdate(); }, 500);
-            }}
-            aria-label={localize("metadata.add")}>
-            <AddBoxIcon />
-          </IconButton>
-      </FormControl>
-      </div>
-      );
-    flattened.push(jsx);
-
-    return flattened;
+    return [flattened, flagged];
   }
 
   render() {
     const {classes, modalType} = this.props;
 
+    const [metadataJsx, flagged] = this.renderMds();
     return (
       <Dialog
+        disableEscapeKeyDown={true}
         onRendered={() => { setTimeout(() => { this.forceUpdate(); }, 500) }}
         aria-labelledby="metadata-dialog-title"
         open={modalType != null}
@@ -898,6 +957,14 @@ class MetaDataEditorModal extends React.Component {
 
           </div>
 
+          <hr className={classNames(classes.bottomMargin)}/>
+
+
+<div
+          className={classNames(classes.notFlagged_,
+            (flagged.isMissingRequired || flagged.isNotSupported) ? classes.red_ : (flagged.isMissingRecommended ? classes.orange_ : undefined)
+            )}
+>
             {
             // <FormControl variant="outlined" margin="dense" fullWidth
             // classes={{ root: classes.rootGroup }}
@@ -905,13 +972,54 @@ class MetaDataEditorModal extends React.Component {
             // <Typography variant="h6">{localize("metadata.a11y")}</Typography>
             }
             {
-              this.renderMds()
+              metadataJsx
             }
             {
             // </FormControl>
             }
+</div>
 
-          
+        <div key={`addKey`}
+          className={classNames(classes.browseControlInputGroup)}
+        >
+          <hr/>
+
+          <FormControl
+            variant="outlined"
+            margin="dense"
+            className={classes.browseControl}>
+              <Select defaultValue={a11yMeta[0]}
+                onChange={(event) => {
+                  this.setState({
+                    metadataAdd: event.target.value,
+                  });
+                }}>
+                {
+                  a11yMeta.map((a, i) => {
+                    return <MenuItem key={`select_option_${i}`} value={a}>{a}</MenuItem>;
+                  })
+                }
+              </Select>
+              <IconButton
+                onClick={(event) => {
+                  const name = this.state.metadataAdd || a11yMeta[0];
+                  const newMd = this.state.metadata;
+                  newMd.push({
+                    name,
+                    content: "",
+                  });
+                  this.setState({
+                    metadata: newMd,
+                  });
+                  setTimeout(() => { this.forceUpdate(); }, 500);
+                }}
+                aria-label={localize("metadata.add")}>
+                <AddBoxIcon />
+              </IconButton>
+          </FormControl>
+          <hr/>
+        </div>
+
         </DialogContent>
         <DialogActions classes={{ root: classes.dialogActions }}>
           <Button onClick={() => this.props.hideModal()}>

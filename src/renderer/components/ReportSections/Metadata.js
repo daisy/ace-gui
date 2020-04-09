@@ -19,8 +19,7 @@ import classNames from 'classnames';
 
 const styles = theme => ({
   editButton: {
-    'float': 'left',
-    'font-size': '1.2em',
+    'font-size': '1.1em',
     'margin-bottom': '1em',
     'border': '2px solid silver',
     'border-radius': '4px',
@@ -190,7 +189,7 @@ class Metadata extends React.Component {
             let suffix = "";
             if (data in A11Y_META) {
               if (A11Y_META[data].required || A11Y_META[data].recommended) {
-                suffix = ` (${A11Y_META[data].required ? localize("report.summarySection.critical") : localize("report.summarySection.moderate")})`
+                suffix = ` (${A11Y_META[data].required ? localize("report.summarySection.serious") : localize("report.summarySection.moderate")})`
               }
             }
             
