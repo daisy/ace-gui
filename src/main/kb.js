@@ -181,7 +181,7 @@ zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background:
 var za = document.createElement('a');
 za.setAttribute('href',zhref);
 za.setAttribute('target','_BLANK');
-za.setAttribute('style','color: red;');
+za.setAttribute('style','color: red; background-color: white; padding: 0.2em;');
 za.appendChild(document.createTextNode('${link}'));
 
 zdiv.appendChild(za);
