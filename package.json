@@ -139,7 +139,7 @@
     "package:linux": "electron-builder --publish never --linux",
     "prepackage:linux:dev": "yarn run before:package:dev",
     "package:linux:dev": "electron-builder --publish never --linux",
-    "prepackage:mac_": "yarn run before:package",
+    "prepackage:mac": "yarn run before:package",
     "package:mac": "electron-builder --publish never --mac",
     "package:mac:skip-notarize": "cross-env SKIP_NOTARIZE=1 yarn run package:mac",
     "prepackage:mac:dev": "yarn run before:package:dev",
