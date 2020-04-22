@@ -79,25 +79,26 @@ function handleStartupFileCheck(filepath) {
         return;
       }
 
-      const res = await dialog.showMessageBox({
-        _win,
-        type: "question",
-        buttons: [
-            localize("versionCheck.yes"),
-            localize("versionCheck.no"),
-        ],
-        defaultId: 0,
-        cancelId: 1,
-        title: localize('menu.checkEpub'),
-        message: localize('menu.checkEpub'),
-        detail: filepath,
-        noLink: true,
-        normalizeAccessKeys: false,
-      });
-      if (res.response === 0) {
-        // menuBuilder.runAceInRendererProcess(filepath);
-        _win.webContents.send('RUN_ACE', filepath);
-      }
+      _win.webContents.send('RUN_ACE', filepath);
+      // const res = await dialog.showMessageBox({
+      //   _win,
+      //   type: "question",
+      //   buttons: [
+      //       localize("versionCheck.yes"),
+      //       localize("versionCheck.no"),
+      //   ],
+      //   defaultId: 0,
+      //   cancelId: 1,
+      //   title: localize('menu.checkEpub'),
+      //   message: localize('menu.checkEpub'),
+      //   detail: filepath,
+      //   noLink: true,
+      //   normalizeAccessKeys: false,
+      // });
+      // if (res.response === 0) {
+      //   // menuBuilder.runAceInRendererProcess(filepath);
+      //   _win.webContents.send('RUN_ACE', filepath);
+      // }
     }
 
     function checkWin() {
