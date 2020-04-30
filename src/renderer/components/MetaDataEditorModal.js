@@ -51,7 +51,7 @@ import epubUtils from '@daisy/epub-utils';
 
 import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
 
-// http://kb.daisy.org/publishing/docs/metadata/schema-org.html
+// http://kb.daisy.org/publishing/docs/metadata/schema.org/index.html
 // http://kb.daisy.org/publishing/docs/metadata/evaluation.html
 
 const conformsToURLs = a11yMetadata.conformsToURLs;
@@ -191,7 +191,7 @@ class MetaDataEditorModal extends React.Component {
   packageOpfXPathSelect = undefined;
 
   onKBSchemaOrg = () => {
-    const url = `${KB_BASE}docs/metadata/schema-org.html`;
+    const url = `${KB_BASE}docs/metadata/schema.org/index.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
   }

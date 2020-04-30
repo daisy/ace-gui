@@ -57,7 +57,7 @@ const styles = theme => ({
 
 const KB_BASE = 'http://kb.daisy.org/publishing/';
 
-// http://kb.daisy.org/publishing/docs/metadata/schema-org.html
+// http://kb.daisy.org/publishing/docs/metadata/schema.org/index.html
 // http://kb.daisy.org/publishing/docs/metadata/evaluation.html
 
 const A11Y_META = a11yMetadata.A11Y_META;
@@ -80,7 +80,7 @@ class Metadata extends React.Component {
   };
 
   onKBSchemaOrg = () => {
-    const url = `${KB_BASE}docs/metadata/schema-org.html`;
+    const url = `${KB_BASE}docs/metadata/schema.org/index.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
   }
