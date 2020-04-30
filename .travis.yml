@@ -21,14 +21,14 @@ matrix:
       os: osx
       osx_image: xcode11.2
       language: node_js
-      node_js: "node"
+      node_js: "lts/*"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 #if: type = push OR pull_request
     - os: linux
       language: node_js
-      node_js: "node"
+      node_js: "lts/*"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
@@ -36,7 +36,7 @@ matrix:
       os: linux
       services: docker
       language: node_js
-      node_js: "node"
+      node_js: "lts/*"
       env:
         - TRAVIS_OS_NAME_=windows
 # https://www.electron.build/multi-platform-build
@@ -44,7 +44,7 @@ matrix:
 # https://travis-ci.community/c/environments/windows
 # - os: windows
 #   language: node_js
-#   node_js: "node"
+#   node_js: "lts/*"
 #   env:
 #     - ELECTRON_CACHE=$HOME/.cache/electron
 #     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
