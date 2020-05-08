@@ -311,10 +311,9 @@ class MetaDataEditorModal extends React.Component {
       });
 
       this.packageOpfXPathSelect('/opf:package/opf:metadata/opf:link[not(@refines)]', this.packageOpfXmlDoc).forEach((link) => {
-        const prop = link.getAttribute('property');
         const rel = link.getAttribute('rel');
         const href = link.getAttribute('href');
-        let name = prop || rel;
+        let name = rel;
         if (name) {
           name = name.trim();
         }
@@ -478,7 +477,7 @@ class MetaDataEditorModal extends React.Component {
           'http://www.idpf.org/2007/opf',
           useLink ? "link" : "meta");
         if (useLink) {
-          childElement.setAttribute("property", md.name);
+          childElement.setAttribute("rel", md.name);
           childElement.setAttribute("href", md.content);
         } else if (this.isEPUB3) {
           childElement.setAttribute("property", md.name);
