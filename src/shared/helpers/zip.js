@@ -11,7 +11,7 @@ export default function zip(progressCallback, dir, output, includes, excludes) {
     readdir.stream(dir, {deep: true})
     .on('data', data => {})
     .on('file', file => {
-      allFiles.push(file);
+      allFiles.push(file.replace(/\\/g, "/"));
     })
     .on('error', reject)
     .on('end', () => {
