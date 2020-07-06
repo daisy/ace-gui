@@ -1,0 +1,174 @@
+{
+    "dialog": {
+        "allfiles": "Alle filer",
+        "check": "Tjek",
+        "choosedir": "Vælg en mappe",
+        "chooseepub": "Vælg en EPUB fil eller mappe",
+        "chooseepubdir": "Vælg en EPUB mappe",
+        "chooseepubfile": "Vælg en EPUB fil",
+        "choosereport": "Vælg en Ace rapport",
+        "open": "Åben",
+        "savereport": "Gem Rapport",
+        "select": "Vælg",
+        "ziparchive": "Zip Arkiv"
+    },
+    "enhancedTable": {
+        "filterBy": "Filtrér efter",
+        "rowsPerPage": "Rækker per side:",
+        "sortBy": "Sorter efter: "
+    },
+    "kbgoonline": "ÅBEN ONLINE",
+    "menu": {
+        "about": "Om Ace",
+        "ace": "Ace",
+        "checkEpub": "Tjek EPUB...",
+        "checkEpubFolder": "Tjek EPUB mappe...",
+        "closeReport": "Luk Rapport",
+        "copy": "Kopier",
+        "copyMessageOutput": "Kopier beskedindhold",
+        "cut": "Klip",
+        "dev": "Udvikling",
+        "edit": "Rediger",
+        "exportReport": "Eksportér Rapport",
+        "file": "Fil",
+        "gotoImages": "Gå til Billeder",
+        "gotoMetadata": "Gå til Metadata",
+        "gotoOutlines": "Gå til Struktur",
+        "gotoSummary": "Gå til Oversigt",
+        "gotoViolations": "Gå til Overtrædelser",
+        "help": "Hjælp",
+        "knowledgeBase": "Vidensbase",
+        "knowledgeBaseOffline": "Lokal (offline)",
+        "knowledgeBaseOnline": "Web (online)",
+        "learnMore": "Læs mere",
+        "openReport": "Åben Rapport...",
+        "paste": "Indsæt",
+        "quit": "Luk",
+        "redo": "Udfør igen",
+        "reload": "Genindlæs",
+        "reportIssue": "Rapportér et problem",
+        "rerunAce": "Kør Ace igen",
+        "selectall": "Vælg alt",
+        "showInExplorer": "Vis i Stifinder",
+        "showInFinder": "Vis i Finder",
+        "toggleDevTools": "Slå Udviklerværktøjer til/fra",
+        "undo": "Fortryd",
+        "view": "Vis",
+        "window": "Vindue"
+    },
+    "message": {
+        "checkcomplete": "Ace tjek udført",
+        "closedreport": "Lukket rapporten {{reportPath}}",
+        "failsavereport": "FEJL: kunne ikke gemme rapporten som {{outfile}}",
+        "filetypenotsupported": "FEJL: Filtypen for {{filepath}} understøttes ikke",
+        "loadedreport": "Indlæst rapport {{reportPath}}",
+        "loadfailreport": "FEJL: Kunne ikke åbne {{p}}",
+        "overwrite": "Mappen er ikke tom. Kørsel af Ace vil medføre overskrivning af filer og mapper i: \n{{val}}.\nSlå indstillingen 'Overskriv' til for at tillade det.",
+        "runningace": "Ace køres for {{inputPath}}",
+        "savedreport": "Rapport gemt som {{outfile}}",
+        "savingreport": "Gemmer rapport som {{outfile}} ..."
+    },
+    "metadata": {
+        "a11y": "Tilgængelighed",
+        "add": "Tilføj",
+        "cancel": "Annuller",
+        "delete": "Slet",
+        "edit": "rediger",
+        "metadata": "Metadata",
+        "name": "Navn",
+        "save": "Gem",
+        "value": "Værdi"
+    },
+    "preferences": {
+        "cancel": "Annuller",
+        "internalReportStorage": "Opbevaring af interne rapporter",
+        "overwriteExistingReports": "Overskriv eksisterende rapport",
+        "overwriteExistingReportsTip": "(tillad overskrivning af nye rapporter over gamle?)",
+        "reportsDataDirectory": "Rapport Datamappe",
+        "reportsDataDirectoryButton": "Gennemse",
+        "reportsDataDirectoryTip": "(hvor Ace gemmer rapporter internt)",
+        "save": "Gem",
+        "title": "Ace Indstillinger",
+        "userInterfaceLanguage": "Sprog",
+        "userInterfaceLanguageTip": "(vælg sprog til grænsefladens tekst og beskeder)"
+    },
+    "report": {
+        "images": "Billeder",
+        "imagesSection": {
+            "NA": "N/A",
+            "altAttribute": "'alt' attribut",
+            "ariaDescribedbyContent": "'aria-describedby' indhold",
+            "associatedFigcaption": "Tilhørende 'figcaption'",
+            "image": "Billede",
+            "location": "Placering",
+            "noImages": "Ingen billeder fundet i publikationen.",
+            "role": "Rolle"
+        },
+        "metadata": "Metadata",
+        "metadataSection": {
+            "a11y": "Tilgængelighed",
+            "allPresent": "Alle krævede metadata felter om tilgængelighed er til stede.",
+            "missing": "Manglende tilgængeligheds Metadata:",
+            "name": "Navn",
+            "value": "Værdi"
+        },
+        "outlines": "Struktur",
+        "outlinesSection": {
+            "headings": "Overskrift struktur",
+            "html": "HTML struktur",
+            "toc": "EPUB Indholdsfortegnelse"
+        },
+        "summary": "Oversigt",
+        "summarySection": {
+            "best-practice": "Best Practice",
+            "critical": "Kritisk",
+            "minor": "Mindre",
+            "moderate": "Moderat",
+            "other": "Andre",
+            "serious": "Stor",
+            "total": "Total",
+            "type": "Type"
+        },
+        "title": "Rapport",
+        "violations": "Overtrædelser",
+        "violationsSection": {
+            "details": "Detaljer",
+            "impact": "Betydning",
+            "learnAbout": "Læs om:",
+            "location": "Placering",
+            "noViolations": "Ingen overtrædelser rapporteret.",
+            "rule": "Regel",
+            "ruleset": "Regelsæt",
+            "via": "Via:"
+        }
+    },
+    "sidebar": {
+        "checkEPUB": "Tjek EPUB",
+        "export": "Eksportér",
+        "history": "Historik",
+        "maximize": "Maksimér Sidebar",
+        "minimize": "Minimér Sidebar",
+        "reRun": "Kør igen",
+        "settings": "Indstillinger"
+    },
+    "splash": {
+        "browseForFileOrFolder": "søg efter en __fil__ eller en __mappe__ .",
+        "clickToBrowse": "klik her for at gennemse.",
+        "dropHere": "Træk en EPUB fil eller mappe ind her,",
+        "or": "eller",
+        "orDropSidebar": "eller på __ knappen i sidebaren,",
+        "title": "Ace, af DAISY"
+    },
+    "tablePagination": {
+        "firstPage": "Første Side",
+        "lastPage": "Sidste Side",
+        "nextPage": "Næste Side",
+        "previousPage": "Forrige Side"
+    },
+    "versionCheck": {
+        "newVersionAvailable": "En software opdatering er tilgængelig, ønsker du at downloade den?",
+        "no": "Nej",
+        "softwareUpdate": "Software opdatering",
+        "yes": "Ja"
+    }
+}
