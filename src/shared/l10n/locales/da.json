@@ -3,14 +3,14 @@
         "allfiles": "Alle filer",
         "check": "Tjek",
         "choosedir": "Vælg en mappe",
-        "chooseepub": "Vælg en EPUB fil eller mappe",
-        "chooseepubdir": "Vælg en EPUB mappe",
-        "chooseepubfile": "Vælg en EPUB fil",
-        "choosereport": "Vælg en Ace rapport",
-        "open": "Åben",
+        "chooseepub": "Vælg en EPUB-fil eller -mappe",
+        "chooseepubdir": "Vælg en EPUB-mappe",
+        "chooseepubfile": "Vælg en EPUB-fil",
+        "choosereport": "Vælg en Ace-rapport",
+        "open": "Åbn",
         "savereport": "Gem Rapport",
         "select": "Vælg",
-        "ziparchive": "Zip Arkiv"
+        "ziparchive": "Zip-arkiv"
     },
     "enhancedTable": {
         "filterBy": "Filtrér efter",
@@ -21,11 +21,11 @@
     "menu": {
         "about": "Om Ace",
         "ace": "Ace",
-        "checkEpub": "Tjek EPUB...",
-        "checkEpubFolder": "Tjek EPUB mappe...",
+        "checkEpub": "Tjek EPUB…",
+        "checkEpubFolder": "Tjek EPUB-mappe…",
         "closeReport": "Luk Rapport",
-        "copy": "Kopier",
-        "copyMessageOutput": "Kopier beskedindhold",
+        "copy": "Kopiér",
+        "copyMessageOutput": "Kopiér beskedindhold",
         "cut": "Klip",
         "dev": "Udvikling",
         "edit": "Rediger",
@@ -41,7 +41,7 @@
         "knowledgeBaseOffline": "Lokal (offline)",
         "knowledgeBaseOnline": "Web (online)",
         "learnMore": "Læs mere",
-        "openReport": "Åben Rapport...",
+        "openReport": "Åbn Rapport…",
         "paste": "Indsæt",
         "quit": "Luk",
         "redo": "Udfør igen",
@@ -51,7 +51,7 @@
         "selectall": "Vælg alt",
         "showInExplorer": "Vis i Stifinder",
         "showInFinder": "Vis i Finder",
-        "toggleDevTools": "Slå Udviklerværktøjer til/fra",
+        "toggleDevTools": "Slå Udviklerværktøj til/fra",
         "undo": "Fortryd",
         "view": "Vis",
         "window": "Vindue"
@@ -66,12 +66,12 @@
         "overwrite": "Mappen er ikke tom. Kørsel af Ace vil medføre overskrivning af filer og mapper i: \n{{val}}.\nSlå indstillingen 'Overskriv' til for at tillade det.",
         "runningace": "Ace køres for {{inputPath}}",
         "savedreport": "Rapport gemt som {{outfile}}",
-        "savingreport": "Gemmer rapport som {{outfile}} ..."
+        "savingreport": "Gemmer rapport som {{outfile}} …"
     },
     "metadata": {
         "a11y": "Tilgængelighed",
         "add": "Tilføj",
-        "cancel": "Annuller",
+        "cancel": "Annullér",
         "delete": "Slet",
         "edit": "rediger",
         "metadata": "Metadata",
@@ -80,7 +80,7 @@
         "value": "Værdi"
     },
     "preferences": {
-        "cancel": "Annuller",
+        "cancel": "Annullér",
         "internalReportStorage": "Opbevaring af interne rapporter",
         "overwriteExistingReports": "Overskriv eksisterende rapport",
         "overwriteExistingReportsTip": "(tillad overskrivning af nye rapporter over gamle?)",
@@ -107,15 +107,15 @@
         "metadata": "Metadata",
         "metadataSection": {
             "a11y": "Tilgængelighed",
-            "allPresent": "Alle krævede metadata felter om tilgængelighed er til stede.",
+            "allPresent": "Alle påkrævede metadatafelter om tilgængelighed er til stede.",
             "missing": "Manglende tilgængeligheds Metadata:",
             "name": "Navn",
             "value": "Værdi"
         },
         "outlines": "Struktur",
         "outlinesSection": {
-            "headings": "Overskrift struktur",
-            "html": "HTML struktur",
+            "headings": "Overskriftstruktur",
+            "html": "HTML-struktur",
             "toc": "EPUB Indholdsfortegnelse"
         },
         "summary": "Oversigt",
@@ -125,7 +125,7 @@
             "minor": "Mindre",
             "moderate": "Moderat",
             "other": "Andre",
-            "serious": "Stor",
+            "serious": "Alvorlig",
             "total": "Total",
             "type": "Type"
         },
@@ -146,17 +146,17 @@
         "checkEPUB": "Tjek EPUB",
         "export": "Eksportér",
         "history": "Historik",
-        "maximize": "Maksimér Sidebar",
-        "minimize": "Minimér Sidebar",
+        "maximize": "Maksimér sidepanel",
+        "minimize": "Minimér sidepanel",
         "reRun": "Kør igen",
         "settings": "Indstillinger"
     },
     "splash": {
         "browseForFileOrFolder": "søg efter en __fil__ eller en __mappe__ .",
         "clickToBrowse": "klik her for at gennemse.",
-        "dropHere": "Træk en EPUB fil eller mappe ind her,",
+        "dropHere": "Træk en EPUB-fil eller -mappe ind her,",
         "or": "eller",
-        "orDropSidebar": "eller på __ knappen i sidebaren,",
+        "orDropSidebar": "eller på __ knappen i sidepanelet,",
         "title": "Ace, af DAISY"
     },
     "tablePagination": {
@@ -166,9 +166,9 @@
         "previousPage": "Forrige Side"
     },
     "versionCheck": {
-        "newVersionAvailable": "En software opdatering er tilgængelig, ønsker du at downloade den?",
+        "newVersionAvailable": "En softwareopdatering er tilgængelig, ønsker du at downloade den?",
         "no": "Nej",
-        "softwareUpdate": "Software opdatering",
+        "softwareUpdate": "Softwareopdatering",
         "yes": "Ja"
     }
 }
