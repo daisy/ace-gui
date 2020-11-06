@@ -1,5 +1,6 @@
-var fs = require("fs");
-var path = require("path");
+// const fs = require("fs");
+const fs = require('fs').promises;
+const path = require("path");
 
 // https://github.com/octokit/rest.js
 // https://octokit.github.io/rest.js/
@@ -17,9 +18,11 @@ const args = process.argv.slice(2);
 console.log("args:");
 console.log(args);
 
+const envCommitSha = process.env.TRAVIS_COMMIT || process.env.APPVEYOR_REPO_COMMIT || process.env.GITHUB_SHA;
+
 console.log("TRAVIS_COMMIT:");
-console.log(process.env.TRAVIS_COMMIT);
-if (!process.env.TRAVIS_COMMIT) {
+console.log(envCommitSha);
+if (!envCommitSha) {
     console.log("Missing TRAVIS_COMMIT! Abort.");
     process.exit(1);
     return;
@@ -33,14 +36,15 @@ if (!process.env.TRAVIS_TAG) {
     return;
 }
 
-if (!process.env.GH_TOKEN) {
+const ghtoken = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
+if (!ghtoken) {
     console.log("Missing GH_TOKEN! Abort.");
     process.exit(1);
     return;
 }
 
 const octokit = new Octokit({
-    auth: `token ${process.env.GH_TOKEN}`
+    auth: `token ${ghtoken}`
 });
 
 // !!!!!!!!!!!!!!!!
@@ -59,6 +63,7 @@ const DEBUG = false;
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+const owner_appveyor = "daisy";
 const owner = "daisy";
 const repo = "ace-gui";
 const tag = process.env.TRAVIS_TAG;
@@ -130,8 +135,13 @@ if (deleteRefRES) {
     if (DEBUG) console.log(deleteRefRES);
 }
 
+if (process.env.APPVEYOR_REPO_COMMIT) {
+    console.log("Appveyor: skip create tag and release.");
+    process.exit(0);
+}
+
 const message = process.env.TRAVIS_TAG;
-const object = process.env.TRAVIS_COMMIT;
+const object = envCommitSha;
 const type =  "commit";
 const tagger = {
     name: "Daniel Weck",
@@ -181,12 +191,12 @@ if (createTagRES) {
     }
 }
 
-const travisURL = process.env.TRAVIS_JOB_WEB_URL || process.env.TRAVIS_BUILD_WEB_URL;
+const travisURL = process.env.TRAVIS_JOB_WEB_URL || process.env.TRAVIS_BUILD_WEB_URL || (process.env.APPVEYOR_URL ? `${process.env.APPVEYOR_URL}/project/${owner_appveyor}/${repo}/builds/${process.env.APPVEYOR_BUILD_ID}` : `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`);
 
 const tag_name = process.env.TRAVIS_TAG;
-const target_commitish = process.env.TRAVIS_COMMIT;
+const target_commitish = envCommitSha;
 const name = `[${tag_name}] continuous test build (prerelease)`;
-const body = `TravisCI build job: ${travisURL}`;
+const body = `CI build job: ${travisURL}`; // gets replaced by Appveyor script anyway
 const draft = false;
 const prerelease = true;
 
@@ -207,7 +217,97 @@ try {
 
 if (createReleaseRES) {
     console.log("createReleaseRES:");
+    // console.log(JSON.stringify(createReleaseRES, null, 4));
     if (DEBUG) console.log(createReleaseRES);
+}
+
+if (createReleaseRES && createReleaseRES.data && createReleaseRES.data.id && process.env.GITHUB_SERVER_URL) {
+
+    const upload = async (filename, filepath) => {
+
+        console.log("################################################");
+        console.log("################ uploadReleaseAsset: ", filename);
+        let uploadReleaseAssetRES = undefined;
+        try {
+            uploadReleaseAssetRES = await octokit.repos.uploadReleaseAsset({
+                owner,
+                repo,
+                release_id: createReleaseRES.data.id,
+                name: filename,
+                data: await fs.readFile(filepath)
+            });
+        } catch (err) {
+            console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            if (DEBUG) console.log(err);
+            console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            console.log("uploadReleaseAsset error! Continue.");
+            // console.log("uploadReleaseAsset error! Abort.");
+            // process.exit(1);
+            // return;
+        }
+
+        if (uploadReleaseAssetRES) {
+            console.log("uploadReleaseAssetRES:");
+            if (DEBUG) console.log(uploadReleaseAssetRES);
+        }
+    };
+
+    async function* getFiles(dirpath) {
+        const ents = await fs.readdir(dirpath, { withFileTypes: true });
+        for (const ent of ents) {
+            const fullPath = path.resolve(dirpath, ent.name);
+            if (fullPath.indexOf("node_modules") >= 0) {
+                continue;
+            }
+            if (ent.isDirectory()) {
+                yield* getFiles(fullPath);
+            } else {
+                if (fullPath.endsWith('.exe') ||
+                    fullPath.endsWith('.AppImage') ||
+                    fullPath.endsWith('.deb') ||
+                    fullPath.endsWith('.dmg')) {
+
+                    yield fullPath;
+                }
+            }
+        }
+    }
+
+    let doneEXE = false;
+    let doneAPPIMAGE = false;
+    let doneDEB = false;
+    let doneDMG = false;
+    for await (const f of getFiles('dist')) {
+        if (f.endsWith('.exe')) {
+            if (doneEXE) {
+                continue;
+            } else {
+                doneEXE = true;
+            }
+        }
+        if (f.endsWith('.AppImage')) {
+            if (doneAPPIMAGE) {
+                continue;
+            } else {
+                doneAPPIMAGE = true;
+            }
+        }
+        if (f.endsWith('.deb')) {
+            if (doneDEB) {
+                continue;
+            } else {
+                doneDEB = true;
+            }
+        }
+        if (f.endsWith('.dmg')) {
+            if (doneDMG) {
+                continue;
+            } else {
+                doneDMG = true;
+            }
+        }
+        await upload(path.basename(f), f);
+    }
 }
 
 })();
