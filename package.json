@@ -179,7 +179,7 @@
     "tmp": "^0.2.1",
     "typeface-roboto": "^0.0.75",
     "uuid": "^8.0.0",
-    "xmldom": "^0.3.0",
+    "xmldom": "^0.5.0",
     "xpath": "^0.0.27"
   },
   "devDependencies": {
