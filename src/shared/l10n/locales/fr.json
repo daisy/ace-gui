@@ -35,7 +35,7 @@
         "gotoMetadata": "Aller aux Métadonnées",
         "gotoOutlines": "Aller à la Structure",
         "gotoSummary": "Aller au Résumé",
-        "gotoViolations": "Aller aux Violations",
+        "gotoViolations": "Aller aux Erreurs",
         "help": "Aide",
         "knowledgeBase": "Base de Connaissances",
         "knowledgeBaseOffline": "Local (hors-ligne)",
@@ -130,13 +130,13 @@
             "type": "Type"
         },
         "title": "Rapport",
-        "violations": "Violations",
+        "violations": "Erreurs",
         "violationsSection": {
             "details": "Détails",
             "impact": "Impact",
             "learnAbout": "En savoir plus :",
             "location": "Référence",
-            "noViolations": "Aucune Violation.",
+            "noViolations": "Aucune Erreur.",
             "rule": "Règles",
             "ruleset": "Catégorie de Règles",
             "via": "Via :"
