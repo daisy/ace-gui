@@ -64,6 +64,7 @@ jobs:
     #- run: pwd && ls && cd .. && pwd && ls && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls && git checkout ace-next-local-packs && yarn ace-app-prepare && pwd && ls && cd .. && pwd && ls && cd ace-gui && pwd && ls
     #- run: rm -f yarn.lock && rm -rf node_modules && yarn install
     - run: yarn --frozen-lockfile
+    - run: git submodule init && git submodule update
     - run: git --no-pager diff package.json && git --no-pager diff package-asar.json && git --no-pager diff package-asar-dev.json
     - name: PR action (just build)
       if: ${{ github.event_name == 'pull_request' }}
