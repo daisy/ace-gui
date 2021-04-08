@@ -3,7 +3,12 @@
 
 Code diff since previous version:
 
-https://github.com/daisy/ace-gui/compare/v1.1.2...master
+https://github.com/daisy/ace-gui/compare/v1.1.3...master
+
+<a name="1.1.3"></a>
+# 1.1.3 (2021-04-09)
+
+Please visit the [release page](https://github.com/daisy/ace-gui/releases/tag/v1.1.3).
 
 <a name="1.1.2"></a>
 # 1.1.2 (2020-05-08)
