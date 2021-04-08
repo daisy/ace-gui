@@ -25,17 +25,21 @@ jobs:
           - os: windows-2016
             osname: windows
             packname: win
+            travistag: latest-windows
           - os: macos-latest
             osname: osx
             packname: 'mac:skip-notarize'
+            travistag: latest-osx
           - os: ubuntu-latest
             osname: linux
             packname: linux
+            travistag: latest-linux
     env:
       TRAVIS_OS_NAME_: ${{ matrix.osname }}
+      TRAVIS_TAG: ${{ matrix.travistag }}
     steps:
     - run: echo 'TRAVIS_OS_NAME_:' ${{ env.TRAVIS_OS_NAME_ }}
-    - run: echo '::set-env name=TRAVIS_TAG::latest-${{ env.TRAVIS_OS_NAME_ }}'
+    #- run: echo '::set-env name=TRAVIS_TAG::latest-${{ env.TRAVIS_OS_NAME_ }}'
     - run: echo 'TRAVIS_TAG:' ${{ env.TRAVIS_TAG }}
     - run: 'echo "GITHUB_RUN_NUMBER: ${{ github.run_number }}"'
     - run: 'echo "GITHUB_RUN_ID: ${{ github.run_id }}"'
@@ -46,7 +50,8 @@ jobs:
         node-version: '12'
         #check-latest: true
     - run: node --version && npm --version
-    - run: npm --global install npm@latest
+    #- run: npm --global install npm@latest
+    - run: npm --global install npm@^6
     - run: npm --version
     - run: npm --global install yarn
     # - run: ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.5) || echo "YARN OK")
@@ -56,8 +61,9 @@ jobs:
     - run: node build/package-ci-patch.js package.json ${{ github.run_id }} && cat package.json | grep -i VERSION && cat package.json
     - run: node build/package-ci-patch.js package-asar.json ${{ github.run_id }} && cat package-asar.json | grep -i VERSION && cat package-asar.json
     - run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
-    - run: pwd && ls && cd .. && pwd && ls && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls && git checkout ace-next-local-packs && yarn ace-app-prepare && pwd && ls && cd .. && pwd && ls && cd ace-gui && pwd && ls
-    - run: rm -f yarn.lock && rm -rf node_modules && yarn install
+    #- run: pwd && ls && cd .. && pwd && ls && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls && git checkout ace-next-local-packs && yarn ace-app-prepare && pwd && ls && cd .. && pwd && ls && cd ace-gui && pwd && ls
+    #- run: rm -f yarn.lock && rm -rf node_modules && yarn install
+    - run: yarn --frozen-lockfile
     - run: git --no-pager diff package.json && git --no-pager diff package-asar.json && git --no-pager diff package-asar-dev.json
     - name: PR action (just build)
       if: ${{ github.event_name == 'pull_request' }}
