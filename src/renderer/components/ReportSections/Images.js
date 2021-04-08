@@ -44,8 +44,8 @@ export default class Images extends React.Component {
         sortable: false,
         makeCell: (row, idx) =>
           {
-            const src = encodeURI(path.resolve(reportPath, `../data/${row.src}`));
-            return <TableCell key={idx}><img src={`file://${src}`}/></TableCell>
+            const src = encodeURIComponent(path.resolve(reportPath, `../data/${row.src}`));
+            return <TableCell key={idx}><img src={`fileproto://host/${src}`}/></TableCell>
           }
       },
       {

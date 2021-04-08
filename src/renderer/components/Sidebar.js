@@ -24,7 +24,9 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {showPreferences} from './../../shared/actions/preferences';
 import * as AppActions from './../../shared/actions/app';
-import * as FileDialogHelpers from "../../shared/helpers/fileDialogs";
+
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT_showExportReportDialog, IPC_EVENT_showEpubFileOrFolderBrowseDialog, IPC_EVENT_showEpubFileBrowseDialog } from "../../shared/main-renderer-events";
 
 import { localizer } from './../../shared/l10n/localize';
 const { localize } = localizer;
@@ -107,22 +109,21 @@ class Sidebar extends React.Component {
   };
 
   showOpenEPUBDialog = () => {
-    setTimeout(async () => {
-      if (process.platform == 'darwin') {
-        await FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
-      } else {
-        await FileDialogHelpers.showEpubFileBrowseDialog(this.props.openFile);
-      }
-    }, 0);
+    if (process.platform == 'darwin') {
+      ipcRenderer.send(IPC_EVENT_showEpubFileOrFolderBrowseDialog);
+      ipcRenderer.once(IPC_EVENT_showEpubFileOrFolderBrowseDialog, (event, filepath) => this.props.openFile(filepath));
+    } else {
+      ipcRenderer.send(IPC_EVENT_showEpubFileBrowseDialog);
+      ipcRenderer.once(IPC_EVENT_showEpubFileBrowseDialog, (event, filepath) => this.props.openFile(filepath));
+    }
     return false;
   };
 
   showExportReportDialog = () => {
-    setTimeout(async () => {
-      await FileDialogHelpers.showExportReportDialog((filepath) => {
-        this.props.exportReport(filepath);
-      });
-    }, 0);
+    ipcRenderer.send(IPC_EVENT_showExportReportDialog);
+    ipcRenderer.once(IPC_EVENT_showExportReportDialog, (event, filepath) => {
+      this.props.exportReport(filepath);
+    });
     return false;
   }
 

@@ -4,11 +4,11 @@ import path from 'path';
 
 import {
   CLOSE_REPORT,
-  ADD_MESSAGE,
-  CLEAR_MESSAGES,
   OPEN_REPORT,
   SET_PROCESSING,
-} from '../actions/app';
+  ADD_MESSAGE,
+  CLEAR_MESSAGES,
+} from '../actions/common';
 
 import { localizer } from '../l10n/localize';
 const { localize } = localizer;

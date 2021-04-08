@@ -8,7 +8,7 @@ import { app, shell, session, ipcMain, Menu } from 'electron';
 import { localizer } from './../shared/l10n/localize';
 const { localize } = localizer;
 
-import * as AboutBoxHelper from './../shared/helpers/about';
+import * as AboutBoxHelper from './about';
 
 import * as express from "express";
 import * as portfinder from "portfinder";
@@ -19,7 +19,7 @@ import {generateSelfSignedData} from "./selfsigned";
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
-const LOG_DEBUG = false;
+const LOG_DEBUG = true;
 const KB_LOG_PREFIX = "[KB]";
 
 const SESSION_PARTITION = "persist:kb";
@@ -180,9 +180,30 @@ zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background:
 
 var za = document.createElement('a');
 za.setAttribute('href',zhref);
-za.setAttribute('target','_BLANK');
+// za.setAttribute('target','_BLANK');
 za.setAttribute('style','color: red; background-color: white; padding: 0.2em;');
 za.appendChild(document.createTextNode('${link}'));
+
+zdiv.appendChild(za);
+
+document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
+
+`;
+const online2 = `
+var zhref = '#';
+var zdiv = document.createElement('div');
+zdiv.setAttribute('style','position: fixed; left: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
+
+var za = document.createElement('a');
+za.setAttribute('href',zhref);
+za.setAttribute('style','color: red; background-color: white; padding: 0.2em; font-weight: bold;');
+za.appendChild(document.createTextNode('<<'));
+
+za.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    // alert('test');
+    window.history.back();
+});
 
 zdiv.appendChild(za);
 
@@ -191,7 +212,7 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
             // js = js.replace("kb.initializePage('ace')", "kb.initializePage('kb')");
             js = js.replace(toMatch1, `${toMatch1} || document.location.hostname == '${rootUrl.replace(/http[s]?:\/\/(.+):[0-9]+/, "$1")}' || document.location.host == '${rootUrl.replace(/http[s]?:\/\//, "")}'`);
             js = js.replace(/http[s]?:\/\/kb.daisy.org\//g, `${rootUrl}/`);
-            js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n`);
+            js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n${online2}\n\n`);
             res.send(js);
             // next();
         });
@@ -202,19 +223,23 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
                 // const pathname = url.pathname;
                 const pathname = url.parse(req.url).pathname;
 
-                const filePath = path.join(kbRootPath, pathname);
+                const filePath = path.join(kbRootPath, pathname).replace(/\\/g, "/");
                 if (filePathsExpressStaticNotExist[filePath]) {
                     res.status(404).send(filePathsExpressStaticNotExist[filePath]);
                     return;
                 }
                 fsOriginal.exists(filePath, (exists) => {
                     if (exists) {
+                        if (fsOriginal.statSync(filePath).isDirectory()) {
+                            return next();
+                        }
                         fsOriginal.readFile(filePath, undefined, (err, data) => {
                             if (err) {
                                 if (LOG_DEBUG) {
                                     console.log(`${KB_LOG_PREFIX} HTTP FAIL fsOriginal.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
                                 }
-                                filePathsExpressStaticNotExist[filePath] = err.toString();
+                                const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
+                                filePathsExpressStaticNotExist[filePath] = html;
                                 res.status(404).send(filePathsExpressStaticNotExist[filePath]);
                             } else {
                                 // if (LOG_DEBUG) {
@@ -227,12 +252,16 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
                     } else {
                         fs.exists(filePath, (exists) => {
                             if (exists) {
+                                if (fs.statSync(filePath).isDirectory()) {
+                                    return next();
+                                }
                                 fs.readFile(filePath, undefined, (err, data) => {
                                     if (err) {
                                         if (LOG_DEBUG) {
                                             console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
                                         }
-                                        filePathsExpressStaticNotExist[filePath] = err.toString();
+                                        const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
+                                        filePathsExpressStaticNotExist[filePath] = html;
                                         res.status(404).send(filePathsExpressStaticNotExist[filePath]);
                                     } else {
                                         if (LOG_DEBUG) {
@@ -246,9 +275,54 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
                                 if (LOG_DEBUG) {
                                     console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
                                 }
-                                res.status(404).end();
+                                const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>404: ${pathname}</h2>`;
+                                filePathsExpressStaticNotExist[filePath] = html;
+                                res.status(404).send(filePathsExpressStaticNotExist[filePath]);
                             }
                         });
+                    }
+                });
+            });
+        } else {
+
+            expressApp.use("/", (req, res, next) => {
+                // const url = new URL(`https://fake.org${req.url}`);
+                // const pathname = url.pathname;
+                const pathname = url.parse(req.url).pathname;
+
+                const filePath = path.join(kbRootPath, pathname).replace(/\\/g, "/");
+                if (filePathsExpressStaticNotExist[filePath]) {
+                    res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+                    return;
+                }
+                fs.exists(filePath, (exists) => {
+                    if (exists) {
+                        if (fs.statSync(filePath).isDirectory()) {
+                            return next();
+                        }
+                        fs.readFile(filePath, undefined, (err, data) => {
+                            if (err) {
+                                if (LOG_DEBUG) {
+                                    console.log(`${KB_LOG_PREFIX} HTTP FAIL fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
+                                }
+                                const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
+                                filePathsExpressStaticNotExist[filePath] = html;
+                                res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+                            } else {
+                                if (LOG_DEBUG) {
+                                    console.log(`${KB_LOG_PREFIX} HTTP OK fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                                }
+                                next();
+                                // res.send(data);
+                            }
+                        });
+                    } else {
+                        if (LOG_DEBUG) {
+                            console.log(`${KB_LOG_PREFIX} HTTP FAIL !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+                        }
+                        const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>404: ${pathname}</h2>`;
+                        filePathsExpressStaticNotExist[filePath] = html;
+                        res.status(404).send(filePathsExpressStaticNotExist[filePath]);
                     }
                 });
             });
@@ -573,6 +647,7 @@ export class KnowledgeBase {
                 sandbox: false,
                 webSecurity: true,
                 webviewTag: false,
+                enableRemoteModule: false,
                 partition: SESSION_PARTITION
             },
         });
@@ -597,19 +672,26 @@ export class KnowledgeBase {
 
         this.win.show();
 
-        this.win.webContents.on("new-window", (event, url) => {
+        this.win.webContents.setWindowOpenHandler((obj) => {
 
-            const wcUrl = event.sender.getURL();
-            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} new-window ${wcUrl} => ${url}`);
+            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} new-window ${obj.frameName} ${obj.url}`);
 
-            event.preventDefault();
+            if (obj.url.indexOf(rootUrl) !== 0) {
+                shell.openExternal(obj.url);
 
-            if (url.indexOf(rootUrl) !== 0) {
-                shell.openExternal(url);
-                return;
+                // preventDefault()
+                return { action: 'deny' };
             }
 
-            this.win.loadURL(url);
+            if (obj.url.replace(/\/\/+/g, "/").indexOf("publishing/docs/search") >= 0) {
+                shell.openExternal(obj.url.replace(rootUrl, "http://kb.daisy.org"));
+
+                // preventDefault()
+                return { action: 'deny' };
+            }
+
+            // this.win.loadURL(obj.url);
+            return { action: 'allow' };
         });
 
         this.win.webContents.on("will-navigate", (event, url) => {
@@ -620,6 +702,10 @@ export class KnowledgeBase {
             if (url.indexOf(rootUrl) !== 0) {
                 event.preventDefault();
                 shell.openExternal(url);
+            }
+            if (url.replace(/\/\/+/g, "/").indexOf("publishing/docs/search") >= 0) {
+                event.preventDefault();
+                shell.openExternal(url.replace(rootUrl, "http://kb.daisy.org"));
             }
         });
 

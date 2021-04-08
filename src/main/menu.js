@@ -1,13 +1,17 @@
 import { app, Menu, shell, dialog, clipboard, webContents, BrowserWindow } from 'electron';
 import {
-  openReport,
-  closeReport,
   exportReport,
 } from './../shared/actions/app';
+import {
+  openReport,
+  closeReport,
+} from './../shared/actions/common';
 
 import {selectTab, resetInitialReportView} from './../shared/actions/reportView';
-import * as FileDialogHelpers from './../shared/helpers/fileDialogs';
-import * as AboutBoxHelper from './../shared/helpers/about';
+
+import * as AboutBoxHelper from './about';
+
+import { showReportFileBrowseDialog, showEpubFolderBrowseDialog, showExportReportDialog, showEpubFileBrowseDialog, showEpubFileOrFolderBrowseDialog } from './fileDialogs';
 
 import { localizer } from './../shared/l10n/localize';
 const { getCurrentLanguage, localize } = localizer;
@@ -96,14 +100,14 @@ export default class MenuBuilder {
             click: () => {
               setTimeout(async () => {
                 if (process.platform == 'darwin') {
-                  await FileDialogHelpers.showEpubFileOrFolderBrowseDialog((filepath) => {
+                  await showEpubFileOrFolderBrowseDialog((filepath) => {
                     this.store.dispatch(closeReport());
                     this.store.dispatch(resetInitialReportView());
                     
                     this.runAceInRendererProcess(filepath);
                   });
                 } else {
-                  await FileDialogHelpers.showEpubFileBrowseDialog((filepath) => {
+                  await showEpubFileBrowseDialog((filepath) => {
                     this.store.dispatch(closeReport());
                     this.store.dispatch(resetInitialReportView());
 
@@ -118,7 +122,7 @@ export default class MenuBuilder {
             id: 'openReport',
             click: () => {
               setTimeout(async () => {
-                await FileDialogHelpers.showReportFileBrowseDialog((filepath) => {
+                await showReportFileBrowseDialog((filepath) => {
                   this.store.dispatch(closeReport());
                   this.store.dispatch(resetInitialReportView());
 
@@ -151,7 +155,7 @@ export default class MenuBuilder {
             accelerator: 'CmdOrCtrl+Shift+E',
             click: () => {
               setTimeout(async () => {
-                await FileDialogHelpers.showExportReportDialog((filepath) => {
+                await showExportReportDialog((filepath) => {
                   this.store.dispatch(exportReport(filepath));
                 });
               }, 0);
@@ -462,7 +466,7 @@ export default class MenuBuilder {
         label: localize('menu.checkEpubFolder'),
         click: () => {
           setTimeout(async () => {
-            await FileDialogHelpers.showEpubFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
+            await showEpubFolderBrowseDialog(filepath => this.runAceInRendererProcess(filepath));
           }, 0);
         }
       });

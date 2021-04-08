@@ -2,17 +2,23 @@ const path = require('path');
 const fs = require('fs');
 const util = require("util");
 
-const { dialog, app, BrowserWindow, webContents, ipcMain, Menu } = require('electron');
+const { dialog, app, BrowserWindow, ipcMain, Menu, session } = require('electron');
+
+const SESSION_PARTITION = "persist:ace";
 
 import MenuBuilder from './menu';
 
 import {initPersistentStore} from './store-persist';
 
-import {checkLatestVersion} from '../shared/helpers/versionCheck';
+import {checkLatestVersion} from './versionCheck';
+
+import {setupFileDialogEvents} from './fileDialogs';
+
+import { eventEmmitter } from '../shared/main-renderer-events';
 
 import {
   addMessage,
-} from '../shared/actions/app';
+} from '../shared/actions/common';
 
 import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWindows} from './kb';
 
@@ -43,6 +49,8 @@ let _storeSubscribe;
 let _storeUnsubscribe;
 
 app.allowRendererProcessReuse = true;
+
+setupFileDialogEvents();
 
 const singleInstanceLock = process.platform === 'darwin' || app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
@@ -160,7 +168,11 @@ if (__VSCODE_LAUNCH__ !== "true") {
 }
 
 const CONCURRENT_INSTANCES = 4; // same as the Puppeteer Axe runner
-prepareLaunch(ipcMain, CONCURRENT_INSTANCES);
+// TODO: ipcMain always here,
+// but leaving eventEmmitter as a reminder that
+// if the createAxeRunner() counterpart is created from the main process
+// instead of renderer process, then the shared eventEmmitter must be used instead!
+prepareLaunch(ipcMain ? ipcMain : eventEmmitter, CONCURRENT_INSTANCES);
 
 // function openAllDevTools() {
 //   for (const wc of webContents.getAllWebContents()) {
@@ -190,6 +202,7 @@ function createWindow() {
       show: false,
       webPreferences: {
           allowRunningInsecureContent: false,
+          backgroundThrottling: false,
           contextIsolation: false,
           devTools: isDev,
           nodeIntegration: true,
@@ -197,6 +210,8 @@ function createWindow() {
           sandbox: false,
           webSecurity: isDev ? false : true,
           webviewTag: false,
+          enableRemoteModule: false,
+          partition: SESSION_PARTITION
       }
     }
   );
@@ -294,6 +309,14 @@ function createWindow() {
 // app.setAccessibilitySupportEnabled(true);
 
 app.on('ready', () => {
+
+  const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
+  if (sess) {
+    sess.protocol.registerFileProtocol('fileproto', (request, callback) => {
+      const p = decodeURIComponent(request.url.substr('fileproto://host/'.length));
+      callback({ path: p })
+    });
+  }
 
   const {store, storeSubscribe, storeUnsubscribe} = initPersistentStore();
   _store = store;

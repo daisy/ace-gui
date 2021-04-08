@@ -2,12 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {openFile} from './../../shared/actions/app';
-import * as FileDialogHelpers from "../../shared/helpers/fileDialogs";
+
 import './../styles/Splash.scss';
 import AceLogo from './../assets/logo.svg';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { withStyles } from '@material-ui/core/styles';
+
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT_showEpubFileOrFolderBrowseDialog, IPC_EVENT_showEpubFileBrowseDialog, IPC_EVENT_showEpubFolderBrowseDialog } from "../../shared/main-renderer-events";
 
 import { localizer } from './../../shared/l10n/localize';
 const { localize } = localizer;
@@ -31,23 +34,23 @@ class Splash extends React.Component {
   };
 
   onBrowseFileOrFolderClick = e => {
-    setTimeout(async () => {
-      await FileDialogHelpers.showEpubFileOrFolderBrowseDialog(this.props.openFile);
-    }, 0);
+    ipcRenderer.send(IPC_EVENT_showEpubFileOrFolderBrowseDialog);
+    ipcRenderer.once(IPC_EVENT_showEpubFileOrFolderBrowseDialog, (event, filepath) => this.props.openFile(filepath));
+
     return false;
   };
 
   onBrowseFileClick = e => {
-    setTimeout(async () => {
-      await FileDialogHelpers.showEpubFileBrowseDialog(this.props.openFile);
-    }, 0);
+    ipcRenderer.send(IPC_EVENT_showEpubFileBrowseDialog);
+    ipcRenderer.once(IPC_EVENT_showEpubFileBrowseDialog, (event, filepath) => this.props.openFile(filepath));
+
     return false;
   };
 
   onBrowseFolderClick = e => {
-    setTimeout(async () => {
-      await FileDialogHelpers.showEpubFolderBrowseDialog(this.props.openFile);
-    }, 0);
+    ipcRenderer.send(IPC_EVENT_showEpubFolderBrowseDialog);
+    ipcRenderer.once(IPC_EVENT_showEpubFolderBrowseDialog, (event, filepath) => this.props.openFile(filepath));
+
     return false;
   };
 

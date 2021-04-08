@@ -1,16 +1,10 @@
-const path = require('path');
-const fs = require('fs');
-
 const electron = require('electron');
-const dialog = electron.dialog || electron.remote.dialog;
-
-const shell = electron.shell;
 
 const https = require('https');
 
 const semver = require('semver');
 
-const { localizer } = require('../l10n/localize');
+const { localizer } = require('../shared/l10n/localize');
 const { localize } = localizer;
 
 const JSON_URL = 'https://raw.githubusercontent.com/daisy/ace-gui/master/latest.json';
@@ -37,7 +31,8 @@ export const checkLatestVersion = (browserWindow) => {
                             // console.log((new Date(date)).toUTCString());
                             
                             if (semver.gt(jsonInfo.version, __APP_VERSION__)) {
-                                const res = await dialog.showMessageBox({
+
+                                const res = await electron.dialog.showMessageBox({
                                     browserWindow,
                                     type: "question",
                                     buttons: [
@@ -53,7 +48,7 @@ export const checkLatestVersion = (browserWindow) => {
                                     normalizeAccessKeys: false,
                                 });
                                 if (res.response === 0) {
-                                    shell.openExternal(jsonInfo.url);
+                                    electron.shell.openExternal(jsonInfo.url);
                                 }
                             }
                         }

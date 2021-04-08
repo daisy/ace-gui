@@ -45,8 +45,8 @@ import classNames from 'classnames';
 import { ipcRenderer } from 'electron';
 import {
   addMessage,
-} from '../../shared/actions/app';
-import epubUtils from '@daisy/epub-utils';
+} from '../../shared/actions/common';
+// import epubUtils from '@daisy/epub-utils';
 // import logger from '@daisy/ace-logger';
 
 import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';

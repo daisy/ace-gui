@@ -1,6 +1,3 @@
-const electron = require('electron');
-const dialog = electron.dialog || electron.remote.dialog;
-const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
 const openAboutWindow = require('about-window').default;
 const join = require('path').join;
 
@@ -29,6 +26,7 @@ module.exports = {
             sandbox: false,
             webSecurity: true,
             webviewTag: false,
+            enableRemoteModule: false,
           }
         }
     });

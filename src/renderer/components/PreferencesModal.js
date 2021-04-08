@@ -15,13 +15,16 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
-import * as FileDialogHelpers from "../../shared/helpers/fileDialogs";
 import { hideModal } from './../../shared/actions/modal';
 import { savePreferences } from './../../shared/actions/preferences';
 import { bindActionCreators } from 'redux';
 import {openFile} from './../../shared/actions/app';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT_showFolderBrowseDialog } from "../../shared/main-renderer-events";
+
 import { localizer } from './../../shared/l10n/localize';
 const { getRawResources, getCurrentLanguage, localize } = localizer;
 
@@ -107,16 +110,15 @@ class PreferencesModal extends React.Component {
   };
 
   selectReportDir = () => {
-    setTimeout(async () => {
-      await FileDialogHelpers.showFolderBrowseDialog((dir) => {
-        this.setState({
-          reports: {
-            ...this.state.reports,
-            dir
-          }
-        })
-      });
-    }, 0);
+    ipcRenderer.send(IPC_EVENT_showFolderBrowseDialog);
+    ipcRenderer.once(IPC_EVENT_showFolderBrowseDialog, (event, dir) => {
+      this.setState({
+        reports: {
+          ...this.state.reports,
+          dir
+        }
+      })
+    });
     return false;
   };
 

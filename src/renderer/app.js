@@ -1,6 +1,5 @@
 import AppContainer from './containers/AppContainer'
 import { Provider } from 'react-redux';
-import { getInitialStateRenderer } from 'electron-redux';
 import React from 'react'
 import configureStore from './../shared/store/configureStore';
 import {render} from 'react-dom'
@@ -16,7 +15,9 @@ const { getDefaultLanguage, setCurrentLanguage, getRawResources } = localizer;
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 if (isDev) {
-  require('devtron').install();
+  // requires electron.remote!
+  // enableRemoteModule: false
+  // require('devtron').install();
 
   const axe = require("react-axe");
   ipcRenderer.once("REACT_AXE_A11Y", () => {
@@ -33,8 +34,9 @@ if (isDev) {
   });
 }
 
-const initialState = getInitialStateRenderer();
-const store = configureStore(initialState, 'renderer');
+// import { getInitialStateRenderer } from 'electron-redux';
+// const initialState = getInitialStateRenderer();
+const store = configureStore(null /* initialState */, 'renderer');
 
 const appLocale = navigator.language;
 if (isDev) {

@@ -1,9 +1,9 @@
 import { Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow } from '@material-ui/core';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
@@ -220,13 +220,26 @@ export default class EnhancedTable extends React.Component {
     const { heads, isPaginated, pagination: {rowsPerPage, page}, sort: {order, orderBy}, expandFilters } = this.props;
     const {filters, rows} = this.state;
     const filteredRows = this.filterRows();
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
 
+    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
+    // const rowsPerPageAdjusted = Math.min(rowsPerPage, filteredRows.length);
+
+    const rowsPerPageOptions = [10];
+    if (filteredRows.length > 10) {
+      rowsPerPageOptions.push(25);
+    }
+    if (filteredRows.length > 25) {
+      rowsPerPageOptions.push(50);
+    }
+    if (filteredRows.length > 50) {
+      rowsPerPageOptions.push(100);
+    }
+    
     // console.log("FILTERS render: ", JSON.stringify(filters, null, 4));
 
     // ensure correct language
     filters.forEach((filter) => {
-      let head = this.props.heads.find(h => h.id === filter.id);
+      let head = heads.find(h => h.id === filter.id);
       if (!head) {
         return;
       }
@@ -250,15 +263,15 @@ export default class EnhancedTable extends React.Component {
     return (
       <div>
       {filters.length > 0 ?
-        <ExpansionPanel
+        <Accordion
           className="table-filters-panel"
           expanded={expandFilters}
           classes={{expanded: 'expanded'}}
           onChange={(e, v) => this.onChangeExpanded(v)}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>{localize("enhancedTable.filterBy")}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className="table-filters">
+          </AccordionSummary>
+          <AccordionDetails className="table-filters">
             {filters.map((filter, idx) => 
             <Select
                 key={idx}
@@ -272,8 +285,8 @@ export default class EnhancedTable extends React.Component {
                 isSearchable={true}
               />
             )}
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
       : ''}
       <Table aria-live="polite">
         <TableHead>
@@ -304,7 +317,7 @@ export default class EnhancedTable extends React.Component {
         </TableHead>
         <TableBody>
           {stableSort(filteredRows, getSorting(order, orderBy, heads))
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .slice(Math.min(filteredRows - 1, page * rowsPerPage), page * rowsPerPage + rowsPerPage)
             .map((row, idx) => {
               return (
                 <TableRow
@@ -316,19 +329,22 @@ export default class EnhancedTable extends React.Component {
                 </TableRow>
               );
             })}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 49 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
+          {
+          // emptyRows > 0 && (
+          //   <TableRow style={{ height: 49 * emptyRows }}>
+          //     <TableCell colSpan={heads.length} />
+          //   </TableRow>
+          // )
+          }
         </TableBody>
         {isPaginated ?
         <TableFooter>
           <TableRow>
             <TablePagination
-              colSpan={3}
+              colSpan={heads.length}
               count={filteredRows.length}
               rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={rowsPerPageOptions}
               page={page}
               onChangePage={this.onChangePage}
               onChangeRowsPerPage={this.onChangeRowsPerPage}

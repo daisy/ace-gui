@@ -1,17 +1,21 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 // import { persistState } from 'redux-devtools';
 import thunk from 'redux-thunk';
-import promise from 'redux-promise';
+// import promise from 'redux-promise';
 // import createLogger from 'redux-logger';
 // import { hashHistory } from 'react-router';
 // import { routerMiddleware } from 'react-router-redux';
 import getRootReducer from '../reducers';
+
+// NEW electron-redux: https://github.com/klarna/electron-redux/issues/258
+// Alternative: https://github.com/partheseas/electron-redux
 import {
-  forwardToMain,
-  forwardToRenderer,
-  triggerAlias,
-  replayActionMain,
-  replayActionRenderer,
+  // forwardToMain,
+  // forwardToRenderer,
+  // triggerAlias,
+  // replayActionMain,
+  // replayActionRenderer,
+  composeWithStateSync,
 } from 'electron-redux';
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
@@ -30,30 +34,31 @@ export default function configureStore(initialState, scope = 'main') {
 
   let middleware = [
     thunk,
-    promise,
+    // promise,
   ];
 
   if (isDev) {
     // middleware.push(logger);
   }
 
-  if (scope === 'renderer') {
-    middleware = [
-      forwardToMain,
-      ...middleware,
-    ];
-  }
-
-  if (scope === 'main') {
-    middleware = [
-      triggerAlias,
-      ...middleware,
-      forwardToRenderer,
-    ];
-  }
+  // OLD electron-redux
+  // (NEW does not depend on electron.remote)
+  // if (scope === 'renderer') {
+  //   middleware = [
+  //     forwardToMain,
+  //     ...middleware,
+  //   ];
+  // }
+  // if (scope === 'main') {
+  //   middleware = [
+  //     triggerAlias,
+  //     ...middleware,
+  //     forwardToRenderer,
+  //   ];
+  // }
 
   const enhanced = [
-    applyMiddleware(...middleware),
+    composeWithStateSync(applyMiddleware(...middleware)),
   ];
 
   // if (/*isDev && */scope === 'renderer') {
@@ -76,7 +81,7 @@ export default function configureStore(initialState, scope = 'main') {
   } else {
     enhancer = compose(...enhanced);
   }
-  const store = createStore(rootReducer, initialState, enhancer);
+  const store = initialState /* scope === 'main' */ ? createStore(rootReducer, initialState, enhancer) : createStore(rootReducer, enhancer);
 
   // if (isDev && module.hot) {
   //   module.hot.accept('../reducers', () => {
@@ -84,11 +89,13 @@ export default function configureStore(initialState, scope = 'main') {
   //   });
   // }
 
-  if (scope === 'main') {
-    replayActionMain(store);
-  } else {
-    replayActionRenderer(store);
-  }
+  // OLD electron-redux
+  // (NEW does not depend on electron.remote)
+  // if (scope === 'main') {
+  //   replayActionMain(store);
+  // } else {
+  //   replayActionRenderer(store);
+  // }
 
   return store;
 }
