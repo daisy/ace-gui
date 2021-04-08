@@ -14,7 +14,7 @@ module.exports = {
 
     return openAboutWindow({
         icon_path: join(__dirname, 'logo.svg'),
-        copyright: 'Copyright (c) 2020 DAISY Consortium',
+        copyright: 'Copyright (c) 2021 DAISY Consortium',
         package_json_dir: __dirname,
         open_devtools: isDev,
         win_options: {
@@ -26,7 +26,7 @@ module.exports = {
             sandbox: false,
             webSecurity: true,
             webviewTag: false,
-            enableRemoteModule: false,
+            enableRemoteModule: true,
           }
         }
     });
