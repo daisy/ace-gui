@@ -75,9 +75,7 @@
         "delete": "Slet",
         "edit": "rediger",
         "metadata": "Metadata",
-        "name": "Navn",
-        "save": "Gem",
-        "value": "Værdi"
+        "save": "Gem"
     },
     "preferences": {
         "cancel": "Annullér",

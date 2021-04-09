@@ -75,9 +75,7 @@
         "delete": "Supprimer",
         "edit": "éditer",
         "metadata": "Métadonnées",
-        "name": "Nom",
-        "save": "Enregistrer",
-        "value": "Valeur"
+        "save": "Enregistrer"
     },
     "preferences": {
         "cancel": "Annuler",

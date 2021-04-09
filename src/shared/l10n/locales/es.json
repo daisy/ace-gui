@@ -75,9 +75,7 @@
         "delete": "Eliminar",
         "edit": "editar",
         "metadata": "Metadatos",
-        "name": "Nombre",
-        "save": "Guardar",
-        "value": "Valor"
+        "save": "Guardar"
     },
     "preferences": {
         "cancel": "Cancelar",
