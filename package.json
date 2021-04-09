@@ -140,11 +140,11 @@
     "i18n-check": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR da --space 4 --finalnewline --newkeysempty"
   },
   "dependencies": {
-    "@daisy/ace-axe-runner-electron": "^1.2.0",
-    "@daisy/ace-core": "^1.2.0",
-    "@daisy/ace-localize": "^1.2.0",
-    "@daisy/ace-logger": "^1.2.0",
-    "@daisy/epub-utils": "^1.2.0",
+    "@daisy/ace-axe-runner-electron": "^1.2.1",
+    "@daisy/ace-core": "^1.2.1",
+    "@daisy/ace-localize": "^1.2.1",
+    "@daisy/ace-logger": "^1.2.1",
+    "@daisy/epub-utils": "^1.2.1",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
