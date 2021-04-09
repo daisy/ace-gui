@@ -13,9 +13,9 @@ import * as AboutBoxHelper from './about';
 import * as express from "express";
 import * as portfinder from "portfinder";
 // import * as http from "http";
-import * as https from "https";
+// import * as https from "https";
 
-import {generateSelfSignedData} from "./selfsigned";
+// import {generateSelfSignedData} from "./selfsigned";
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
@@ -101,15 +101,15 @@ export async function stopKnowledgeBaseServer() {
 const filePathsExpressStaticNotExist = {};
 export function startKnowledgeBaseServer(kbRootPath) {
 
-    app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
-        if (url.indexOf(`${rootUrl}/`) === 0) {
-            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert error OKAY ${url}`);
-            callback(true);
-            return;
-        }
-        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert error FAIL ${url}`);
-        callback(false);
-    });
+    // app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
+    //     if (url.indexOf(`${rootUrl}/`) === 0) {
+    //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert error OKAY ${url}`);
+    //         callback(true);
+    //         return;
+    //     }
+    //     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert error FAIL ${url}`);
+    //     callback(false);
+    // });
 
     const filter = { urls: ["*", "*://*/*"] };
 
@@ -134,25 +134,25 @@ export function startKnowledgeBaseServer(kbRootPath) {
     //     }
     // };
 
-    const setCertificateVerifyProcCB = (request, callback) => {
+    // const setCertificateVerifyProcCB = (request, callback) => {
 
-        if (request.hostname === ip) {
-            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert verify OKAY ${request.hostname}`);
-            callback(0); // OK
-            return;
-        }
-        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert verify FALLBACK ${request.hostname}`);
-        callback(-3); // Chromium
-        // callback(-2); // Fail
-    };
+    //     if (request.hostname === ip) {
+    //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert verify OKAY ${request.hostname}`);
+    //         callback(0); // OK
+    //         return;
+    //     }
+    //     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTPS cert verify FALLBACK ${request.hostname}`);
+    //     callback(-3); // Chromium
+    //     // callback(-2); // Fail
+    // };
 
     const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
 
-    if (sess) {
-        // sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
-        // sess.webRequest.onBeforeSendHeaders(filter, onBeforeSendHeadersCB);
-        sess.setCertificateVerifyProc(setCertificateVerifyProcCB);
-    }
+    // if (sess) {
+    //     // sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
+    //     // sess.webRequest.onBeforeSendHeaders(filter, onBeforeSendHeadersCB);
+    //     sess.setCertificateVerifyProc(setCertificateVerifyProcCB);
+    // }
 
     return new Promise((resolve, reject) => {
         expressApp = express();
@@ -347,35 +347,49 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
         expressApp.use("/", express.static(kbRootPath, staticOptions));
 
         const startHttp = function () {
-            generateSelfSignedData().then((certData) => {
-                httpServer = https.createServer({ key: certData.private, cert: certData.cert }, expressApp).listen(port, () => {
-                    const p = httpServer.address().port;
+            
+            httpServer = expressApp.listen(port, () => {
+                const p = httpServer.address().port;
 
-                    port = p;
-                    ip = "127.0.0.1";
-                    proto = "https";
-                    rootUrl = `${proto}://${ip}:${port}`;
-                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+                port = p;
+                ip = "127.0.0.1";
+                proto = "http";
+                rootUrl = `${proto}://${ip}:${port}`;
+                if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
 
-                    resolve();
-                    httpReady();
-                });
-            }).catch((err) => {
-                if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} ${err}`);
-                if (LOG_DEBUG) console.log(err);
-                httpServer = expressApp.listen(port, () => {
-                    const p = httpServer.address().port;
-
-                    port = p;
-                    ip = "127.0.0.1";
-                    proto = "http";
-                    rootUrl = `${proto}://${ip}:${port}`;
-                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
-
-                    resolve();
-                    httpReady();
-                });
+                resolve();
+                httpReady();
             });
+
+            // generateSelfSignedData().then((certData) => {
+            //     httpServer = https.createServer({ key: certData.private, cert: certData.cert }, expressApp).listen(port, () => {
+            //         const p = httpServer.address().port;
+
+            //         port = p;
+            //         ip = "127.0.0.1";
+            //         proto = "https";
+            //         rootUrl = `${proto}://${ip}:${port}`;
+            //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+
+            //         resolve();
+            //         httpReady();
+            //     });
+            // }).catch((err) => {
+            //     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} ${err}`);
+            //     if (LOG_DEBUG) console.log(err);
+            //     httpServer = expressApp.listen(port, () => {
+            //         const p = httpServer.address().port;
+
+            //         port = p;
+            //         ip = "127.0.0.1";
+            //         proto = "http";
+            //         rootUrl = `${proto}://${ip}:${port}`;
+            //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+
+            //         resolve();
+            //         httpReady();
+            //     });
+            // });
         }
 
         portfinder.getPortPromise().then((p) => {
