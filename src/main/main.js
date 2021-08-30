@@ -201,6 +201,7 @@ function createWindow() {
     {
       show: false,
       webPreferences: {
+          preload: `${__dirname}/preload-bundle.js`,
           allowRunningInsecureContent: false,
           backgroundThrottling: false,
           contextIsolation: false,

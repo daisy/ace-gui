@@ -2,6 +2,9 @@ import AppContainer from './containers/AppContainer'
 import { Provider } from 'react-redux';
 import React from 'react'
 import configureStore from './../shared/store/configureStore';
+import {
+  composeWithStateSync,
+} from 'electron-redux/renderer';
 import {render} from 'react-dom'
 import ReactDOM from 'react-dom';
 
@@ -36,7 +39,7 @@ if (isDev) {
 
 // import { getInitialStateRenderer } from 'electron-redux';
 // const initialState = getInitialStateRenderer();
-const store = configureStore(null /* initialState */, 'renderer');
+const store = configureStore(composeWithStateSync, null /* initialState */, 'renderer');
 
 const appLocale = navigator.language;
 if (isDev) {

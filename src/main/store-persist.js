@@ -1,5 +1,8 @@
 
 import configureStore from './../shared/store/configureStore';
+import {
+    composeWithStateSync,
+} from 'electron-redux/main';
 
 import { localizer } from './../shared/l10n/localize';
 const { setCurrentLanguage, getRawResources } = localizer;
@@ -55,7 +58,7 @@ export function initPersistentStore() {
     const l10nDoneCallback1 = () => {}; // no need to async/await on this
     setCurrentLanguage(initialState.preferences.language, l10nDoneCallback1);
 
-    const store = configureStore(initialState, 'main');
+    const store = configureStore(composeWithStateSync, initialState, 'main');
 
     const storeSubscribers = [];
 

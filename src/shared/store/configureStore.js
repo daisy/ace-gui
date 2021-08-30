@@ -9,14 +9,14 @@ import getRootReducer from '../reducers';
 
 // NEW electron-redux: https://github.com/klarna/electron-redux/issues/258
 // Alternative: https://github.com/partheseas/electron-redux
-import {
-  // forwardToMain,
-  // forwardToRenderer,
-  // triggerAlias,
-  // replayActionMain,
-  // replayActionRenderer,
-  composeWithStateSync,
-} from 'electron-redux';
+// import {
+//   // forwardToMain,
+//   // forwardToRenderer,
+//   // triggerAlias,
+//   // replayActionMain,
+//   // replayActionRenderer,
+//   composeWithStateSync,
+// } from 'electron-redux';
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
@@ -25,7 +25,7 @@ const isDev = process && process.env && (process.env.NODE_ENV === 'development' 
  * @param  {String} [scope='main|renderer']
  * @return {Object} store
  */
-export default function configureStore(initialState, scope = 'main') {
+export default function configureStore(electronReduxcomposeWithStateSync, initialState, scope = 'main') {
   // const logger = createLogger({
   //   level: scope === 'main' ? undefined : 'info',
   //   collapsed: true,
@@ -57,8 +57,10 @@ export default function configureStore(initialState, scope = 'main') {
   //   ];
   // }
 
+  const v1 = applyMiddleware(...middleware);
+  const v2 = electronReduxcomposeWithStateSync(v1);
   const enhanced = [
-    composeWithStateSync(applyMiddleware(...middleware)),
+    v2,
   ];
 
   // if (/*isDev && */scope === 'renderer') {
