@@ -53,7 +53,7 @@
         "chooseepub": "EPUBファイルまたはフォルダーを選択します",
         "chooseepubdir": "EPUBディレクトリを選択します",
         "chooseepubfile": "EPUBファイルを選択する",
-        "choosereport": "エースレポートを選択してください",
+        "choosereport": "Aceレポートを選択してください",
         "open": "開ける",
         "savereport": "レポートを保存",
         "select": "選択する",
@@ -66,15 +66,15 @@
     },
     "kbgoonline": "オンライン化する",
     "menu": {
-        "about": "エースについて",
-        "ace": "エース",
+        "about": "Aceについて",
+        "ace": "Ace",
         "checkEpub": "EPUBを確認してください...",
         "checkEpubFolder": "EPUBフォルダを確認してください...",
         "closeReport": "レポートを閉じる",
         "copy": "コピー",
         "copyMessageOutput": "メッセージ出力のコピー",
-        "cut": "切る",
-        "dev": "発達",
+        "cut": "カット",
+        "dev": "開発",
         "edit": "編集",
         "exportReport": "レポートのエクスポート",
         "file": "ファイル",
@@ -84,34 +84,34 @@
         "gotoSummary": "概要に移動",
         "gotoViolations": "違反に移動",
         "help": "ヘルプ",
-        "knowledgeBase": "知識ベース",
+        "knowledgeBase": "ナレッジベース",
         "knowledgeBaseOffline": "ローカル（オフライン）",
         "knowledgeBaseOnline": "Web（オンライン）",
         "learnMore": "もっと詳しく知る",
         "openReport": "レポートを開く...",
         "paste": "ペースト",
         "quit": "終了する",
-        "redo": "やり直し",
+        "redo": "再実行",
         "reload": "リロード",
         "reportIssue": "問題を報告する",
-        "rerunAce": "エースを再放送",
+        "rerunAce": "Aceを再実行",
         "selectall": "すべて選択",
-        "showInExplorer": "エクスプローラーに書いてある",
-        "showInFinder": "Finderに表示",
+        "showInExplorer": "エクスプローラーで表示",
+        "showInFinder": "Finderで表示",
         "toggleDevTools": "開発者ツールの切り替え",
         "undo": "元に戻す",
-        "view": "意見",
-        "window": "窓"
+        "view": "View",
+        "window": "Window"
     },
     "message": {
-        "checkcomplete": "エースチェック完了",
-        "closedreport": "クローズドレポート{{reportPath}}",
+        "checkcomplete": "Ace チェック完了",
+        "closedreport": "閉じられたレポート：{{reportPath}}",
         "failsavereport": "エラー：レポートを{{outfile}}に保存できませんでした",
         "filetypenotsupported": "エラー：{{filepath}}のファイルタイプはサポートされていません",
-        "loadedreport": "ロードされたレポート{{reportPath}}",
+        "loadedreport": "読み込まれたレポート：{{reportPath}}",
         "loadfailreport": "エラー：{{p}}を開くことができませんでした",
         "overwrite": "出力ディレクトリは空ではありません。 Aceを実行すると、次のファイルまたはディレクトリが上書きされます。\n{{val}}。\nこれを許可するには、オプション「上書き」を有効にします。",
-        "runningace": "{{inputPath}}でエースを実行する",
+        "runningace": "{{inputPath}}でAceを実行する",
         "savedreport": "レポートを{{outfile}}に保存しました",
         "savingreport": "レポートを{{outfile}}に保存しています..."
     },
@@ -133,7 +133,7 @@
         "reportsDataDirectoryButton": "ブラウズ",
         "reportsDataDirectoryTip": "（エースがレポートを内部に保存する場所）",
         "save": "保存する",
-        "title": "エースの好み",
+        "title": "Aceの設定",
         "userInterfaceLanguage": "言語",
         "userInterfaceLanguageTip": "（UIラベルとメッセージの言語を選択してください）"
     },
@@ -143,11 +143,11 @@
             "NA": "該当なし",
             "altAttribute": "'alt'属性",
             "ariaDescribedbyContent": "「aria-describeby」コンテンツ",
-            "associatedFigcaption": "関連する「フィグキャプション」",
+            "associatedFigcaption": "関連するFigcaption",
             "image": "画像",
             "location": "位置",
             "noImages": "この出版物には画像がありません。",
-            "role": "役割"
+            "role": "Role"
         },
         "metadata": "メタデータ",
         "metadataSection": {
@@ -155,7 +155,7 @@
             "allPresent": "必要なすべてのアクセシビリティメタデータが存在します。",
             "missing": "アクセシビリティメタデータがありません：",
             "name": "名前",
-            "value": "価値"
+            "value": "値"
         },
         "outlines": "概要",
         "outlinesSection": {
@@ -166,11 +166,11 @@
         "summary": "概要",
         "summarySection": {
             "best-practice": "ベストプラクティス",
-            "critical": "致命的",
-            "minor": "マイナー",
-            "moderate": "適度",
-            "other": "他の",
-            "serious": "深刻",
+            "critical": "Critical",
+            "minor": "Minor",
+            "moderate": "Moderate",
+            "other": "Other",
+            "serious": "Serious",
             "total": "合計",
             "type": "タイプ"
         },
@@ -179,18 +179,18 @@
         "violationsSection": {
             "details": "詳細",
             "impact": "影響",
-            "learnAbout": "について学ぶ：",
+            "learnAbout": "詳細を学ぶ：",
             "location": "位置",
             "noViolations": "違反は報告されていません。",
             "rule": "ルール",
             "ruleset": "ルールセット",
-            "via": "経由："
+            "via": "via："
         }
     },
     "sidebar": {
         "checkEPUB": "EPUBを確認する",
         "export": "書き出す",
-        "history": "歴史",
+        "history": "ヒストリー",
         "maximize": "サイドバーを最大化",
         "minimize": "サイドバーを最小化する",
         "reRun": "再実行",
@@ -202,7 +202,7 @@
         "dropHere": "ここにEPUBファイルまたはディレクトリをドロップします。",
         "or": "また",
         "orDropSidebar": "またはサイドバーの__ボタンで、",
-        "title": "エース、DAISY作"
+        "title": "Ace, by DAISY"
     },
     "tablePagination": {
         "firstPage": "先頭ページ",
