@@ -48,7 +48,8 @@ let _store;
 let _storeSubscribe;
 let _storeUnsubscribe;
 
-app.allowRendererProcessReuse = true;
+// https://github.com/electron/electron/releases/tag/v14.0.0
+// app.allowRendererProcessReuse = true;
 
 setupFileDialogEvents();
 
@@ -212,7 +213,8 @@ function createWindow() {
           webSecurity: isDev ? false : true,
           webviewTag: false,
           enableRemoteModule: false,
-          partition: SESSION_PARTITION
+          partition: SESSION_PARTITION,
+          nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
       }
     }
   );
