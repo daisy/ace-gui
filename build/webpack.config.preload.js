@@ -1,8 +1,8 @@
 const util = require('util');
 const path = require("path");
 const webpack = require("webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const nodeExternals = require("webpack-node-externals");
 const webpackConstants = require("./webpack.constants");
 
