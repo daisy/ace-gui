@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const util = require("util");
 
-const { dialog, app, BrowserWindow, ipcMain, Menu, session } = require('electron');
+const { protocol, dialog, app, BrowserWindow, ipcMain, Menu, session } = require('electron');
 
 const SESSION_PARTITION = "persist:ace";
 
@@ -50,6 +50,20 @@ let _storeUnsubscribe;
 
 // https://github.com/electron/electron/releases/tag/v14.0.0
 // app.allowRendererProcessReuse = true;
+
+const ACE_ELECTRON_HTTP_PROTOCOL = "acehttps";
+protocol.registerSchemesAsPrivileged([{
+    privileges: {
+        allowServiceWorkers: false,
+        bypassCSP: false,
+        corsEnabled: true,
+        secure: true,
+        standard: true,
+        stream: true,
+        supportFetchAPI: true,
+    },
+    scheme: ACE_ELECTRON_HTTP_PROTOCOL,
+}]);
 
 setupFileDialogEvents();
 
