@@ -143,11 +143,11 @@
     "i18n-check": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR da --space 4 --finalnewline --newkeysempty"
   },
   "dependencies": {
-    "@daisy/ace-axe-runner-electron": "^1.2.6-alpha.3",
-    "@daisy/ace-core": "^1.2.6-alpha.3",
-    "@daisy/ace-localize": "^1.2.6-alpha.3",
-    "@daisy/ace-logger": "^1.2.6-alpha.3",
-    "@daisy/epub-utils": "^1.2.6-alpha.3",
+    "@daisy/ace-axe-runner-electron": "^1.2.6-alpha.4",
+    "@daisy/ace-core": "^1.2.6-alpha.4",
+    "@daisy/ace-localize": "^1.2.6-alpha.4",
+    "@daisy/ace-logger": "^1.2.6-alpha.4",
+    "@daisy/epub-utils": "^1.2.6-alpha.4",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
@@ -177,7 +177,7 @@
     "xpath": "^0.0.32"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.12",
+    "@babel/core": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@octokit/rest": "^18.12.0",
@@ -193,7 +193,7 @@
     "css-loader": "^3.5.3",
     "devtron": "^1.4.0",
     "dotenv": "^8.2.0",
-    "electron": "^16.0.7",
+    "electron": "^17.0.0",
     "electron-builder": "^22.14.5",
     "electron-devtools-installer": "^3.2.0",
     "electron-notarize": "^1.1.1",
@@ -207,7 +207,7 @@
     "react-axe": "^3.5.4",
     "redux-devtools-extension": "^2.13.9",
     "rimraf": "^3.0.2",
-    "sass": "^1.49.0",
+    "sass": "^1.49.7",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",

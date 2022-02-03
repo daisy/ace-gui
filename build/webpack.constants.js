@@ -19,6 +19,7 @@ const nodeModuleRelativeUrl = (isPackaging === "1") ?
 const data = {
     __APP_VERSION__: JSON.stringify(version),
     __APP_NAME__: JSON.stringify(build.productName),
+    __ACE_APP_GUI_LAUNCHER__: JSON.stringify("Ace App v" + version), // build.productName === "Ace by DAISY", not clear about CLI vs. GUI
     __NODE_ENV__: JSON.stringify(nodeEnv),
     __VSCODE_LAUNCH__: JSON.stringify(isVisualStudioCodeLaunch),
     __NODE_MODULE_RELATIVE_URL__: JSON.stringify(nodeModuleRelativeUrl),

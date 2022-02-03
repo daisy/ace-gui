@@ -40,6 +40,9 @@ if (isDev) {
   // app.commandLine.appendSwitch('lang', 'fr_FR, fr');
 }
 
+// For Ace CLI JSON and HTML reports
+process.env.ACE_APP_GUI_LAUNCHER = __ACE_APP_GUI_LAUNCHER__;
+
 // see createWindow() in app.on('ready', ...)
 let _win;
 
@@ -228,7 +231,7 @@ function createWindow() {
           webviewTag: false,
           enableRemoteModule: false,
           partition: SESSION_PARTITION,
-          nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
+          // nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
       }
     }
   );

@@ -27,7 +27,7 @@ module.exports = {
             webSecurity: true,
             webviewTag: false,
             enableRemoteModule: true,
-            nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
+            // nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
           }
         }
     });
