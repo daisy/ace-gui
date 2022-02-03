@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createMuiTheme, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import { createTheme, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import {
   CircularProgress,
   Divider,
@@ -33,7 +33,7 @@ const { localize } = localizer;
 
 const drawerWidth = 240;
 
-const sidebarTheme = createMuiTheme({
+const sidebarTheme = createTheme({
   palette: {
     type: 'dark',
   },
