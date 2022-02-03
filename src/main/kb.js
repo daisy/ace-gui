@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const fsOriginal = require('original-fs');
 const url = require('url');
+
 const { BrowserWindow, webContents } = require('electron');
 import { app, shell, session, ipcMain, Menu } from 'electron';
 
@@ -10,16 +11,21 @@ const { localize } = localizer;
 
 import * as AboutBoxHelper from './about';
 
-import * as express from "express";
-import * as portfinder from "portfinder";
+// NO_HTTP_ADD
+const mime = require('mime-types');
+const nodeStream = require('stream');
+
+// NO_HTTP_REMOVE
+// import * as express from "express";
+// import * as portfinder from "portfinder";
 // import * as http from "http";
 // import * as https from "https";
-
 // import {generateSelfSignedData} from "./selfsigned";
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
-const LOG_DEBUG = true;
+const LOG_DEBUG = false;
+const LOG_DEBUG_URLS = false;
 const KB_LOG_PREFIX = "[KB]";
 
 const SESSION_PARTITION = "persist:kb";
@@ -34,12 +40,142 @@ export function closeKnowledgeBaseWindows() {
     }
 }
 
-let expressApp;
-let httpServer;
-let port;
-let ip;
-let proto;
-let rootUrl;
+// NO_HTTP_REMOVE
+// let expressApp;
+// let httpServer;
+// let port;
+// let ip;
+// let proto;
+// let rootUrl;
+
+if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} ELECTRON MODULE INSTANCE`);
+
+// NO_HTTP_ADD
+const ACE_KB_ELECTRON_HTTP_PROTOCOL = "acekbhttps";
+const rootUrl = `${ACE_KB_ELECTRON_HTTP_PROTOCOL}://0.0.0.0`;
+
+// NO_HTTP_ADD
+class BufferReadableStream extends nodeStream.Readable {
+    constructor(buffer) {
+        super();
+        this.buffer = buffer;
+        this.alreadyRead = 0;
+    }
+    _read(size) {
+        if (this.alreadyRead >= this.buffer.length) {
+            this.push(null);
+            return;
+        }
+
+        let chunk = this.alreadyRead ?
+            this.buffer.slice(this.alreadyRead) :
+            this.buffer;
+
+        if (size) {
+            let l = size;
+            if (size > chunk.length) {
+                l = chunk.length;
+            }
+
+            chunk = chunk.slice(0, l);
+        }
+
+        this.alreadyRead += chunk.length;
+        this.push(chunk);
+    }
+}
+function bufferToStream(buffer) {
+    return new BufferReadableStream(buffer);
+}
+
+let _streamProtocolHandler = undefined;
+const streamProtocolHandler = async (
+    req,
+    callback) => {
+
+    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} streamProtocolHandler req.url: ${req.url}`);
+    const u = new URL(req.url);
+
+    if (LOG_DEBUG) {
+        Object.keys(req.headers).forEach((header) => {
+            const val = req.headers[header];
+
+            console.log(`${KB_LOG_PREFIX} streamProtocolHandler req.header: ${header} => ${val}`);
+
+            // if (val) {
+            //     headers[header] = val;
+            // }
+        });
+    }
+
+    let ref = u.origin;
+    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} streamProtocolHandler u.origin: ${ref}`);
+    if (req.referrer && req.referrer.trim()) {
+        ref = req.referrer;
+        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} streamProtocolHandler req.referrer: ${ref}`);
+    }
+
+    const headers = {};
+
+    if (ref && ref !== "null" && !/^https?:\/\/localhost.+/.test(ref) && !/^https?:\/\/127\.0\.0\.1.+/.test(ref)) {
+        headers.referer = ref;
+    } else {
+        headers.referer = `${ACE_KB_ELECTRON_HTTP_PROTOCOL}://0.0.0.0/`;
+    }
+
+    // CORS everything!
+    headers["Access-Control-Allow-Origin"] = "*";
+    headers["Access-Control-Allow-Methods"] = "GET, HEAD, OPTIONS"; // POST, DELETE, PUT, PATCH
+    // tslint:disable-next-line:max-line-length
+    headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Length, Accept-Ranges, Content-Range, Range, Link, Transfer-Encoding, X-Requested-With, Authorization, Accept, Origin, User-Agent, DNT, Cache-Control, Keep-Alive, If-Modified-Since";
+    // tslint:disable-next-line:max-line-length
+    headers["Access-Control-Expose-Headers"] = "Content-Type, Content-Length, Accept-Ranges, Content-Range, Range, Link, Transfer-Encoding, X-Requested-With, Authorization, Accept, Origin, User-Agent, DNT, Cache-Control, Keep-Alive, If-Modified-Since";
+
+    if (!_streamProtocolHandler) {
+        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} !? _streamProtocolHandler`);
+
+        const buff = Buffer.from("<html><body><p>Internal Server Error</p><p>!_streamProtocolHandler</p></body></html>");
+        headers["Content-Length"] = buff.length.toString();
+        headers["Content-Type"] = "text/html";
+        callback({
+            data: bufferToStream(buff),
+            headers,
+            statusCode: 500,
+        });
+        return;
+    }
+    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} BEFORE _streamProtocolHandler ${req.url}`);
+    await _streamProtocolHandler(req, callback, headers);
+    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} AFTER _streamProtocolHandler ${req.url}`);
+};
+ 
+function electronAppReady () {
+// app.whenReady().then(async () => {
+    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} Electron app ready`);
+
+    // try {
+    //     await clearSessions();
+    // } catch (err) {
+    //     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} clearSessions fail?`);
+    // }
+
+    // if (session.defaultSession) {
+    //     session.defaultSession.protocol.registerStreamProtocol(
+    //         ACE_KB_ELECTRON_HTTP_PROTOCOL,
+    //         streamProtocolHandler);
+    // }
+    const sess = session.fromPartition(SESSION_PARTITION, { cache: true });
+    if (sess) {
+        sess.protocol.registerStreamProtocol(
+            ACE_KB_ELECTRON_HTTP_PROTOCOL,
+            streamProtocolHandler);
+
+        sess.setPermissionRequestHandler((wc, permission, callback) => {
+            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} setPermissionRequestHandler ${wc.getURL()} => ${permission}`);
+            callback(true);
+        });
+    }
+}
 
 function httpReady() {
     ipcMain.on('KB_URL', (event, arg) => {
@@ -59,9 +195,15 @@ function httpReady() {
 export async function stopKnowledgeBaseServer() {
     // closeKnowledgeBaseWindows();
 
-    if (httpServer) {
-        httpServer.close();
-    }
+    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} stopKnowledgeBaseServer`);
+
+    // NO_HTTP_REMOVE
+    // if (httpServer) {
+    //     httpServer.close();
+    // }
+
+    // NO_HTTP_ADD
+    _streamProtocolHandler = undefined;
 
     const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
     if (sess) {
@@ -98,8 +240,12 @@ export async function stopKnowledgeBaseServer() {
     }
 }
 
-const filePathsExpressStaticNotExist = {};
+// const filePathsExpressStaticNotExist = {};
 export function startKnowledgeBaseServer(kbRootPath) {
+
+    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} startKnowledgeBaseServer: ${kbRootPath}`);
+
+    electronAppReady();
 
     // app.on("certificate-error", (event, webContents, url, error, certificate, callback) => {
     //     if (url.indexOf(`${rootUrl}/`) === 0) {
@@ -111,7 +257,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
     //     callback(false);
     // });
 
-    const filter = { urls: ["*", "*://*/*"] };
+    // const filter = { urls: ["*", "*://*/*"] };
 
     // const onHeadersReceivedCB = (details, callback) => {
     //     if (!details.url) {
@@ -146,264 +292,381 @@ export function startKnowledgeBaseServer(kbRootPath) {
     //     // callback(-2); // Fail
     // };
 
-    const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
-
+    // const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
     // if (sess) {
     //     // sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
     //     // sess.webRequest.onBeforeSendHeaders(filter, onBeforeSendHeadersCB);
     //     sess.setCertificateVerifyProc(setCertificateVerifyProcCB);
     // }
 
-    return new Promise((resolve, reject) => {
-        expressApp = express();
-        // expressApp.enable('strict routing');
-
-        // expressApp.use("/", (req, res, next) => {
-        //     if (LOG_DEBUG) console.log("HTTP: " + req.url);
-        //     next();
-        // });
+    // NO_HTTP_REMOVE
+    // return new Promise((resolve, reject) => {
 
         const jsInitPath = "js/init.js";
-        expressApp.use(`/${jsInitPath}`, (req, res, next) => {
+
+        // NO_HTTP_REMOVE
+        // expressApp = express();
+        // // expressApp.enable('strict routing');
+        // // expressApp.use("/", (req, res, next) => {
+        // //     if (LOG_DEBUG) console.log("HTTP: " + req.url);
+        // //     next();
+        // // });
+        // expressApp.use(`/${jsInitPath}`, (req, res, next) => {
+
+            // res.send(js);
+        //     // next();
+        // });
+
+        // NO_HTTP_ADD
+        _streamProtocolHandler = async (
+            req,
+            callback,
+            headers) => {
+            const u = new URL(req.url);
+
+            // equivalent to Express static:
+
+            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} Express static emulate: ${req.url}`);
+
+            if (LOG_DEBUG_URLS) {
+                console.log(">>>>>>>>>>- URL 1");
+                console.log(req.url);
+            }
+            const ptn = u.pathname;
+            if (LOG_DEBUG_URLS) {
+                console.log(">>>>>>>>>>- URL 2");
+                console.log(ptn);
+            }
+            const pn = decodeURI(ptn);
+            if (LOG_DEBUG_URLS) {
+                console.log(">>>>>>>>>>- URL 3");
+                console.log(pn);
+            }
 
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTP intercept /${jsInitPath}`);
 
-            let js = fs.readFileSync(path.join(kbRootPath, jsInitPath), { encoding: "utf8" });
+            if (pn === `/${jsInitPath}`) {
+                let js = fs.readFileSync(path.join(kbRootPath, jsInitPath), { encoding: "utf8" });
 
-            const toMatch1 = "document.location.host == 'localhost'";
-            const toMatch1_ = "document.location.host.match(/^localhost/i)";
+                const toMatch1 = "document.location.host == 'localhost'";
+                const toMatch1_ = "document.location.host.match(/^localhost/i)";
 
-            const toMatch2 = "KB.prototype.generateFooter = function () {";
-            const link = localize("kbgoonline");
-            const online = `
-var zhref = document.location.href.replace('${rootUrl}/', 'http://kb.daisy.org/');
-var zdiv = document.createElement('div');
-zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
+                const toMatch2 = "KB.prototype.generateFooter = function () {";
+                const link = localize("kbgoonline");
+                const online = `
+    var zhref = document.location.href.replace('${rootUrl}/', 'http://kb.daisy.org/');
+    var zdiv = document.createElement('div');
+    zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
 
-var za = document.createElement('a');
-za.setAttribute('href',zhref);
-// za.setAttribute('target','_BLANK');
-za.setAttribute('style','color: red; background-color: white; padding: 0.2em;');
-za.appendChild(document.createTextNode('${link}'));
+    var za = document.createElement('a');
+    za.setAttribute('href',zhref);
+    // za.setAttribute('target','_BLANK');
+    za.setAttribute('style','color: red; background-color: white; padding: 0.2em;');
+    za.appendChild(document.createTextNode('${link}'));
 
-zdiv.appendChild(za);
+    zdiv.appendChild(za);
 
-document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
+    document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
 
-`;
-const online2 = `
-var zhref = '#';
-var zdiv = document.createElement('div');
-zdiv.setAttribute('style','position: fixed; left: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
+    `;
+    const online2 = `
+    var zhref = '#';
+    var zdiv = document.createElement('div');
+    zdiv.setAttribute('style','position: fixed; left: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
 
-var za = document.createElement('a');
-za.setAttribute('href',zhref);
-za.setAttribute('style','color: red; background-color: white; padding: 0.2em; font-weight: bold;');
-za.appendChild(document.createTextNode('<<'));
+    var za = document.createElement('a');
+    za.setAttribute('href',zhref);
+    za.setAttribute('style','color: red; background-color: white; padding: 0.2em; font-weight: bold;');
+    za.appendChild(document.createTextNode('<<'));
 
-za.addEventListener("click", (ev) => {
-    ev.preventDefault();
-    // alert('test');
-    window.history.back();
-});
+    za.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        // alert('test');
+        window.history.back();
+    });
 
-zdiv.appendChild(za);
+    zdiv.appendChild(za);
 
-document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
-`;
-            // js = js.replace("kb.initializePage('ace')", "kb.initializePage('kb')");
-            js = js.replace(toMatch1, `${toMatch1} || document.location.hostname == '${rootUrl.replace(/http[s]?:\/\/(.+):[0-9]+/, "$1")}' || document.location.host == '${rootUrl.replace(/http[s]?:\/\//, "")}'`);
-            js = js.replace(toMatch1_, `${toMatch1_} || document.location.hostname == '${rootUrl.replace(/http[s]?:\/\/(.+):[0-9]+/, "$1")}' || document.location.host == '${rootUrl.replace(/http[s]?:\/\//, "")}'`);
-            js = js.replace(/http[s]?:\/\/kb.daisy.org\//g, `${rootUrl}/`);
-            js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n${online2}\n\n`);
-            res.send(js);
-            // next();
-        });
+    document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
+    `;
+                // js = js.replace("kb.initializePage('ace')", "kb.initializePage('kb')");
 
-        if (isDev) { // handle WebInspector JS maps etc.
-            expressApp.use("/", (req, res, next) => {
-                // const url = new URL(`https://fake.org${req.url}`);
-                // const pathname = url.pathname;
-                const pathname = url.parse(req.url).pathname;
+                const rx1 = /http[s]?:\/\/(.+):[0-9]+/;
+                const rx2 = /http[s]?:\/\//;
 
-                const filePath = path.join(kbRootPath, pathname).replace(/\\/g, "/");
-                if (filePathsExpressStaticNotExist[filePath]) {
-                    res.status(404).send(filePathsExpressStaticNotExist[filePath]);
-                    return;
-                }
-                fsOriginal.exists(filePath, (exists) => {
-                    if (exists) {
-                        if (fsOriginal.statSync(filePath).isDirectory()) {
-                            return next();
-                        }
-                        fsOriginal.readFile(filePath, undefined, (err, data) => {
-                            if (err) {
-                                if (LOG_DEBUG) {
-                                    console.log(`${KB_LOG_PREFIX} HTTP FAIL fsOriginal.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
-                                }
-                                const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
-                                filePathsExpressStaticNotExist[filePath] = html;
-                                res.status(404).send(filePathsExpressStaticNotExist[filePath]);
-                            } else {
-                                // if (LOG_DEBUG) {
-                                //     console.log(`${KB_LOG_PREFIX} HTTP OK fsOriginal.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                                // }
-                                next();
-                                // res.send(data);
-                            }
-                        });
-                    } else {
-                        fs.exists(filePath, (exists) => {
-                            if (exists) {
-                                if (fs.statSync(filePath).isDirectory()) {
-                                    return next();
-                                }
-                                fs.readFile(filePath, undefined, (err, data) => {
-                                    if (err) {
-                                        if (LOG_DEBUG) {
-                                            console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
-                                        }
-                                        const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
-                                        filePathsExpressStaticNotExist[filePath] = html;
-                                        res.status(404).send(filePathsExpressStaticNotExist[filePath]);
-                                    } else {
-                                        if (LOG_DEBUG) {
-                                            console.log(`${KB_LOG_PREFIX} HTTP OK !fsOriginal.exists && fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                                        }
-                                        next();
-                                        // res.send(data);
-                                    }
-                                });
-                            } else {
-                                if (LOG_DEBUG) {
-                                    console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                                }
-                                const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>404: ${pathname}</h2>`;
-                                filePathsExpressStaticNotExist[filePath] = html;
-                                res.status(404).send(filePathsExpressStaticNotExist[filePath]);
-                            }
-                        });
-                    }
+                const rx1_ = new RegExp(`${ACE_KB_ELECTRON_HTTP_PROTOCOL}://(0\\.0\\.0\\.0)`);
+                const rx2_ = new RegExp(`${ACE_KB_ELECTRON_HTTP_PROTOCOL}://`);
+
+                js = js.replace(toMatch1_, `${toMatch1_} ||
+                    document.location.hostname == '${rootUrl.replace(rx1_, "$1")}' ||
+                    document.location.host == '${rootUrl.replace(rx2_, "")}' ||
+
+                    document.location.hostname == '${rootUrl.replace(rx1, "$1")}' ||
+                    document.location.host == '${rootUrl.replace(rx2, "")}'`
+                );
+
+                js = js.replace(toMatch1, `${toMatch1} ||
+                    document.location.hostname == '${rootUrl.replace(rx1_, "$1")}' ||
+                    document.location.host == '${rootUrl.replace(rx2_, "")}' ||
+
+                    document.location.hostname == '${rootUrl.replace(rx1, "$1")}' ||
+                    document.location.host == '${rootUrl.replace(rx2, "")}'`
+                );
+
+                js = js.replace(/http[s]?:\/\/kb.daisy.org\//g, `${rootUrl}/`);
+
+                js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n${online2}\n\n`);
+
+                const buff = Buffer.from(js);
+                headers["Content-Length"] = buff.length.toString();
+                headers["Content-Type"] = "text/javascript";
+                callback({
+                    data: bufferToStream(buff),
+                    headers,
+                    statusCode: 200,
                 });
-            });
-        } else {
+                return;
+            }
 
-            expressApp.use("/", (req, res, next) => {
-                // const url = new URL(`https://fake.org${req.url}`);
-                // const pathname = url.pathname;
-                const pathname = url.parse(req.url).pathname;
-
-                const filePath = path.join(kbRootPath, pathname).replace(/\\/g, "/");
-                if (filePathsExpressStaticNotExist[filePath]) {
-                    res.status(404).send(filePathsExpressStaticNotExist[filePath]);
-                    return;
+            let fileSystemPath = path.join(kbRootPath, pn);
+            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --filepath to read: ${fileSystemPath}`);
+            if (fs.existsSync(fileSystemPath)) {
+                const stats = fs.statSync(fileSystemPath);
+                if (stats.isDirectory()) {
+                    fileSystemPath = path.join(kbRootPath, pn, "index.html");
                 }
-                fs.exists(filePath, (exists) => {
-                    if (exists) {
-                        if (fs.statSync(filePath).isDirectory()) {
-                            return next();
-                        }
-                        fs.readFile(filePath, undefined, (err, data) => {
-                            if (err) {
-                                if (LOG_DEBUG) {
-                                    console.log(`${KB_LOG_PREFIX} HTTP FAIL fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
-                                }
-                                const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
-                                filePathsExpressStaticNotExist[filePath] = html;
-                                res.status(404).send(filePathsExpressStaticNotExist[filePath]);
-                            } else {
-                                if (LOG_DEBUG) {
-                                    console.log(`${KB_LOG_PREFIX} HTTP OK fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                                }
-                                next();
-                                // res.send(data);
-                            }
-                        });
-                    } else {
-                        if (LOG_DEBUG) {
-                            console.log(`${KB_LOG_PREFIX} HTTP FAIL !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
-                        }
-                        const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>404: ${pathname}</h2>`;
-                        filePathsExpressStaticNotExist[filePath] = html;
-                        res.status(404).send(filePathsExpressStaticNotExist[filePath]);
-                    }
+            }
+            if (!fs.existsSync(fileSystemPath)) {
+                // fileSystemPath = pn;
+                // if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --filepath to read (corrected): ${fileSystemPath}`);
+                // if (!fs.existsSync(fileSystemPath)) {
+                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --FILE DOES NOT EXIST!! ${kbRootPath} + ${req.url} => ${fileSystemPath}`);
+                    const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pn} (404 missing file?)</h2>`;
+                    const buff = Buffer.from(html);
+                    headers["Content-Length"] = buff.length.toString();
+                    headers["Content-Type"] = "text/html";
+                    callback({
+                        data: bufferToStream(buff),
+                        headers,
+                        statusCode: 404,
+                    });
+                    return;
+                // }
+            }
+            try {
+                let mediaType = mime.lookup(fileSystemPath) || "stream/octet";
+                const stats = fs.statSync(fileSystemPath);
+                headers["Content-Length"] = stats.size;
+                headers["Content-Type"] = mediaType;
+                if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --CALLBACK HEADERS ${req.url} ${JSON.stringify(headers)}`);
+                const steam = fs.createReadStream(fileSystemPath);
+                callback({
+                    data: steam,
+                    headers,
+                    statusCode: 200,
                 });
-            });
-        }
+                if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --POST-CALLBACK ${req.url}`);
+            } catch (fsErr) {
+                if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --fsErr ${fsErr}`);
 
-        // https://expressjs.com/en/4x/api.html#express.static
-        const staticOptions = {
-            dotfiles: "ignore",
-            etag: true,
-            // fallthrough: false,
-            immutable: true,
-            index: "index.html",
-            maxAge: "1d",
-            redirect: true,
-            // extensions: ["css", "otf"],
-            // setHeaders: (res, _path, _stat) => {
-            //     //   res.set('x-timestamp', Date.now())
-            //     setResponseCORS(res);
-            // },
+                const buff = Buffer.from(`<html><body><p>Internal Server Error</p><p>fsErr: ${fsErr}</p></body></html>`);
+                headers["Content-Length"] = buff.length.toString();
+                headers["Content-Type"] = "text/html";
+                callback({
+                    data: bufferToStream(buff),
+                    headers,
+                    statusCode: 500,
+                });
+            }
         };
-        if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTP static path ${kbRootPath}`);
-        expressApp.use("/", express.static(kbRootPath, staticOptions));
+        httpReady();
 
-        const startHttp = function () {
-            
-            httpServer = expressApp.listen(port, () => {
-                const p = httpServer.address().port;
+        // NO_HTTP_REMOVE
+        // if (isDev) { // handle WebInspector JS maps etc.
+        //     expressApp.use("/", (req, res, next) => {
+        //         // const url = new URL(`https://fake.org${req.url}`);
+        //         // const pathname = url.pathname;
+        //         const pathname = url.parse(req.url).pathname;
 
-                port = p;
-                ip = "127.0.0.1";
-                proto = "http";
-                rootUrl = `${proto}://${ip}:${port}`;
-                if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+        //         const filePath = path.join(kbRootPath, pathname).replace(/\\/g, "/");
+        //         if (filePathsExpressStaticNotExist[filePath]) {
+        //             res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+        //             return;
+        //         }
+        //         fsOriginal.exists(filePath, (exists) => {
+        //             if (exists) {
+        //                 if (fsOriginal.statSync(filePath).isDirectory()) {
+        //                     return next();
+        //                 }
+        //                 fsOriginal.readFile(filePath, undefined, (err, data) => {
+        //                     if (err) {
+        //                         if (LOG_DEBUG) {
+        //                             console.log(`${KB_LOG_PREFIX} HTTP FAIL fsOriginal.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
+        //                         }
+        //                         const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
+        //                         filePathsExpressStaticNotExist[filePath] = html;
+        //                         res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+        //                     } else {
+        //                         // if (LOG_DEBUG) {
+        //                         //     console.log(`${KB_LOG_PREFIX} HTTP OK fsOriginal.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+        //                         // }
+        //                         next();
+        //                         // res.send(data);
+        //                     }
+        //                 });
+        //             } else {
+        //                 fs.exists(filePath, (exists) => {
+        //                     if (exists) {
+        //                         if (fs.statSync(filePath).isDirectory()) {
+        //                             return next();
+        //                         }
+        //                         fs.readFile(filePath, undefined, (err, data) => {
+        //                             if (err) {
+        //                                 if (LOG_DEBUG) {
+        //                                     console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
+        //                                 }
+        //                                 const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
+        //                                 filePathsExpressStaticNotExist[filePath] = html;
+        //                                 res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+        //                             } else {
+        //                                 if (LOG_DEBUG) {
+        //                                     console.log(`${KB_LOG_PREFIX} HTTP OK !fsOriginal.exists && fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+        //                                 }
+        //                                 next();
+        //                                 // res.send(data);
+        //                             }
+        //                         });
+        //                     } else {
+        //                         if (LOG_DEBUG) {
+        //                             console.log(`${KB_LOG_PREFIX} HTTP FAIL !fsOriginal.exists && !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+        //                         }
+        //                         const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>404: ${pathname}</h2>`;
+        //                         filePathsExpressStaticNotExist[filePath] = html;
+        //                         res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+        //                     }
+        //                 });
+        //             }
+        //         });
+        //     });
+        // } else {
+            // expressApp.use("/", (req, res, next) => {
+            //     // const url = new URL(`https://fake.org${req.url}`);
+            //     // const pathname = url.pathname;
+            //     const pathname = url.parse(req.url).pathname;
 
-                resolve();
-                httpReady();
-            });
-
-            // generateSelfSignedData().then((certData) => {
-            //     httpServer = https.createServer({ key: certData.private, cert: certData.cert }, expressApp).listen(port, () => {
-            //         const p = httpServer.address().port;
-
-            //         port = p;
-            //         ip = "127.0.0.1";
-            //         proto = "https";
-            //         rootUrl = `${proto}://${ip}:${port}`;
-            //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
-
-            //         resolve();
-            //         httpReady();
-            //     });
-            // }).catch((err) => {
-            //     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} ${err}`);
-            //     if (LOG_DEBUG) console.log(err);
-            //     httpServer = expressApp.listen(port, () => {
-            //         const p = httpServer.address().port;
-
-            //         port = p;
-            //         ip = "127.0.0.1";
-            //         proto = "http";
-            //         rootUrl = `${proto}://${ip}:${port}`;
-            //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
-
-            //         resolve();
-            //         httpReady();
+            //     const filePath = path.join(kbRootPath, pathname).replace(/\\/g, "/");
+            //     if (filePathsExpressStaticNotExist[filePath]) {
+            //         res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+            //         return;
+            //     }
+            //     fs.exists(filePath, (exists) => {
+            //         if (exists) {
+            //             if (fs.statSync(filePath).isDirectory()) {
+            //                 return next();
+            //             }
+            //             fs.readFile(filePath, undefined, (err, data) => {
+            //                 if (err) {
+            //                     if (LOG_DEBUG) {
+            //                         console.log(`${KB_LOG_PREFIX} HTTP FAIL fs.exists && ERR ${kbRootPath} + ${req.url} => ${filePath}`, err);
+            //                     }
+            //                     const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pathname} => ${err.toString()}</h2>`;
+            //                     filePathsExpressStaticNotExist[filePath] = html;
+            //                     res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+            //                 } else {
+            //                     if (LOG_DEBUG) {
+            //                         console.log(`${KB_LOG_PREFIX} HTTP OK fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+            //                     }
+            //                     next();
+            //                     // res.send(data);
+            //                 }
+            //             });
+            //         } else {
+            //             if (LOG_DEBUG) {
+            //                 console.log(`${KB_LOG_PREFIX} HTTP FAIL !fs.exists ${kbRootPath} + ${req.url} => ${filePath}`);
+            //             }
+            //             const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>404: ${pathname}</h2>`;
+            //             filePathsExpressStaticNotExist[filePath] = html;
+            //             res.status(404).send(filePathsExpressStaticNotExist[filePath]);
+            //         }
             //     });
             // });
-        }
+        // }
 
-        portfinder.getPortPromise().then((p) => {
-            port = p;
-            startHttp();
-        }).catch((err) => {
-            debug(err);
-            port = 3000;
-            startHttp();
-        });
-    });
+        // NO_HTTP_REMOVE
+        // // https://expressjs.com/en/4x/api.html#express.static
+        // const staticOptions = {
+        //     dotfiles: "ignore",
+        //     etag: true,
+        //     // fallthrough: false,
+        //     immutable: true,
+        //     index: "index.html",
+        //     maxAge: "1d",
+        //     redirect: true,
+        //     // extensions: ["css", "otf"],
+        //     // setHeaders: (res, _path, _stat) => {
+        //     //     //   res.set('x-timestamp', Date.now())
+        //     //     setResponseCORS(res);
+        //     // },
+        // };
+        // if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} HTTP static path ${kbRootPath}`);
+        // expressApp.use("/", express.static(kbRootPath, staticOptions));
+
+        // const startHttp = function () {
+            
+        //     httpServer = expressApp.listen(port, () => {
+        //         const p = httpServer.address().port;
+
+        //         port = p;
+        //         ip = "127.0.0.1";
+        //         proto = "http";
+        //         rootUrl = `${proto}://${ip}:${port}`;
+        //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+
+        //         resolve();
+        //         httpReady();
+        //     });
+
+        //     // generateSelfSignedData().then((certData) => {
+        //     //     httpServer = https.createServer({ key: certData.private, cert: certData.cert }, expressApp).listen(port, () => {
+        //     //         const p = httpServer.address().port;
+
+        //     //         port = p;
+        //     //         ip = "127.0.0.1";
+        //     //         proto = "https";
+        //     //         rootUrl = `${proto}://${ip}:${port}`;
+        //     //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+
+        //     //         resolve();
+        //     //         httpReady();
+        //     //     });
+        //     // }).catch((err) => {
+        //     //     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} ${err}`);
+        //     //     if (LOG_DEBUG) console.log(err);
+        //     //     httpServer = expressApp.listen(port, () => {
+        //     //         const p = httpServer.address().port;
+
+        //     //         port = p;
+        //     //         ip = "127.0.0.1";
+        //     //         proto = "http";
+        //     //         rootUrl = `${proto}://${ip}:${port}`;
+        //     //         if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} URL ${rootUrl}`);
+
+        //     //         resolve();
+        //     //         httpReady();
+        //     //     });
+        //     // });
+        // }
+        // portfinder.getPortPromise().then((p) => {
+        //     port = p;
+        //     startHttp();
+        // }).catch((err) => {
+        //     debug(err);
+        //     port = 3000;
+        //     startHttp();
+        // });
+
+    // NO_HTTP_REMOVE
+    // });
 }
 
 function buildMenuTemplate(win) {

@@ -154,12 +154,12 @@ export default class EnhancedTable extends React.Component {
     onSort(this.props.id, {order: order, orderBy: id});
   };
 
-  onChangePage = (event, page) => {
+  onPageChange = (event, page) => {
     let {onChangePagination, pagination} = this.props;
     onChangePagination(this.props.id, {rowsPerPage: pagination.rowsPerPage, page: page});
   };
 
-  onChangeRowsPerPage = event => {
+  onRowsPerPageChange = event => {
     let {onChangePagination, pagination} = this.props;
     onChangePagination(this.props.id, {page: pagination.page, rowsPerPage: event.target.value});
   };
@@ -346,8 +346,8 @@ export default class EnhancedTable extends React.Component {
               rowsPerPage={rowsPerPage}
               rowsPerPageOptions={rowsPerPageOptions}
               page={page}
-              onChangePage={this.onChangePage}
-              onChangeRowsPerPage={this.onChangeRowsPerPage}
+              onPageChange={this.onPageChange}
+              onRowsPerPageChange={this.onRowsPerPageChange}
               ActionsComponent={TablePaginationActionsWrapped}
               labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
               labelRowsPerPage={localize("enhancedTable.rowsPerPage")}

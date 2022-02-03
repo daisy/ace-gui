@@ -20,7 +20,7 @@ import {
   addMessage,
 } from '../shared/actions/common';
 
-import {startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWindows} from './kb';
+import { startKnowledgeBaseServer, stopKnowledgeBaseServer, closeKnowledgeBaseWindows} from './kb';
 
 // const prepareLaunch = require('@daisy/ace-axe-runner-electron/lib/init').prepareLaunch;
 import { prepareLaunch } from '@daisy/ace-axe-runner-electron/lib/init';
@@ -55,17 +55,29 @@ let _storeUnsubscribe;
 // app.allowRendererProcessReuse = true;
 
 const ACE_ELECTRON_HTTP_PROTOCOL = "acehttps";
+const ACE_KB_ELECTRON_HTTP_PROTOCOL = "acekbhttps";
 protocol.registerSchemesAsPrivileged([{
-    privileges: {
-        allowServiceWorkers: false,
-        bypassCSP: false,
-        corsEnabled: true,
-        secure: true,
-        standard: true,
-        stream: true,
-        supportFetchAPI: true,
-    },
-    scheme: ACE_ELECTRON_HTTP_PROTOCOL,
+  privileges: {
+      allowServiceWorkers: false,
+      bypassCSP: false,
+      corsEnabled: true,
+      secure: true,
+      standard: true,
+      stream: true,
+      supportFetchAPI: true,
+  },
+  scheme: ACE_ELECTRON_HTTP_PROTOCOL,
+}, {
+  privileges: {
+      allowServiceWorkers: false,
+      bypassCSP: false,
+      corsEnabled: true,
+      secure: true,
+      standard: true,
+      stream: true,
+      supportFetchAPI: true,
+  },
+  scheme: ACE_KB_ELECTRON_HTTP_PROTOCOL,
 }]);
 
 setupFileDialogEvents();
@@ -77,6 +89,7 @@ if (!singleInstanceLock) {
 
 function handleStartupFileCheck(filepath) {
   app.whenReady().then(() => {
+
     async function askCheckEPUB() {
       const st = _store.getState();
       // check already running (for example, "file open..." event)
@@ -158,6 +171,7 @@ function handleArgv(argv) {
 
 if (process.platform === 'darwin') {
   app.on('will-finish-launching', () => {
+
     app.on('open-file', (ev, filepath) => {
       ev.preventDefault();
       if (_win) {
@@ -348,13 +362,12 @@ app.on('ready', () => {
   // const isNotPackaged = process && process.env && process.env.ACE_IS_NOT_PACKAGED === 'true';
   // const kbRootPath = isNotPackaged ? path.join(process.cwd(), "kb") : path.join(__dirname, "kb");
   const kbRootPath = path.join(__dirname, "kb");
-
-  startKnowledgeBaseServer(kbRootPath).then(() => {
-    createWindow();
-  }).catch((err) => {
+  try {
+    startKnowledgeBaseServer(kbRootPath);
+  } catch (err) {
     console.log(err);
-    createWindow();
-  });
+  }
+  createWindow();
 });
 
 async function willQuitCallback(evt) {
@@ -382,6 +395,7 @@ app.on('window-all-closed', function () {
 });
 
 app.on('activate', function () {
+
   if (_win === null) {
       createWindow();
   }
