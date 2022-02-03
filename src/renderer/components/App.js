@@ -15,10 +15,10 @@ import classNames from 'classnames';
 
 import SplitterLayout from 'react-splitter-layout';
 
-import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider, createTheme, withStyles } from '@material-ui/core/styles';
 
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#4b4b4b',

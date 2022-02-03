@@ -139,8 +139,8 @@
     "prepackage:mac:dev": "yarn run before:package:dev",
     "package:mac:dev": "cross-env SKIP_NOTARIZE=1 DEBUG=* electron-builder --publish never --mac",
     "i18n-sort": "node ./build/locales-sort.js",
-    "i18n-scan": "node ./build/translate-scan.js \"src\" \"src/shared/l10n/locales/temp.json\" && sync-i18n --files 'src/shared/l10n/locales/*.json' --primary temp --languages en fr es pt_BR da --space 4 --finalnewline --newkeysempty && rimraf \"src/shared/l10n/locales/temp.json\"",
-    "i18n-check": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR da --space 4 --finalnewline --newkeysempty"
+    "i18n-scan": "node ./build/translate-scan.js \"src\" \"src/shared/l10n/locales/temp.json\" && sync-i18n --files 'src/shared/l10n/locales/*.json' --primary temp --languages en fr es pt_BR da ja --space 4 --finalnewline --newkeysempty && rimraf \"src/shared/l10n/locales/temp.json\"",
+    "i18n-check": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR da ja --space 4 --finalnewline --newkeysempty"
   },
   "dependencies": {
     "@daisy/ace-axe-runner-electron": "^1.2.6-alpha.5",
