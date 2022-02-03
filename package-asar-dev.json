@@ -2,7 +2,7 @@
   "name": "ace-gui",
   "productName": "Ace by DAISY",
   "description": "Ace, the EPUB accessibility checker by the DAISY Consortium (desktop application)",
-  "version": "1.1.4",
+  "version": "1.1.5-alpha.1",
   "author": {
     "name": "DAISY Consortium",
     "organization": "DAISY Consortium",
