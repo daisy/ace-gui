@@ -154,6 +154,7 @@ export function exportReport(outfile) {
         new RegExp(`^report\\.html`),
         new RegExp(`^data[/\\\\]`),
         new RegExp(`^js[/\\\\]`),
+        new RegExp(`^report-html-files[/\\\\]`),
       ]
     )
     .then(() => {
