@@ -171,6 +171,8 @@ export function startKnowledgeBaseServer(kbRootPath) {
             let js = fs.readFileSync(path.join(kbRootPath, jsInitPath), { encoding: "utf8" });
 
             const toMatch1 = "document.location.host == 'localhost'";
+            const toMatch1_ = "document.location.host.match(/^localhost/i)";
+
             const toMatch2 = "KB.prototype.generateFooter = function () {";
             const link = localize("kbgoonline");
             const online = `
@@ -211,6 +213,7 @@ document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
 `;
             // js = js.replace("kb.initializePage('ace')", "kb.initializePage('kb')");
             js = js.replace(toMatch1, `${toMatch1} || document.location.hostname == '${rootUrl.replace(/http[s]?:\/\/(.+):[0-9]+/, "$1")}' || document.location.host == '${rootUrl.replace(/http[s]?:\/\//, "")}'`);
+            js = js.replace(toMatch1_, `${toMatch1_} || document.location.hostname == '${rootUrl.replace(/http[s]?:\/\/(.+):[0-9]+/, "$1")}' || document.location.host == '${rootUrl.replace(/http[s]?:\/\//, "")}'`);
             js = js.replace(/http[s]?:\/\/kb.daisy.org\//g, `${rootUrl}/`);
             js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n${online2}\n\n`);
             res.send(js);
