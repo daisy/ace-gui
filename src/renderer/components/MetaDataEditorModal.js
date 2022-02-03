@@ -562,6 +562,9 @@ class MetaDataEditorModal extends React.Component {
           (mdName in A11Y_META) &&
           A11Y_META[mdName].recommended,
 
+        isDiscouraged:
+          (mdName in A11Y_META) && A11Y_META[mdName].discouraged,
+
         isNotSupported:
           !isAccessModeSufficient && // updated below
           !isConformsTo && // allow arbitrary value
@@ -601,6 +604,10 @@ class MetaDataEditorModal extends React.Component {
 
       if (mdObj.isNotSupported) {
         flagged.isNotSupported = true;
+      }
+
+      if (mdObj.isDiscouraged) {
+        flagged.isDiscouraged = true;
       }
 
       // console.log(`RENDER METADATA: ${mdObj.index}`, JSON.stringify(mdObj, null, 4));
@@ -926,7 +933,7 @@ class MetaDataEditorModal extends React.Component {
 
       const divLabel = (mdObj.isMissingRecommended || mdObj.isMissingRequired) ?
         localize("report.metadataSection.missing") :
-        (mdObj.isNotSupported ? localize("report.violations") : undefined);
+        (mdObj.isNotSupported ? localize("report.violations") : (mdObj.isDiscouraged ? localize("report.summarySection.best-practice") : undefined));
 
       let allowDelete = true;
       if ((mdObj.name in A11Y_META) && A11Y_META[mdObj.name].required) {
@@ -957,7 +964,7 @@ class MetaDataEditorModal extends React.Component {
           aria-label={divLabel}
           className={classNames(classes.browseControlInputGroup, classes.notFlagged,
             (mdObj.isMissingRequired || mdObj.isNotSupported) ? classes.red :
-              (mdObj.isMissingRecommended ? classes.orange : (!mdObj.content ? classes.silver : undefined)))}
+              (mdObj.isMissingRecommended || mdObj.isDiscouraged ? classes.orange : (!mdObj.content ? classes.silver : undefined)))}
           >
         <FormControl
           variant="outlined"
@@ -1091,7 +1098,7 @@ class MetaDataEditorModal extends React.Component {
                     });
                   }}>
                   {
-                    a11yMeta.map((a, i) => {
+                    a11yMeta.filter((name) => (name in A11Y_META) && !A11Y_META[name].discouraged).map((a, i) => {
                       return <MenuItem key={`select_option_${i}`} value={a}>{a}</MenuItem>;
                     })
                   }
