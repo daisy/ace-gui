@@ -459,12 +459,25 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 headers["Content-Length"] = stats.size;
                 headers["Content-Type"] = mediaType;
                 if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --CALLBACK HEADERS ${req.url} ${JSON.stringify(headers)}`);
-                const steam = fs.createReadStream(fileSystemPath);
-                callback({
-                    data: steam,
-                    headers,
-                    statusCode: 200,
-                });
+                if (mediaType === "text/html" || mediaType === "application/xhtml+xml") {
+
+                    const html = fs.readFileSync(fileSystemPath, { encoding: "utf8" }).replace(/<head>/, '<head>\n<meta charset="utf-8">');
+                    const buff = Buffer.from(html);
+                    headers["Content-Length"] = buff.length.toString();
+                    headers["Content-Type"] = "text/html";
+                    callback({
+                        data: bufferToStream(buff),
+                        headers,
+                        statusCode: 200,
+                    });
+                } else {
+                    const steam = fs.createReadStream(fileSystemPath);
+                    callback({
+                        data: steam,
+                        headers,
+                        statusCode: 200,
+                    });
+                }
                 if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --POST-CALLBACK ${req.url}`);
             } catch (fsErr) {
                 if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --fsErr ${fsErr}`);
