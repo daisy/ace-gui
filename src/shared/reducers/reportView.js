@@ -40,9 +40,9 @@ const initialState = {
   },
 
   pagination: {
-    "violations": {page: 0, rowsPerPage: 10},
-    "metadata": {page: 0, rowsPerPage: 10},
-    "images": {page: 0, rowsPerPage: 10}
+    "violations": {page: 0, rowsPerPage: 50},
+    "metadata": {page: 0, rowsPerPage: 50},
+    "images": {page: 0, rowsPerPage: 50}
   }
 };
 

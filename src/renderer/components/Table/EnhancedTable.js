@@ -224,17 +224,23 @@ export default class EnhancedTable extends React.Component {
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
     // const rowsPerPageAdjusted = Math.min(rowsPerPage, filteredRows.length);
 
-    const rowsPerPageOptions = [10];
-    if (filteredRows.length > 10) {
-      rowsPerPageOptions.push(25);
-    }
-    if (filteredRows.length > 25) {
-      rowsPerPageOptions.push(50);
-    }
-    if (filteredRows.length > 50) {
+    const rowsPerPageOptions = [10, 25, 50];
+    // if (filteredRows.length > 25) {
+    //   rowsPerPageOptions.push(25);
+    // }
+    // if (filteredRows.length > 50) {
+    //   rowsPerPageOptions.push(50);
+    // }
+    if (filteredRows.length > 100) {
       rowsPerPageOptions.push(100);
     }
-    
+    if (filteredRows.length > 200) {
+      rowsPerPageOptions.push(200);
+    }
+    if (filteredRows.length > 300) {
+      rowsPerPageOptions.push(300);
+    }
+
     // console.log("FILTERS render: ", JSON.stringify(filters, null, 4));
 
     // ensure correct language
