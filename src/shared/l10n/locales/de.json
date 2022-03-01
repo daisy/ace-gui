@@ -1,0 +1,172 @@
+{
+    "dialog": {
+        "allfiles": "Alle Dateien",
+        "check": "Prüfen",
+        "choosedir": "Verzeichnis auswählen",
+        "chooseepub": "EPUB-Datei oder Ordner auswählen",
+        "chooseepubdir": "EPUB-Verzeichnis auswählen",
+        "chooseepubfile": "EPUB-Datei auswählen",
+        "choosereport": "Ace-Prüfbericht auswählen",
+        "open": "Öffnen",
+        "savereport": "Prüfbericht speichern",
+        "select": "Auswählen",
+        "ziparchive": "Zip-Archiv"
+    },
+    "enhancedTable": {
+        "filterBy": "Filtern nach",
+        "rowsPerPage": "Reihen pro Seite:",
+        "sortBy": "Sortieren nach: "
+    },
+    "kbgoonline": "IM BROWSER ÖFFNEN",
+    "menu": {
+        "about": "Über Ace",
+        "ace": "Ace",
+        "checkEpub": "EPUB überprüfen...",
+        "checkEpubFolder": "EPUB-Ordner überprüfen...",
+        "closeReport": "Prüfbericht schließen",
+        "copy": "Kopieren",
+        "copyMessageOutput": "Nachrichtenausgabe kopieren",
+        "cut": "Ausschneiden",
+        "dev": "Entwicklung",
+        "edit": "Bearbeiten",
+        "exportReport": "Prüfbericht exportieren",
+        "file": "Datei",
+        "gotoImages": "Bilder anzeigen",
+        "gotoMetadata": "Metadaten anzeigen",
+        "gotoOutlines": "Struktur anzeigen",
+        "gotoSummary": "Zusammenfassung anzeigen",
+        "gotoViolations": "Verstöße anzeigen",
+        "help": "Hilfe",
+        "knowledgeBase": "Knowledge Base",
+        "knowledgeBaseOffline": "Lokal (offline)",
+        "knowledgeBaseOnline": "Web (online)",
+        "learnMore": "Weitere Informationen zu Ace",
+        "openReport": "Prüfbericht öffnen...",
+        "paste": "Einfügen",
+        "quit": "Beenden",
+        "redo": "Wiederholen",
+        "reload": "Neu laden",
+        "reportIssue": "Ein Problem melden",
+        "rerunAce": "Erneut prüfen",
+        "selectall": "Alles auswählen",
+        "showInExplorer": "Im Explorer zeigen",
+        "showInFinder": "Im Finder zeigen",
+        "toggleDevTools": "Entwickler-Tools umschalten",
+        "undo": "Rückgängig",
+        "view": "Ansicht",
+        "window": "Fenster"
+    },
+    "message": {
+        "checkcomplete": "Ace-Prüfung vollständig",
+        "closedreport": "Prüfbericht geschlossen {{reportPath}}",
+        "failsavereport": "FEHLER: Prüfbericht konnte nicht gespeichert werden in {{outfile}}",
+        "filetypenotsupported": "FEHLER: Dateityp wird nicht unterstützt: {{filepath}}",
+        "loadedreport": "Prüfbericht geladen {{reportPath}}",
+        "loadfailreport": "FEHLER: Konnte nicht öffnen: {{p}}",
+        "overwrite": "Das Ausgabeverzeichnis ist nicht leer. Die Ausführung von Ace würde die folgenden Dateien oder Verzeichnisse überschreiben: \n{{val}}.\nDie Option 'Überschreiben' aktivieren um dies zuzulassen.",
+        "runningace": "Ace ausführen unter {{inputPath}}",
+        "savedreport": "Prüfbericht gespeichert zu {{outfile}}",
+        "savingreport": "Prüfbericht speichern zu {{outfile}} ..."
+    },
+    "metadata": {
+        "a11y": "Barrierefreiheit",
+        "add": "Hinzufügen",
+        "cancel": "Abbrechen",
+        "delete": "Löschen",
+        "edit": "Bearbeiten",
+        "metadata": "Metadata",
+        "save": "Speichern"
+    },
+    "preferences": {
+        "cancel": "Abbrechen",
+        "internalReportStorage": "Prüfberichte auf dem Gerät speichern",
+        "overwriteExistingReports": "Existierende Prüfberichte überschreiben",
+        "overwriteExistingReportsTip": "(Überschreiben von vorherigen Prüfberichten erlauben?)",
+        "reportsDataDirectory": "Verzeichnis der Prüfberichte",
+        "reportsDataDirectoryButton": "Durchsuchen",
+        "reportsDataDirectoryTip": "(Hier legt Ace Prüfberichte auf dem Gerät ab)",
+        "save": "Speichern",
+        "title": "Ace-Einstellungen",
+        "userInterfaceLanguage": "Sprache",
+        "userInterfaceLanguageTip": "(Sprache für Benutzeroberfläche und Hinweise auswählen)"
+    },
+    "report": {
+        "images": "Bilder",
+        "imagesSection": {
+            "NA": "N/A",
+            "altAttribute": "'alt' Attribut",
+            "ariaDescribedbyContent": "'aria-describedby' Inhalt",
+            "associatedFigcaption": "Entsprechende 'figcaption'",
+            "image": "Bild",
+            "location": "Bereich im Dokument",
+            "noImages": "Es wurden keine Bilder in dieser Veröffentlichung gefunden.",
+            "role": "'role' (Funktion)"
+        },
+        "metadata": "Metadaten",
+        "metadataSection": {
+            "a11y": "Barrierefreiheit",
+            "allPresent": "Alle erforderlichen Barrierefreiheitsmetadaten sind vorhanden.",
+            "missing": "Fehlende Barrierefreiheitsmetadaten:",
+            "name": "Name",
+            "value": "Wert"
+        },
+        "outlines": "Struktur",
+        "outlinesSection": {
+            "headings": "HTML-Überschriftsebenen",
+            "html": "Struktureller HTML-Aufbau",
+            "toc": "EPUB-Inhaltsverzeichnis (TOC)"
+        },
+        "summary": "Zusammenfassung",
+        "summarySection": {
+            "best-practice": "Best Practice",
+            "critical": "Kritisch",
+            "minor": "Geringfügig",
+            "moderate": "Moderat",
+            "other": "Sonstiges",
+            "serious": "Schwerwiegend",
+            "total": "Insgesamt",
+            "type": "Typ"
+        },
+        "title": "Prüfbericht",
+        "violations": "Barrieren",
+        "violationsSection": {
+            "details": "Details",
+            "impact": "Einfluss",
+            "learnAbout": "Weiterführende Informationen zu:",
+            "location": "Bereich im Dokument",
+            "noViolations": "Keine Verstöße festgestellt.",
+            "rule": "Regel",
+            "ruleset": "Richtlinie",
+            "via": "Via:"
+        }
+    },
+    "sidebar": {
+        "checkEPUB": "EPUB prüfen",
+        "export": "Exportiere",
+        "history": "Geschichte",
+        "maximize": "Seitenleiste einblenden",
+        "minimize": "Seitenleiste ausblenden",
+        "reRun": "Erneut prüfen",
+        "settings": "Einstellungen"
+    },
+    "splash": {
+        "browseForFileOrFolder": "nach einer __Datei__ oder einem __Ordner__ suchen.",
+        "clickToBrowse": "Zum Auswählen klicken.",
+        "dropHere": "Hier EPUB-Datei oder Verzeichnis per Drag & Drop einfügen,",
+        "or": "oder",
+        "orDropSidebar": "über die __ Schaltfläche in der Seitenleiste auswählen,",
+        "title": "Ace, von DAISY"
+    },
+    "tablePagination": {
+        "firstPage": "Erste Seite",
+        "lastPage": "Letzte Seite",
+        "nextPage": "Nächste Seite",
+        "previousPage": "Vorherige Seite"
+    },
+    "versionCheck": {
+        "newVersionAvailable": "Ein Software-Update ist verfügbar. Möchten Sie es herunterladen?",
+        "no": "Nein",
+        "softwareUpdate": "Software-Update",
+        "yes": "Ja"
+    }
+}
