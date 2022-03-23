@@ -34,10 +34,8 @@ export const localizer = newLocalizer({
         name: "Japanese",
         translation: jaJson,
     },
-/*
     de: {
         name: "Deutsch",
         translation: deJson,
     },
-*/
 });
