@@ -14,7 +14,7 @@
     },
     "enhancedTable": {
         "filterBy": "Filtern nach",
-        "rowsPerPage": "Reihen pro Seite:",
+        "rowsPerPage": "Zeilen pro Seite:",
         "sortBy": "Sortieren nach: "
     },
     "kbgoonline": "IM BROWSER ÖFFNEN",
@@ -46,7 +46,7 @@
         "quit": "Beenden",
         "redo": "Wiederholen",
         "reload": "Neu laden",
-        "reportIssue": "Ein Problem melden",
+        "reportIssue": "Problem melden",
         "rerunAce": "Erneut prüfen",
         "selectall": "Alles auswählen",
         "showInExplorer": "Im Explorer zeigen",
@@ -63,7 +63,7 @@
         "filetypenotsupported": "FEHLER: Dateityp wird nicht unterstützt: {{filepath}}",
         "loadedreport": "Prüfbericht geladen {{reportPath}}",
         "loadfailreport": "FEHLER: Konnte nicht öffnen: {{p}}",
-        "overwrite": "Das Ausgabeverzeichnis ist nicht leer. Die Ausführung von Ace würde die folgenden Dateien oder Verzeichnisse überschreiben: \n{{val}}.\nDie Option 'Überschreiben' aktivieren um dies zuzulassen.",
+        "overwrite": "Das Ausgabeverzeichnis ist nicht leer. Die Ausführung von Ace würde die folgenden Dateien oder Verzeichnisse überschreiben: \n{{val}}.\nDie Option 'Existierende Prüfberichte überschreiben' in den Einstellungen aktivieren um dies zuzulassen.",
         "runningace": "Ace ausführen unter {{inputPath}}",
         "savedreport": "Prüfbericht gespeichert zu {{outfile}}",
         "savingreport": "Prüfbericht speichern zu {{outfile}} ..."
@@ -74,12 +74,12 @@
         "cancel": "Abbrechen",
         "delete": "Löschen",
         "edit": "Bearbeiten",
-        "metadata": "Metadata",
+        "metadata": "Metadaten",
         "save": "Speichern"
     },
     "preferences": {
         "cancel": "Abbrechen",
-        "internalReportStorage": "Prüfberichte auf dem Gerät speichern",
+        "internalReportStorage": "Prüfberichte speichern",
         "overwriteExistingReports": "Existierende Prüfberichte überschreiben",
         "overwriteExistingReportsTip": "(Überschreiben von vorherigen Prüfberichten erlauben?)",
         "reportsDataDirectory": "Verzeichnis der Prüfberichte",
@@ -142,8 +142,8 @@
     },
     "sidebar": {
         "checkEPUB": "EPUB prüfen",
-        "export": "Exportiere",
-        "history": "Geschichte",
+        "export": "Exportieren",
+        "history": "Verlauf",
         "maximize": "Seitenleiste einblenden",
         "minimize": "Seitenleiste ausblenden",
         "reRun": "Erneut prüfen",
