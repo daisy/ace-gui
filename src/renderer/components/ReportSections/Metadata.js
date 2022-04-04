@@ -201,7 +201,9 @@ class Metadata extends React.Component {
 
     return (
       <section className="report-section metadata">
-        <h2>{localize("report.metadata")}</h2>
+        {
+          // <h2>{localize("report.metadata")}</h2>
+        }
         <EnhancedTable
           rows={metadata}
           heads={heads}

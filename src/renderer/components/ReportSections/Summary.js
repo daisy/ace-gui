@@ -17,7 +17,9 @@ export default class Summary extends React.Component {
     const keyPrefix = "report.summarySection.";
     return (
       <section className="report-section summary">
-        <h2>{localize("report.summary")}</h2>
+        {
+          // <h2>{localize("report.summary")}</h2>
+        }
         <Table>
           <TableHead>
             <TableRow>
@@ -33,7 +35,7 @@ export default class Summary extends React.Component {
             {Object.keys(summary).map((key, idx) => {
               return (
                 <TableRow key={idx}>
-                  <TableCell>{localize(keyPrefix+key, {ignoreMissingKey: true}).replace(keyPrefix, "")}</TableCell>
+                  <TableCell>{localize(keyPrefix+key, {ignoreMissingKey: true}).replace(keyPrefix, "").replace("wcag2aa", "WCAG2 AA").replace("wcag2a", "WCAG2 A")}</TableCell>
                   <TableCell>{summary[key]['critical']}</TableCell>
                   <TableCell>{summary[key]['serious']}</TableCell>
                   <TableCell>{summary[key]['moderate']}</TableCell>

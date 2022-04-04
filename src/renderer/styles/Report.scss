@@ -4,6 +4,12 @@
   cursor: pointer;
 }
 
+.pick-section-tab {
+  /* text-transform: revert !important; */
+  font-weight: bold !important;
+  font-size: 110% !important;
+}
+
 .ace-report {
   margin-left: 20px;
   overflow: scroll;

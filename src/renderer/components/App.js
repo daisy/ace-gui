@@ -27,6 +27,18 @@ const theme = createTheme({
       main: '#0097a7',
     },
   },
+  overrides: {
+    MuiButton: {
+      root: {
+        textTransform: 'none',
+      },
+    },
+    MuiTab: {
+      root: {
+        textTransform: 'none',
+      },
+    },
+  },
 });
 
 const styles = {
