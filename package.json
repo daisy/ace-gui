@@ -192,7 +192,7 @@
     "devtron": "^1.4.0",
     "dotenv": "^8.2.0",
     "electron": "^18.0.1",
-    "electron-builder": "^22.14.13",
+    "electron-builder": "^23.0.3",
     "electron-devtools-installer": "^3.2.0",
     "electron-notarize": "^1.2.1",
     "file-loader": "^6.2.0",
