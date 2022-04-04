@@ -124,7 +124,9 @@ export default class Violations extends React.Component {
 
     return (
       <section className="report-section violations">
-        <h2>{localize("report.violations")}</h2>
+        {
+          // <h2>{localize("report.violations")}</h2>
+        }
         <EnhancedTable
           rows={violations}
           heads={heads}

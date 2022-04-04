@@ -17,7 +17,9 @@ export default class Summary extends React.Component {
     const keyPrefix = "report.summarySection.";
     return (
       <section className="report-section summary">
-        <h2>{localize("report.summary")}</h2>
+        {
+          // <h2>{localize("report.summary")}</h2>
+        }
         <Table>
           <TableHead>
             <TableRow>

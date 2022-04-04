@@ -16,7 +16,9 @@ export default class Outlines extends React.Component {
     let {outlines} = this.props;
     return (
       <section className="report-section outlines">
-        <h2>{localize("report.outlines")}</h2>
+        {
+          // <h2>{localize("report.outlines")}</h2>
+        }
         <Grid container spacing={10}>
           <Grid item xs>
             <h3>{localize("report.outlinesSection.toc")}</h3>

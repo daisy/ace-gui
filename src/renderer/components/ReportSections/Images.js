@@ -95,7 +95,9 @@ export default class Images extends React.Component {
 
     return (
       <section className="report-section images">
-        <h2>{localize("report.images")}</h2>
+        {
+          // <h2>{localize("report.images")}</h2>
+        }
         <EnhancedTable
           rows={images}
           heads={heads}
