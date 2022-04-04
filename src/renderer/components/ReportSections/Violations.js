@@ -67,7 +67,7 @@ export default class Violations extends React.Component {
         sortable: true,
         filterOn: obj => obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="ruleset">{localize(`${keyPrefix}${row.rulesetTag}`, {ignoreMissingKey: true}).replace(keyPrefix, "").replace("wcag2aa", "WCAG2 AA").replace("wcag2a", "WCAG2 A")}</TableCell>
+          <TableCell key={idx} className="ruleset">{localize(`${keyPrefix}${row.rulesetTag}`, {ignoreMissingKey: true}).replace(keyPrefix, "").replace("wcag2aa", "WCAG 2.0 AA").replace("wcag2a", "WCAG 2.0 A")}</TableCell>
       },
       {
         id: "rule",

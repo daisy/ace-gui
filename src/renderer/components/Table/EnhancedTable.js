@@ -253,7 +253,7 @@ export default class EnhancedTable extends React.Component {
       if (filter.options) {
         filter.options.forEach((option) => {
           option.label = head.l10n ?
-            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "").replace("wcag2aa", "WCAG2 AA").replace("wcag2a", "WCAG2 A") : localize(option.value, {ignoreMissingKey})) :
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "").replace("wcag2aa", "WCAG 2.0 AA").replace("wcag2a", "WCAG 2.0 A") : localize(option.value, {ignoreMissingKey})) :
             option.value;
         });
       }

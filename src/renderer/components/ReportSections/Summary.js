@@ -35,7 +35,7 @@ export default class Summary extends React.Component {
             {Object.keys(summary).map((key, idx) => {
               return (
                 <TableRow key={idx}>
-                  <TableCell>{localize(keyPrefix+key, {ignoreMissingKey: true}).replace(keyPrefix, "").replace("wcag2aa", "WCAG2 AA").replace("wcag2a", "WCAG2 A")}</TableCell>
+                  <TableCell>{localize(keyPrefix+key, {ignoreMissingKey: true}).replace(keyPrefix, "").replace("wcag2aa", "WCAG 2.0 AA").replace("wcag2a", "WCAG 2.0 A")}</TableCell>
                   <TableCell>{summary[key]['critical']}</TableCell>
                   <TableCell>{summary[key]['serious']}</TableCell>
                   <TableCell>{summary[key]['moderate']}</TableCell>
