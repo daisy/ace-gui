@@ -94,13 +94,13 @@
         "images": "Bilder",
         "imagesSection": {
             "NA": "N/A",
-            "altAttribute": "'alt' Attribut",
-            "ariaDescribedbyContent": "'aria-describedby' Inhalt",
-            "associatedFigcaption": "Entsprechende 'figcaption'",
+            "altAttribute": "Alternativtext ('alt'-Attribut)",
+            "ariaDescribedbyContent": "Zusätzliche Beschreibung ('aria-describedby'-Inhalt)",
+            "associatedFigcaption": "Bildunterschrift ('figcaption'-Element)",
             "image": "Bild",
             "location": "Bereich im Dokument",
             "noImages": "Es wurden keine Bilder in dieser Veröffentlichung gefunden.",
-            "role": "'role' (Funktion)"
+            "role": "Semantische Funktion ('role')"
         },
         "metadata": "Metadaten",
         "metadataSection": {
