@@ -356,38 +356,40 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 const online = `
     var zhref = document.location.href.replace('${rootUrl}/', 'http://kb.daisy.org/');
     var zdiv = document.createElement('div');
-    zdiv.setAttribute('style','position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
+    zdiv.setAttribute('style','border-radius: 4px !important; border: 4px solid black !important; box-sizing: border-box; z-index: 999; position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; margin-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
 
     var za = document.createElement('a');
     za.setAttribute('href',zhref);
     // za.setAttribute('target','_BLANK');
-    za.setAttribute('style','color: red; background-color: white; padding: 0.2em;');
+    za.setAttribute('style','user-select: none; color: red; background-color: white; padding: 0.2em;');
     za.appendChild(document.createTextNode('${link}'));
 
     zdiv.appendChild(za);
 
-    document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
+    document.querySelector('body').insertAdjacentElement('afterBegin', zdiv);
 
     `;
     const online2 = `
     var zhref = '#';
     var zdiv = document.createElement('div');
-    zdiv.setAttribute('style','position: fixed; left: 1em; width: auto; background: transparent; margin: 0; padding: 0; padding-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
+    zdiv.setAttribute('style','border-radius: 4px !important; border: 4px solid black !important; box-sizing: border-box; z-index: 999; position: fixed; left: 0.5em; width: auto; background: transparent; margin: 0; padding: 0; margin-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
 
     var za = document.createElement('a');
     za.setAttribute('href',zhref);
-    za.setAttribute('style','color: red; background-color: white; padding: 0.2em; font-weight: bold;');
+    za.setAttribute('style','user-select: none; color: red; background-color: white; padding: 0.2em; font-weight: bold;');
     za.appendChild(document.createTextNode('<<'));
-
-    za.addEventListener("click", (ev) => {
-        ev.preventDefault();
-        // alert('test');
-        window.history.back();
-    });
+    
+    za.setAttribute("id", "backlink");
+    setTimeout(() => {
+        document.getElementById("backlink").addEventListener("click", (ev) => {
+            ev.preventDefault();
+            window.history.back();
+        });
+    }, 1000);
 
     zdiv.appendChild(za);
 
-    document.querySelector('header').insertAdjacentElement('beforeEnd', zdiv);
+    document.querySelector('body').insertAdjacentElement('afterBegin', zdiv);
     `;
                 // js = js.replace("kb.initializePage('ace')", "kb.initializePage('kb')");
 
