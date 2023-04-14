@@ -54,7 +54,7 @@ import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
 // http://kb.daisy.org/publishing/docs/metadata/schema.org/index.html
 // http://kb.daisy.org/publishing/docs/metadata/evaluation.html
 
-const conformsToURLs = a11yMetadata.conformsToURLs;
+const conformsToURLs = a11yMetadata.conformsToStrings.concat(a11yMetadata.conformsToURLs);
 const a11yMeta_links = a11yMetadata.a11yMeta_links;
 const a11yMeta = a11yMetadata.a11yMeta;
 const A11Y_META = a11yMetadata.A11Y_META;
@@ -325,7 +325,7 @@ class MetaDataEditorModal extends React.Component {
           }
         }
         if (name && content) {
-          if (a11yMeta.includes(name)) { // not just a11yMeta_links because a11y:certifierCredential may be a link too
+          if (a11yMeta.includes(name)) { // not just a11yMeta_links because a11y:certifierCredential or dcterms:conformsTo may be a link too
             // console.log(`${name} = ${content}`);
             const md = {
               name,
@@ -464,7 +464,9 @@ class MetaDataEditorModal extends React.Component {
       const useDublinCore = isDublinCore && this.isEPUB3;
 
       const isLink = a11yMeta_links.includes(md.name) ||
-        md.name === "a11y:certifierCredential" && /^https?:\/\//.test(md.content);
+        md.name === "a11y:certifierCredential" && /^https?:\/\//.test(md.content) ||
+        md.name === "dcterms:conformsTo" && /^https?:\/\//.test(md.content)
+        ;
       const useLink = isLink && this.isEPUB3;
 
       if (useDublinCore) {
