@@ -24,8 +24,8 @@ const nodeStream = require('stream');
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
-const LOG_DEBUG = true;
-const LOG_DEBUG_URLS = true;
+const LOG_DEBUG = false;
+const LOG_DEBUG_URLS = false;
 const KB_LOG_PREFIX = "[KB]";
 
 const SESSION_PARTITION = "persist:kb";
