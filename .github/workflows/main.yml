@@ -44,11 +44,11 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2-beta #actions/setup-node@v1
       with:
-        node-version: '16'
+        node-version: '18'
         #check-latest: true
     - run: node --version && npm --version
     #- run: npm --global install npm@latest
-    - run: npm --global install npm@^8
+    - run: npm --global install npm@^9
     - run: npm --version
     - run: npm --global install yarn@^1
     # - run: ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.5) || echo "YARN OK")
