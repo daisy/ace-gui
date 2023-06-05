@@ -9,15 +9,15 @@ Ace by DAISY App is the official graphical user interface for the EPUB accessibi
 
 ## Latest Version
 
-The latest version of Ace App is `v1.1.5`. Please visit the [release page](https://github.com/daisy/ace-gui/releases/tag/v1.1.5) for more information.
+The latest version of Ace App is `v1.3.0`. Please visit the [release page](https://github.com/daisy/ace-gui/releases/tag/v1.3.0) for more information.
 
 The Ace App currently features a software update notification system. Future versions may support a more sophisticated auto-update mechanism. Until then, users are prompted to download and install the latest release manually.
 
 ## Installation
 
-* **MacOS**: download the [DMG file](https://github.com/daisy/ace-gui/releases/download/v1.1.5/Ace.by.DAISY-1.1.5.dmg), open it, and drag the `Ace by DAISY.app` file into your Applications folder.
-* **Windows**: download the [NSIS installer](https://github.com/daisy/ace-gui/releases/download/v1.1.5/Ace.by.DAISY.Setup.1.1.5.exe), and follow the step-by-step instructions.
-* **Linux**: download the [AppImage file](https://github.com/daisy/ace-gui/releases/download/v1.1.5/Ace.by.DAISY-1.1.5.AppImage), and double-click the icon to immediately start using the application. Alternatively, you may download the [Debian package](https://github.com/daisy/ace-gui/releases/download/v1.1.5/ace-gui_1.1.5_amd64.deb) to install the app via your package manager (e.g. `sudo apt install ace-gui_1.1.5_amd64.deb`).
+* **MacOS**: download the [DMG file](https://github.com/daisy/ace-gui/releases/download/v1.3.0/Ace.by.DAISY-1.3.0.dmg), open it, and drag the `Ace by DAISY.app` file into your Applications folder.
+* **Windows**: download the [NSIS installer](https://github.com/daisy/ace-gui/releases/download/v1.3.0/Ace.by.DAISY.Setup.1.3.0.exe), and follow the step-by-step instructions.
+* **Linux**: download the [AppImage file](https://github.com/daisy/ace-gui/releases/download/v1.3.0/Ace.by.DAISY-1.3.0.AppImage), and double-click the icon to immediately start using the application. Alternatively, you may download the [Debian package](https://github.com/daisy/ace-gui/releases/download/v1.3.0/ace-gui_1.3.0_amd64.deb) to install the app via your package manager (e.g. `sudo apt install ace-gui_1.3.0_amd64.deb`).
 
 ## Documentation
 
