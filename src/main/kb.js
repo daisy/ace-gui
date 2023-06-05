@@ -24,8 +24,8 @@ const nodeStream = require('stream');
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
 
-const LOG_DEBUG = false;
-const LOG_DEBUG_URLS = false;
+const LOG_DEBUG = true;
+const LOG_DEBUG_URLS = true;
 const KB_LOG_PREFIX = "[KB]";
 
 const SESSION_PARTITION = "persist:kb";
@@ -356,7 +356,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 const online = `
     var zhref = document.location.href.replace('${rootUrl}/', 'http://kb.daisy.org/');
     var zdiv = document.createElement('div');
-    zdiv.setAttribute('style','border-radius: 4px !important; border: 4px solid black !important; box-sizing: border-box; z-index: 999; position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; margin-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
+    zdiv.setAttribute('style','border-radius: 4px !important; border: 4px solid black !important; box-sizing: border-box; z-index: 9999999; position: fixed; right: 1em; width: auto; background: transparent; margin: 0; padding: 0; margin-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
 
     var za = document.createElement('a');
     za.setAttribute('href',zhref);
@@ -372,7 +372,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
     const online2 = `
     var zhref = '#';
     var zdiv = document.createElement('div');
-    zdiv.setAttribute('style','border-radius: 4px !important; border: 4px solid black !important; box-sizing: border-box; z-index: 999; position: fixed; left: 0.5em; width: auto; background: transparent; margin: 0; padding: 0; margin-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
+    zdiv.setAttribute('style','border-radius: 4px !important; border: 4px solid black !important; box-sizing: border-box; z-index: 9999999; position: fixed; left: 0.5em; width: auto; background: transparent; margin: 0; padding: 0; margin-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0');
 
     var za = document.createElement('a');
     za.setAttribute('href',zhref);
@@ -418,6 +418,26 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 js = js.replace(/http[s]?:\/\/kb.daisy.org\//g, `${rootUrl}/`);
 
                 js = js.replace(toMatch2, `${toMatch2}\n\n${online}\n\n${online2}\n\n`);
+
+                // js = js.replace(`].href + '">'`, `].href + '/index.html">'`);
+
+                js = js.replace(`href: 'conformance'`, `href: 'conformance/'`);
+                js = js.replace(`href: 'css'`, `href: 'css/'`);
+                js = js.replace(`href: 'epub'`, `href: 'epub/'`);
+                js = js.replace(`href: 'fxl'`, `href: 'fxl/'`);
+                js = js.replace(`href: 'html'`, `href: 'html/'`);
+                js = js.replace(`href: 'metadata'`, `href: 'metadata/'`);
+                js = js.replace(`href: 'navigation'`, `href: 'navigation/'`);
+                js = js.replace(`href: 'script'`, `href: 'script/'`);
+                js = js.replace(`href: 'sync-media'`, `href: 'sync-media/'`);
+                js = js.replace(`href: 'text-to-speech'`, `href: 'text-to-speech/'`);
+
+                js = js.replace(`href: 'glossary'`, `href: 'glossary/'`);
+                js = js.replace(`href: 'new'`, `href: 'new/'`);
+                js = js.replace(`href: 'contribute'`, `href: 'contribute/'`);
+                
+                js = js.replace(`var search_div =`, `/* var search_div =`);
+                js = js.replace(`appendChild(search_div);`, `appendChild(search_div); */`);
 
                 const buff = Buffer.from(js);
                 headers["Content-Length"] = buff.length.toString();
@@ -992,7 +1012,7 @@ export class KnowledgeBase {
 
         this.win.webContents.on("will-navigate", (event, url) => {
 
-            const wcUrl = event.sender.getURL();
+            const wcUrl = event.url; // event.sender.getURL();
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} will-navigate ${wcUrl} => ${url}`);
 
             if (url.indexOf(rootUrl) !== 0) {
