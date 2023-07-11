@@ -7,6 +7,6 @@ Source GitHub repository (master branch):
 https://github.com/daisy/kb
 
 Git submodule revision:
-33ac1cd10f7d017750821d993d3c1d75f4632e80
-https://github.com/daisy/kb/commits/33ac1cd10f7d017750821d993d3c1d75f4632e80
-https://github.com/daisy/kb/compare/33ac1cd10f7d017750821d993d3c1d75f4632e80...main
+6df0f67cbd06706809366b088732c93c06212a2a
+https://github.com/daisy/kb/commits/6df0f67cbd06706809366b088732c93c06212a2a
+https://github.com/daisy/kb/compare/6df0f67cbd06706809366b088732c93c06212a2a...main
