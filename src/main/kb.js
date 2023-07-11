@@ -435,9 +435,18 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 js = js.replace(`href: 'glossary'`, `href: 'glossary/'`);
                 js = js.replace(`href: 'new'`, `href: 'new/'`);
                 js = js.replace(`href: 'contribute'`, `href: 'contribute/'`);
+
+                js = js.replace(`document.getElementById('page-title').insertAdjacentElement('afterBegin', div);`, `if (document.getElementById('page-title')) document.getElementById('page-title').insertAdjacentElement('afterBegin', div);`);
+                
+                // js = js.replace(`a.setAttribute('href', topic.href);`, `a.setAttribute('href', topic.href.endsWith('/') ? (topic.href + "index.html") : topic.href);`);
+                // js = js.replace(`a.setAttribute('href', '/publishing/docs/' + topic.topics[j]['href-override']);`, `a.setAttribute('href', '/publishing/docs/' + (topic.topics[j]['href-override'].endsWith('/') ? (topic.topics[j]['href-override'] + "index.html") : topic.topics[j]['href-override']));`);
+                // js = js.replace(`a.setAttribute('href', (isRoot ? topic.path + '/' : '') + topic.topics[j].href);`, `a.setAttribute('href', (isRoot ? topic.path + '/' : '') + (topic.topics[j].href.endsWith('/') ? (topic.topics[j].href + "index.html") : topic.topics[j].href));`);
                 
                 js = js.replace(`var search_div =`, `/* var search_div =`);
                 js = js.replace(`appendChild(search_div);`, `appendChild(search_div); */`);
+
+                js = js.replace(`// scrub the search box`, `/* // scrub the search box`);
+                js = js.replace(`document.body.insertAdjacentElement('beforeEnd', script);`, `document.body.insertAdjacentElement('beforeEnd', script); */`);
 
                 const buff = Buffer.from(js);
                 headers["Content-Length"] = buff.length.toString();
