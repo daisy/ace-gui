@@ -617,6 +617,7 @@ class MetaDataEditorModal extends React.Component {
       const doMultipleSelect = (mdObj.allowedValues && isAccessModeSufficient) ? mdObj : null;
       const doSingleSelect = (mdObj.allowedValues && !isAccessModeSufficient) ? mdObj : null;
 
+      // for doSingleSelect (mdObj.allowedValues && !isAccessModeSufficient)
       const renderSingleSelect = () => {
         const doSingleSelectCustom = isConformsTo;
 
@@ -628,15 +629,17 @@ class MetaDataEditorModal extends React.Component {
 
             value={mdObj}
 
-            options={mdObj.allowedValues.map(allowedValue => {
+            options={mdObj.allowedValues ? mdObj.allowedValues.map(allowedValue => {
               return {
                 content: allowedValue,
                 index: mdObj.index,
               };
-            })}
+            }) : undefined}
 
             getOptionSelected={
               (option, value) => {
+                // console.log("getOptionSelected 1", JSON.stringify(option, null, 4));
+                // console.log("getOptionSelected 2", JSON.stringify(value, null, 4));
                 return value.content === option.content;
               }
             }
@@ -745,7 +748,7 @@ class MetaDataEditorModal extends React.Component {
               label={mdObj.name} variant="outlined" />
             }
 
-            freeSolo={doSingleSelectCustom}
+            freeSolo={/* !mdObj.allowedValues || */ doSingleSelectCustom}
             disableClearable={false}
             includeInputInList={false}
             disableListWrap={true}
@@ -759,6 +762,7 @@ class MetaDataEditorModal extends React.Component {
         />);
       };
 
+      // for doMultipleSelect (mdObj.allowedValues && isAccessModeSufficient)
       const renderMultipleSelect = () => {
         // return <></>;
         // data-name={mdObj.name}
@@ -890,6 +894,7 @@ class MetaDataEditorModal extends React.Component {
         />);
       };
 
+      // for all but doSingleSelect and doMultipleSelect ((mdObj.allowedValues && isAccessModeSufficient) and (mdObj.allowedValues && !isAccessModeSufficient))
       const renderBasicInput = () => {
         // data-mdindex={mdObj.index}
         // inputProps={{"data-mdindex": `${mdObj.index}`}}
@@ -1100,7 +1105,7 @@ class MetaDataEditorModal extends React.Component {
                     });
                   }}>
                   {
-                    a11yMeta.filter((name) => (name in A11Y_META) && !A11Y_META[name].discouraged).map((a, i) => {
+                    a11yMeta.filter((name) => !(name in A11Y_META) || !A11Y_META[name].discouraged).map((a, i) => {
                       return <MenuItem key={`select_option_${i}`} value={a}>{a}</MenuItem>;
                     })
                   }
