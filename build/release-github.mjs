@@ -363,7 +363,7 @@ const SAFE_DEBUG = false;
         let doneAPPIMAGE = false;
         let doneDEB = false;
         let doneDMG = false;
-        for await (const f of getFiles("release")) {
+        for await (const f of getFiles("dist")) {
             if (f.endsWith(".exe")) {
                 if (doneEXE) {
                     continue;
