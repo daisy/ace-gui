@@ -29,12 +29,16 @@ export default class Outlines extends React.Component {
             <div dangerouslySetInnerHTML={createMarkup(outlines.headings)}/>
           </Grid>
 
+{
+/*
           <Grid item xs>
             <h3>{localize("report.outlinesSection.html")}</h3>
             <div dangerouslySetInnerHTML={createMarkup(outlines.html)}/>
           </Grid>
-        </Grid>
-      </section>
+ */
+ }
+      </Grid>
+        </section>
     );
   }
 }
