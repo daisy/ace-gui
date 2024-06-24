@@ -42,7 +42,7 @@
     },
     "afterSign": "build/notarize.js",
     "dmg": {
-      "sign": false,
+      "sign": true,
       "contents": [
         {
           "x": 410,
