@@ -1022,109 +1022,109 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@daisy/ace-axe-runner-electron@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-axe-runner-electron/-/ace-axe-runner-electron-1.3.3-alpha.1.tgz#8bf9b18d6e6d0cfee45f93d130c9c1910fc13589"
-  integrity sha512-4QeZvMcLnl2oKRb9mL6K32eKAV65utOzRwzylEBh4AGrOymWxjgtwQuFXjjduICNq0W73xuflaApbfwi13xAvQ==
+"@daisy/ace-axe-runner-electron@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-axe-runner-electron/-/ace-axe-runner-electron-1.3.3-alpha.2.tgz#3c70cfbedcbc7b2abb097fd7d1c8c8efad67a4af"
+  integrity sha512-rR3Ew25wU9mnTg5/3EWL/KC0hZwoX3f7kyClA1Jr4g+Dp4Y8LpY9GlUYctB2MfFYdZCcFIPPBLwTg8ZwWjuSSA==
   dependencies:
-    "@daisy/ace-cli-shared" "1.3.3-alpha.1"
+    "@daisy/ace-cli-shared" "1.3.3-alpha.2"
     mime-types "^2.1.35"
     uuid "^8.3.2"
 
-"@daisy/ace-cli-shared@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-cli-shared/-/ace-cli-shared-1.3.3-alpha.1.tgz#d670f5df8103754128999a10b3320b3c7e1991e2"
-  integrity sha512-kmWjwjjv1ZLN4O5yW8jo1TYVYpTaGXVO8qWi8CXwo7RKG7BDzGioKxlWi43csCJH76u3BEsIswKn+R4ukjG6Mg==
+"@daisy/ace-cli-shared@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-cli-shared/-/ace-cli-shared-1.3.3-alpha.2.tgz#3bcc822472fe8664f5f3f6d36c1fe5e7d2bab4a7"
+  integrity sha512-QvbR6qhrIvaQawADG1DkW9yVUZCwrA0g+APuCZ+qgsi/nXoFttfHjONKnm32vlyLgQ+SmzmZfexRpEE99PluUA==
   dependencies:
-    "@daisy/ace-config" "1.3.3-alpha.1"
-    "@daisy/ace-core" "1.3.3-alpha.1"
-    "@daisy/ace-logger" "1.3.3-alpha.1"
-    "@daisy/ace-meta" "1.3.3-alpha.1"
+    "@daisy/ace-config" "1.3.3-alpha.2"
+    "@daisy/ace-core" "1.3.3-alpha.2"
+    "@daisy/ace-logger" "1.3.3-alpha.2"
+    "@daisy/ace-meta" "1.3.3-alpha.2"
     meow "^9.0.0"
     winston "^3.10.0"
 
-"@daisy/ace-config@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-config/-/ace-config-1.3.3-alpha.1.tgz#ce28b59de55fcd15b68fcc0ff81b301028798ae2"
-  integrity sha512-sGwqQw5k+WPWMLT5oxPMMPRhXyx2iPYLG7KdqfocHpecDvuldAxPWbvUhacjbMV8q0GYbJVfBFKO46TnYK0ZmA==
+"@daisy/ace-config@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-config/-/ace-config-1.3.3-alpha.2.tgz#2dca39b5d3e387fc25f78f8c4196bbadb4ff9475"
+  integrity sha512-SkGmvN9m81m7r25NGne86QKiqUkK2aee4UpviwWHgEwu1IPoN8yNyj1Y9cOGCLGOj9FjPF7zrWaK52McoEtziQ==
   dependencies:
     conf "^9.0.2"
     env-paths "^2.2.1"
     lodash.mergewith "^4.6.2"
 
-"@daisy/ace-core@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-core/-/ace-core-1.3.3-alpha.1.tgz#90b3b4586a81ca8d593707ce6bc4ec655423ce9a"
-  integrity sha512-VHBalsrQV66guy+psTPGKezKH0Fm1I4tlrym2pN42xkQLzGj/ychBOnjgilq7DrdUikFSi4PIhRKRLG+UiguBg==
+"@daisy/ace-core@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-core/-/ace-core-1.3.3-alpha.2.tgz#d65a338ba0ebb116b57fbbe0a898dea666258833"
+  integrity sha512-eZ0tQbDf3GytRpeVr2MxPCNysJTbtHFy6mHgwNP6GTZmgKIyjNUz7+oZS/LkphQ72cY4/i/Yj5hTJdE7ooy+cg==
   dependencies:
-    "@daisy/ace-localize" "1.3.3-alpha.1"
-    "@daisy/ace-logger" "1.3.3-alpha.1"
-    "@daisy/ace-meta" "1.3.3-alpha.1"
-    "@daisy/ace-report" "1.3.3-alpha.1"
-    "@daisy/ace-report-axe" "1.3.3-alpha.1"
-    "@daisy/axe-core-for-ace" "4.7.2-canary.1"
-    "@daisy/epub-utils" "1.3.3-alpha.1"
+    "@daisy/ace-localize" "1.3.3-alpha.2"
+    "@daisy/ace-logger" "1.3.3-alpha.2"
+    "@daisy/ace-meta" "1.3.3-alpha.2"
+    "@daisy/ace-report" "1.3.3-alpha.2"
+    "@daisy/ace-report-axe" "1.3.3-alpha.2"
+    "@daisy/axe-core-for-ace" "4.7.2-canary.2"
+    "@daisy/epub-utils" "1.3.3-alpha.2"
     file-url "^3.0.0"
     h5o "^0.11.3"
     p-map "^4.0.0"
     tmp "^0.2.1"
     winston "^3.10.0"
 
-"@daisy/ace-localize@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-localize/-/ace-localize-1.3.3-alpha.1.tgz#f7e29e4a13537154e018b72f90d9059f2d057ae6"
-  integrity sha512-6WyIuU7/t6BMro7mtd1cjslDqlnMIlkCfRRHgQ7m/6Cnu5lM9TR+cQTxUPiM5kpd4nAJIBTNXC+QMmJiSEP5xw==
+"@daisy/ace-localize@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-localize/-/ace-localize-1.3.3-alpha.2.tgz#5f0f65af9284452c94c0fe05e1632695849d632a"
+  integrity sha512-Nr+Qvqyy/vkeFjTh2wNvtBb9b1IelyANtnfmDcmqiX47Cy7xNokCBmqBh5hOuD7hulsAARDUaw86arzbyCBSjQ==
   dependencies:
     i18next "^20.6.1"
     winston "^3.10.0"
 
-"@daisy/ace-logger@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-logger/-/ace-logger-1.3.3-alpha.1.tgz#cc9bbec2f7e926e484fcf3e6ad7a0e544bd5f012"
-  integrity sha512-sOkad4ENcZkdWpNT9PtseZV+spsYjFtmSxuBUtn6AYr9orhFldc8c+Fd2FMZyA4gxLSVYBGG9w7u3uL096sKAg==
+"@daisy/ace-logger@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-logger/-/ace-logger-1.3.3-alpha.2.tgz#040ccec77da5109eafa86baaa3b3c70fb28c3172"
+  integrity sha512-UouortmFAMZTCcMwqdwMkqvSAzmhSaRc7PeOFAfjBZ79pufahOifrFREXo2i/IPLIEgIW62vLXWRFk7cLuePcA==
   dependencies:
-    "@daisy/ace-config" "1.3.3-alpha.1"
+    "@daisy/ace-config" "1.3.3-alpha.2"
     fs-extra "^10.1.0"
     uuid "^8.3.2"
     winston "^3.10.0"
 
-"@daisy/ace-meta@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-meta/-/ace-meta-1.3.3-alpha.1.tgz#bec5af7520839dff7a89cb1f5cc26ac3e3cbdda7"
-  integrity sha512-SsKvxw03p/lKrCjBxK5gZYFGapnLywnmu5HcBAEs14B5VCICU2h0dpfSL9e4wLTq61tJ77mKcDOYEmSq17Ru3w==
+"@daisy/ace-meta@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-meta/-/ace-meta-1.3.3-alpha.2.tgz#a418afd6a5d3e550d16c5522e7201f4c9a7eddbb"
+  integrity sha512-Tqtl5DRy+uoic9uRrLP90FauIH99asoK4nWxWQWQNHfY4hOsTfx+7MR3AQeIXVDybitOt0f3p3uco9IxbnMi1Q==
 
-"@daisy/ace-report-axe@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-report-axe/-/ace-report-axe-1.3.3-alpha.1.tgz#efbac00d94005f59eec3755af45019f62e5fcbb3"
-  integrity sha512-h0LKYJSZlHQAoQ7tCDlznBzGM649jdja2Q+iZoo6Pg/HPVm28YI8ccBJLT34iPD75j6qEhQl3NHfJKLwurQBxQ==
+"@daisy/ace-report-axe@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-report-axe/-/ace-report-axe-1.3.3-alpha.2.tgz#87160f51e642f3dd691dc0a794a529d19dc5b29b"
+  integrity sha512-BOmluotmLl50djtY8ZCmOkqIIflvAK3iOgS/9Y0O84AFsnOgWctDAHHtuRKaDxaqBhSTeUjZ6ItSbZzZ3CQy2Q==
   dependencies:
-    "@daisy/ace-localize" "1.3.3-alpha.1"
-    "@daisy/ace-report" "1.3.3-alpha.1"
+    "@daisy/ace-localize" "1.3.3-alpha.2"
+    "@daisy/ace-report" "1.3.3-alpha.2"
     fs-extra "^10.1.0"
     winston "^3.10.0"
 
-"@daisy/ace-report@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-report/-/ace-report-1.3.3-alpha.1.tgz#400350f70e096a747aa20e423407e1058a0ce4ec"
-  integrity sha512-BFKUvsO5LWKJLNuJtVGYGpb8gAnFtW0vYIM4r84Bu5cRgQtbfsNAQOeCYX+q1zlmDPK1Vb9ZzQ/Q3cMPHnUTvQ==
+"@daisy/ace-report@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-report/-/ace-report-1.3.3-alpha.2.tgz#d5f1a81cb6f4eab9f870e4e2a1e5d03f9b042309"
+  integrity sha512-4Db9egJspWCfiCahKmM+B+AdmBT7sP/UR3whEs5I4E7lGIVAuMXUx8cY4RIGm5A+uHSRh4JJeFdIVEHXi3rMRQ==
   dependencies:
-    "@daisy/ace-config" "1.3.3-alpha.1"
-    "@daisy/ace-localize" "1.3.3-alpha.1"
-    "@daisy/ace-meta" "1.3.3-alpha.1"
+    "@daisy/ace-config" "1.3.3-alpha.2"
+    "@daisy/ace-localize" "1.3.3-alpha.2"
+    "@daisy/ace-meta" "1.3.3-alpha.2"
     escape-html "^1.0.3"
     fs-extra "^10.1.0"
     handlebars "^4.7.7"
     winston "^3.10.0"
 
-"@daisy/axe-core-for-ace@4.7.2-canary.1":
-  version "4.7.2-canary.1"
-  resolved "https://registry.yarnpkg.com/@daisy/axe-core-for-ace/-/axe-core-for-ace-4.7.2-canary.1.tgz#1a5c7110aba0852391e4f31c9dc94cc40e6c290d"
-  integrity sha512-IjLd05QZfJjSQeHOII3mVjiB5+tR21zUOkGdFfe73RWo+AH2JoqnvJYE+WZCHCZx9r9SCqTsOGTfvamBIMd6+A==
+"@daisy/axe-core-for-ace@4.7.2-canary.2":
+  version "4.7.2-canary.2"
+  resolved "https://registry.yarnpkg.com/@daisy/axe-core-for-ace/-/axe-core-for-ace-4.7.2-canary.2.tgz#659e55359e8a9ab4c1037d5b9437afda00057e81"
+  integrity sha512-O/2H0dAKyd/5SJyclrkPv52LfCU6MCRqzVm/ZgoIWTtuqsZOBsXECx1AFH5ztKyB02OUzLN1h4LfADHERHMakg==
 
-"@daisy/epub-utils@1.3.3-alpha.1":
-  version "1.3.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@daisy/epub-utils/-/epub-utils-1.3.3-alpha.1.tgz#d30abc9f41a9802493ec9bb77b6ed99a9627cb29"
-  integrity sha512-mMa08tt9xBWBytgeo3mRCpa9mxsXpoS6i5xaw+MtWyv+Y9HPUasV4uQnoXMsKqxDAMhudFwzP3drq+/VwZEEVA==
+"@daisy/epub-utils@1.3.3-alpha.2":
+  version "1.3.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@daisy/epub-utils/-/epub-utils-1.3.3-alpha.2.tgz#46242688c7f4c0c6bb0bd467e76950cbaca0a949"
+  integrity sha512-2VPVSfNrd+S5rZWQ8qmQKL2JdeCkoRIaz1t5AmTncBBBtGJgCj9r/Cj+aqIaks0aIS61DsbQND6DXNXcfqcq3w==
   dependencies:
     extract-zip "^2.0.1"
     file-url "^3.0.0"
