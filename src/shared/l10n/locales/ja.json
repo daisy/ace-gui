@@ -29,7 +29,7 @@
     "cut": "切り取り",
     "dev": "開発",
     "edit": "編集",
-    "exportReport": "レポートの出力",
+    "exportReport": "レポートの書き出し",
     "file": "ファイル",
     "gotoImages": "画像に移動",
     "gotoMetadata": "メタデータに移動",
@@ -84,7 +84,7 @@
     "overwriteExistingReportsTip": "（以前のレポートを上書きすることを許可しますか？）",
     "reportsDataDirectory": "レポートデータディレクトリ",
     "reportsDataDirectoryButton": "ブラウズ",
-    "reportsDataDirectoryTip": "（Aceがレポートを内部に保存する場所）",
+    "reportsDataDirectoryTip": "（Aceがレポートを保存する場所）",
     "save": "保存する",
     "title": "Aceの設定",
     "userInterfaceLanguage": "言語",
@@ -100,7 +100,7 @@
       "image": "画像",
       "location": "位置",
       "noImages": "この出版物には画像がありません。",
-      "role": "Role"
+      "role": "ロール"
     },
     "metadata": "メタデータ",
     "metadataSection": {
@@ -110,11 +110,11 @@
       "name": "名前",
       "value": "値"
     },
-    "outlines": "概要",
+    "outlines": "アウトライン",
     "outlinesSection": {
-      "headings": "見出しの概要",
-      "html": "HTMLの概要",
-      "toc": "EPUB目次"
+      "headings": "見出しのアウトライン",
+      "html": "HTMLのアウトライン",
+      "toc": "EPUBの目次"
     },
     "summary": "概要",
     "summarySection": {
