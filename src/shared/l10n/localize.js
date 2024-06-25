@@ -15,27 +15,27 @@ export const localizer = newLocalizer({
         translation: enJson,
     },
     fr: {
-        name: "Français",
+        name: "Français (French)",
         translation: frJson,
     },
     pt_BR: {
-        name: "Português do Brasil",
+        name: "Português Brasileiro (Portuguese - Brazil)",
         translation: pt_BRJson,
     },
     es: {
-        name: "Español",
+        name: "Español (Spanish)",
         translation: esJson,
     },
     da: {
-        name: "Dansk",
+        name: "Dansk (Danish)",
         translation: daJson,
     },
     ja: {
-        name: "Japanese",
+        name: "日本語 (Japanese)",
         translation: jaJson,
     },
     de: {
-        name: "Deutsch",
+        name: "Deutsch (German)",
         translation: deJson,
     },
 });
