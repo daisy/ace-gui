@@ -110,11 +110,11 @@
       "name": "名前",
       "value": "値"
     },
-    "outlines": "概要",
+    "outlines": "アウトライン",
     "outlinesSection": {
-      "headings": "見出しの概要",
-      "html": "HTMLの概要",
-      "toc": "EPUB目次"
+      "headings": "見出しのアウトライン",
+      "html": "HTMLのアウトライン",
+      "toc": "EPUBの目次"
     },
     "summary": "概要",
     "summarySection": {
