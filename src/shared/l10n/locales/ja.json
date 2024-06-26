@@ -94,13 +94,13 @@
     "images": "画像",
     "imagesSection": {
       "NA": "該当なし",
-      "altAttribute": "'alt'属性",
+      "altAttribute": "「alt」属性",
       "ariaDescribedbyContent": "「aria-describedby」コンテンツ",
-      "associatedFigcaption": "関連するFigcaption",
+      "associatedFigcaption": "関連する「Figcaption」",
       "image": "画像",
       "location": "位置",
       "noImages": "この出版物には画像がありません。",
-      "role": "ロール"
+      "role": "Role"
     },
     "metadata": "メタデータ",
     "metadataSection": {
@@ -150,11 +150,11 @@
     "settings": "設定"
   },
   "splash": {
-    "browseForFileOrFolder": "__file__または__folder__を参照します。",
+    "browseForFileOrFolder": "__ファイル__か__フォルダー__をブラウズします。",
     "clickToBrowse": "クリックして閲覧します。",
-    "dropHere": "ここにEPUBファイルまたはディレクトリをドロップします。",
-    "or": "　",
-    "orDropSidebar": "またはサイドバーの__ボタンで、",
+    "dropHere": "ここにEPUBファイルかフォルダーをドロップ、",
+    "or": "または、",
+    "orDropSidebar": "または、サイドバーの__ボタンから、",
     "title": "Ace by DAISY"
   },
   "tablePagination": {
@@ -165,7 +165,7 @@
   },
   "versionCheck": {
     "newVersionAvailable": "ソフトウェアアップデートが利用可能ですが、ダウンロードしますか？",
-    "no": "番号",
+    "no": "いいえ",
     "softwareUpdate": "ソフトウェアの更新",
     "yes": "はい"
   }
