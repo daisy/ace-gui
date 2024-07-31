@@ -7,13 +7,13 @@
     "chooseepubdir": "EPUBディレクトリを選択します",
     "chooseepubfile": "EPUBファイルを選択します",
     "choosereport": "Aceレポートを選択します",
-    "open": "開ける",
+    "open": "開く",
     "savereport": "レポートを保存",
     "select": "選択する",
     "ziparchive": "Zipアーカイブ"
   },
   "enhancedTable": {
-    "filterBy": "フィルター",
+    "filterBy": "絞り込み",
     "rowsPerPage": "1ページあたりの行数：",
     "sortBy": "並び替え： "
   },
@@ -35,7 +35,7 @@
     "gotoMetadata": "メタデータに移動",
     "gotoOutlines": "アウトラインに移動",
     "gotoSummary": "概要に移動",
-    "gotoViolations": "違反に移動",
+    "gotoViolations": "問題点に移動",
     "help": "ヘルプ",
     "knowledgeBase": "ナレッジベース",
     "knowledgeBaseOffline": "ローカル（オフライン）",
@@ -83,7 +83,7 @@
     "overwriteExistingReports": "既存のレポートを上書きする",
     "overwriteExistingReportsTip": "（以前のレポートを上書きすることを許可しますか？）",
     "reportsDataDirectory": "レポートデータディレクトリ",
-    "reportsDataDirectoryButton": "ブラウズ",
+    "reportsDataDirectoryButton": "参照",
     "reportsDataDirectoryTip": "（Aceがレポートを保存する場所）",
     "save": "保存する",
     "title": "Aceの設定",
@@ -94,13 +94,13 @@
     "images": "画像",
     "imagesSection": {
       "NA": "該当なし",
-      "altAttribute": "'alt'属性",
+      "altAttribute": "「alt」属性",
       "ariaDescribedbyContent": "「aria-describedby」コンテンツ",
-      "associatedFigcaption": "関連するFigcaption",
+      "associatedFigcaption": "関連する「Figcaption」",
       "image": "画像",
       "location": "位置",
       "noImages": "この出版物には画像がありません。",
-      "role": "ロール"
+      "role": "Role"
     },
     "metadata": "メタデータ",
     "metadataSection": {
@@ -127,14 +127,14 @@
       "total": "合計",
       "type": "タイプ"
     },
-    "title": "報告",
-    "violations": "違反",
+    "title": "レポート",
+    "violations": "問題点",
     "violationsSection": {
       "details": "詳細",
       "impact": "影響",
       "learnAbout": "詳細を学ぶ：",
       "location": "位置",
-      "noViolations": "違反は報告されていません。",
+      "noViolations": "問題点は報告されていません。",
       "rule": "ルール",
       "ruleset": "ルールセット",
       "via": "via："
@@ -143,18 +143,18 @@
   "sidebar": {
     "checkEPUB": "EPUBをチェック",
     "export": "書き出す",
-    "history": "ヒストリー",
+    "history": "レポート",
     "maximize": "サイドバーを最大化",
     "minimize": "サイドバーを最小化する",
     "reRun": "再実行",
     "settings": "設定"
   },
   "splash": {
-    "browseForFileOrFolder": "__file__または__folder__を参照します。",
+    "browseForFileOrFolder": "__ファイル__か__フォルダー__をブラウズします。",
     "clickToBrowse": "クリックして閲覧します。",
-    "dropHere": "ここにEPUBファイルまたはディレクトリをドロップします。",
-    "or": "　",
-    "orDropSidebar": "またはサイドバーの__ボタンで、",
+    "dropHere": "ここにEPUBファイルかフォルダーをドロップ、",
+    "or": "または、",
+    "orDropSidebar": "または、サイドバーの__ボタンから、",
     "title": "Ace by DAISY"
   },
   "tablePagination": {
@@ -165,7 +165,7 @@
   },
   "versionCheck": {
     "newVersionAvailable": "ソフトウェアアップデートが利用可能ですが、ダウンロードしますか？",
-    "no": "番号",
+    "no": "いいえ",
     "softwareUpdate": "ソフトウェアの更新",
     "yes": "はい"
   }
