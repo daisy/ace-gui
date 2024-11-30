@@ -163,6 +163,12 @@ ENV=$(env);
 echo "-----> ENV: ${ENV}";
 echo "||||||||||||||||||||||||||";
 
+echo "-----> APPLEID: ${APPLEID}";
+echo "-----> APPLEIDTEAM: ${APPLEIDTEAM}";
+echo "-----> APPLEIDPASS: ${APPLEIDPASS}";
+echo "-----> SKIP_NOTARIZE: ${SKIP_NOTARIZE}";
+echo "-----> CSC_NAME: ${CSC_NAME}";
+
 echo "-----> DEBUG: ${DEBUG}";
 
 echo "-----> USER: ${USER}";
