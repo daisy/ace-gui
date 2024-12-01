@@ -153,8 +153,8 @@
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@mrmlnc/readdir-enhanced": "^2.2.1",
     "about-window": "^1.15.2",
-    "classnames": "^2.3.2",
-    "electron-redux": "^2.0.0-alpha.9",
+    "classnames": "^2.5.1",
+    "electron-redux": "^2.0.0",
     "electron-store": "^7.0.3",
     "fs-extra": "^10.1.0",
     "jszip": "^3.10.1",
@@ -168,18 +168,18 @@
     "redux": "^4.2.1",
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.4.2",
-    "tmp": "^0.2.1",
+    "tmp": "^0.2.3",
     "typeface-roboto": "^1.1.13",
     "uuid": "^8.3.2",
     "xmldom": "^0.6.0",
-    "xpath": "^0.0.32"
+    "xpath": "^0.0.34"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.8",
-    "@babel/preset-env": "^7.22.7",
-    "@babel/preset-react": "^7.22.5",
-    "@electron/notarize": "^2.1.0",
-    "@octokit/rest": "^21.0.0",
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "@electron/notarize": "^2.5.0",
+    "@octokit/rest": "^21.0.2",
     "babel-loader": "^8.2.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
@@ -192,8 +192,8 @@
     "css-loader": "^3.5.3",
     "devtron": "^1.4.0",
     "dotenv": "^8.2.0",
-    "electron": "^25.2.0",
-    "electron-builder": "^24.4.0",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "electron-devtools-installer": "^3.2.0",
     "file-loader": "^6.2.0",
     "glob": "^7.2.0",
@@ -205,7 +205,7 @@
     "react-axe": "^3.5.4",
     "redux-devtools-extension": "^2.13.9",
     "rimraf": "^3.0.2",
-    "sass": "^1.63.6",
+    "sass": "^1.81.0",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
@@ -213,5 +213,5 @@
     "webpack-dev-server": "^3.11.2",
     "webpack-node-externals": "^1.7.2"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@1.22.22"
 }
