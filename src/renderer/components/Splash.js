@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { withStyles } from '@material-ui/core/styles';
 
-import { ipcRenderer } from 'electron';
+import { shell, ipcRenderer } from 'electron';
 import { IPC_EVENT_showEpubFileOrFolderBrowseDialog, IPC_EVENT_showEpubFileBrowseDialog, IPC_EVENT_showEpubFolderBrowseDialog } from "../../shared/main-renderer-events";
 
 import { localizer } from './../../shared/l10n/localize';
@@ -31,6 +31,7 @@ const styles = theme => ({
 class Splash extends React.Component {
 
   state = {
+    hideSponsor: false,
   };
 
   onBrowseFileOrFolderClick = e => {
@@ -53,7 +54,21 @@ class Splash extends React.Component {
 
     return false;
   };
-
+  componentDidMount() {
+    const dateStr = localStorage.getItem('DAISY-ACE-SPONSOR-HIDE');
+    // console.log(`===> ${window.location.href} ${dateStr}`);
+    if (dateStr) {
+      if ((new Date().getTime() - new Date(dateStr).getTime()) > (7*24*60*60*1000)) { // 7*24h
+        localStorage.removeItem('DAISY-ACE-SPONSOR-HIDE');
+        this.setState({ hideSponsor: false });
+      } else {
+        this.setState({ hideSponsor: true });
+        // setTimeout(()=>{document.getElementById('sponsorship').remove()}, 0);
+      }
+    } else {
+      this.setState({ hideSponsor: false });
+    }
+  }
   render() {
     let {classes, processingAce} = this.props;
 
@@ -93,6 +108,17 @@ class Splash extends React.Component {
               }
           </p>
           }
+        {!this.state.hideSponsor &&
+          <div id="sponsorship">
+            <span>{localize("sponsorship_prompt")}</span>
+            <a href="#" onClick={() => { shell.openExternal('https://daisy.org/AceAppSponsor'); }}>{localize("sponsorship_link")}</a>
+            <input onClick={() => {
+              // document.getElementById('sponsorship').remove();
+              localStorage.setItem('DAISY-ACE-SPONSOR-HIDE', new Date().toISOString());
+              this.setState({ hideSponsor: true });
+            }} type="button" value="X" aria-label={localize("sponsorship_close")} title={localize("sponsorship_close")} />
+          </div>
+        }
         </div>
     );
   }
@@ -102,7 +128,7 @@ function mapStateToProps(state) {
   let { app: {processing: {ace}}, preferences: {language} } = state;
   return {
     language,
-    processingAce: ace
+    processingAce: ace,
   };
 }
 

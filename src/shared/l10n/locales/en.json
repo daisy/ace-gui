@@ -157,6 +157,9 @@
         "orDropSidebar": "or on the __ button in the sidebar,",
         "title": "Ace, by DAISY"
     },
+    "sponsorship_close": "Close",
+    "sponsorship_link": "Support our work",
+    "sponsorship_prompt": "If you find DAISY Ace useful, please help us by donating to support its ongoing maintenance.",
     "tablePagination": {
         "firstPage": "First Page",
         "lastPage": "Last Page",

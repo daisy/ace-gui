@@ -1,3 +1,36 @@
+#sponsorship {
+display: flex;
+width: 100%;
+column-gap: 1em;
+align-items: center;
+background-color: rgb(255,255,240);
+color: black;
+font-size: 90%;
+border:0;
+border-top: 0.1rem solid lightgrey;
+border-bottom: 0.1rem solid lightgrey;
+padding: 0;
+padding: 0.5em;
+margin: 0;
+margin-top: 0.5em;
+margin-bottom: 0.5em;
+}
+#sponsorship > span {
+color: black;
+}
+#sponsorship > a {
+font-weight: bold;
+color: blue;
+}
+#sponsorship > input {
+margin-left: auto;
+border: 1px solid grey;
+border-radius: 6px;
+background-color: lightgrey;
+font-weight: bold;
+font-size: 90%;
+}
+
 .splash {
   font-size: larger;
   text-align: center;
