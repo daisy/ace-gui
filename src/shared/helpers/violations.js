@@ -14,11 +14,18 @@ module.exports = {
 // summarize the violation ruleset and impact data
 // copied and slightly modified from https://github.com/daisy/ace/blob/master/packages/ace-report/src/generate-html-report.js#L112
 function collectViolationStats(flatListOfViolations) {
-  var rulesetTags = ['wcag2a', 'wcag2aa', 'EPUB', 'best-practice'];
+  var rulesetTags = ['wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag21aaa', 'wcag22a', 'wcag22aa', 'wcag22aaa', 'EPUB', 'best-practice'];
 
   var summaryData = {
     'wcag2a': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
     'wcag2aa': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
+    'wcag2aaa': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
+    'wcag21a': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
+    'wcag21aa': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
+    'wcag21aaa': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
+    'wcag22a': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
+    'wcag22aa': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
+    'wcag22aaa': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
     'EPUB': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
     'best-practice': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
     'other': {'critical': 0, 'serious': 0, 'moderate': 0, 'minor': 0, 'total': 0},
@@ -37,8 +44,16 @@ function collectViolationStats(flatListOfViolations) {
   });
 
   Object.keys(summaryData['total']).forEach(function(key) {
-    summaryData['total'][key] += summaryData['wcag2a'][key]
+    summaryData['total'][key] +=
+        summaryData['wcag2a'][key]
       + summaryData['wcag2aa'][key]
+      + summaryData['wcag2aaa'][key]
+      + summaryData['wcag21a'][key]
+      + summaryData['wcag21aa'][key]
+      + summaryData['wcag21aaa'][key]
+      + summaryData['wcag22a'][key]
+      + summaryData['wcag22aa'][key]
+      + summaryData['wcag22aaa'][key]
       + summaryData['EPUB'][key]
       + summaryData['best-practice'][key]
       + summaryData['other'][key];
@@ -50,7 +65,7 @@ function collectViolationStats(flatListOfViolations) {
 // a flat list is easier to work with regarding visual presentation
 function createFlatListOfViolations(violations) {
   let flatData = [];
-  let rulesetTags = ['wcag2a', 'wcag2aa', 'EPUB', 'best-practice']; // applicable ruleset tags
+  let rulesetTags = ['wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag21aaa', 'wcag22a', 'wcag22aa', 'wcag22aaa', 'EPUB', 'best-practice']; // applicable ruleset tags
 
   violations.forEach(function(assertion) {
     let filename = assertion["earl:testSubject"]["url"];
@@ -72,9 +87,9 @@ function createFlatListOfViolations(violations) {
         }
         cfi = `#epubcfi(${singleCfi})`;
       }
-      
+
       let html = item["earl:result"]["html"] ? escape(item["earl:result"]["html"]) : '';
-      
+
       let desc = item["earl:result"]["dct:description"];
       if (item["earl:test"] && item["earl:test"]["dct:description"]) {
         desc = `${desc} \n ${item["earl:test"]["dct:description"]}`;

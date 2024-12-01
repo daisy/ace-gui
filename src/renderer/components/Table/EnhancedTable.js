@@ -253,7 +253,7 @@ export default class EnhancedTable extends React.Component {
       if (filter.options) {
         filter.options.forEach((option) => {
           option.label = head.l10n ?
-            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "").replace("wcag2aa", "WCAG 2.0 AA").replace("wcag2a", "WCAG 2.0 A") : localize(option.value, {ignoreMissingKey})) :
+            (head.l10n.keyPrefix ? localize(head.l10n.keyPrefix + option.value, {ignoreMissingKey}).replace(head.l10n.keyPrefix, "").replace("wcag2aaa", "WCAG 2.0 AAA").replace("wcag2aa", "WCAG 2.0 AA").replace("wcag2a", "WCAG 2.0 A").replace("wcag21aaa", "WCAG 2.1 AAA").replace("wcag21aa", "WCAG 2.1 AA").replace("wcag21a", "WCAG 2.1 A").replace("wcag22aaa", "WCAG 2.2 AAA").replace("wcag22aa", "WCAG 2.2 AA").replace("wcag22a", "WCAG 2.2 A") : localize(option.value, {ignoreMissingKey})) :
             option.value;
         });
       }
@@ -278,7 +278,7 @@ export default class EnhancedTable extends React.Component {
             <Typography>{localize("enhancedTable.filterBy")}</Typography>
           </AccordionSummary>
           <AccordionDetails className="table-filters">
-            {filters.map((filter, idx) => 
+            {filters.map((filter, idx) =>
             <Select
                 key={idx}
                 options={filter.options}
