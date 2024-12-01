@@ -1,6 +1,7 @@
 import './../styles/App.scss';
 // import 'react-splitter-layout/lib/index.css';
 
+import { webUtils } from "electron";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {openFile} from './../../shared/actions/app';
@@ -67,7 +68,8 @@ class App extends React.Component {
     if (!e.dataTransfer.files || !e.dataTransfer.files.length) {
       return false;
     }
-    let filepath = e.dataTransfer.files[0].path;
+    // let filepath = e.dataTransfer.files[0].path;
+    const filepath = webUtils.getPathForFile(e.dataTransfer.files[0]);
     this.props.openFile(filepath);
     return false;
   };
@@ -98,7 +100,7 @@ class App extends React.Component {
           onDragOver={this.onDragOver}
           onDragLeave={this.onDragLeave}
           onDragEnd={this.onDragEnd}
-            
+
           className={classNames('hover-root', this.state.fileHover ? 'hover' : undefined)}>
         <SplitterLayout
           percentage vertical primaryMinSize={40} secondaryInitialSize={15}>
