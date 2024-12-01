@@ -40,7 +40,7 @@ import {openFile} from './../../shared/actions/app';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { localizer } from './../../shared/l10n/localize';
-const { localize } = localizer; // setCurrentLanguage, getCurrentLanguage, 
+const { localize } = localizer; // setCurrentLanguage, getCurrentLanguage,
 import classNames from 'classnames';
 import { ipcRenderer } from 'electron';
 import {
@@ -321,7 +321,7 @@ class MetaDataEditorModal extends React.Component {
         if (content) {
           content = content.trim();
           if (content) {
-            content = decodeURI(content);
+            content = decodeURIComponent(content);
           }
         }
         if (name && content) {
@@ -385,7 +385,7 @@ class MetaDataEditorModal extends React.Component {
 
       const rootfiles = containerXmlXPathSelect('/ocf:container/ocf:rootfiles/ocf:rootfile[@media-type="application/oebps-package+xml"]/@full-path', containerXmlDoc);
       if (rootfiles.length > 0) {
-        this.packageOpfFilePath = path.join(epubBaseDir, decodeURI(rootfiles[0].nodeValue));
+        this.packageOpfFilePath = path.join(epubBaseDir, decodeURIComponent(rootfiles[0].nodeValue));
         console.log("OPF filepath", this.packageOpfFilePath);
       }
       if (!this.packageOpfFilePath || !fs.existsSync(this.packageOpfFilePath)) {
@@ -446,7 +446,7 @@ class MetaDataEditorModal extends React.Component {
     let perfTime = performance.now();
 
     // console.log(JSON.stringify(this.state.metadata, null, 4));
-    
+
     const metaDataElement = this.packageOpfXPathSelect('/opf:package/opf:metadata', this.packageOpfXmlDoc)[0];
     metaDataElement.appendChild(this.packageOpfXmlDoc.createTextNode("\n"));
 
@@ -494,7 +494,7 @@ class MetaDataEditorModal extends React.Component {
       metaDataElement.appendChild(childElement);
     }
     metaDataElement.appendChild(this.packageOpfXmlDoc.createTextNode("\n\n"));
-    
+
     let opfContent = new XMLSerializer().serializeToString(this.packageOpfXmlDoc);
     // console.log(opfContent);
     opfContent = opfContent.replace(/^\s+$/gm, "\n");
@@ -511,7 +511,7 @@ class MetaDataEditorModal extends React.Component {
       const openFile = this.props.openFile;
       const inputPath = this.props.inputPath;
       const epubBaseDir = this.props.epubBaseDir;
-      
+
       setTimeout(() => {
         openFile(epubBaseDir || inputPath);
       }, 500);
@@ -541,7 +541,7 @@ class MetaDataEditorModal extends React.Component {
       const isAccessibilitySummary = mdName === "schema:accessibilitySummary";
       const isAccessModeSufficient = mdName === "schema:accessModeSufficient";
       const isConformsTo = mdName === "dcterms:conformsTo";
-      const allowedValues = 
+      const allowedValues =
         ((mdName in A11Y_META) && A11Y_META[mdName].allowedValues) ?
         A11Y_META[mdName].allowedValues :
         (isConformsTo ? conformsToURLs : null);
@@ -613,7 +613,7 @@ class MetaDataEditorModal extends React.Component {
       }
 
       // console.log(`RENDER METADATA: ${mdObj.index}`, JSON.stringify(mdObj, null, 4));
-      
+
       const doMultipleSelect = (mdObj.allowedValues && isAccessModeSufficient) ? mdObj : null;
       const doSingleSelect = (mdObj.allowedValues && !isAccessModeSufficient) ? mdObj : null;
 
@@ -672,7 +672,7 @@ class MetaDataEditorModal extends React.Component {
                 });
                 // console.log("Autocomplete filterOptions CUSTOM ADD", JSON.stringify(filtered[filtered.length-1], null, 4));
               }
-    
+
               // console.log("Autocomplete filterOptions AFTER", JSON.stringify(filtered, null, 4));
               return filtered;
             }}
@@ -707,7 +707,7 @@ class MetaDataEditorModal extends React.Component {
 
             onChange={(event, obj) => {
               // console.log("Autocomplete onChange", JSON.stringify(obj, null, 4));
-              
+
               // const dataIndex = event.currentTarget.getAttribute("data-mdindex");
               const i = mdObj.index; // parseInt(dataIndex, 10);
 
@@ -793,7 +793,7 @@ class MetaDataEditorModal extends React.Component {
 
             // const dataIndex = obj.name.split("_")[1];
             const index = mdObj.index; // parseInt(dataIndex, 10);
-            
+
             if (obj.action === "clear") {
               const newMd = this.state.metadata;
               newMd[index].content = "";
@@ -914,7 +914,7 @@ class MetaDataEditorModal extends React.Component {
             }}
           >{mdObj.name}</InputLabel>
 
-          <OutlinedInput 
+          <OutlinedInput
             id={`metadata_${mdObj.index}`}
             value={mdObj.content}
             multiline={isAccessibilitySummary}
@@ -922,7 +922,7 @@ class MetaDataEditorModal extends React.Component {
               // const dataIndex = event.target.getAttribute("data-mdindex");
               const index = mdObj.index; // parseInt(dataIndex, 10);
               const val = event.target.value;
-              
+
               const newMd = this.state.metadata;
               newMd[index].content = val;
               this.setState({
@@ -930,7 +930,7 @@ class MetaDataEditorModal extends React.Component {
               });
             }}
             labelWidth={this[`labelRef_${mdObj.index}`] ? this[`labelRef_${mdObj.index}`].offsetWidth : 0}
-            classes={{ 
+            classes={{
               root: classes.browseControlInput,
               notchedOutline: classes.browseControlInputOutline,
             }}
@@ -1003,7 +1003,7 @@ class MetaDataEditorModal extends React.Component {
       );
       flattened.push(jsx);
     }
-    
+
     // <InputLabel id="label_add">{localize("metadata.metadata")}</InputLabel>
     // labelId="label_add"
 

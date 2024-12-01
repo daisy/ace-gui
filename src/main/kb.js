@@ -148,7 +148,7 @@ const streamProtocolHandler = async (
     await _streamProtocolHandler(req, callback, headers);
     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} AFTER _streamProtocolHandler ${req.url}`);
 };
- 
+
 function electronAppReady () {
 // app.whenReady().then(async () => {
     if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} Electron app ready`);
@@ -337,7 +337,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 console.log(">>>>>>>>>>- URL 2");
                 console.log(ptn);
             }
-            const pn = decodeURI(ptn);
+            const pn = decodeURIComponent(ptn);
             if (LOG_DEBUG_URLS) {
                 console.log(">>>>>>>>>>- URL 3");
                 console.log(pn);
@@ -378,7 +378,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
     za.setAttribute('href',zhref);
     za.setAttribute('style','user-select: none; color: red; background-color: white; padding: 0.2em; font-weight: bold;');
     za.appendChild(document.createTextNode('<<'));
-    
+
     za.setAttribute("id", "backlink");
     setTimeout(() => {
         document.getElementById("backlink").addEventListener("click", (ev) => {
@@ -437,11 +437,11 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 js = js.replace(`href: 'contribute'`, `href: 'contribute/'`);
 
                 js = js.replace(`document.getElementById('page-title').insertAdjacentElement('afterBegin', div);`, `if (document.getElementById('page-title')) document.getElementById('page-title').insertAdjacentElement('afterBegin', div);`);
-                
+
                 // js = js.replace(`a.setAttribute('href', topic.href);`, `a.setAttribute('href', topic.href.endsWith('/') ? (topic.href + "index.html") : topic.href);`);
                 // js = js.replace(`a.setAttribute('href', '/publishing/docs/' + topic.topics[j]['href-override']);`, `a.setAttribute('href', '/publishing/docs/' + (topic.topics[j]['href-override'].endsWith('/') ? (topic.topics[j]['href-override'] + "index.html") : topic.topics[j]['href-override']));`);
                 // js = js.replace(`a.setAttribute('href', (isRoot ? topic.path + '/' : '') + topic.topics[j].href);`, `a.setAttribute('href', (isRoot ? topic.path + '/' : '') + (topic.topics[j].href.endsWith('/') ? (topic.topics[j].href + "index.html") : topic.topics[j].href));`);
-                
+
                 js = js.replace(`var search_div =`, `/* var search_div =`);
                 js = js.replace(`appendChild(search_div);`, `appendChild(search_div); */`);
 
@@ -656,7 +656,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
         // expressApp.use("/", express.static(kbRootPath, staticOptions));
 
         // const startHttp = function () {
-            
+
         //     httpServer = expressApp.listen(port, () => {
         //         const p = httpServer.address().port;
 

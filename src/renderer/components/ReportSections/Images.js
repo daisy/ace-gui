@@ -79,7 +79,7 @@ export default class Images extends React.Component {
         sortable: true,
         filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="location"><pre>{decodeURI(row.location)}</pre></TableCell>
+          <TableCell key={idx} className="location"><pre>{decodeURIComponent(row.location)}</pre></TableCell>
       },
       {
         id: 'role',
