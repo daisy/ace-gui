@@ -40,7 +40,7 @@ import {openFile} from './../../shared/actions/app';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { localizer } from './../../shared/l10n/localize';
-const { localize } = localizer; // setCurrentLanguage, getCurrentLanguage,
+const { localize, getCurrentLanguage } = localizer; // setCurrentLanguage
 import classNames from 'classnames';
 import { ipcRenderer } from 'electron';
 import {
@@ -191,12 +191,12 @@ class MetaDataEditorModal extends React.Component {
   packageOpfXPathSelect = undefined;
 
   onKBSchemaOrg = () => {
-    const url = `${KB_BASE}docs/metadata/schema.org/index.html`;
+    const url = `${KB_BASE}${getCurrentLanguage() === "ja" ? "ja" : "docs"}/metadata/schema.org/index.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
   }
   onKBEvaluation = () => {
-    const url = `${KB_BASE}docs/metadata/evaluation.html`;
+    const url = `${KB_BASE}${getCurrentLanguage() === "ja" ? "ja" : "docs"}/metadata/evaluation.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
   }

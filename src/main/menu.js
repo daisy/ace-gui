@@ -86,7 +86,7 @@ export default class MenuBuilder {
   runAceInRendererProcess(filepath) {
     this.mainWindow.webContents.send('RUN_ACE', filepath);
   }
-  
+
   buildTemplate() {
 
     const defaultTemplate = {
@@ -103,7 +103,7 @@ export default class MenuBuilder {
                   await showEpubFileOrFolderBrowseDialog((filepath) => {
                     this.store.dispatch(closeReport());
                     this.store.dispatch(resetInitialReportView());
-                    
+
                     this.runAceInRendererProcess(filepath);
                   });
                 } else {
@@ -346,7 +346,7 @@ export default class MenuBuilder {
               {
                 label: localize('menu.knowledgeBaseOnline'),
                 click: () => {
-                  shell.openExternal('http://kb.daisy.org/publishing/docs/index.html');
+                  shell.openExternal(`http://kb.daisy.org/publishing/${getCurrentLanguage() === "ja" ? "ja" : "docs"}/index.html`);
                 }
               }
             ]

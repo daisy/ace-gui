@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 const {ipcRenderer} = require('electron');
 
 import { localizer } from './../../../shared/l10n/localize';
-const { localize } = localizer;
+const { localize, getCurrentLanguage } = localizer;
 
 // the violations page of the report
 export default class Violations extends React.Component {
@@ -115,8 +115,8 @@ export default class Violations extends React.Component {
               href="#"
               tabIndex={0}
               className="external-link"
-              onKeyPress={(e) => { if (e.key === "Enter") { this.onExternalLinkClick(row.details.kburl); }}}
-              onClick={() => this.onExternalLinkClick(row.details.kburl)}
+              onKeyPress={(e) => { if (e.key === "Enter") { this.onExternalLinkClick(getCurrentLanguage() === "ja" ? row.details.kburl.replace(/\/docs\//, "/ja/") : row.details.kburl); }}}
+              onClick={() => this.onExternalLinkClick(getCurrentLanguage() === "ja" ? row.details.kburl.replace(/\/docs\//, "/ja/") : row.details.kburl)}
             >{localize("report.violationsSection.learnAbout")} {row.details.kbtitle}</a></p>
           </TableCell>
       }

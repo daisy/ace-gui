@@ -12,7 +12,7 @@ import {selectTab} from './../../../shared/actions/reportView';
 import {zipEpub} from './../../../shared/actions/app';
 
 import { localizer } from './../../../shared/l10n/localize';
-const { localize } = localizer;
+const { localize, getCurrentLanguage } = localizer;
 
 import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
 
@@ -80,12 +80,12 @@ class Metadata extends React.Component {
   };
 
   onKBSchemaOrg = () => {
-    const url = `${KB_BASE}docs/metadata/schema.org/index.html`;
+    const url = `${KB_BASE}${getCurrentLanguage() === "ja" ? "ja" : "docs"}/metadata/schema.org/index.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
   }
   onKBEvaluation = () => {
-    const url = `${KB_BASE}docs/metadata/evaluation.html`;
+    const url = `${KB_BASE}${getCurrentLanguage() === "ja" ? "ja" : "docs"}/metadata/evaluation.html`;
     ipcRenderer.send('KB_URL', url);
     // shell.openExternal(url);
   }
@@ -229,7 +229,7 @@ class Metadata extends React.Component {
                 suffix = ` (${A11Y_META[data].required ? localize("report.summarySection.serious") : localize("report.summarySection.moderate")})`
               }
             }
-            
+
             return (<li key={idx}>{data}{suffix}</li>);
           })}
           {a11ymetadata.empty && a11ymetadata.empty.sort().map((data, idx) => {
@@ -239,7 +239,7 @@ class Metadata extends React.Component {
                 suffix = ` (${A11Y_META[data].required ? localize("report.summarySection.serious") : localize("report.summarySection.moderate")})`
               }
             }
-            
+
             return (<li key={idx}>{data}{suffix}</li>);
           })}
         </ul>

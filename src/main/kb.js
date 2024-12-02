@@ -7,7 +7,7 @@ const { BrowserWindow, webContents } = require('electron');
 import { app, shell, session, ipcMain, Menu } from 'electron';
 
 import { localizer } from './../shared/l10n/localize';
-const { localize } = localizer;
+const { localize, getCurrentLanguage } = localizer;
 
 import * as AboutBoxHelper from './about';
 
@@ -471,9 +471,13 @@ export function startKnowledgeBaseServer(kbRootPath) {
                 // fileSystemPath = pn;
                 // if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --filepath to read (corrected): ${fileSystemPath}`);
                 // if (!fs.existsSync(fileSystemPath)) {
-                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --FILE DOES NOT EXIST!! ${kbRootPath} + ${req.url} => ${fileSystemPath}`);
-                    const html = `<h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2>${pn} (404 missing file?)</h2>`;
-                    const buff = Buffer.from(html);
+                    if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} --FILE DOES NOT EXIST!! ${kbRootPath} + ${req.url} => ${fileSystemPath} (${localize("kbgoonline")})`);
+                    const html = `<html><head><meta charset="UTF-8" /></head><body><h1><a href="javascript:window.history.back()">&lt;&lt;</a></h1><h2> !! ${pn}</h2>
+                      <div style="border-radius: 4px !important; border: 4px solid black !important; box-sizing: border-box; z-index: 9999999; position: fixed; left: 1em; width: auto; background: transparent; margin: 0; padding: 0; margin-top: 0.5em; font-size: 100%; font-weight: bold; font-family: sans-serif; border: 0">
+                      <a style="user-select: none; color: red; background-color: white; padding: 0.2em;" target="_BLANK" href="${req.url.replace(`${rootUrl}/`, 'http://kb.daisy.org/')}">${localize("kbgoonline")}</a>
+                      </div></body></html>
+                      `;
+                    const buff = Buffer.from(html, "utf-8");
                     headers["Content-Length"] = buff.length.toString();
                     headers["Content-Type"] = "text/html";
                     callback({
@@ -1008,7 +1012,7 @@ export class KnowledgeBase {
                 return { action: 'deny' };
             }
 
-            if (obj.url.replace(/\/\/+/g, "/").indexOf("publishing/docs/search") >= 0) {
+            if (obj.url.replace(/\/\/+/g, "/").indexOf("publishing/docs/search") >= 0 || obj.url.replace(/\/\/+/g, "/").indexOf("publishing/ja/search") >= 0) {
                 shell.openExternal(obj.url.replace(rootUrl, "http://kb.daisy.org"));
 
                 // preventDefault()
@@ -1028,7 +1032,7 @@ export class KnowledgeBase {
                 event.preventDefault();
                 shell.openExternal(url);
             }
-            if (url.replace(/\/\/+/g, "/").indexOf("publishing/docs/search") >= 0) {
+            if (url.replace(/\/\/+/g, "/").indexOf("publishing/docs/search") >= 0 || url.replace(/\/\/+/g, "/").indexOf("publishing/ja/search") >= 0) {
                 event.preventDefault();
                 shell.openExternal(url.replace(rootUrl, "http://kb.daisy.org"));
             }
@@ -1038,7 +1042,7 @@ export class KnowledgeBase {
         if (this.urlPath) {
             this.win.loadURL(`${rootUrl}${this.urlPath}`);
         } else {
-            this.win.loadURL(`${rootUrl}/publishing/docs/index.html`);
+            this.win.loadURL(`${rootUrl}/publishing/${getCurrentLanguage() === "ja" ? "ja" : "docs"}/index.html`);
         }
 
         this.win.on('closed', function () {
