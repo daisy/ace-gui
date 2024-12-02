@@ -17,7 +17,7 @@
     "rowsPerPage": "1ページあたりの行数：",
     "sortBy": "並び替え： "
   },
-  "kbgoonline": "オンライン化する",
+  "kbgoonline": "オンラインに移動",
   "menu": {
     "about": "Aceについて",
     "ace": "Ace",
@@ -157,6 +157,9 @@
     "orDropSidebar": "または、サイドバーの__ボタンから、",
     "title": "Ace by DAISY"
   },
+  "sponsorship_close": "閉じる",
+  "sponsorship_link": "サポートする",
+  "sponsorship_prompt": "「Ace by DAISY」のメンテナンスを継続するため、ご寄付によるサポートをお願いします。",
   "tablePagination": {
     "firstPage": "先頭ページ",
     "lastPage": "最後のページ",
