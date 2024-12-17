@@ -86,6 +86,7 @@
         "reportsDataDirectoryButton": "Browse",
         "reportsDataDirectoryTip": "(where Ace stores reports internally)",
         "save": "Save",
+        "timeout": "Timeout",
         "title": "Ace Preferences",
         "userInterfaceLanguage": "Language",
         "userInterfaceLanguageTip": "(select the language for UI labels and messages)"

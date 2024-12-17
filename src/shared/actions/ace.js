@@ -33,7 +33,7 @@ export function runAce(inputPath) {
   return (dispatch, getState) => {
 
     inputPath = fs.existsSync(inputPath) ? fs.realpathSync(inputPath) : inputPath;
-    
+
     // if (!axeRunner) {
     //   dispatch(setProcessing(PROCESSING_TYPE.ACE, false))
     //   dispatch(addMessage("!axeRunner Electron renderer process?"));
@@ -59,10 +59,10 @@ export function runAce(inputPath) {
       logger.initLogger({ verbose: true, silent: false, fileName: "ace-gui.log" });
 
       function doAce(epubPath) {
-        ace(epubPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: false}, axeRunner)
+        ace(epubPath, {outdir: outdir.value, lang: language, verbose: true, silent: false, initLogger: false, timeout: getState().preferences.timeout || undefined}, axeRunner)
         .then((res) => {
           dispatch(addMessage(localize("message.checkcomplete")));
-  
+
           let reportPath = path.join(outdir.value, 'report.json');
           dispatch(openReport(reportPath, inputPath, epubPath));
         })

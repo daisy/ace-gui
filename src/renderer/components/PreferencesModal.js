@@ -14,6 +14,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { hideModal } from './../../shared/actions/modal';
 import { savePreferences } from './../../shared/actions/preferences';
@@ -109,6 +110,13 @@ class PreferencesModal extends React.Component {
     this.setState(newState);
   };
 
+  handleChangeTimeout = arg => (event) => {
+    const newState = {
+      timeout: event.target.value
+    };
+    this.setState(newState);
+  };
+
   selectReportDir = () => {
     ipcRenderer.send(IPC_EVENT_showFolderBrowseDialog);
     ipcRenderer.once(IPC_EVENT_showFolderBrowseDialog, (event, dir) => {
@@ -133,7 +141,7 @@ class PreferencesModal extends React.Component {
       const openFile = this.props.openFile;
       const inputPath = this.props.inputPath;
       const epubBaseDir = this.props.epubBaseDir;
-      
+
       setTimeout(() => {
         openFile(epubBaseDir || inputPath);
       }, 500);
@@ -166,7 +174,7 @@ class PreferencesModal extends React.Component {
           classes={{ root: classes.prefsGroup }}
           >
             <Typography variant="h6">{localize("preferences.internalReportStorage")}</Typography>
-            <FormControl 
+            <FormControl
               aria-describedby="preferences-dialog-reports-dir-helper-text"
               variant="outlined"
               margin="dense"
@@ -176,20 +184,20 @@ class PreferencesModal extends React.Component {
                 ref={ref => { this.labelRef = ReactDOM.findDOMNode(ref) }}
                 classes={{ root: classes.browseControlInputLabel }}
                 >{localize("preferences.reportsDataDirectory")}</InputLabel>
-              <OutlinedInput 
+              <OutlinedInput
                 id="preferences-dialog-reports-input"
                 value={this.state.reports.dir}
                 onChange={this.handleChange({group: 'reports', key: 'dir'})}
                 disabled
                 labelWidth={this.labelRef ? this.labelRef.offsetWidth : 0}
-                classes={{ 
+                classes={{
                   root: classes.browseControlInput,
                   notchedOutline: classes.browseControlInputOutline,
                   disabled: classes.browseControlInputDisabled,
                 }}
                 />
               </div>
-              <Button variant="outlined" 
+              <Button variant="outlined"
                 classes={{ root: classes.browseControlButton}}
                 onClick={this.selectReportDir}
                 >{localize("preferences.reportsDataDirectoryButton")}</Button>
@@ -207,7 +215,7 @@ class PreferencesModal extends React.Component {
                 onChange={this.handleChange({group: 'reports', key: 'organize'})}
                 control={<Checkbox/>}
               />
-              <FormHelperText 
+              <FormHelperText
                 id="preferences-dialog-reports-organize-helper-text"
                 variant='outlined'
                 classes={{ contained: classes.checkboxControlHelperText }}
@@ -223,7 +231,7 @@ class PreferencesModal extends React.Component {
                 onChange={this.handleChange({group: 'reports', key: 'overwrite'})}
                 control={<Checkbox/>}
               />
-              <FormHelperText 
+              <FormHelperText
                 id="preferences-dialog-reports-overwrite-helper-text"
                 variant='outlined'
                 classes={{ contained: classes.checkboxControlHelperText }}
@@ -245,13 +253,30 @@ class PreferencesModal extends React.Component {
               >
                 {languageSelectMenuItems}
               </Select>
-              <FormHelperText 
+              <FormHelperText
                 id="preferences-dialog-user-interface-language-helper-text"
                 variant='outlined'
                 classes={{ contained: classes.checkboxControlHelperText }}
                 >{localize("preferences.userInterfaceLanguageTip")}</FormHelperText>
             </FormControl>
           </FormControl>
+
+          <FormControl variant="outlined" margin="dense" fullWidth
+            classes={{ root: classes.prefsGroup }}
+            >
+              <Typography variant="h6">{localize("preferences.timeout")}</Typography>
+              <FormControl
+                margin="dense">
+                  <TextField
+                    id="preferences-dialog-timeout-input"
+                    value={this.state.timeout}
+                    onChange={this.handleChangeTimeout()}
+                    classes={{
+                      root: classes.browseControlInput,
+                    }}
+                    />
+              </FormControl>
+            </FormControl>
         </DialogContent>
         <DialogActions classes={{ root: classes.dialogActions }}>
           <Button onClick={() => this.props.hideModal()}>

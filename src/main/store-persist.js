@@ -47,6 +47,7 @@ export function initPersistentStore() {
     const reportsOverwrite = electronStore.get('reports.overwrite');
     const initialState = {
         preferences: {
+            timeout: electronStore.get('timeout') || defaultPreferences.timeout,
             language: initialLanguage,
             reports: {
                 "dir": electronStore.get('reports.dir') || defaultPreferences.reports.dir,
@@ -66,6 +67,12 @@ export function initPersistentStore() {
         const state = store.getState();
 
         const prefs = state.preferences;
+
+        if (prefs.timeout) {
+            electronStore.set('timeout', prefs.timeout);
+        } else {
+            electronStore.set('timeout', defaultPreferences.timeout);
+        }
 
         if (prefs.language) {
             electronStore.set('language', prefs.language);
