@@ -8,7 +8,7 @@ const mapStateToProps = state => {
 
   return {
     language,
-    images: report.data.images == undefined ? [] : report.data.images,
+    images: !report.data.images ? [] : report.data.images,
     filters: filters['images'],
     pagination: pagination['images'],
     sort: sort['images'],

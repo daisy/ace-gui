@@ -20,8 +20,32 @@ import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
 
 function desc(a, b, orderBy, head) {
+  // console.log("----------", JSON.stringify(a), " ================ ", JSON.stringify(b), " ############### ", orderBy, " ***** ", JSON.stringify(head));
   let aValue = head.hasOwnProperty('sortOn') ? head.sortOn(a[orderBy]) : a[orderBy];
   let bValue = head.hasOwnProperty('sortOn') ? head.sortOn(b[orderBy]) : b[orderBy];
+
+  const aValueNIL = aValue == null; // NOT TRIPLE EQUAL! (includes typeof "undefined")
+  const bValueNIL = bValue == null;
+  if (aValueNIL && bValueNIL) {
+    // console.log("NILLLL", typeof aValue, typeof bValue, aValue, bValue);
+    aValue = "";
+    bValue = "";
+  } else if (aValueNIL) {
+    // console.log("NILLLL a", typeof bValue, bValue);
+    if (typeof bValue === "string") {
+      aValue = "";
+    } else {
+      aValue = 0;
+    }
+  } else if (bValueNIL) {
+    // console.log("NILLLL b", typeof aValue, aValue);
+    if (typeof aValue === "string") {
+      bValue = "";
+    } else {
+      bValue = 0;
+    }
+  }
+  // console.log("%%%%%%%%% ", aValue, bValue);
 
   if (bValue < aValue) {
     return -1;
@@ -151,6 +175,7 @@ export default class EnhancedTable extends React.Component {
     if (sort.orderBy === id && sort.order === 'desc') {
       order = 'asc';
     }
+    //console.log("SORT", this.props.id, order, id);
     onSort(this.props.id, {order: order, orderBy: id});
   };
 
@@ -241,6 +266,8 @@ export default class EnhancedTable extends React.Component {
       rowsPerPageOptions.push(300);
     }
 
+    // console.log("filteredRows: ", order, orderBy, JSON.stringify(filteredRows, null, 4));
+
     // console.log("FILTERS render: ", JSON.stringify(filters, null, 4));
 
     // ensure correct language
@@ -294,7 +321,10 @@ export default class EnhancedTable extends React.Component {
         </AccordionDetails>
       </Accordion>
       : ''}
-      <Table aria-live="polite">
+        <Table aria-live="polite" style={{
+          tableLayout: "fixed",
+          border: "silver solid 1px"
+        }}>
         <TableHead>
           <TableRow>
             {heads.map(head => {
@@ -326,7 +356,10 @@ export default class EnhancedTable extends React.Component {
             .slice(Math.min(filteredRows - 1, page * rowsPerPage), page * rowsPerPage + rowsPerPage)
             .map((row, idx) => {
               return (
-                <TableRow
+                <TableRow style={{
+                    // border: "magenta solid 1px",
+                    height: "max-content",
+                  }}
                   tabIndex={-1}
                   key={idx}>
                   {heads.map((head, idx) => {

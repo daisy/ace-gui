@@ -97,6 +97,7 @@
             "NA": "N/A",
             "altAttribute": "'alt' attribute",
             "ariaDescribedbyContent": "'aria-describedby' content",
+            "ariaDetails": "'aria-details'",
             "associatedFigcaption": "Associated 'figcaption'",
             "image": "Image",
             "location": "Location",

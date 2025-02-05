@@ -45,7 +45,12 @@ export default class Images extends React.Component {
         makeCell: (row, idx) =>
           {
             const src = encodeURIComponent(path.resolve(reportPath, `../data/${row.src}`));
-            return <TableCell key={idx}><img src={`fileproto://host/${src}`}/></TableCell>
+            return <TableCell key={idx} style={{
+                border: "black solid 1px", padding: 6,
+                overflow: "hidden",
+              }}>
+                <img style={{ objectFit: "contain" }} src={`fileproto://host/${src}`}/>
+            </TableCell>
           }
       },
       {
@@ -54,7 +59,23 @@ export default class Images extends React.Component {
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.alt ? row.alt : localize("report.imagesSection.NA")}</TableCell>
+          <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx}>
+      <div style={{
+          overflow: "hidden",
+          overflowY: "auto",
+          padding: 6,
+          margin: 0,
+          height: 98,
+          maxheight: 98,
+          whiteSpace: "break-spaces",
+          textOverflow: "ellipsis"
+        }} >
+          {row.alt ? row.alt : localize("report.imagesSection.NA")}
+        </div>
+        </TableCell>
       },
       {
         id: 'describedby',
@@ -62,7 +83,47 @@ export default class Images extends React.Component {
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.describedby ? row.describedby : localize("report.imagesSection.NA")}</TableCell>
+          <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx}>
+          <div style={{
+              overflow: "hidden",
+              overflowY: "auto",
+              padding: 6,
+              margin: 0,
+              height: 98,
+              maxheight: 98,
+              whiteSpace: "break-spaces",
+              textOverflow: "ellipsis"
+            }}>
+              {row.describedby ? row.describedby : localize("report.imagesSection.NA")}
+            </div>
+          </TableCell>
+      },
+      {
+        id: 'details',
+        label: localize("report.imagesSection.ariaDetails"),
+        numeric: false,
+        sortable: true,
+        makeCell: (row, idx) =>
+          <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+            }} key={idx}>
+              <div style={{
+                  overflow: "hidden",
+                  overflowY: "auto",
+                  padding: 6,
+                  margin: 0,
+                  height: 98,
+                  maxheight: 98,
+                  whiteSpace: "break-spaces",
+                  textOverflow: "ellipsis"
+                }}>
+                  {row.details ? row.details : localize("report.imagesSection.NA")}
+              </div>
+          </TableCell>
       },
       {
         id: 'figcaption',
@@ -70,7 +131,23 @@ export default class Images extends React.Component {
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.figcaption ? row.figcaption : localize("report.imagesSection.NA")}</TableCell>
+          <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx}>
+          <div style={{
+              overflow: "hidden",
+              overflowY: "auto",
+              padding: 6,
+              margin: 0,
+              height: 98,
+              maxheight: 98,
+              whiteSpace: "break-spaces",
+              textOverflow: "ellipsis"
+            }}>
+              {row.figcaption ? row.figcaption : localize("report.imagesSection.NA")}
+            </div>
+          </TableCell>
       },
       {
         id: 'location',
@@ -79,7 +156,27 @@ export default class Images extends React.Component {
         sortable: true,
         filterOn: obj => obj.indexOf('#') > 0 ? obj.slice(0, obj.indexOf('#')) : obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="location"><pre>{decodeURIComponent(row.location)}</pre></TableCell>
+          <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx}>
+      <div style={{
+          overflow: "hidden",
+          overflowY: "auto",
+          padding: 6,
+          margin: 0,
+          height: 98,
+          maxheight: 98,
+          textOverflow: "ellipsis",
+          overflowWrap: "break-word",
+        }} className="location">
+          <pre style={{
+              whiteSpace: "pre-wrap",
+              padding: 0,
+              margin: 0,
+            }}>{decodeURIComponent(row.location)}</pre>
+        </div>
+        </TableCell>
       },
       {
         id: 'role',
@@ -88,7 +185,23 @@ export default class Images extends React.Component {
         sortable: true,
         filterOn: obj => obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.role ? row.role : localize("report.imagesSection.NA")}</TableCell>
+          <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx}>
+      <div style={{
+          overflow: "hidden",
+          overflowY: "auto",
+          padding: 6,
+          margin: 0,
+          height: 98,
+          maxheight: 98,
+          whiteSpace: "break-spaces",
+          textOverflow: "ellipsis"
+        }}>
+          {row.role ? row.role : localize("report.imagesSection.NA")}
+        </div>
+        </TableCell>
       }
     ];
 
