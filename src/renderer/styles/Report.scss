@@ -63,6 +63,12 @@
 
     .impact {
       span {
+        white-space: pre;
+        /*
+        word-break: break-all;
+        text-overflow: ellipsis;
+        overflow-wrap: break-word;
+        */
         display:inline-block;
         height:1.5em;
         padding: .4em;

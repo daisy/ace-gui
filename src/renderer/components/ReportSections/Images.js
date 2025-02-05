@@ -184,7 +184,7 @@ export default class Images extends React.Component {
                   whiteSpace: "pre-wrap",
                   padding: 3,
                   border: "silver solid 2px",
-                  font: "mono"
+                  fontFamily: "monospace"
                 }}>{ row.src }</p>
         </div>
         </TableCell>
