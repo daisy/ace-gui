@@ -3,9 +3,9 @@
   "description": "Ace, the EPUB accessibility checker by the DAISY Consortium (desktop application)",
   "version": "1.3.3-alpha.5",
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=22.0.0",
     "yarn": "^1.22.0",
-    "npm": ">=9.0.0"
+    "npm": ">=10.0.0"
   },
   "author": {
     "name": "DAISY Consortium",
@@ -143,11 +143,11 @@
     "i18n-check": "sync-i18n --files 'src/shared/l10n/locales/*.json' --primary en --languages fr es pt_BR da ja de --space 4 --finalnewline --newkeysempty"
   },
   "dependencies": {
-    "@daisy/ace-axe-runner-electron": "1.3.3-alpha.5",
-    "@daisy/ace-core": "1.3.3-alpha.5",
-    "@daisy/ace-localize": "1.3.3-alpha.5",
-    "@daisy/ace-logger": "1.3.3-alpha.5",
-    "@daisy/epub-utils": "1.3.3-alpha.5",
+    "@daisy/ace-axe-runner-electron": "1.3.3",
+    "@daisy/ace-core": "1.3.3",
+    "@daisy/ace-localize": "1.3.3",
+    "@daisy/ace-logger": "1.3.3",
+    "@daisy/epub-utils": "1.3.3",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
@@ -175,11 +175,11 @@
     "xpath": "^0.0.34"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
-    "@babel/preset-react": "^7.25.9",
+    "@babel/core": "^7.26.7",
+    "@babel/preset-env": "^7.26.7",
+    "@babel/preset-react": "^7.26.3",
     "@electron/notarize": "^2.5.0",
-    "@octokit/rest": "^21.0.2",
+    "@octokit/rest": "^21.1.0",
     "babel-loader": "^8.2.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
@@ -192,7 +192,7 @@
     "css-loader": "^3.5.3",
     "devtron": "^1.4.0",
     "dotenv": "^8.2.0",
-    "electron": "^33.2.1",
+    "electron": "^34.0.2",
     "electron-builder": "^25.1.8",
     "electron-devtools-installer": "^3.2.0",
     "file-loader": "^6.2.0",
@@ -205,7 +205,7 @@
     "react-axe": "^3.5.4",
     "redux-devtools-extension": "^2.13.9",
     "rimraf": "^3.0.2",
-    "sass": "^1.81.0",
+    "sass": "^1.83.4",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
