@@ -178,6 +178,10 @@ function electronAppReady () {
 }
 
 function httpReady() {
+    ipcMain.on('ELECTRON_SHELL_OPEN_EXTERNAL', (event, arg) => {
+      if (LOG_DEBUG) console.log(`ELECTRON_SHELL_OPEN_EXTERNAL ${arg}`);
+      shell.openExternal(arg);
+    });
     ipcMain.on('KB_URL', (event, arg) => {
         const regexp = /http[s]?:\/\/kb.daisy.org\//;
         if (!arg.match(regexp)) {

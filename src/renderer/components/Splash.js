@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { withStyles } from '@material-ui/core/styles';
 
-import { shell, ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron';
 import { IPC_EVENT_showEpubFileOrFolderBrowseDialog, IPC_EVENT_showEpubFileBrowseDialog, IPC_EVENT_showEpubFolderBrowseDialog } from "../../shared/main-renderer-events";
 
 import { localizer } from './../../shared/l10n/localize';
@@ -111,7 +111,10 @@ class Splash extends React.Component {
         {!this.state.hideSponsor &&
           <div id="sponsorship">
             <span>{localize("sponsorship_prompt")}</span>
-            <a href="#" onClick={() => { shell.openExternal('https://daisy.org/AceAppSponsor'); }}>{localize("sponsorship_link")}</a>
+            <a href="#" onClick={() => {
+              // shell.openExternal('https://daisy.org/AceAppSponsor');
+              ipcRenderer.send('ELECTRON_SHELL_OPEN_EXTERNAL', 'https://daisy.org/AceAppSponsor');
+            }}>{localize("sponsorship_link")}</a>
             <input onClick={() => {
               // document.getElementById('sponsorship').remove();
               localStorage.setItem('DAISY-ACE-SPONSOR-HIDE', new Date().toISOString());

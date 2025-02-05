@@ -52,8 +52,22 @@ export default class Violations extends React.Component {
         sortOn: impact => impactOrder.indexOf(impact),
         filterOn: obj => obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="impact">
+        <TableCell style={{
+            border: "black solid 1px", padding: 0,
+            overflow: "hidden",
+        }} key={idx} className="impact">
+          <div style={{
+              overflow: "hidden",
+              overflowY: "auto",
+              padding: 6,
+              margin: 0,
+              height: 98,
+              maxheight: 98,
+              whiteSpace: "break-spaces",
+              textOverflow: "ellipsis"
+            }} >
             <span className={row.impact}>{localize(`${keyPrefix}${row.impact}`, {ignoreMissingKey: false}).replace(keyPrefix, "")}</span>
+            </div>
           </TableCell>
       },
       {
@@ -67,7 +81,23 @@ export default class Violations extends React.Component {
         sortable: true,
         filterOn: obj => obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="ruleset">{localize(`${keyPrefix}${row.rulesetTag}`, {ignoreMissingKey: true}).replace(keyPrefix, "").replace("wcag2aaa", "WCAG 2.0 AAA").replace("wcag2aa", "WCAG 2.0 AA").replace("wcag2a", "WCAG 2.0 A").replace("wcag21aaa", "WCAG 2.1 AAA").replace("wcag21aa", "WCAG 2.1 AA").replace("wcag21a", "WCAG 2.1 A").replace("wcag22aaa", "WCAG 2.2 AAA").replace("wcag22aa", "WCAG 2.2 AA").replace("wcag22a", "WCAG 2.2 A")}</TableCell>
+
+        <TableCell style={{
+            border: "black solid 1px", padding: 0,
+            overflow: "hidden",
+        }} key={idx} className="ruleset">
+          <div style={{
+              overflow: "hidden",
+              overflowY: "auto",
+              padding: 6,
+              margin: 0,
+              height: 98,
+              maxheight: 98,
+              whiteSpace: "break-spaces",
+              textOverflow: "ellipsis"
+            }} >
+              {localize(`${keyPrefix}${row.rulesetTag}`, {ignoreMissingKey: true}).replace(keyPrefix, "").replace("wcag2aaa", "WCAG 2.0 AAA").replace("wcag2aa", "WCAG 2.0 AA").replace("wcag2a", "WCAG 2.0 A").replace("wcag21aaa", "WCAG 2.1 AAA").replace("wcag21aa", "WCAG 2.1 AA").replace("wcag21a", "WCAG 2.1 A").replace("wcag22aaa", "WCAG 2.2 AAA").replace("wcag22aa", "WCAG 2.2 AA").replace("wcag22a", "WCAG 2.2 A")}
+            </div></TableCell>
       },
       {
         id: "rule",
@@ -77,9 +107,24 @@ export default class Violations extends React.Component {
         sortOn: rule => rule.rule,
         filterOn: obj => obj.rule,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="rule">
+
+        <TableCell style={{
+                    border: "black solid 1px", padding: 0,
+                    overflow: "hidden",
+                }} key={idx} className="rule">
+                  <div style={{
+                      overflow: "hidden",
+                      overflowY: "auto",
+                      padding: 6,
+                      margin: 0,
+                      height: 98,
+                      maxheight: 98,
+                      whiteSpace: "break-spaces",
+                      textOverflow: "ellipsis"
+                    }} >
             <p>{row.rule.rule}</p>
             <p className="violation-engine">{localize("report.violationsSection.via")} {row.rule.engine}</p>
+            </div>
           </TableCell>
       },
       {
@@ -90,11 +135,36 @@ export default class Violations extends React.Component {
         sortOn: location => location.filename,
         filterOn: obj => obj.filename.indexOf('#') > 0 ? obj.filename.slice(0, obj.filename.indexOf('#')) : obj.filename,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="location">
-            <p><code>{row.location.filename}</code></p>
+
+        <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx} className="location">
+            <div style={{
+                overflow: "hidden",
+                overflowY: "auto",
+                padding: 6,
+                margin: 0,
+                height: 98,
+                maxheight: 98,
+                textOverflow: "ellipsis",
+                overflowWrap: "break-word",
+              }} >
+
+                <p>
+                <pre style={{
+                      whiteSpace: "pre-wrap",
+                      padding: 0,
+                      margin: 0,
+                    }}>{row.location.filename}</pre>
+            </p>
+
             {row.location.snippet != '' ?
-              <pre>{unescape(row.location.snippet)}</pre>
+              <p><pre className='snippet' style={{
+                    whiteSpace: "pre-wrap",
+                  }}>{unescape(row.location.snippet)}</pre></p>
               : ''}
+            </div>
           </TableCell>
       },
       {
@@ -103,8 +173,25 @@ export default class Violations extends React.Component {
         numeric: false,
         sortable: false,
         makeCell: (row, idx) =>
-          <TableCell key={idx} className="details">
-            <ul>
+
+        <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx} className="details">
+            <div style={{
+                overflow: "hidden",
+                overflowY: "auto",
+                padding: 6,
+                margin: 0,
+                height: 98,
+                maxheight: 98,
+                whiteSpace: "break-spaces",
+                textOverflow: "ellipsis"
+              }} >
+            <ul style={{
+                padding: "0 0 0 1em",
+                margin: 0,
+              }} >
               {row.details.desc.map((txt, idx) => {
                   return (
                     <li key={idx}>{unescape(txt)}</li>
@@ -118,6 +205,7 @@ export default class Violations extends React.Component {
               onKeyPress={(e) => { if (e.key === "Enter") { this.onExternalLinkClick(getCurrentLanguage() === "ja" ? row.details.kburl.replace(/\/docs\//, "/ja/") : row.details.kburl); }}}
               onClick={() => this.onExternalLinkClick(getCurrentLanguage() === "ja" ? row.details.kburl.replace(/\/docs\//, "/ja/") : row.details.kburl)}
             >{localize("report.violationsSection.learnAbout")} {row.details.kbtitle}</a></p>
+              </div>
           </TableCell>
       }
     ];

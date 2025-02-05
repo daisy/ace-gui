@@ -118,8 +118,22 @@ class Metadata extends React.Component {
         sortable: true,
         filterOn: obj => obj,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>
+        <TableCell style={{
+            border: "black solid 1px", padding: 0,
+            overflow: "hidden",
+        }} key={idx}>
+          <div style={{
+              overflow: "hidden",
+              overflowY: "auto",
+              padding: 6,
+              margin: 0,
+              height: 98,
+              maxheight: 98,
+              whiteSpace: "break-spaces",
+              textOverflow: "ellipsis"
+            }} >
             {row.name}
+            </div>
           </TableCell>
       },
       {
@@ -128,14 +142,32 @@ class Metadata extends React.Component {
         numeric: false,
         sortable: false,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>{row.value instanceof Array ?
-              <ul>{row.value.map((data, idx) => {
+        <TableCell style={{
+            border: "black solid 1px", padding: 0,
+            overflow: "hidden",
+        }} key={idx}>
+          <div style={{
+              overflow: "hidden",
+              overflowY: "auto",
+              padding: 6,
+              margin: 0,
+              height: 98,
+              maxheight: 98,
+              whiteSpace: "break-spaces",
+              textOverflow: "ellipsis"
+            }} >
+        {row.value instanceof Array ?
+              <ul  style={{
+                  padding: "0 0 0 1em",
+                  margin: 0,
+                }} >{row.value.map((data, idx) => {
                 return (
                   <li key={idx}>{data}</li>
                 );
               })}
               </ul>
               : row.value}
+            </div>
           </TableCell>
       },
       {
@@ -144,8 +176,22 @@ class Metadata extends React.Component {
         numeric: false,
         sortable: true,
         makeCell: (row, idx) =>
-          <TableCell key={idx}>
+        <TableCell style={{
+            border: "black solid 1px", padding: 0,
+            overflow: "hidden",
+        }} key={idx}>
+          <div style={{
+              overflow: "hidden",
+              overflowY: "auto",
+              padding: 6,
+              margin: 0,
+              height: 98,
+              maxheight: 98,
+              whiteSpace: "break-spaces",
+              textOverflow: "ellipsis"
+            }} >
             {row.a11y}
+            </div>
           </TableCell>
       }
     ];

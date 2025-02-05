@@ -7,6 +7,8 @@ const path = require('path');
 import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
 
+import { ipcRenderer } from 'electron';
+
 // the images page of the report
 export default class Images extends React.Component {
 
@@ -49,7 +51,10 @@ export default class Images extends React.Component {
                 border: "black solid 1px", padding: 6,
                 overflow: "hidden",
               }}>
-                <img style={{ objectFit: "contain" }} src={`fileproto://host/${src}`}/>
+              <img onClick={() => {
+                // shell.openExternal(src);
+                ipcRenderer.send('ELECTRON_SHELL_OPEN_EXTERNAL', `file://${decodeURIComponent(src).replace(/\\/g, "/")}`);
+              }} style={{ objectFit: "contain", cursor: "pointer" }} src={`fileproto://host/${src}`}/>
             </TableCell>
           }
       },
@@ -175,6 +180,12 @@ export default class Images extends React.Component {
               padding: 0,
               margin: 0,
             }}>{decodeURIComponent(row.location)}</pre>
+              <p style={{
+                  whiteSpace: "pre-wrap",
+                  padding: 3,
+                  border: "silver solid 2px",
+                  font: "mono"
+                }}>{ row.src }</p>
         </div>
         </TableCell>
       },

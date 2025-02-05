@@ -96,9 +96,9 @@
         "imagesSection": {
             "NA": "N/A",
             "altAttribute": "'alt' attribute",
-            "ariaDescribedbyContent": "'aria-describedby' content",
+            "ariaDescribedbyContent": "'aria-describedby'",
             "ariaDetails": "'aria-details'",
-            "associatedFigcaption": "Associated 'figcaption'",
+            "associatedFigcaption": "'figcaption'",
             "image": "Image",
             "location": "Location",
             "noImages": "No images encountered in this publication.",
