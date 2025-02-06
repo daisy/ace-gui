@@ -38,7 +38,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        osarch: [windows-intel, windows-arm, macos-intel, macos-arm, linux-intel, linux-arm]
+        # osarch: [windows-intel, windows-arm, macos-intel, macos-arm, linux-intel, linux-arm]
+        osarch: [windows-arm]
 # AceApp for MacOS x64 and arm64 is built on GitHub Actions arm64 runners
 # AceApp for Linux x64 and arm64 is built on GitHub Actions x64 runners
 # AceApp for Windows x64 and arm64 is built on GitHub Actions x64 runners
@@ -64,30 +65,30 @@ jobs:
 # ubuntu-20.04 is the oldest available (used here)
 #       https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md
         include:
-          - osarch: windows-intel
-            runson: windows-latest #windows-2022
-            packname: win
-            release_tag: latest-windows-intel
+          # - osarch: windows-intel
+          #   runson: windows-latest #windows-2022
+          #   packname: win
+          #   release_tag: latest-windows-intel
           - osarch: windows-arm
             runson: windows-latest #windows-2022
             packname: win
-            release_tag: latest-windows-arm
-          - osarch: macos-intel
-            runson: macos-latest #macos-14-arm64
-            packname: 'mac:skip-notarize'
-            release_tag: latest-macos-intel
-          - osarch: macos-arm
-            runson: macos-latest #macos-14-arm64
-            packname: 'mac:skip-notarize'
-            release_tag: latest-macos-arm
-          - osarch: linux-intel
-            runson: ubuntu-20.04 #ubuntu-latest is ubuntu-24.04
-            packname: linux
-            release_tag: latest-linux-intel
-          - osarch: linux-arm
-            runson: ubuntu-20.04 #ubuntu-latest is ubuntu-24.04
-            packname: linux
-            release_tag: latest-linux-arm
+            release_tag: latest-windows-arm-tmp
+          # - osarch: macos-intel
+          #   runson: macos-latest #macos-14-arm64
+          #   packname: 'mac:skip-notarize'
+          #   release_tag: latest-macos-intel
+          # - osarch: macos-arm
+          #   runson: macos-latest #macos-14-arm64
+          #   packname: 'mac:skip-notarize'
+          #   release_tag: latest-macos-arm
+          # - osarch: linux-intel
+          #   runson: ubuntu-20.04 #ubuntu-latest is ubuntu-24.04
+          #   packname: linux
+          #   release_tag: latest-linux-intel
+          # - osarch: linux-arm
+          #   runson: ubuntu-20.04 #ubuntu-latest is ubuntu-24.04
+          #   packname: linux
+          #   release_tag: latest-linux-arm
     env:
       RELEASE_TAG: ${{ matrix.release_tag }}
     steps:
@@ -168,15 +169,15 @@ jobs:
     - run: yarn --version
     - run: yarn config set network-timeout 300000 || echo ok
     # - run: yarn --global install asar
-    - name: package patch 1
-      run: node build/package-ci-patch.js package.json ${{ github.run_id }} && cat package.json | grep -i VERSION && cat package.json
-      shell: bash
-    - name: package patch 2
-      run: node build/package-ci-patch.js package-asar.json ${{ github.run_id }} && cat package-asar.json | grep -i VERSION && cat package-asar.json
-      shell: bash
-    - name: package patch 3
-      run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
-      shell: bash
+    # - name: package patch 1
+    #   run: node build/package-ci-patch.js package.json ${{ github.run_id }} && cat package.json | grep -i VERSION && cat package.json
+    #   shell: bash
+    # - name: package patch 2
+    #   run: node build/package-ci-patch.js package-asar.json ${{ github.run_id }} && cat package-asar.json | grep -i VERSION && cat package-asar.json
+    #   shell: bash
+    # - name: package patch 3
+    #   run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
+    #   shell: bash
     - run: git submodule init && git submodule update
     - run: git --no-pager diff package.json && git --no-pager diff package-asar.json && git --no-pager diff package-asar-dev.json
     - run: git --no-pager diff
