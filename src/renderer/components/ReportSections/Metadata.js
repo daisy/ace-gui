@@ -21,6 +21,8 @@ import classNames from 'classnames';
 
 import CircularProgress from '@material-ui/core/CircularProgress'
 
+const rowHeight = 60;
+
 const styles = theme => ({
 
   buttonProcessing: {
@@ -127,8 +129,8 @@ class Metadata extends React.Component {
               overflowY: "auto",
               padding: 6,
               margin: 0,
-              height: 98,
-              maxheight: 98,
+              height: rowHeight,
+              maxHeight: rowHeight,
               whiteSpace: "break-spaces",
               textOverflow: "ellipsis"
             }} >
@@ -151,8 +153,8 @@ class Metadata extends React.Component {
               overflowY: "auto",
               padding: 6,
               margin: 0,
-              height: 98,
-              maxheight: 98,
+              height: rowHeight,
+              maxHeight: rowHeight,
               whiteSpace: "break-spaces",
               textOverflow: "ellipsis"
             }} >
@@ -185,8 +187,8 @@ class Metadata extends React.Component {
               overflowY: "auto",
               padding: 6,
               margin: 0,
-              height: 98,
-              maxheight: 98,
+              height: rowHeight,
+              maxHeight: rowHeight,
               whiteSpace: "break-spaces",
               textOverflow: "ellipsis"
             }} >

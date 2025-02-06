@@ -36,7 +36,7 @@ export default class Report extends React.Component {
         ref={ref => { this.domRef = ReactDOM.findDOMNode(ref) }}>
 
         <h1>{localize("report.title")}</h1>
-        <Tabs onChange={(e, idx) => selectTab(idx)} value={selectedTab}>
+        <Tabs variant="scrollable" onChange={(e, idx) => selectTab(idx)} value={selectedTab}>
             <Tab className="pick-section-tab" label={localize("report.summary")}/>
             <Tab className="pick-section-tab" label={localize("report.violations")}/>
             <Tab className="pick-section-tab" label={localize("report.metadata")}/>

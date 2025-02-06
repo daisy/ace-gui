@@ -11,9 +11,15 @@
 }
 
 .ace-report {
-  margin-left: 20px;
-  overflow: scroll;
+  padding-left: 10px;
+  padding-right: 10px;
+  overflow-x: auto;
+  overflow-y: auto;
   width: 100%;
+
+.tablePaginationSpacerClass {
+display: none;
+}
 
   .location {
     pre {
@@ -40,6 +46,9 @@
   }
 
   .report-section {
+    .table-filters-panel {
+      border: silver dotted 2px;
+    }
     .table-filters-panel.expanded{
       // special hack for table filters expansion panel
       // it makes the menus visible z-order wise
@@ -124,7 +133,6 @@
 
   .images {
     img {
-      max-height: 100px;
       object-fit: contain;
     }
   }

@@ -7,6 +7,8 @@ const {ipcRenderer} = require('electron');
 import { localizer } from './../../../shared/l10n/localize';
 const { localize, getCurrentLanguage } = localizer;
 
+const rowHeight = 150;
+
 // the violations page of the report
 export default class Violations extends React.Component {
 
@@ -61,8 +63,8 @@ export default class Violations extends React.Component {
               overflowY: "auto",
               padding: 6,
               margin: 0,
-              height: 98,
-              maxheight: 98,
+              height: rowHeight,
+              maxheight: rowHeight,
               whiteSpace: "break-spaces",
               textOverflow: "ellipsis"
             }} >
@@ -91,8 +93,8 @@ export default class Violations extends React.Component {
               overflowY: "auto",
               padding: 6,
               margin: 0,
-              height: 98,
-              maxheight: 98,
+              height: rowHeight,
+              maxheight: rowHeight,
               whiteSpace: "break-spaces",
               textOverflow: "ellipsis"
             }} >
@@ -117,12 +119,12 @@ export default class Violations extends React.Component {
                       overflowY: "auto",
                       padding: 6,
                       margin: 0,
-                      height: 98,
-                      maxheight: 98,
+                      height: rowHeight,
+                      maxheight: rowHeight,
                       whiteSpace: "break-spaces",
                       textOverflow: "ellipsis"
                     }} >
-            <p>{row.rule.rule}</p>
+            <span>{row.rule.rule}</span>
             <p className="violation-engine">{localize("report.violationsSection.via")} {row.rule.engine}</p>
             </div>
           </TableCell>
@@ -145,24 +147,22 @@ export default class Violations extends React.Component {
                 overflowY: "auto",
                 padding: 6,
                 margin: 0,
-                height: 98,
-                maxheight: 98,
+                height: rowHeight,
+                maxheight: rowHeight,
                 textOverflow: "ellipsis",
                 overflowWrap: "break-word",
               }} >
 
-                <p>
                 <pre style={{
                       whiteSpace: "pre-wrap",
                       padding: 0,
                       margin: 0,
                     }}>{row.location.filename}</pre>
-            </p>
 
             {row.location.snippet != '' ?
-              <p><pre className='snippet' style={{
+              <pre className='snippet' style={{
                     whiteSpace: "pre-wrap",
-                  }}>{unescape(row.location.snippet)}</pre></p>
+                  }}>{unescape(row.location.snippet)}</pre>
               : ''}
             </div>
           </TableCell>
@@ -183,8 +183,8 @@ export default class Violations extends React.Component {
                 overflowY: "auto",
                 padding: 6,
                 margin: 0,
-                height: 98,
-                maxheight: 98,
+                height: rowHeight,
+                maxheight: rowHeight,
                 whiteSpace: "break-spaces",
                 textOverflow: "ellipsis"
               }} >

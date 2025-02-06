@@ -9,6 +9,8 @@ const { localize } = localizer;
 
 import { ipcRenderer } from 'electron';
 
+const rowHeight = 150;
+
 // the images page of the report
 export default class Images extends React.Component {
 
@@ -54,7 +56,7 @@ export default class Images extends React.Component {
               <img onClick={() => {
                 // shell.openExternal(src);
                 ipcRenderer.send('ELECTRON_SHELL_OPEN_EXTERNAL', `file://${decodeURIComponent(src).replace(/\\/g, "/")}`);
-              }} style={{ objectFit: "contain", cursor: "pointer" }} src={`fileproto://host/${src}`}/>
+              }} style={{ maxHeight: rowHeight, objectFit: "contain", cursor: "pointer" }} src={`fileproto://host/${src}`}/>
             </TableCell>
           }
       },
@@ -73,8 +75,8 @@ export default class Images extends React.Component {
           overflowY: "auto",
           padding: 6,
           margin: 0,
-          height: 98,
-          maxheight: 98,
+          height: rowHeight,
+          maxHeight: rowHeight,
           whiteSpace: "break-spaces",
           textOverflow: "ellipsis"
         }} >
@@ -97,8 +99,8 @@ export default class Images extends React.Component {
               overflowY: "auto",
               padding: 6,
               margin: 0,
-              height: 98,
-              maxheight: 98,
+              height: rowHeight,
+              maxHeight: rowHeight,
               whiteSpace: "break-spaces",
               textOverflow: "ellipsis"
             }}>
@@ -121,8 +123,8 @@ export default class Images extends React.Component {
                   overflowY: "auto",
                   padding: 6,
                   margin: 0,
-                  height: 98,
-                  maxheight: 98,
+                  height: rowHeight,
+                  maxHeight: rowHeight,
                   whiteSpace: "break-spaces",
                   textOverflow: "ellipsis"
                 }}>
@@ -145,8 +147,8 @@ export default class Images extends React.Component {
               overflowY: "auto",
               padding: 6,
               margin: 0,
-              height: 98,
-              maxheight: 98,
+              height: rowHeight,
+              maxHeight: rowHeight,
               whiteSpace: "break-spaces",
               textOverflow: "ellipsis"
             }}>
@@ -170,8 +172,8 @@ export default class Images extends React.Component {
           overflowY: "auto",
           padding: 6,
           margin: 0,
-          height: 98,
-          maxheight: 98,
+          height: rowHeight,
+          maxHeight: rowHeight,
           textOverflow: "ellipsis",
           overflowWrap: "break-word",
         }} className="location">
@@ -205,8 +207,8 @@ export default class Images extends React.Component {
           overflowY: "auto",
           padding: 6,
           margin: 0,
-          height: 98,
-          maxheight: 98,
+          height: rowHeight,
+          maxHeight: rowHeight,
           whiteSpace: "break-spaces",
           textOverflow: "ellipsis"
         }}>

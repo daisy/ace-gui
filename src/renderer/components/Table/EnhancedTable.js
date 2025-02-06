@@ -19,6 +19,8 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { localizer } from './../../../shared/l10n/localize';
 const { localize } = localizer;
 
+const tableLayoutFixed = false;
+
 function desc(a, b, orderBy, head) {
   // console.log("----------", JSON.stringify(a), " ================ ", JSON.stringify(b), " ############### ", orderBy, " ***** ", JSON.stringify(head));
   let aValue = head.hasOwnProperty('sortOn') ? head.sortOn(a[orderBy]) : a[orderBy];
@@ -294,7 +296,7 @@ export default class EnhancedTable extends React.Component {
     });
 
     return (
-      <div>
+      <div style={{ marginTop: 6 }}>
       {filters.length > 0 ?
         <Accordion
           className="table-filters-panel"
@@ -321,8 +323,12 @@ export default class EnhancedTable extends React.Component {
         </AccordionDetails>
       </Accordion>
       : ''}
-        <Table aria-live="polite" style={{
-          tableLayout: "fixed",
+        <div style={{
+          overflow: "visible"
+          // overflowX: "auto"
+        }}>
+          <Table aria-live="polite" style={{
+          tableLayout: tableLayoutFixed ? "fixed" : undefined,
           border: "silver solid 1px"
         }}>
         <TableHead>
@@ -330,6 +336,7 @@ export default class EnhancedTable extends React.Component {
             {heads.map(head => {
               return (
                 <TableCell
+                  style={{border: "black solid 2px", fontWeight: "bold", overflow: "hidden", padding: 6}}
                   key={head.id}
                   numeric={head.numeric.toString()}
                   sortDirection={head.sortable && orderBy === head.id ? order : false}>
@@ -380,6 +387,10 @@ export default class EnhancedTable extends React.Component {
         <TableFooter>
           <TableRow>
             <TablePagination
+              classes={{
+                spacer: "tablePaginationSpacerClass",
+                //.MuiTablePagination-spacer
+              }}
               colSpan={heads.length}
               count={filteredRows.length}
               rowsPerPage={rowsPerPage}
@@ -395,6 +406,7 @@ export default class EnhancedTable extends React.Component {
         </TableFooter>
         : '' }
       </Table>
+        </div>
       </div>
     );
   }
