@@ -33,53 +33,96 @@ jobs:
     if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci')"
     # runs-on: ubuntu-latest # / ubuntu-18.04 ... or ubuntu-16.04, ubuntu-20.04
     # runs-on: macos-latest # / macos-10.15
-    # runs-on: windows-2016 # not window-latest / windows-2019, see https://github.com/edrlab/thorium-reader/issues/1591
+    # runs-on: windows-2016 # not window-latest / windows-2019
     runs-on: ${{ matrix.runson }}
     strategy:
       fail-fast: false
       matrix:
-        # windows-arm
-        osarch: [windows-intel, macos-intel, macos-arm, linux-intel, linux-arm]
+        osarch: [windows-intel, windows-arm, macos-intel, macos-arm, linux-intel, linux-arm]
+# AceApp for MacOS x64 and arm64 is built on GitHub Actions arm64 runners
+# AceApp for Linux x64 and arm64 is built on GitHub Actions x64 runners
+# AceApp for Windows x64 and arm64 is built on GitHub Actions x64 runners
+# To ensure arm64, the trick is:
+#       npm ci --foreground-scripts --arch=arm64 --cpu=arm64
+#       Replace "x64" with "arm64" in `package.json` (and optionally the electron-builder `src/package.json`, if needed)
+# To ensure x64, the trick is:
+#       npm ci --foreground-scripts --arch=x64 --cpu=x64
+#       `package.json` already specifies "x64"
+# windows-latest is currently windows-2022
+#       https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md
+# windows-2025 is beta / public preview
+#       https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md
+#       https://github.com/actions/runner-images/issues/11228
+# windows-11-preview_aarch64 ?
+#       https://github.com/actions/partner-runner-images/issues/19#issuecomment-2569992032
+# macos-latest is currently macos-14-arm64
+#       https://github.com/actions/runner-images/blob/main/images/macos/macos-14-arm64-Readme.md
+# macos-15-arm64 is beta / public preview
+#       https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md
+# ubuntu-latest is ubuntu-24.04
+#       https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
+# ubuntu-20.04 is the oldest available (used here)
+#       https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md
         include:
           - osarch: windows-intel
-            runson: windows-latest
+            runson: windows-latest #windows-2022
             packname: win
             release_tag: latest-windows-intel
-          # - osarch: windows-arm
-          #   runson: windows-latest
-          #   packname: win
-          #   release_tag: latest-windows-arm
+          - osarch: windows-arm
+            runson: windows-latest #windows-2022
+            packname: win
+            release_tag: latest-windows-arm
           - osarch: macos-intel
-            runson: macos-13
+            runson: macos-latest #macos-14-arm64
             packname: 'mac:skip-notarize'
             release_tag: latest-macos-intel
           - osarch: macos-arm
-            runson: macos-latest
+            runson: macos-latest #macos-14-arm64
             packname: 'mac:skip-notarize'
             release_tag: latest-macos-arm
           - osarch: linux-intel
-            runson: ubuntu-20.04
+            runson: ubuntu-20.04 #ubuntu-latest is ubuntu-24.04
             packname: linux
             release_tag: latest-linux-intel
           - osarch: linux-arm
-            runson: ubuntu-20.04
+            runson: ubuntu-20.04 #ubuntu-latest is ubuntu-24.04
             packname: linux
             release_tag: latest-linux-arm
     env:
-#      OS_NAME_: ${{ matrix.osarch }}
       RELEASE_TAG: ${{ matrix.release_tag }}
     steps:
-#    - run: echo 'OS_NAME_:' ${{ env.OS_NAME_ }}
-    #- run: echo 'RELEASE_TAG=latest-${{ env.OS_NAME_ }}' | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-    #- run: echo 'RELEASE_TAG=latest-${{ env.OS_NAME_ }}' >> $GITHUB_ENV
-    #- run: echo '::set-env name=RELEASE_TAG::latest-${{ env.OS_NAME_ }}'
+    # graceful fail?
+    - run: |-
+        pwdx || echo OK || true
+      shell: cmd
+      continue-on-error: true
+    - name: Microsoft Windows dumpbin to PATH
+      if: startsWith(matrix.osarch, 'windows-')
+      run: >
+        $VS_ROOT = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC"; $VS_VERSION = (Get-ChildItem -Path $VS_ROOT | Sort-Object Name -Descending | Select-Object -First 1).Name; $VS_BIN = "$VS_ROOT\$VS_VERSION\bin\Hostx64\x64"; echo $VS_BIN >> $env:GITHUB_PATH; echo $VS_BIN
+      shell: powershell
+    - name: Microsoft Windows dumpbin check
+      if: startsWith(matrix.osarch, 'windows-')
+      run: >
+        dumpbin /headers "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64\dumpbin.exe" | findstr /i machine
+      shell: cmd
+  # - name: Microsoft Windows msbuild to PATH
+  #   if: startsWith(matrix.osarch, 'windows-')
+  #   uses: microsoft/setup-msbuild@v2
+  # "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin"
+  # "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools"
+  # "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\bin\amd64"
+  # "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.29.30133\bin\HostX64\x64"
+  # "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64"
     - run: echo 'RELEASE_TAG:' ${{ env.RELEASE_TAG }}
     - run: 'echo "GITHUB_RUN_NUMBER: ${{ github.run_number }}"'
     - run: 'echo "GITHUB_RUN_ID: ${{ github.run_id }}"'
     - run: 'echo "GITHUB_SHA: ${{ github.sha }}"'
-    - name: Check sys arch
-      if: ${{ matrix.osarch != 'windows-intel' }}
-      run: echo "${{ matrix.osarch }}" && uname -m && arch
+    - run: echo "${{ matrix.osarch }} // ${{ runner.arch }}"
+    - name: System arch (non Windows)
+      #if: ${{ matrix.osarch != 'windows-intel' && matrix.osarch != 'windows-arm' }}
+      if: ${{ !startsWith(matrix.osarch, 'windows-') }}
+      run: uname -m && arch
     - name: Checkout
       uses: actions/checkout@v4
     #   with:
@@ -134,24 +177,65 @@ jobs:
     - name: package patch 3
       run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
       shell: bash
-    #- run: pwd && ls && cd .. && pwd && ls && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls && git checkout ace-next-local-packs && yarn ace-app-prepare && pwd && ls && cd .. && pwd && ls && cd ace-gui && pwd && ls
-    #- run: rm -f yarn.lock && rm -rf node_modules && yarn install
-    - run: yarn --frozen-lockfile
     - run: git submodule init && git submodule update
     - run: git --no-pager diff package.json && git --no-pager diff package-asar.json && git --no-pager diff package-asar-dev.json
     - run: git --no-pager diff
     - run: npm cache clean --force
     - run: npm cache verify
+    #- run: pwd && ls && cd .. && pwd && ls && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls && git checkout ace-next-local-packs && yarn ace-app-prepare && pwd && ls && cd .. && pwd && ls && cd ace-gui && pwd && ls
+    #- run: rm -f yarn.lock && rm -rf node_modules && yarn install
+    - name: YARN install (arm64) (non Windows)
+      #if: ${{ matrix.osarch == 'linux-arm' || matrix.osarch == 'macos-arm' }}
+      if: ${{ !startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-arm') }}
+      run: export npm_config_arch=arm64 && export npm_config_cpu=arm64 && yarn --frozen-lockfile
+      #--arch=arm64
+    - name: YARN install (arm64) (Windows)
+      #if: ${{ startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-arm') }}
+      if: ${{ matrix.osarch == 'windows-arm' }}
+      run: SET "npm_config_arch=arm64" && SET "npm_config_cpu=arm64" && yarn --frozen-lockfile
+      shell: cmd
+      #--arch=arm64
+    - name: YARN install (x64) (non Windows)
+      #if: ${{ matrix.osarch == 'linux-intel' || matrix.osarch == 'macos-intel' }}
+      if: ${{ !startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-intel') }}
+      run: export npm_config_arch=x64 && export npm_config_cpu=x64 && yarn --frozen-lockfile
+      #--arch=x64
+    - name: YARN install (x64) (Windows)
+      #if: ${{ startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-intel') }}
+      if: ${{ matrix.osarch == 'windows-intel' }}
+      run: SET "npm_config_arch=x64" && SET "npm_config_cpu=x64" && yarn --frozen-lockfile
+      shell: cmd
+      #--arch=x64
+    - name: Electron version + arch (Windows)
+      #if: ${{ matrix.osarch == 'windows-intel' || matrix.osarch == 'windows-arm' }}
+      if: startsWith(matrix.osarch, 'windows-')
+      run: >
+        (dumpbin /headers "node_modules\electron\dist\electron.exe" | findstr /i machine) && (node_modules\\electron\\dist\\electron.exe --no-sandbox --version || echo INVALID_ARCH || true) && (node_modules\\electron\\dist\\electron.exe --no-sandbox --abi || echo INVALID_ARCH || true)
+      shell: cmd
+      continue-on-error: true
+    - name: Electron version + arch (Linux)
+      #if: ${{ matrix.osarch == 'linux-intel' || matrix.osarch == 'linux-arm' }}
+      if: startsWith(matrix.osarch, 'linux-')
+      run: >
+        (file node_modules/electron/dist/electron) && (node_modules/electron/dist/electron --no-sandbox --version || echo INVALID_ARCH) && (node_modules/electron/dist/electron --no-sandbox --abi || echo INVALID_ARCH)
+    - name: Electron version + arch (MacOS)
+      #if: ${{ matrix.osarch == 'macos-intel' || matrix.osarch == 'macos-arm' }}
+      if: startsWith(matrix.osarch, 'macos-')
+      run: >
+        (file node_modules/electron/dist/Electron.app/Contents/MacOS/Electron) && (node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --no-sandbox --version || echo INVALID_ARCH) && (node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --no-sandbox --abi || echo INVALID_ARCH)
     - name: PR action (just build)
       if: ${{ github.event_name == 'pull_request' }}
       run: yarn build:prod
-      # && yarn test SEE https://github.com/edrlab/thorium-reader/issues/1697
-    - name: non-PR action, Windows (build and package)
-      if: ${{ github.event_name != 'pull_request' && ( matrix.osarch == 'windows-intel' || matrix.osarch == 'windows-arm' ) }}
+    - name: non-PR action (build and package) ARM
+      #if: ${{ github.event_name != 'pull_request' && (matrix.osarch == 'linux-arm' || matrix.osarch == 'windows-arm' || matrix.osarch == 'macos-arm') }}
+      if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-arm') }}
+      #run: sed 's/x64/arm64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json && yarn package:${{ matrix.packname }} && sed 's/arm64/x64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json
+      run: >
+        node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/x64/g, "arm64"); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });' && yarn package:${{ matrix.packname }}
+    - name: non-PR action (build and package) INTEL
+      #if: ${{ github.event_name != 'pull_request' && (matrix.osarch == 'linux-intel' || matrix.osarch == 'windows-intel' || matrix.osarch == 'macos-intel') }}
+      if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-intel') }}
       run: yarn package:${{ matrix.packname }}
-    - name: non-PR action, non-Windows (build and package)
-      if: ${{ github.event_name != 'pull_request' && matrix.osarch != 'windows-intel' && matrix.osarch != 'windows-arm' }}
-      run: echo "${{ matrix.osarch }}" && (if [[ ${{ matrix.osarch }} == 'macos-arm' || ${{ matrix.osarch }} == 'linux-arm' ]]; then uname -m && arch && sed 's/x64/arm64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json && yarn package:${{ matrix.packname }} && sed 's/arm64/x64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json; else yarn package:${{ matrix.packname }}; fi)
     #- run: ls -alsR release
     #- run: npm install @octokit/rest
     - name: GitHub Tagged Release Delete/ReCreate and Upload Build Artefacts
@@ -161,7 +245,7 @@ jobs:
     #   if: ${{ github.event_name != 'pull_request' }}
     #   uses: actions/upload-artifact@v2
     #   with:
-    #     name: Thorium
+    #     name: AceApp
     #     path: ./release/*.exe
     # - name: Delete Release
     #   if: ${{ github.event_name != 'pull_request' }}
@@ -186,7 +270,7 @@ jobs:
     #   with:
     #     upload_url: ${{ steps.create_release.outputs.upload_url }}
     #     asset_path: ./release/*.exe
-    #     asset_name: Thorium.exe
+    #     asset_name: AceApp.exe
     #     asset_content_type: application/octet-stream
     # - name: GitHub Script Release And Assets
     #   if: ${{ github.event_name != 'pull_request' }}
