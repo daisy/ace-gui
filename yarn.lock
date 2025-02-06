@@ -854,94 +854,94 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@daisy/ace-axe-runner-electron@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-axe-runner-electron/-/ace-axe-runner-electron-1.3.4.tgz#3997814bd7ac2cee1a38c96ef2c198c464d07f05"
-  integrity sha512-QZP3BE/xAEaVE+IZgjtIKQZaDkvoGmTIDuKruGnrGM+v2E/iK9VXcVZ97rdMvkiUqR2OP9pbZXi92a1cVfElig==
+"@daisy/ace-axe-runner-electron@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-axe-runner-electron/-/ace-axe-runner-electron-1.3.5.tgz#2a67d0b5788621006d1b3275c9414c5b97a8b4d9"
+  integrity sha512-sXP4xMBS7zsM64o0PJ0/waj3qzSM61gja7MSMx00GR2VOpD76TTGLYclv6hQ+CULD7YEinX8GTyYTRRRG4EvlQ==
   dependencies:
-    "@daisy/ace-cli-shared" "1.3.4"
+    "@daisy/ace-cli-shared" "1.3.5"
     mime-types "^2.1.35"
     uuid "^8.3.2"
 
-"@daisy/ace-cli-shared@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-cli-shared/-/ace-cli-shared-1.3.4.tgz#80660b0edf7075bedb05c83e7238dc7e4bf4f984"
-  integrity sha512-g06l01RLeyYu6RoKTYOiyd3afswah7CKVnt+kYeEQ4jgLIPP6KOVEanJqu28zsKFdXEWzHcy1MfeZh8jcsN1PQ==
+"@daisy/ace-cli-shared@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-cli-shared/-/ace-cli-shared-1.3.5.tgz#49553a2288ff2ba51f64a9c2bcfa20f6d649aa7a"
+  integrity sha512-hTCG7eA/f/IShyifGdnKwW4vktrVnnmWmEqplOwK/Afj2PUmjl609Gl2WXohFu4FayggzDXs5qHwpbmWEiSC1g==
   dependencies:
-    "@daisy/ace-config" "1.3.4"
-    "@daisy/ace-core" "1.3.4"
-    "@daisy/ace-logger" "1.3.4"
-    "@daisy/ace-meta" "1.3.4"
+    "@daisy/ace-config" "1.3.5"
+    "@daisy/ace-core" "1.3.5"
+    "@daisy/ace-logger" "1.3.5"
+    "@daisy/ace-meta" "1.3.5"
     meow "^9.0.0"
     winston "^3.17.0"
 
-"@daisy/ace-config@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-config/-/ace-config-1.3.4.tgz#2a5301eeecae3e0fa54b14030d6e73635108f75e"
-  integrity sha512-OHeSo25hRFLVCSW6JZ0phD3W3/a3te82gKjODmM+agO7Acryjcyo6jyaaKwZowtrzZXSZNiCHiyXwfGl7EFtZg==
+"@daisy/ace-config@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-config/-/ace-config-1.3.5.tgz#4aae302eb3d12656b1f06f1a99462f9f4e1fa0a0"
+  integrity sha512-uF81XE6fxq/0NsAq7uFScDEQ69j0aklKI5cfvg39+7ah5L2w8zQhtwzK1HP0gEsGa0uyySSD7ypoM4l/KoDtIQ==
   dependencies:
     conf "^9.0.2"
     env-paths "^2.2.1"
     lodash.mergewith "^4.6.2"
 
-"@daisy/ace-core@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-core/-/ace-core-1.3.4.tgz#25adb45ff944bca6a67115303e878ddb16bb8e55"
-  integrity sha512-WqjxmaOv1fvXynkwGSGDsAJOhEDFfOh9MK/RIwyCH4zpuTDn6hb5LfkMFszhgZ+6wO/b/a8J5Zua1TJm7q/67A==
+"@daisy/ace-core@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-core/-/ace-core-1.3.5.tgz#ca3495e5826daa8bceef94d00f6b0eafef9188a8"
+  integrity sha512-+S99Ou5jEmukDKiOW3SRaLOoqlhiNMn2UN8Qi1Cze06zDnan5o8RGk4nF2Uf/cIPc8hktZ82JxjEqNXRno7HRw==
   dependencies:
-    "@daisy/ace-localize" "1.3.4"
-    "@daisy/ace-logger" "1.3.4"
-    "@daisy/ace-meta" "1.3.4"
-    "@daisy/ace-report" "1.3.4"
-    "@daisy/ace-report-axe" "1.3.4"
+    "@daisy/ace-localize" "1.3.5"
+    "@daisy/ace-logger" "1.3.5"
+    "@daisy/ace-meta" "1.3.5"
+    "@daisy/ace-report" "1.3.5"
+    "@daisy/ace-report-axe" "1.3.5"
     "@daisy/axe-core-for-ace" "4.10.2-canary.3"
-    "@daisy/epub-utils" "1.3.4"
+    "@daisy/epub-utils" "1.3.5"
     file-url "^3.0.0"
     p-map "^4.0.0"
     tmp "^0.2.3"
     winston "^3.17.0"
 
-"@daisy/ace-localize@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-localize/-/ace-localize-1.3.4.tgz#cd7314319d70e4eddf7777ef709af6f2df67308b"
-  integrity sha512-DAZbliFqkT/nqczJC9odDPYAm+JQjsIVSh53gcPEaK6RYMT4b5Lorhy5Pgt1ZgZmL3xL4aHX9XPfM4pZMVgImA==
+"@daisy/ace-localize@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-localize/-/ace-localize-1.3.5.tgz#51990b58ea5940722345feb3f3b83608bcb14232"
+  integrity sha512-dy/LzrKZe8LHe4pgKcbtAWZAw1yA2Ap/AYlEPI8KVH9ssJTL0DF5NbNVcEXbkF33G2cZ1JD8T+KEJvYHpN8X6Q==
   dependencies:
     i18next "^20.6.1"
     winston "^3.17.0"
 
-"@daisy/ace-logger@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-logger/-/ace-logger-1.3.4.tgz#c3fafa7ebc959e0d48ff76c9dcb18b0eca439c95"
-  integrity sha512-WXAKyx/9BD4BnuDAWN4qmQ5hKGAFn9zV5dv7k6KnD8k5VW9r5o3hokTtVZT0KMzcH7lFJO02Ke5jRwDecxj0pA==
+"@daisy/ace-logger@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-logger/-/ace-logger-1.3.5.tgz#8b5270bc7a61554aa13ecc0bfbfb00b299ec991a"
+  integrity sha512-vDjK3XV1D0YOs8Zg8Bh3EII85JPONWE3W9VusuOc56EDDtuZMHNBNxQ0zaSbfYX48Powo+qFjTq+1JL273xkHQ==
   dependencies:
-    "@daisy/ace-config" "1.3.4"
+    "@daisy/ace-config" "1.3.5"
     fs-extra "^10.1.0"
     uuid "^8.3.2"
     winston "^3.17.0"
 
-"@daisy/ace-meta@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-meta/-/ace-meta-1.3.4.tgz#1173152386710bac0312434279e427f3b32c82de"
-  integrity sha512-stz5VGBYPqA0VLV8AvTFxCxmMdNqLVQqUuJqakzLMYmElXuMOY0viVKdY4B3eWC7i5BixwbPNsuT8uuXCyGYwQ==
+"@daisy/ace-meta@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-meta/-/ace-meta-1.3.5.tgz#c43cbe2199c570011072a3be797d373125a561ae"
+  integrity sha512-lgRPZaptYyCokQe3mq7JQPWOHaDf40qngMLxptJMbECBO1xKZZ2a2mTrWLFCToYn7yNgoggJ3P0HN0UhIhOrHg==
 
-"@daisy/ace-report-axe@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-report-axe/-/ace-report-axe-1.3.4.tgz#76fd48f3e1b20695c4021c56ebaa40d29900bcaf"
-  integrity sha512-jIqCzB24PphnLYtiXUv0fei7ZnpuXf3UDtDKc+6fE5D0tlnvpWcfDhNOunvCFDke7mN74TMUsiOzeYCg4QCS5w==
+"@daisy/ace-report-axe@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-report-axe/-/ace-report-axe-1.3.5.tgz#29229b9f62be10ca0e4d3b2764ebce5e5e486480"
+  integrity sha512-q9jZHOwIxdJmpf06tfW7d6MOMA9etZ/aJq9Thcd3adA/5Afq05s8Y2I6PKlchCYdnBmVdCqRDcJIPn9ZJ9/0XQ==
   dependencies:
-    "@daisy/ace-localize" "1.3.4"
-    "@daisy/ace-report" "1.3.4"
+    "@daisy/ace-localize" "1.3.5"
+    "@daisy/ace-report" "1.3.5"
     fs-extra "^10.1.0"
     winston "^3.17.0"
 
-"@daisy/ace-report@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/ace-report/-/ace-report-1.3.4.tgz#3861d8270296484cc9bacadd428eaebca040c706"
-  integrity sha512-C3Is7Ls1UlYWVBS7+prfD/CGMmri+gFHcndvRpwdNh3RIQ/PzgegqQDhZqaGCvv3uyDUPJeyuEip+icxSzfhrg==
+"@daisy/ace-report@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/ace-report/-/ace-report-1.3.5.tgz#4cfba4ea91c35fd683e28ce912fec4864d3a86ec"
+  integrity sha512-aPJQgW4BneLAUpD/Wwc4ayrquJjRgi32Cl62hiVFBZqkaDqPyIJcnQYLSl1gLUGHwMav5FWTZXvqTjr0rkeK5Q==
   dependencies:
-    "@daisy/ace-config" "1.3.4"
-    "@daisy/ace-localize" "1.3.4"
-    "@daisy/ace-meta" "1.3.4"
+    "@daisy/ace-config" "1.3.5"
+    "@daisy/ace-localize" "1.3.5"
+    "@daisy/ace-meta" "1.3.5"
     escape-html "^1.0.3"
     fs-extra "^10.1.0"
     handlebars "^4.7.8"
@@ -952,10 +952,10 @@
   resolved "https://registry.yarnpkg.com/@daisy/axe-core-for-ace/-/axe-core-for-ace-4.10.2-canary.3.tgz#d0d21227546d940bb62c8a93ce5e127189b990d3"
   integrity sha512-WstkcWpxo6Y87DiAtoQReUWP33+Shen1IMKwGi/YeuP9COwteNCWDQer0nAVfWc0RCqjc8YnZQ0VXYPAFuJHyA==
 
-"@daisy/epub-utils@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@daisy/epub-utils/-/epub-utils-1.3.4.tgz#0cc801d0c44a102e3521b4daaee1f4fa02b2fb2a"
-  integrity sha512-Zh+JJXJajCJmOZR1b2WzxqBPvT62uWJjKxesb20aDDYIe8pol7mZMhB32kyOeSgJi0RaFD4qvQe5AC3+0EMEYA==
+"@daisy/epub-utils@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@daisy/epub-utils/-/epub-utils-1.3.5.tgz#72971f84645e29d6ad7cf5d6c7d1c565a162649f"
+  integrity sha512-QfcImb8c8LHj9g5CzKn/1DTKwdsxi0HTARW8F8qJ8frsIKTZTBen1cfrGv/cRpwgdTSpu9g92CasGSGdei7hlg==
   dependencies:
     extract-zip "^2.0.1"
     file-url "^3.0.0"
@@ -4085,14 +4085,14 @@ electron-store@^7.0.3:
     type-fest "^0.20.2"
 
 electron-to-chromium@^1.5.73:
-  version "1.5.92"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.92.tgz#81e8ebe06f8e2a49fdba84bd10e9ad5b63efffe0"
-  integrity sha512-BeHgmNobs05N1HMmMZ7YIuHfYBGlq/UmvlsTgg+fsbFs9xVMj+xJHFg19GN04+9Q+r8Xnh9LXqaYIyEWElnNgQ==
+  version "1.5.93"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.93.tgz#6fae820ac8bb772a841aa67fce5389e6c6da7ba2"
+  integrity sha512-M+29jTcfNNoR9NV7la4SwUqzWAxEwnc7ThA5e1m6LRSotmpfpCpLcIfgtSCVL+MllNLgAyM/5ru86iMRemPzDQ==
 
-electron@^34.0.2:
-  version "34.0.2"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-34.0.2.tgz#84432ab1efa165e260ce943c472879228b620573"
-  integrity sha512-u3F+DSUlg9NaGS+9qnYmSRN8VjAnc3LJDDk1ye1uISJnh4gjG76y3681qLowsPMx4obvCP2eBINnmbLo0yT5WA==
+electron@^34.1.0:
+  version "34.1.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-34.1.0.tgz#47691b0297ed73a477e838bd7343f307a2e60693"
+  integrity sha512-ZUid8XrGPA0dfes97PPADc8ecWOUX/qYRNp1glze9coZLEYc+PsMvgjVDCHSvjfHfiI+V3unwngSVpBouX71YQ==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^20.9.0"
@@ -8482,10 +8482,10 @@ sass-loader@^8.0.2:
     schema-utils "^2.6.1"
     semver "^6.3.0"
 
-sass@^1.83.4:
-  version "1.83.4"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.83.4.tgz#5ccf60f43eb61eeec300b780b8dcb85f16eec6d1"
-  integrity sha512-B1bozCeNQiOgDcLd33e2Cs2U60wZwjUUXzh900ZyQF5qUasvMdDZYbQ566LJu7cqR+sAHlAfO6RMkaID5s6qpA==
+sass@^1.84.0:
+  version "1.84.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.84.0.tgz#da9154cbccb2d2eac7a9486091b6d9ba93ef5bad"
+  integrity sha512-XDAbhEPJRxi7H0SxrnOpiXFQoUJHwkR2u3Zc4el+fK/Tt5Hpzw5kkQ59qVDfvdaUq6gCrEZIbySFBM2T9DNKHg==
   dependencies:
     chokidar "^4.0.0"
     immutable "^5.0.2"
