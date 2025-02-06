@@ -125,15 +125,15 @@ jobs:
     - run: yarn --version
     - run: yarn config set network-timeout 300000 || echo ok
     # - run: yarn --global install asar
-    # - name: package patch 1
-    #   run: node build/package-ci-patch.js package.json ${{ github.run_id }} && cat package.json | grep -i VERSION && cat package.json
-    #   shell: bash
-    # - name: package patch 2
-    #   run: node build/package-ci-patch.js package-asar.json ${{ github.run_id }} && cat package-asar.json | grep -i VERSION && cat package-asar.json
-    #   shell: bash
-    # - name: package patch 3
-    #   run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
-    #   shell: bash
+    - name: package patch 1
+      run: node build/package-ci-patch.js package.json ${{ github.run_id }} && cat package.json | grep -i VERSION && cat package.json
+      shell: bash
+    - name: package patch 2
+      run: node build/package-ci-patch.js package-asar.json ${{ github.run_id }} && cat package-asar.json | grep -i VERSION && cat package-asar.json
+      shell: bash
+    - name: package patch 3
+      run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
+      shell: bash
     #- run: pwd && ls && cd .. && pwd && ls && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls && git checkout ace-next-local-packs && yarn ace-app-prepare && pwd && ls && cd .. && pwd && ls && cd ace-gui && pwd && ls
     #- run: rm -f yarn.lock && rm -rf node_modules && yarn install
     - run: yarn --frozen-lockfile
