@@ -53,7 +53,12 @@ export default class Images extends React.Component {
                 border: "black solid 1px", padding: 6,
                 overflow: "hidden",
               }}>
-              <img onClick={() => {
+              <img tabIndex="0" onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  // shell.openExternal(src);
+                    ipcRenderer.send('ELECTRON_SHELL_OPEN_EXTERNAL', `file://${decodeURIComponent(src).replace(/\\/g, "/")}`);
+                }
+              }} onClick={() => {
                 // shell.openExternal(src);
                 ipcRenderer.send('ELECTRON_SHELL_OPEN_EXTERNAL', `file://${decodeURIComponent(src).replace(/\\/g, "/")}`);
               }} style={{ maxHeight: rowHeight, objectFit: "contain", cursor: "pointer" }} src={`fileproto://host/${src}`}/>
@@ -157,6 +162,31 @@ export default class Images extends React.Component {
           </TableCell>
       },
       {
+        id: 'role',
+        label: localize("report.imagesSection.role"),
+        numeric: false,
+        sortable: true,
+        filterOn: obj => obj,
+        makeCell: (row, idx) =>
+          <TableCell style={{
+              border: "black solid 1px", padding: 0,
+              overflow: "hidden",
+          }} key={idx}>
+      <div style={{
+          overflow: "hidden",
+          overflowY: "auto",
+          padding: 6,
+          margin: 0,
+          height: rowHeight,
+          maxHeight: rowHeight,
+          whiteSpace: "break-spaces",
+          textOverflow: "ellipsis"
+        }}>
+          {row.role ? row.role : localize("report.imagesSection.NA")}
+        </div>
+        </TableCell>
+      },
+      {
         id: 'location',
         label: localize("report.imagesSection.location"),
         numeric: false,
@@ -181,38 +211,15 @@ export default class Images extends React.Component {
               whiteSpace: "pre-wrap",
               padding: 0,
               margin: 0,
+              maxWidth: 300,
             }}>{decodeURIComponent(row.location)}</pre>
               <p style={{
                   whiteSpace: "pre-wrap",
                   padding: 3,
                   border: "silver solid 2px",
-                  fontFamily: "monospace"
+                  fontFamily: "monospace",
+                  maxWidth: 300,
                 }}>{ row.src }</p>
-        </div>
-        </TableCell>
-      },
-      {
-        id: 'role',
-        label: localize("report.imagesSection.role"),
-        numeric: false,
-        sortable: true,
-        filterOn: obj => obj,
-        makeCell: (row, idx) =>
-          <TableCell style={{
-              border: "black solid 1px", padding: 0,
-              overflow: "hidden",
-          }} key={idx}>
-      <div style={{
-          overflow: "hidden",
-          overflowY: "auto",
-          padding: 6,
-          margin: 0,
-          height: rowHeight,
-          maxHeight: rowHeight,
-          whiteSpace: "break-spaces",
-          textOverflow: "ellipsis"
-        }}>
-          {row.role ? row.role : localize("report.imagesSection.NA")}
         </div>
         </TableCell>
       }

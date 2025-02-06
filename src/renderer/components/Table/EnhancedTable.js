@@ -323,20 +323,19 @@ export default class EnhancedTable extends React.Component {
         </AccordionDetails>
       </Accordion>
       : ''}
-        <div style={{
-          overflow: "visible"
-          // overflowX: "auto"
-        }}>
           <Table aria-live="polite" style={{
           tableLayout: tableLayoutFixed ? "fixed" : undefined,
-          border: "silver solid 1px"
+          border: "silver solid 1px",
+          overflow: "visible"
         }}>
         <TableHead>
           <TableRow>
             {heads.map(head => {
               return (
                 <TableCell
-                  style={{border: "black solid 2px", fontWeight: "bold", overflow: "hidden", padding: 6}}
+                  style={{border: "black solid 2px", fontWeight: "bold", overflow: "hidden", padding: 6,
+                  wordBreak: "auto-phrase"
+                  }}
                   key={head.id}
                   numeric={head.numeric.toString()}
                   sortDirection={head.sortable && orderBy === head.id ? order : false}>
@@ -359,8 +358,9 @@ export default class EnhancedTable extends React.Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {stableSort(filteredRows, getSorting(order, orderBy, heads))
-            .slice(Math.min(filteredRows - 1, page * rowsPerPage), page * rowsPerPage + rowsPerPage)
+          {
+            stableSort(filteredRows, getSorting(order, orderBy, heads))
+            .slice(Math.min(filteredRows.length - 1, page * rowsPerPage), page * rowsPerPage + rowsPerPage)
             .map((row, idx) => {
               return (
                 <TableRow style={{
@@ -406,7 +406,7 @@ export default class EnhancedTable extends React.Component {
         </TableFooter>
         : '' }
       </Table>
-        </div>
+
       </div>
     );
   }
