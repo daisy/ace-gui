@@ -52,6 +52,7 @@ export default class Images extends React.Component {
             return <TableCell key={idx} style={{
                 border: "black solid 1px", padding: 6,
                 overflow: "hidden",
+                maxWidth: Math.round(rowHeight*1.5),
               }}>
               <img tabIndex="0" onKeyUp={(e) => {
                 if (e.key === "Enter") {
