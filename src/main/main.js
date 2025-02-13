@@ -63,7 +63,7 @@ let _storeUnsubscribe;
 // --in-process-gpu ?
 // app.commandLine.appendSwitch("in-process-gpu");
 // ------------------------------------ see patchElectronJestRunner4
-// app.commandLine.appendSwitch("disable-gpu");
+app.commandLine.appendSwitch("disable-gpu");
 // app.disableHardwareAcceleration();
 // app.commandLine.appendSwitch("disable-software-rasterizer");
 
