@@ -52,7 +52,20 @@ let _storeSubscribe;
 let _storeUnsubscribe;
 
 // https://github.com/electron/electron/releases/tag/v14.0.0
+// Removes the deprecation warning message in the console
+// https://github.com/electron/electron/issues/18397
 // app.allowRendererProcessReuse = true;
+// https://www.electronjs.org/releases/stable#breaking-changes-1400
+
+// https://github.com/electron/electron/issues/43415#issuecomment-2308352266
+// https://github.com/electron/electron/issues/28164
+// https://github.com/electron/electron/issues/20702
+// --in-process-gpu ?
+// app.commandLine.appendSwitch("in-process-gpu");
+// ------------------------------------ see patchElectronJestRunner4
+app.commandLine.appendSwitch("disable-gpu");
+// app.disableHardwareAcceleration();
+// app.commandLine.appendSwitch("disable-software-rasterizer");
 
 const ACE_ELECTRON_HTTP_PROTOCOL = "acehttps";
 const ACE_KB_ELECTRON_HTTP_PROTOCOL = "acekbhttps";
@@ -266,23 +279,23 @@ function createWindow() {
 
   const menuBuilder = new MenuBuilder(_win, _store);
   menuBuilder.buildMenu(_win);
-  
+
   const cb = () => {
     menuBuilder.storeHasChanged();
   };
   _storeSubscribe(cb);
-  
+
   if (isDev) {
 
     // require('electron-debug')(); // also see electron-react-devtools
-  
+
     _win.webContents.on("did-finish-load", () => {
       const {
         default: installExtension,
         REACT_DEVELOPER_TOOLS,
         REDUX_DEVTOOLS, // also see redux-devtools-extension
       } = require("electron-devtools-installer");
-    
+
       [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS].forEach((extension) => {
         installExtension(extension)
             .then((name) => console.log("Added Extension: ", name))
@@ -320,11 +333,11 @@ function createWindow() {
   _win.loadURL(rendererUrl); // `file://${__dirname}/index.html`
 
   _win.on('closed', function () {
-      
+
       _storeUnsubscribe(cb);
 
       _win = null;
-      
+
       // closeKnowledgeBaseWindows();
 
       // // about box
