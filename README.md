@@ -56,4 +56,4 @@ Please read our [code of conduct](CODE_OF_CONDUCT.md) and [contributing guidelin
 
 ## License
 
-This project is licensed under the MIT License - see the [license file](LICENSE.md) for details
+This project is licensed under the MIT License - see the [license file](LICENSE.md) for details.
