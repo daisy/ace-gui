@@ -247,7 +247,7 @@ const SAFE_DEBUG = false;
             createRefRES = await octokit.git.createRef({ owner, repo, ref: ref2, sha });
         } catch (err) {
             console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-            console.log((err?.toString ? err.toString() : String(err)).replace(ghtoken, "GH_TOKEN_XX"));
+            if (DEBUG) console.log((err?.toString ? err.toString() : String(err)).replace(ghtoken, "GH_TOKEN_XX"));
             console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
             console.log("createRef error! Continue ... " + ref2 + " -- " + sha);
             // console.log("createRef error! Abort.");
