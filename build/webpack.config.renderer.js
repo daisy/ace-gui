@@ -87,7 +87,7 @@ module.exports = (env) => {
         // },
         {
           test: /\.scss$/,
-          loaders: [
+          use: [
             'style-loader',// inserts raw css into styles elements.
             'css-loader', // css-loader parses css files resolves url() expressions.
             'sass-loader' // sass-loader for sass compilation
@@ -127,14 +127,19 @@ module.exports = (env) => {
       config.devtool = "source-map";
 
       config.devServer = {
-          contentBase: __dirname,
-          headers: {
-              "Access-Control-Allow-Origin": "*",
+          static: {
+              directory: __dirname,
+              publicPath: "/",
+              watch: {
+                  ignored: [/app/, /build/, /doc/, /kb/, /node_modules/],
+              },
+          },
+          devMiddleware: {
+              publicPath: "/",
           },
           hot: false,
-          watchContentBase: true,
-          watchOptions: {
-              ignored: [/app/, /build/, /doc/, /kb/, /node_modules/]
+          headers: {
+              "Access-Control-Allow-Origin": "*",
           },
           port: parseInt(webpackConstants.httpPort, 10),
           // inline: true
@@ -181,9 +186,9 @@ module.exports = (env) => {
     // }
     );
   } else {
-    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^devtron$/ }));
-    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^react-axe$/ }));
-    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^redux-devtools-extension$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@electron\/devtron$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@axe-core\/react$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@redux-devtools\/extension$/ }));
   }
 
   console.log("-------------------- RENDERER config:");

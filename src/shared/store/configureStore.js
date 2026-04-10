@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 // import { persistState } from 'redux-devtools';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 // import promise from 'redux-promise';
 // import createLogger from 'redux-logger';
 // import { hashHistory } from 'react-router';
@@ -32,14 +32,14 @@ export default function configureStore(electronReduxcomposeWithStateSync, initia
   // });
   //const router = routerMiddleware(hashHistory);
 
-  let middleware = [
-    thunk,
-    // promise,
-  ];
+  // let middleware = [
+  //   thunk,
+  //   // promise,
+  // ];
 
-  if (isDev) {
-    // middleware.push(logger);
-  }
+  // if (isDev) {
+  //   // middleware.push(logger);
+  // }
 
   // OLD electron-redux
   // (NEW does not depend on electron.remote)
@@ -57,7 +57,7 @@ export default function configureStore(electronReduxcomposeWithStateSync, initia
   //   ];
   // }
 
-  const v1 = applyMiddleware(...middleware);
+  const v1 = applyMiddleware(thunk);
   const v2 = electronReduxcomposeWithStateSync(v1);
   const enhanced = [
     v2,
@@ -78,7 +78,7 @@ export default function configureStore(electronReduxcomposeWithStateSync, initia
   if (isDev) {
     // https://github.com/zalmoxisus/redux-devtools-extension#14-using-in-production
     // redux-devtools-extension/developmentOnly
-    const { composeWithDevTools } = require("redux-devtools-extension");
+    const { composeWithDevTools } = require("@redux-devtools/extension");
     enhancer = composeWithDevTools(...enhanced);
   } else {
     enhancer = compose(...enhanced);

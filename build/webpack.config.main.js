@@ -83,12 +83,14 @@ module.exports = (env) => {
       ]
     },
     plugins: [
-        new CopyWebpackPlugin([
+        new CopyWebpackPlugin({
+          patterns: [
             {
                 from: path.join(__dirname, "..", "src", "renderer", "assets", "logo.svg"),
                 to: path.join("..", "app"),
             }
-        ]),
+          ]
+        }),
         webpackConstants.definePlugin
     ],
   };
@@ -98,7 +100,7 @@ module.exports = (env) => {
     config.devtool = "source-map";
   } else {
     config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^electron-devtools-installer$/ }));
-    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^redux-devtools-extension$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@redux-devtools\/extension$/ }));
   }
 
   console.log("-------------------- MAIN config:");

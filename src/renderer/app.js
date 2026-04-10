@@ -5,7 +5,8 @@ import configureStore from './../shared/store/configureStore';
 import {
   composeWithStateSync,
 } from 'electron-redux/renderer';
-import {render} from 'react-dom'
+//import {render} from 'react-dom'
+import { createRoot } from "react-dom/client";
 import ReactDOM from 'react-dom';
 
 import { ipcRenderer } from 'electron';
@@ -80,9 +81,10 @@ ipcRenderer.on('RUN_ACE', (event, filepath) => {
   // store.dispatch(runAce(filepath));
 });
 
-render(
+// ReactDOM.render()
+const root = createRoot(document.getElementById("react-root"));
+root.render(
   <Provider store={store}>
     <AppContainer />
   </Provider>,
-  document.getElementById('react-root')
 );

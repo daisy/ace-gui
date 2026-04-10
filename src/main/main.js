@@ -246,19 +246,19 @@ function createWindow() {
     {
       show: false,
       webPreferences: {
-          preload: `${__dirname}/preload-bundle.js`,
-          allowRunningInsecureContent: false,
-          backgroundThrottling: false,
-          contextIsolation: false,
-          devTools: isDev,
-          nodeIntegration: true,
-          nodeIntegrationInWorker: false,
-          sandbox: false,
-          webSecurity: isDev ? false : true,
-          webviewTag: false,
-          enableRemoteModule: false,
-          partition: SESSION_PARTITION,
-          // nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
+        // enableRemoteModule: false,
+        allowRunningInsecureContent: false,
+        backgroundThrottling: false,
+        devTools: isDev,
+        nodeIntegration: true, // ==> disables sandbox https://www.electronjs.org/docs/latest/tutorial/sandbox
+        sandbox: false,
+        contextIsolation: false, // must be false because nodeIntegration, see https://github.com/electron/electron/issues/23506
+        nodeIntegrationInWorker: false,
+        webSecurity: true, // isDev ? false : true,
+        webviewTag: false,
+
+        preload: `${__dirname}/preload-bundle.js`,
+        partition: SESSION_PARTITION,
       }
     }
   );

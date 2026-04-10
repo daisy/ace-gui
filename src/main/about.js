@@ -14,20 +14,21 @@ module.exports = {
 
     return openAboutWindow({
         icon_path: join(__dirname, 'logo.svg'),
-        copyright: 'Copyright (c) 2021 DAISY Consortium',
+        copyright: 'Copyright (c) 2026 DAISY Consortium',
         package_json_dir: __dirname,
         open_devtools: isDev,
         win_options: {
           webPreferences: {
+            // enableRemoteModule: false,
             allowRunningInsecureContent: false,
-            contextIsolation: false,
-            nodeIntegration: true,
-            nodeIntegrationInWorker: false,
+            backgroundThrottling: false,
+            devTools: isDev,
+            nodeIntegration: true, // ==> disables sandbox https://www.electronjs.org/docs/latest/tutorial/sandbox
             sandbox: false,
+            contextIsolation: false, // must be false because nodeIntegration, see https://github.com/electron/electron/issues/23506
+            nodeIntegrationInWorker: false,
             webSecurity: true,
             webviewTag: false,
-            enableRemoteModule: true,
-            // nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
           }
         }
     });

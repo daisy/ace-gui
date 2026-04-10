@@ -181,9 +181,9 @@ module.exports = (env) => {
     // }
     );
   } else {
-    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^devtron$/ }));
-    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^react-axe$/ }));
-    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^redux-devtools-extension$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@electron\/devtron$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@axe-core\/react$/ }));
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@redux-devtools\/extension$/ }));
   }
 
   console.log("-------------------- PRELOAD config:");

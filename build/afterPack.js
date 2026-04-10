@@ -1,0 +1,155 @@
+const path = require("path");
+const builder = require("electron-builder");
+const { flipFuses, FuseVersion, FuseV1Options } = require("@electron/fuses");
+
+// https://github.com/mattermost/desktop/blob/master/scripts/afterpack.js
+// const { spawnSync } = require("child_process");
+// const SETUID_PERMISSIONS = '4755';
+// function fixSetuid(context) {
+//     return async (target) => {
+//         if (!['appimage', 'snap'].includes(target.name.toLowerCase())) {
+//             const result = await spawnSync('chmod', [SETUID_PERMISSIONS, path.join(context.appOutDir, 'chrome-sandbox')]);
+//             if (result.error) {
+//                 throw new Error(
+//                     `Failed to set proper permissions for linux arch on ${target.name}: ${result.error} ${result.stderr} ${result.stdout}`,
+//                 );
+//             }
+//         }
+//     };
+// }
+
+// https://github.com/electron-userland/electron-builder/issues/6365
+
+module.exports = async function afterPack(context) {
+  console.log("=-=-=-=-=- AFTER PACK ...");
+
+  console.log("context.electronPlatformName: " + context.electronPlatformName);
+  console.log("builder.Platform.MAC: " + builder.Platform.MAC); // 'darwin'
+  console.log("builder.Platform.LINUX: " + builder.Platform.LINUX); // 'linux'
+  console.log("builder.Platform.WINDOWS: " + builder.Platform.WINDOWS); // 'win32'
+
+  console.log("context.arch: " + context.arch);
+  console.log("builder.Arch.universal: " + builder.Arch.universal);
+  console.log("builder.Arch.arm64: " + builder.Arch.arm64);
+  console.log("builder.Arch.x64: " + builder.Arch.x64);
+
+  console.log(
+    "context.packager.appInfo.productFilename: " +
+      context.packager.appInfo.productFilename,
+  );
+  console.log("context.appOutDir: " + context.appOutDir);
+
+  console.log(
+    "context.packager instanceof builder.LinuxPackager: " +
+      (context.packager instanceof builder.LinuxPackager),
+  );
+  console.log(
+    "context.packager.executableName: " + context.packager.executableName,
+  );
+
+  console.log(
+    "context.packager.addElectronFuses(): " +
+      !!context.packager.addElectronFuses,
+  );
+
+  /* @type require("@electron/fuses").FuseConfig */
+  const fuseConfig = {
+    version: FuseVersion.V1,
+    strictlyRequireAllFuses: true,
+
+    // https://github.com/electron/fuses?tab=readme-ov-file#apple-silicon
+    resetAdHocDarwinSignature:
+      context.electronPlatformName === "darwin" &&
+      context.arch === builder.Arch.arm64,
+
+    // RunAsNode = 0,
+    [FuseV1Options.RunAsNode]: false, // ELECTRON_RUN_AS_NODE
+
+    // EnableCookieEncryption = 1,
+    // https://www.electron.build/tutorials/adding-electron-fuses.html#enablecookieencryption
+    [FuseV1Options.EnableCookieEncryption]: true, // TODO: make this TRUE
+
+    // EnableNodeOptionsEnvironmentVariable = 2,
+    [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false, // NODE_OPTIONS + NODE_EXTRA_CA_CERTS
+
+    // EnableNodeCliInspectArguments = 3,
+    [FuseV1Options.EnableNodeCliInspectArguments]: false, // --inspect
+
+    // EnableEmbeddedAsarIntegrityValidation = 4,
+    // https://github.com/electron/fuses/issues/7
+    // https://github.com/electron-userland/electron-builder/pull/8245
+    // https://github.com/electron-userland/electron-builder/issues/6930
+    // https://www.electronjs.org/docs/latest/tutorial/asar-integrity
+    // https://www.electron.build/tutorials/adding-electron-fuses.html#enableembeddedasarintegrityvalidation
+    // https://github.com/advisories/GHSA-vmqv-hx8q-j7mg
+    // https://advisories.gitlab.com/pkg/npm/electron/CVE-2023-44402/
+    // https://infosecwriteups.com/electron-js-asar-integrity-bypass-431ac4269ed5 --- https://blog.souravkalal.tech/electron-js-asar-integrity-bypass-431ac4269ed5
+    // https://karol-mazurek.medium.com/cracking-electron-integrity-0a10e0d5f239
+    // https://github.com/Just-Hack-For-Fun/Electron-Security
+    // https://doyensec.com/resources/us-17-Carettoni-Electronegativity-A-Study-Of-Electron-Security.pdf
+    // npx electron-fuses read --app /PATH/TO/Thorium.app/Contents/MacOS/Thorium
+    // node -e "const filePath = process.argv[1]; console.log(filePath, require('crypto').createHash('sha256').update(require('@electron/asar').getRawHeader(filePath).headerString).digest('hex'))" /PATH/TO/Thorium.app/Contents/Resources/app.asar
+    // npx asar e /PATH/TO/Thorium.app/Contents/Resources/app.asar /PATH/TO/ASAR-EXTRACTED/
+    // modify ASAR manifest, for example edit `/PATH/TO/ASAR-EXTRACTED/main.js`
+    // npx asar p /PATH/TO/ASAR-EXTRACTED/ /PATH/TO/Thorium.app/Contents/Resources/app.asar
+    // DOES NOT WORK ON MACOS ARM and INTEL (`strings` empty in 50KB executable binary): xxd /PATH/TO/Thorium.app/Contents/MacOS/Thorium | sed 's/OLD_SHA/NEW_SHA/' | xxd -r > /PATH/TO/Thorium.app/Contents/MacOS/Thorium
+    [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+
+    // OnlyLoadAppFromAsar = 5,
+    [FuseV1Options.OnlyLoadAppFromAsar]: true,
+
+    // LoadBrowserProcessSpecificV8Snapshot = 6,
+    [FuseV1Options.LoadBrowserProcessSpecificV8Snapshot]: false,
+
+    // GrantFileProtocolExtraPrivileges = 7,
+    [FuseV1Options.GrantFileProtocolExtraPrivileges]: false,
+
+    // WasmTrapHandlers = 8,
+    // https://www.electronjs.org/docs/latest/tutorial/fuses#wasmtraphandlers
+    [FuseV1Options.WasmTrapHandlers]: true,
+  };
+  console.log("ElectronFuses: ", JSON.stringify(fuseConfig, null, 4));
+
+  // Electron Builder v26+
+  // https://github.com/electron-userland/electron-builder/pull/8588
+  // https://github.com/electron-userland/electron-builder/issues/6365
+  // ...unfortunately:
+  // https://github.com/electron-userland/electron-builder/issues/9662
+  if (false && context.packager.addElectronFuses) {
+    // https://github.com/electron-userland/electron-builder/blob/ed422f36540a93e9bd2a19bc7a5e729bf2b033ea/packages/app-builder-lib/src/platformPackager.ts#L413-L428
+    console.log("ElectronFuses via ElectronBuilder Platform Packager...");
+
+    await context.packager.addElectronFuses(context, fuseConfig);
+  } else {
+    console.log("ElectronFuses via direct flipFuses() call...");
+
+    const ext = {
+      darwin: ".app",
+      // mas: ".app",
+      win32: ".exe",
+      linux: [""],
+    }[context.electronPlatformName];
+
+    const executableName =
+      context.packager instanceof builder.LinuxPackager
+        ? context.packager.executableName
+        : context.packager.appInfo.productFilename;
+    // const executableName =
+    //     context.electronPlatformName === "linux"
+    //         ? context.packager.appInfo.productFilename.toLowerCase() // context.packager.executableName
+    //         : context.packager.appInfo.productFilename;
+
+    const electronBinaryPath = path.join(
+      context.appOutDir,
+      `${executableName}${ext}`,
+    );
+
+    await flipFuses(electronBinaryPath, fuseConfig);
+  }
+
+  // if (context.electronPlatformName === 'linux') {
+  //     context.targets.forEach(fixSetuid(context));
+  // }
+
+  console.log("=-=-=-=-=- AFTER PACK :)");
+};

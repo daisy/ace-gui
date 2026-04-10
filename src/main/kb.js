@@ -971,17 +971,19 @@ export class KnowledgeBase {
         this.win = new BrowserWindow({
             show: false,
             webPreferences: {
-                allowRunningInsecureContent: false,
-                contextIsolation: false,
-                devTools: isDev,
-                nodeIntegration: false,
-                nodeIntegrationInWorker: false,
-                sandbox: false,
-                webSecurity: true,
-                webviewTag: false,
-                enableRemoteModule: false,
-                partition: SESSION_PARTITION,
-                // nativeWindowOpen: false, // The default of nativeWindowOpen is deprecated and will be changing from false to true in Electron 15. See https://github.com/electron/electron/issues/28511
+
+              // enableRemoteModule: false,
+              allowRunningInsecureContent: false,
+              backgroundThrottling: false,
+              devTools: isDev,
+              nodeIntegration: false,
+              sandbox: true,
+              contextIsolation: true,
+              nodeIntegrationInWorker: false,
+              webSecurity: true,
+              webviewTag: false,
+      
+              partition: SESSION_PARTITION,
             },
         });
         wins.push(this.win);

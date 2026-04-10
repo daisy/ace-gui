@@ -11,7 +11,7 @@ import { defaultPreferences } from './../shared/default-preferences';
 
 const { app } = require('electron');
 
-const ElectronStore = require('electron-store');
+import ElectronStore from 'electron-store';
 const electronStore = new ElectronStore();
 
 const isDev = process && process.env && (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true');
