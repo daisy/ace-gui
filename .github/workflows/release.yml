@@ -241,29 +241,29 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-arm') }}
         #run: sed 's/x64/arm64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json && yarn package:${{ matrix.packname }} && sed 's/arm64/x64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json
         run: >
-          node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/x64/g, "arm64"); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });' && mkdir -p dist && echo "ok" > dist/${{ matrix.packname }}.bin
-        # yarn package:${{ matrix.packname }}
+          node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/x64/g, "arm64"); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });' && yarn package:${{ matrix.packname }}
       - name: non-PR action (build and package) INTEL
         #if: ${{ github.event_name != 'pull_request' && (matrix.osarch == 'linux-intel' || matrix.osarch == 'windows-intel' || matrix.osarch == 'macos-intel') }}
         if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-intel') }}
-        run: mkdir -p dist && echo "ok" > dist/${{ matrix.packname }}.bin # yarn package:${{ matrix.packname }}
+        run: yarn package:${{ matrix.packname }}
       #- run: ls -alsR release
       #- run: npm install @octokit/rest
+      # (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) &&
       - name: GitHub Tagged Release (MacOS)
         if: startsWith(matrix.osarch, 'macos-') #runner.os == 'macOS'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # dmg --clobber
+        run: gh release upload ${{ github.ref_name }} dist/*.dmg --clobber
       - name: GitHub Tagged Release (Windows)
         if: startsWith(matrix.osarch, 'windows-') # runner.os == 'Windows'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # exe --clobber
+        run: gh release upload ${{ github.ref_name }} dist/*.exe --clobber
       - name: GitHub Tagged Release (Linux)
         if: startsWith(matrix.osarch, 'linux-') # runner.os == 'Linux'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # AppImage --clobber ; gh release upload ${{ github.ref_name }} dist/*.bin # deb --clobber
+        run: gh release upload ${{ github.ref_name }} dist/*.AppImage --clobber ; gh release upload ${{ github.ref_name }} dist/*.deb --clobber
