@@ -1,6 +1,6 @@
-#GIT_COMMITTER_DATE="$(git show master --format=%aD | head -1)" git tag -a "v1.4.4" master -m "release tag v1.4.4" && git push --tags origin master && git --no-pager tag --list --format='%(refname)   %(taggerdate)'
+#GIT_COMMITTER_DATE="$(git show master --format=%aD | head -1)" git tag -a "v1.4.4-alpha.1" master -m "release tag v1.4.4-alpha.1" && git push --tags origin master && git --no-pager tag --list --format='%(refname)   %(taggerdate)'
 
-#git tag -d v1.4.4 && git push origin :refs/tags/v1.4.4
+#git tag -d v1.4.4-alpha.1 && git push origin :refs/tags/v1.4.4-alpha.1
 
 name: Publish App
 
@@ -251,10 +251,16 @@ jobs:
       #- run: npm install @octokit/rest
       - name: GitHub Tagged Release (MacOS)
         if: startsWith(matrix.osarch, 'macos-') #runner.os == 'macOS'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # dmg --clobber
       - name: GitHub Tagged Release (Windows)
         if: startsWith(matrix.osarch, 'windows-') # runner.os == 'Windows'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # exe --clobber
       - name: GitHub Tagged Release (Linux)
         if: startsWith(matrix.osarch, 'linux-') # runner.os == 'Linux'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # AppImage --clobber ; gh release upload ${{ github.ref_name }} dist/*.bin # deb --clobber
