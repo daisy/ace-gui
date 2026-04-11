@@ -246,6 +246,9 @@ jobs:
       if: startsWith(matrix.osarch, 'macos-')
       run: >
         (file node_modules/electron/dist/Electron.app/Contents/MacOS/Electron) && (node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --no-sandbox --version || echo INVALID_ARCH) && (node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --no-sandbox --abi || echo INVALID_ARCH)
+    - run: >
+        node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/"sign": true,/g, `"sign": false,`); fileStr = fileStr.replace(/"hardenedRuntime": true,/g, `"hardenedRuntime": false, "identity": null,`); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });'
+      continue-on-error: true
     - name: PR action (just build)
       if: ${{ github.event_name == 'pull_request' }}
       run: yarn build:prod
