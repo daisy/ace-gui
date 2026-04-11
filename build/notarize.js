@@ -1,7 +1,7 @@
 // xcrun notarytool history --apple-id=$APPLEID --team-id=$APPLEIDTEAM --password=$APPLEIDPASS
 
-// xcrun notarytool store-credentials "thorium-keychain" --apple-id $APPLEID --team-id $APPLEIDTEAM --password $APPLEIDPASS
-// export APPLEIDKEYCHAIN="thorium-keychain"
+// xcrun notarytool store-credentials "ace-keychain" --apple-id $APPLEID --team-id $APPLEIDTEAM --password $APPLEIDPASS
+// export APPLEIDKEYCHAIN="ace-keychain"
 
 require("dotenv").config();
 const { notarize } = require("@electron/notarize");
@@ -18,13 +18,13 @@ exports.default = async function notarizing(context) {
   return await notarize(
     !!process.env.APPLEIDKEYCHAIN
       ? {
-          appBundleId: "org.edrlab.thorium",
+          appBundleId: "org.daisy.ace",
           appPath: `${appOutDir}/${appName}.app`,
 
           keychainProfile: process.env.APPLEIDKEYCHAIN,
         }
       : {
-          appBundleId: "org.edrlab.thorium",
+          appBundleId: "org.daisy.ace",
           appPath: `${appOutDir}/${appName}.app`,
 
           appleId: process.env.APPLEID,
