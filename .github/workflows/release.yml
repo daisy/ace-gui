@@ -16,7 +16,7 @@ on:
       - "v*" # excludes slash /
 
 permissions:
-  contents: read
+  contents: write # release
 
 env:
   # Electron Builder workaround
@@ -251,16 +251,19 @@ jobs:
       #- run: npm install @octokit/rest
       - name: GitHub Tagged Release (MacOS)
         if: startsWith(matrix.osarch, 'macos-') #runner.os == 'macOS'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # dmg --clobber
       - name: GitHub Tagged Release (Windows)
         if: startsWith(matrix.osarch, 'windows-') # runner.os == 'Windows'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # exe --clobber
       - name: GitHub Tagged Release (Linux)
         if: startsWith(matrix.osarch, 'linux-') # runner.os == 'Linux'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) && gh release upload ${{ github.ref_name }} dist/*.bin # AppImage --clobber ; gh release upload ${{ github.ref_name }} dist/*.bin # deb --clobber
