@@ -172,7 +172,12 @@ function electronAppReady () {
 
         sess.setPermissionRequestHandler((wc, permission, callback) => {
             if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} setPermissionRequestHandler ${wc.getURL()} => ${permission}`);
-            callback(true);
+            callback(false);
+        });
+
+        sess.setPermissionCheckHandler((wc, permission, origin) => {
+            if (LOG_DEBUG) console.log(`${KB_LOG_PREFIX} setPermissionRequestHandler ${wc ? wc.getURL() : "!WC"} => ${permission} (${origin})`);
+            return false;
         });
     }
 }
@@ -220,22 +225,23 @@ export async function stopKnowledgeBaseServer() {
 
         try {
             await sess.clearStorageData({
-                origin: "*",
-                quotas: [
-                    "temporary",
-                    "persistent",
-                    "syncable",
-                ],
-                storages: [
-                    "appcache",
-                    "cookies",
-                    "filesystem",
-                    "indexdb",
-                    // "localstorage", BLOCKS!?
-                    "shadercache",
-                    "websql",
-                    "serviceworkers",
-                ],
+              origin: "*",
+              quotas: [
+                  "temporary",
+                  // "persistent",
+                  // "syncable",
+              ],
+              storages: [
+                  // "appcache",
+                  "cookies",
+                  "filesystem",
+                  "indexdb",
+                  // "localstorage", BLOCKS!?
+                  "shadercache",
+                  // "websql",
+                  "serviceworkers",
+                  "cachestorage",
+              ],
             });
         } catch (err) {
           console.log(err);
