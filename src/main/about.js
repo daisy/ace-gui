@@ -29,6 +29,7 @@ module.exports = {
             nodeIntegrationInWorker: false,
             webSecurity: true,
             webviewTag: false,
+            partition: "persist:about"
           }
         }
     });

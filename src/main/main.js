@@ -2,7 +2,9 @@ const path = require('path');
 const fs = require('fs');
 const util = require("util");
 
-const { protocol, dialog, app, BrowserWindow, ipcMain, Menu, session } = require('electron');
+const { net, protocol, dialog, app, BrowserWindow, ipcMain, Menu, session } = require('electron');
+
+const { pathToFileURL } = require("url");
 
 const SESSION_PARTITION = "persist:ace";
 
@@ -242,6 +244,22 @@ prepareLaunch(ipcMain ? ipcMain : eventEmmitter, CONCURRENT_INSTANCES);
 //   }
 // }
 
+function encodeURIComponent_RFC3986(str) {
+    return encodeURIComponent(str)
+        .replace(/[!'()*]/g, (c: string) => {
+            return "%" + c.charCodeAt(0).toString(16);
+        });
+}
+
+// import * as querystring from "querystring";
+// function encodeURIComponent_RFC5987(str) {
+//     return encodeURIComponent(str).
+//         replace(/['()]/g, querystring.escape). // i.e., %27 %28 %29
+//         replace(/\*/g, "%2A").
+//         // |`^
+//         replace(/%(?:7C|60|5E)/g, querystring.unescape);
+// }
+
 function createWindow() {
 
   _win = new BrowserWindow(
@@ -322,9 +340,9 @@ function createWindow() {
   }
 
   let rendererUrl = __RENDERER_URL__;
-  if (rendererUrl === "file://") {
+  if (rendererUrl === "filex://0.0.0.0/") {
       // dist/prod mode (without WebPack HMR Hot Module Reload HTTP server)
-      rendererUrl += path.normalize(path.join(__dirname, "index.html"));
+      rendererUrl += path.normalize(path.join(__dirname, "index.html")).replace(/\\/g, "/").split("/").map((segment) => encodeURIComponent_RFC3986(segment)).join("/");
   } else {
       // dev/debug mode (with WebPack HMR Hot Module Reload HTTP server)
       rendererUrl += "index.html";
@@ -354,13 +372,40 @@ function createWindow() {
   });
 }
 
-// Is enabled automatically when screen reader is detected
-// app.setAccessibilitySupportEnabled(true);
+function tryDecodeURIComponent(str) {
+    try {
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent
+        // vs.
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI
+        return decodeURIComponent(str);
+    } catch (err) { // can occur with "%" literal char not used as part of an escaped sequence
+        console.log(str, err);
+    }
+
+    // unchanged if decode fails
+    return str;
+}
 
 app.on('ready', () => {
 
   const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
   if (sess) {
+
+    const protocolHandler_FILEX = (request) => {
+
+      const urlPath = request.url.substring(`filex://0.0.0.0/`.length);
+
+      const urlPathDecoded = urlPath.split("/").map((segment) => {
+        return segment?.length ? tryDecodeURIComponent(segment) : "";
+      }).join("/");
+
+      const filePathUrl = pathToFileURL(urlPathDecoded).toString();
+
+      return net.fetch(filePathUrl); // potential security hole: local filesystem access (mitigated by URL scheme not .registerSchemesAsPrivileged() and not .handle() or .registerXXXProtocol() directly on arbitrary .getWebViewSession().protocol or any other partitioned session, unlike Electron.protocol and Electron.session.defaultSession.protocol)
+    };
+    sess.protocol.handle("filex", protocolHandler_FILEX);
+    // protocol.unhandle("filex");
+
     sess.protocol.registerFileProtocol('fileproto', (request, callback) => {
       const p = decodeURIComponent(request.url.substr('fileproto://host/'.length));
       callback({ path: p })

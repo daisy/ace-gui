@@ -9,7 +9,7 @@ const isDev = nodeEnv === "development";
 const isVisualStudioCodeLaunch = process.env.VSCODE_LAUNCH || "false";
 
 const rendererUrl = isDev && !process.env.NO_WEBPACK_DEV_SERVER ?
-    ("http://localhost:"+httpPort+"/") : "file://";
+    ("http://localhost:"+httpPort+"/") : "filex://0.0.0.0/";
 
 const isPackaging = process.env.PACKAGING || "0";
 
