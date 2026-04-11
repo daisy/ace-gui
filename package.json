@@ -101,6 +101,7 @@
   },
   "scripts": {
     "postinstall_": "electron-builder install-app-deps",
+    "postinstall__": "node -e \"const path = require('path'); const fs = require('fs'); const filePath = path.join(process.cwd(), 'node_modules/about-window/src/index.js'); let fileStr = fs.readFileSync(filePath, { encoding: 'utf8' }); fileStr = fileStr.replace(/const index_html = 'file:\\/\\/' \\+ path\\.join\\(base_path, 'about\\.html'\\);/g, 'const index_html = \\'filexx://0.0.0.0/\\' + encodeURIComponent(path.join(base_path, \\'about.html\\'));'); fs.writeFileSync(filePath, fileStr, { encoding: 'utf8' });\"",
     "clean": "npm --version && node --version && yarn --version && node -e \"console.log((new Date(Date.now())).toUTCString())\" && rimraf \"app\" && rimraf \"dist\"",
     "prebuild:prod": "yarn run clean",
     "build:prod": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production webpack --config=build/webpack.config.all.js --env=production",

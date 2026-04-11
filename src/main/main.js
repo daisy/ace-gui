@@ -6,7 +6,7 @@ const { net, protocol, dialog, app, BrowserWindow, ipcMain, Menu, session } = re
 
 const { pathToFileURL } = require("url");
 
-const SESSION_PARTITION = "persist:ace";
+// const SESSION_PARTITION_MAIN = "persist:ace";
 
 import MenuBuilder from './menu';
 
@@ -95,7 +95,34 @@ protocol.registerSchemesAsPrivileged([{
     codeCache: false, // Default false (only works with standard=true)
   },
   scheme: ACE_KB_ELECTRON_HTTP_PROTOCOL,
-}]);
+}
+, {
+  privileges: {
+    allowServiceWorkers: false,
+    bypassCSP: false,
+    corsEnabled: true,
+    secure: true,
+    stream: true,
+    supportFetchAPI: true,
+    standard: true, // Default false
+    codeCache: false, // Default false (only works with standard=true)
+  },
+  scheme: "filex",
+}
+// , {
+//   privileges: {
+//     allowServiceWorkers: false,
+//     bypassCSP: false,
+//     corsEnabled: true,
+//     secure: true,
+//     stream: true,
+//     supportFetchAPI: true,
+//     standard: true, // Default false
+//     codeCache: false, // Default false (only works with standard=true)
+//   },
+//   scheme: "filexx",
+// }
+]);
 
 setupFileDialogEvents();
 
@@ -278,7 +305,7 @@ function createWindow() {
         webviewTag: false,
 
         preload: `${__dirname}/preload-bundle.js`,
-        partition: SESSION_PARTITION,
+        // partition: SESSION_PARTITION_MAIN,
       }
     }
   );
@@ -388,7 +415,31 @@ function tryDecodeURIComponent(str) {
 
 app.on('ready', () => {
 
-  const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
+  // const sess_ = session.fromPartition("persist:about", { cache: true });
+  // if (sess_) {
+
+  //   // const protocolHandler_FILEX = (request) => {
+
+  //   //   const urlPath = request.url.substring(`filexx://0.0.0.0/`.length);
+
+  //   //   const urlPathDecoded = urlPath.split("/").map((segment) => {
+  //   //     return segment?.length ? tryDecodeURIComponent(segment) : "";
+  //   //   }).join("/");
+
+  //   //   const filePathUrl = pathToFileURL(urlPathDecoded).toString();
+
+  //   //   return net.fetch(filePathUrl); // potential security hole: local filesystem access (mitigated by URL scheme not .registerSchemesAsPrivileged() and not .handle() or .registerXXXProtocol() directly on arbitrary session.protocol or any other partitioned session, unlike Electron.protocol and Electron.session.defaultSession.protocol)
+  //   // };
+  //   // sess_.protocol.handle("filexx", protocolHandler_FILEX);
+  //   // protocol.unhandle("filex");
+
+  //   sess_.protocol.registerFileProtocol('filexx', (request, callback) => {
+  //     const p = decodeURIComponent(request.url.substr('filexx://0.0.0.0/'.length));
+  //     console.log("FIOEPATH", p);
+  //     callback({ path: p })
+  //   });
+  // }
+  const sess = session.defaultSession; // session.fromPartition(SESSION_PARTITION_MAIN, { cache: true });
   if (sess) {
 
     const protocolHandler_FILEX = (request) => {
@@ -401,7 +452,7 @@ app.on('ready', () => {
 
       const filePathUrl = pathToFileURL(urlPathDecoded).toString();
 
-      return net.fetch(filePathUrl); // potential security hole: local filesystem access (mitigated by URL scheme not .registerSchemesAsPrivileged() and not .handle() or .registerXXXProtocol() directly on arbitrary .getWebViewSession().protocol or any other partitioned session, unlike Electron.protocol and Electron.session.defaultSession.protocol)
+      return net.fetch(filePathUrl); // potential security hole: local filesystem access (mitigated by URL scheme not .registerSchemesAsPrivileged() and not .handle() or .registerXXXProtocol() directly on arbitrary session.protocol or any other partitioned session, unlike Electron.protocol and Electron.session.defaultSession.protocol)
     };
     sess.protocol.handle("filex", protocolHandler_FILEX);
     // protocol.unhandle("filex");

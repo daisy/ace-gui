@@ -28,7 +28,7 @@ const LOG_DEBUG = false;
 const LOG_DEBUG_URLS = false;
 const KB_LOG_PREFIX = "[KB]";
 
-const SESSION_PARTITION = "persist:kb";
+const SESSION_PARTITION_KB = "persist:kb";
 
 const wins = [];
 export function closeKnowledgeBaseWindows() {
@@ -164,7 +164,7 @@ function electronAppReady () {
     //         ACE_KB_ELECTRON_HTTP_PROTOCOL,
     //         streamProtocolHandler);
     // }
-    const sess = session.fromPartition(SESSION_PARTITION, { cache: true });
+    const sess = session.fromPartition(SESSION_PARTITION_KB, { cache: true });
     if (sess) {
         sess.protocol.registerStreamProtocol(
             ACE_KB_ELECTRON_HTTP_PROTOCOL,
@@ -214,7 +214,7 @@ export async function stopKnowledgeBaseServer() {
     // NO_HTTP_ADD
     _streamProtocolHandler = undefined;
 
-    const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
+    const sess = session.fromPartition(SESSION_PARTITION_KB, { cache: true }); // || session.defaultSession;
     if (sess) {
         try {
             await sess.clearCache();
@@ -302,7 +302,7 @@ export function startKnowledgeBaseServer(kbRootPath) {
     //     // callback(-2); // Fail
     // };
 
-    // const sess = session.fromPartition(SESSION_PARTITION, { cache: true }); // || session.defaultSession;
+    // const sess = session.fromPartition(SESSION_PARTITION_KB, { cache: true }); // || session.defaultSession;
     // if (sess) {
     //     // sess.webRequest.onHeadersReceived(filter, onHeadersReceivedCB);
     //     // sess.webRequest.onBeforeSendHeaders(filter, onBeforeSendHeadersCB);
@@ -989,7 +989,7 @@ export class KnowledgeBase {
               webSecurity: true,
               webviewTag: false,
       
-              partition: SESSION_PARTITION,
+              partition: SESSION_PARTITION_KB,
             },
         });
         wins.push(this.win);
