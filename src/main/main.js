@@ -246,7 +246,7 @@ prepareLaunch(ipcMain ? ipcMain : eventEmmitter, CONCURRENT_INSTANCES);
 
 function encodeURIComponent_RFC3986(str) {
     return encodeURIComponent(str)
-        .replace(/[!'()*]/g, (c: string) => {
+        .replace(/[!'()*]/g, (c) => {
             return "%" + c.charCodeAt(0).toString(16);
         });
 }
