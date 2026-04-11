@@ -73,9 +73,12 @@
         "AppImage"
       ],
       "desktop": {
-        "MimeType": "application/epub+zip"
+        "entry": {
+          "MimeType": "application/epub+zip"
+        }
       },
-      "executableName": "ace-app"
+      "executableName": "ace-app",
+      "category": "Office"
     },
     "win": {
       "appId": "DaisyConsortium.Ace",
