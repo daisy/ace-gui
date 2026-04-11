@@ -1,8 +1,8 @@
 import path from 'path';
 import fs from 'fs-extra';
 
-const DOMParser = require('xmldom').DOMParser;
-const XMLSerializer = require('xmldom').XMLSerializer;
+const DOMParser = require('@xmldom/xmldom').DOMParser;
+const XMLSerializer = require('@xmldom/xmldom').XMLSerializer;
 const xpath = require('xpath');
 
 import ReactSelect from 'react-select';
@@ -50,6 +50,19 @@ import {
 // import logger from '@daisy/ace-logger';
 
 import a11yMetadata from '@daisy/ace-core/lib/core/a11y-metadata';
+
+function removeUTF8BOM(str) {
+    // UTF-8 BOM removal (EFBBBF)
+    // because Buffer.toString converts to UTF-16 BOM (FEFF)
+    // str.charCodeAt(0) === 0xFEFF || str.charCodeAt(0) === 65279
+    // str = str.substr(1);
+    // str = str.slice(1);
+    // str = str.replace(/^\uFEFF/gm, "").replace(/^\u00BB\u00BF/gm,"");
+    if (str.charCodeAt(0) === 0xFEFF) {
+        str = str.slice(1);
+    }
+    return str;
+}
 
 // http://kb.daisy.org/publishing/docs/metadata/schema.org/index.html
 // http://kb.daisy.org/publishing/docs/metadata/evaluation.html
@@ -155,10 +168,12 @@ const styles = theme => ({
 
 const KB_BASE = 'http://kb.daisy.org/publishing/';
 
-const errorHandler = {
-  warning: w => console.log(w),
-  error: e => console.log(e),
-  fatalError: fe => console.log(fe),
+// Error Handler for DOMParser instances
+// level === 'warning' | 'error' | 'fatalError'
+function errorHandler (level, msg, context) {
+  if (level === "warning") console.log(msg);
+  if (level === "error") console.log(msg);
+  if (level === "fatalError") console.log(msg);
 }
 
 const CustomValueContainer = ({ children, ...props }) => {
@@ -226,7 +241,7 @@ class MetaDataEditorModal extends React.Component {
     const processOpf = () => {
       const fileStr = fs.readFileSync(this.packageOpfFilePath).toString();
       // console.log(fileStr);
-      this.packageOpfXmlDoc = new DOMParser({errorHandler}).parseFromString(fileStr);
+      this.packageOpfXmlDoc = new DOMParser({onError:errorHandler}).parseFromString(removeUTF8BOM(fileStr), 'application/xml');
       this.packageOpfXPathSelect = xpath.useNamespaces(
         { opf: 'http://www.idpf.org/2007/opf',
           dc: 'http://purl.org/dc/elements/1.1/'});
@@ -379,7 +394,7 @@ class MetaDataEditorModal extends React.Component {
     const setOpfPath = () => {
       const containerXmlFilePath = path.join(epubBaseDir, "META-INF", "container.xml");
       const fileStr = fs.readFileSync(containerXmlFilePath).toString();
-      const containerXmlDoc = new DOMParser({errorHandler}).parseFromString(fileStr);
+      const containerXmlDoc = new DOMParser({onError:errorHandler}).parseFromString(removeUTF8BOM(fileStr), 'application/xml');
       const containerXmlXPathSelect = xpath.useNamespaces(
         { ocf: 'urn:oasis:names:tc:opendocument:xmlns:container' });
 

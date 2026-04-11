@@ -2,7 +2,7 @@
   "name": "ace-gui",
   "productName": "Ace by DAISY",
   "description": "Ace, the EPUB accessibility checker by the DAISY Consortium (desktop application)",
-  "version": "1.4.2-alpha.1",
+  "version": "1.4.4-alpha.1",
   "author": {
     "name": "DAISY Consortium",
     "organization": "DAISY Consortium",
@@ -14,11 +14,11 @@
   "license": "MIT",
   "main": "main-bundle.js",
   "dependencies": {
-    "@daisy/ace-axe-runner-electron": "1.4.2",
-    "@daisy/ace-core": "1.4.2",
-    "@daisy/ace-localize": "1.4.2",
-    "@daisy/ace-logger": "1.4.2",
-    "@daisy/epub-utils": "1.4.2",
+    "@daisy/ace-axe-runner-electron": "1.4.4",
+    "@daisy/ace-core": "1.4.4",
+    "@daisy/ace-localize": "1.4.4",
+    "@daisy/ace-logger": "1.4.4",
+    "@daisy/epub-utils": "1.4.4",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
@@ -30,7 +30,7 @@
     "electron-store": "^11.0.2",
     "fs-extra": "^10.1.0",
     "jszip": "^3.10.1",
-    "mime-types": "^2.1.35",
+    "mime-types": "^3.0.2",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -42,7 +42,6 @@
     "redux-thunk": "^3.1.0",
     "tmp": "^0.2.5",
     "typeface-roboto": "^1.1.13",
-    "uuid": "^13.0.0",
     "xpath": "^0.0.34"
   }
 }
