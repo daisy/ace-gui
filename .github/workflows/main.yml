@@ -83,11 +83,11 @@ jobs:
 #       https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md
         include:
           - osarch: windows-intel
-            runson: windows-latest #windows-2022
+            runson: windows-2025
             packname: win
             release_tag: latest-windows-intel
           - osarch: windows-arm
-            runson: windows-latest #windows-2022
+            runson: windows-2025
             packname: win
             release_tag: latest-windows-arm
           - osarch: macos-intel
@@ -143,7 +143,7 @@ jobs:
       if: ${{ !startsWith(matrix.osarch, 'windows-') }}
       run: uname -m && arch
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     #   with:
     #     persist-credentials: false
     # - name: Git config global dump (pre)
@@ -174,12 +174,12 @@ jobs:
     - name: Git config local dump (post)
       run: 'git config --list || echo NO_GIT_GLOBAL_CONFIG || true'
       shell: bash
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v6
       with:
-        node-version: '22'
+        node-version: '24'
         #check-latest: true
     - run: node --version && npm --version
-    - run: npm --global install npm@^10
+    - run: npm --global install npm@^11
     - run: npm --version
     - run: npm --global install yarn@^1
     # - run: ((curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.5) || echo "YARN OK")
@@ -202,6 +202,7 @@ jobs:
     - run: git submodule init && git submodule update
     - run: git --no-pager diff package.json && git --no-pager diff package-asar.json && git --no-pager diff package-asar-dev.json
     - run: git --no-pager diff
+    - run: yarn cache clean
     - run: npm cache clean --force
     - run: npm cache verify
     #- run: pwd && ls && cd .. && pwd && ls && git clone https://github.com/daisy/ace.git && cd ace && pwd && ls && git checkout ace-next-local-packs && yarn ace-app-prepare && pwd && ls && cd .. && pwd && ls && cd ace-gui && pwd && ls
@@ -209,23 +210,23 @@ jobs:
     - name: YARN install (arm64) (non Windows)
       #if: ${{ matrix.osarch == 'linux-arm' || matrix.osarch == 'macos-arm' }}
       if: ${{ !startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-arm') }}
-      run: export npm_config_arch=arm64 && export npm_config_cpu=arm64 && yarn --frozen-lockfile
+      run: export npm_config_arch=arm64 && export npm_config_cpu=arm64 && yarn install --frozen-lockfile --ignore-scripts --network-timeout 1000000 && cd node_modules && cd electron && yarn --verbose --network-timeout 1000000 run postinstall && cd .. && cd ..
       #--arch=arm64
     - name: YARN install (arm64) (Windows)
       #if: ${{ startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-arm') }}
       if: ${{ matrix.osarch == 'windows-arm' }}
-      run: SET "npm_config_arch=arm64" && SET "npm_config_cpu=arm64" && yarn --frozen-lockfile
+      run: SET "npm_config_arch=arm64" && SET "npm_config_cpu=arm64" && yarn install --frozen-lockfile --ignore-scripts --network-timeout 1000000 && cd node_modules && cd electron && yarn --verbose --network-timeout 1000000 run postinstall && cd .. && cd ..
       shell: cmd
       #--arch=arm64
     - name: YARN install (x64) (non Windows)
       #if: ${{ matrix.osarch == 'linux-intel' || matrix.osarch == 'macos-intel' }}
       if: ${{ !startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-intel') }}
-      run: export npm_config_arch=x64 && export npm_config_cpu=x64 && yarn --frozen-lockfile
+      run: export npm_config_arch=x64 && export npm_config_cpu=x64 && yarn install --frozen-lockfile --ignore-scripts --network-timeout 1000000 && cd node_modules && cd electron && yarn --verbose --network-timeout 1000000 run postinstall && cd .. && cd ..
       #--arch=x64
     - name: YARN install (x64) (Windows)
       #if: ${{ startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-intel') }}
       if: ${{ matrix.osarch == 'windows-intel' }}
-      run: SET "npm_config_arch=x64" && SET "npm_config_cpu=x64" && yarn --frozen-lockfile
+      run: SET "npm_config_arch=x64" && SET "npm_config_cpu=x64" && yarn install --frozen-lockfile --ignore-scripts --network-timeout 1000000 && cd node_modules && cd electron && yarn --verbose --network-timeout 1000000 run postinstall && cd .. && cd ..
       shell: cmd
       #--arch=x64
     - name: Electron version + arch (Windows)
