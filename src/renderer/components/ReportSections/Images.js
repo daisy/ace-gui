@@ -62,7 +62,7 @@ export default class Images extends React.Component {
               }} onClick={() => {
                 // shell.openExternal(src);
                 ipcRenderer.send('ELECTRON_SHELL_OPEN_EXTERNAL', `file://${decodeURIComponent(src).replace(/\\/g, "/")}`);
-              }} style={{ maxHeight: rowHeight, objectFit: "contain", cursor: "pointer" }} src={`fileproto://host/${src}`}/>
+              }} style={{ maxHeight: rowHeight, objectFit: "contain", cursor: "pointer" }} src={`filexx://0.0.0.0/${src}`}/>
             </TableCell>
           }
       },

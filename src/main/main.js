@@ -96,7 +96,9 @@ protocol.registerSchemesAsPrivileged([{
   },
   scheme: ACE_KB_ELECTRON_HTTP_PROTOCOL,
 }
-, {
+,
+// isDev ?
+{
   privileges: {
     allowServiceWorkers: false,
     bypassCSP: false,
@@ -109,6 +111,8 @@ protocol.registerSchemesAsPrivileged([{
   },
   scheme: "filex",
 }
+//: null
+
 // , {
 //   privileges: {
 //     allowServiceWorkers: false,
@@ -122,7 +126,7 @@ protocol.registerSchemesAsPrivileged([{
 //   },
 //   scheme: "filexx",
 // }
-]);
+].filter(Boolean));
 
 setupFileDialogEvents();
 
@@ -370,6 +374,7 @@ function createWindow() {
   if (rendererUrl === "filex://0.0.0.0/") {
       // dist/prod mode (without WebPack HMR Hot Module Reload HTTP server)
       rendererUrl += path.normalize(path.join(__dirname, "index.html")).replace(/\\/g, "/").split("/").map((segment) => encodeURIComponent_RFC3986(segment)).join("/");
+      // rendererUrl += encodeURIComponent_RFC3986(path.normalize(path.join(__dirname, "index.html")));
   } else {
       // dev/debug mode (with WebPack HMR Hot Module Reload HTTP server)
       rendererUrl += "index.html";
@@ -415,30 +420,33 @@ function tryDecodeURIComponent(str) {
 
 app.on('ready', () => {
 
-  // const sess_ = session.fromPartition("persist:about", { cache: true });
-  // if (sess_) {
+  const sess_ = session.fromPartition("persist:about", { cache: true });
+  if (sess_) {
+  
+    // const protocolHandler_FILEX = (request) => {
+  
+    //   const urlPath = request.url.substring(`filex://0.0.0.0/`.length);
+  
+    //   const urlPathDecoded = urlPath.split("/").map((segment) => {
+    //     return segment?.length ? tryDecodeURIComponent(segment) : "";
+    //   }).join("/");
+  
+    //   // const urlPathDecoded = tryDecodeURIComponent(urlPath);
+  
+    //   const filePathUrl = pathToFileURL(urlPathDecoded).toString();
+  
+    //   console.log("persist:about partition protocolHandler_FILEX", urlPathDecoded, filePathUrl);
+    //   return net.fetch(filePathUrl); // potential security hole: local filesystem access (mitigated by URL scheme not .registerSchemesAsPrivileged() and not .handle() or .registerXXXProtocol() directly on arbitrary session.protocol or any other partitioned session, unlike Electron.protocol and Electron.session.defaultSession.protocol)
+    // };
+    // sess_.protocol.handle("filex", protocolHandler_FILEX);
+    // // protocol.unhandle("filex");
 
-  //   // const protocolHandler_FILEX = (request) => {
-
-  //   //   const urlPath = request.url.substring(`filexx://0.0.0.0/`.length);
-
-  //   //   const urlPathDecoded = urlPath.split("/").map((segment) => {
-  //   //     return segment?.length ? tryDecodeURIComponent(segment) : "";
-  //   //   }).join("/");
-
-  //   //   const filePathUrl = pathToFileURL(urlPathDecoded).toString();
-
-  //   //   return net.fetch(filePathUrl); // potential security hole: local filesystem access (mitigated by URL scheme not .registerSchemesAsPrivileged() and not .handle() or .registerXXXProtocol() directly on arbitrary session.protocol or any other partitioned session, unlike Electron.protocol and Electron.session.defaultSession.protocol)
-  //   // };
-  //   // sess_.protocol.handle("filexx", protocolHandler_FILEX);
-  //   // protocol.unhandle("filex");
-
-  //   sess_.protocol.registerFileProtocol('filexx', (request, callback) => {
-  //     const p = decodeURIComponent(request.url.substr('filexx://0.0.0.0/'.length));
-  //     console.log("FIOEPATH", p);
-  //     callback({ path: p })
-  //   });
-  // }
+    sess_.protocol.registerFileProtocol('filexx', (request, callback) => {
+      const p = decodeURIComponent(request.url.substr('filexx://0.0.0.0/'.length));
+      // console.log("persist:about partition registerFileProtocol filexx", p);
+      callback({ path: p })
+    });
+  }
   const sess = session.defaultSession; // session.fromPartition(SESSION_PARTITION_MAIN, { cache: true });
   if (sess) {
 
@@ -450,15 +458,19 @@ app.on('ready', () => {
         return segment?.length ? tryDecodeURIComponent(segment) : "";
       }).join("/");
 
+      // const urlPathDecoded = tryDecodeURIComponent(urlPath);
+
       const filePathUrl = pathToFileURL(urlPathDecoded).toString();
 
+      // console.log("defaultSession protocolHandler_FILEX", urlPathDecoded, filePathUrl);
       return net.fetch(filePathUrl); // potential security hole: local filesystem access (mitigated by URL scheme not .registerSchemesAsPrivileged() and not .handle() or .registerXXXProtocol() directly on arbitrary session.protocol or any other partitioned session, unlike Electron.protocol and Electron.session.defaultSession.protocol)
     };
     sess.protocol.handle("filex", protocolHandler_FILEX);
     // protocol.unhandle("filex");
 
-    sess.protocol.registerFileProtocol('fileproto', (request, callback) => {
-      const p = decodeURIComponent(request.url.substr('fileproto://host/'.length));
+    sess.protocol.registerFileProtocol('filexx', (request, callback) => {
+      const p = decodeURIComponent(request.url.substr('filexx://0.0.0.0/'.length));
+      // console.log("defaultSession registerFileProtocol filexx", p);
       callback({ path: p })
     });
   }
