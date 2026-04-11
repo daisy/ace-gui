@@ -71,24 +71,26 @@ const ACE_ELECTRON_HTTP_PROTOCOL = "acehttps";
 const ACE_KB_ELECTRON_HTTP_PROTOCOL = "acekbhttps";
 protocol.registerSchemesAsPrivileged([{
   privileges: {
-      allowServiceWorkers: false,
-      bypassCSP: false,
-      corsEnabled: true,
-      secure: true,
-      standard: true,
-      stream: true,
-      supportFetchAPI: true,
+    allowServiceWorkers: false,
+    bypassCSP: false,
+    corsEnabled: true,
+    secure: true,
+    stream: true,
+    supportFetchAPI: true,
+    standard: true, // Default false
+    codeCache: false, // Default false (only works with standard=true)
   },
   scheme: ACE_ELECTRON_HTTP_PROTOCOL,
 }, {
   privileges: {
-      allowServiceWorkers: false,
-      bypassCSP: false,
-      corsEnabled: true,
-      secure: true,
-      standard: true,
-      stream: true,
-      supportFetchAPI: true,
+    allowServiceWorkers: false,
+    bypassCSP: false,
+    corsEnabled: true,
+    secure: true,
+    stream: true,
+    supportFetchAPI: true,
+    standard: true, // Default false
+    codeCache: false, // Default false (only works with standard=true)
   },
   scheme: ACE_KB_ELECTRON_HTTP_PROTOCOL,
 }]);
