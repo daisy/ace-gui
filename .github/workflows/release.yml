@@ -78,13 +78,14 @@ jobs:
         #     runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
         #     packname: linux
         # ------------------------------
-        osarch: [
-            # windows-intel,
+        osarch:
+          [
+            windows-intel,
             windows-arm,
-            # macos-intel,
-            # macos-arm,
-            # linux-intel,
-            # linux-arm,
+            macos-intel,
+            macos-arm,
+            linux-intel,
+            linux-arm,
           ]
         # AceApp for MacOS x64 and arm64 is built on GitHub Actions arm64 runners
         # AceApp for Linux x64 and arm64 is built on GitHub Actions x64 runners
@@ -111,24 +112,24 @@ jobs:
         # ubuntu-20.04 is the oldest available (good for glibc compat) ... but GitHub says "The Ubuntu 20.04 runner image will be fully unsupported by April 1, 2025"
         #       https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md
         include:
-          # - osarch: windows-intel
-          #   runson: windows-2025
-          #   packname: win
+          - osarch: windows-intel
+            runson: windows-2025
+            packname: win
           - osarch: windows-arm
             runson: windows-2025
             packname: win
-          # - osarch: macos-intel
-          #   runson: macos-latest #macos-14-arm64
-          #   packname: "mac"
-          # - osarch: macos-arm
-          #   runson: macos-latest #macos-14-arm64
-          #   packname: "mac"
-          # - osarch: linux-intel
-          #   runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
-          #   packname: linux
-          # - osarch: linux-arm
-          #   runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
-          #   packname: linux
+          - osarch: macos-intel
+            runson: macos-latest #macos-14-arm64
+            packname: "mac"
+          - osarch: macos-arm
+            runson: macos-latest #macos-14-arm64
+            packname: "mac"
+          - osarch: linux-intel
+            runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
+            packname: linux
+          - osarch: linux-arm
+            runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
+            packname: linux
     steps:
       - name: MacOS KeyChain init
         if: startsWith(matrix.osarch, 'macos-') #runner.os == 'macOS'
