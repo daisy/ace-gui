@@ -15,14 +15,45 @@ on:
       # https://github.com/daisy/ace/settings/rules
       - "v*" # excludes slash /
 
+# https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
 permissions:
-  contents: write # release
+  actions: none
+  artifact-metadata: none
+  attestations: none
+  checks: none
+  contents: none # <==========
+  deployments: none
+  discussions: none
+  id-token: none
+  issues: none
+  models: none
+  packages: none
+  pages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
 
-env:
-  # Electron Builder workaround
-  USE_HARD_LINKS: "false"
 jobs:
   build:
+    permissions:
+      actions: none
+      artifact-metadata: none
+      attestations: none
+      checks: none
+      contents: write # <==========
+      deployments: none
+      discussions: none
+      id-token: none
+      issues: none
+      models: none
+      packages: none
+      pages: none
+      pull-requests: none
+      repository-projects: none
+      security-events: none
+      statuses: none
     #    if: "!contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
     if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ${{ matrix.runson }}
@@ -134,8 +165,8 @@ jobs:
         run: uname -m && arch
       - name: Checkout
         uses: actions/checkout@v6
-      #   with:
-      #     persist-credentials: false
+        with:
+          persist-credentials: false
       # - name: Git config global dump (pre)
       #   run: 'git config --global --list || echo NO_GIT_GLOBAL_CONFIG || true'
       #   shell: bash
@@ -237,12 +268,16 @@ jobs:
           node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/"sign": true,/g, `"sign": false,`); fileStr = fileStr.replace(/"hardenedRuntime": true,/g, `"hardenedRuntime": false, "identity": null,`); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });'
         continue-on-error: true
       - name: non-PR action (build and package) ARM
+        env:
+          USE_HARD_LINKS: "false" # Electron Builder workaround
         #if: ${{ github.event_name != 'pull_request' && (matrix.osarch == 'linux-arm' || matrix.osarch == 'windows-arm' || matrix.osarch == 'macos-arm') }}
         if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-arm') }}
         #run: sed 's/x64/arm64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json && yarn package:${{ matrix.packname }} && sed 's/arm64/x64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json
         run: >
           node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/x64/g, "arm64"); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });' && yarn package:${{ matrix.packname }}
       - name: non-PR action (build and package) INTEL
+        env:
+          USE_HARD_LINKS: "false" # Electron Builder workaround
         #if: ${{ github.event_name != 'pull_request' && (matrix.osarch == 'linux-intel' || matrix.osarch == 'windows-intel' || matrix.osarch == 'macos-intel') }}
         if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-intel') }}
         run: yarn package:${{ matrix.packname }}
