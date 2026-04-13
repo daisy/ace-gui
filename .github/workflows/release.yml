@@ -79,7 +79,7 @@ jobs:
         #     packname: linux
         # ------------------------------
         osarch: [
-            windows-intel,
+            # windows-intel,
             windows-arm,
             # macos-intel,
             # macos-arm,
@@ -111,9 +111,9 @@ jobs:
         # ubuntu-20.04 is the oldest available (good for glibc compat) ... but GitHub says "The Ubuntu 20.04 runner image will be fully unsupported by April 1, 2025"
         #       https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md
         include:
-          - osarch: windows-intel
-            runson: windows-2025
-            packname: win
+          # - osarch: windows-intel
+          #   runson: windows-2025
+          #   packname: win
           - osarch: windows-arm
             runson: windows-2025
             packname: win
@@ -360,7 +360,7 @@ jobs:
         run: gh release upload ${{ github.ref_name }} dist/*.dmg --clobber
       - name: RENAME (Windows ARM64)
         if: startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-arm') # runner.os == 'Windows'
-        run: cd doc && (for f in *.exe; do mv $f $f-arm64.exe; done) && cd -
+        run: cd dist && (for f in *.exe; do mv $f $f-arm64.exe; done) && cd -
         shell: bash
       - name: GitHub Tagged Release (Windows)
         if: startsWith(matrix.osarch, 'windows-') # runner.os == 'Windows'
