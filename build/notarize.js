@@ -1,6 +1,6 @@
 // xcrun notarytool history --apple-id=$APPLEID --team-id=$APPLEIDTEAM --password=$APPLEIDPASS
 
-// xcrun notarytool store-credentials "ace-keychain" --apple-id $APPLEID --team-id $APPLEIDTEAM --password $APPLEIDPASS
+// xcrun notarytool store-credentials "ace-keychain" --apple-id $APPLEID --team-id $APPLEIDTEAM --password $APPLEIDPASS --verbose --keychain ~/Library/Keychains/login.keychain-db
 // export APPLEIDKEYCHAIN="ace-keychain"
 
 require("dotenv").config();
