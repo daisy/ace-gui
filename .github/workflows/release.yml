@@ -151,7 +151,11 @@ jobs:
           echo KEYCHAIN_P12_IMPORT
           security import "$CODESIGN_P12_PATH" -P "$CODESIGN_P12_PASS" -A -t cert -f pkcs12 -k "$CODESIGN_KEYCHAIN_PATH"
           echo KEYCHAIN_LIST
-          security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH"
+          security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
+          echo KEYCHAIN_FIND1
+          security find-identity -v -p codesigning -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
+          echo KEYCHAIN_FIND2
+          security find-identity -v -p codesigning || echo OK || true
         # echo KEYCHAIN_NOTARY_STORE_CREDS
         # xcrun notarytool store-credentials "$APPLEIDKEYCHAIN" --apple-id "$APPLE_ID" --team-id "$APPLE_ID_TEAM" --password "$APPLE_ID_PASS" --verbose --keychain "$CODESIGN_KEYCHAIN_PATH"
         # echo KEYCHAIN_LIST
