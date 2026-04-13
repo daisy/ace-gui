@@ -139,7 +139,9 @@ jobs:
           security set-keychain-settings -lut 21600 "$CODESIGN_KEYCHAIN_PATH"
           echo KEYCHAIN_UNLOCK
           security unlock-keychain -p "${{ github.run_id }}" "$CODESIGN_KEYCHAIN_PATH"
-          echo KEYCHAIN_LIST
+          echo KEYCHAIN_LIST1
+          security list-keychain || echo OK || true
+          echo KEYCHAIN_LIST2
           security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
           echo KEYCHAIN_FIND1
           security find-identity -v -p codesigning -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
@@ -150,16 +152,20 @@ jobs:
           echo -n "$CODESIGN_P12_B64" | base64 --decode -o "$CODESIGN_P12_PATH"
           echo KEYCHAIN_P12_IMPORT
           security import "$CODESIGN_P12_PATH" -P "$CODESIGN_P12_PASS" -A -t cert -f pkcs12 -k "$CODESIGN_KEYCHAIN_PATH"
-          echo KEYCHAIN_LIST
+          echo KEYCHAIN_LIST1
+          security list-keychain || echo OK || true
+          echo KEYCHAIN_LIST2
           security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
           echo KEYCHAIN_FIND1
           security find-identity -v -p codesigning -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
           echo KEYCHAIN_FIND2
           security find-identity -v -p codesigning || echo OK || true
-        # echo KEYCHAIN_NOTARY_STORE_CREDS
-        # xcrun notarytool store-credentials "$APPLEIDKEYCHAIN" --apple-id "$APPLE_ID" --team-id "$APPLE_ID_TEAM" --password "$APPLE_ID_PASS" --verbose --keychain "$CODESIGN_KEYCHAIN_PATH"
-        # echo KEYCHAIN_LIST
-        # security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH"
+          echo KEYCHAIN_NOTARY_STORE_CREDS
+          xcrun notarytool store-credentials "$APPLEIDKEYCHAIN" --apple-id "$APPLE_ID" --team-id "$APPLE_ID_TEAM" --password "$APPLE_ID_PASS" --verbose --keychain "$CODESIGN_KEYCHAIN_PATH"
+          echo KEYCHAIN_LIST1
+          security list-keychain || echo OK || true
+          echo KEYCHAIN_LIST2
+          security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
         env:
           CODESIGN_P12_B64: ${{ secrets.CODESIGN_P12_B64 }} # base64 -i file.p12 -o env.txt
           CODESIGN_P12_PASS: ${{ secrets.CODESIGN_P12_PASS }}
@@ -331,7 +337,17 @@ jobs:
         run: yarn package:${{ matrix.packname }}
       - name: MacOS KeyChain teardown
         if: runner.os == 'macOS' && always()
-        run: security delete-keychain $RUNNER_TEMP/codesign.keychain-db
+        run: |
+          echo KEYCHAIN_LIST1
+          security list-keychain || echo OK || true
+          echo KEYCHAIN_LIST2
+          security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
+          echo KEYCHAIN_DELETE
+          security delete-keychain $RUNNER_TEMP/codesign.keychain-db || echo OK || true
+          echo KEYCHAIN_LIST1
+          security list-keychain || echo OK || true
+          echo KEYCHAIN_LIST2
+          security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
       #- run: ls -alsR release
       #- run: npm install @octokit/rest
       # (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) &&
