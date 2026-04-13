@@ -360,7 +360,7 @@ jobs:
         run: gh release upload ${{ github.ref_name }} dist/*.dmg --clobber
       - name: RENAME (Windows ARM64)
         if: startsWith(matrix.osarch, 'windows-') && endsWith(matrix.osarch, '-arm') # runner.os == 'Windows'
-        run: cd dist && (for f in *.exe; do mv $f $f-arm64.exe; done) && cd -
+        run: cd dist && (for f in *.exe ; do mv "$f" "$f-arm64.exe" ; done) && cd -
         shell: bash
       - name: GitHub Tagged Release (Windows)
         if: startsWith(matrix.osarch, 'windows-') # runner.os == 'Windows'
