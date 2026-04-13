@@ -1,6 +1,6 @@
-#GIT_COMMITTER_DATE="$(git show master --format=%aD | head -1)" git tag -a "v1.4.4-alpha.1" master -m "release tag v1.4.4-alpha.1" && git push --tags origin master && git --no-pager tag --list --format='%(refname)   %(taggerdate)'
+#GIT_COMMITTER_DATE="$(git show master --format=%aD | head -1)" git tag -a "v1.4.5-alpha.1" master -m "release tag v1.4.5-alpha.1" && git push --tags origin master && git --no-pager tag --list --format='%(refname)   %(taggerdate)'
 
-#git tag -d v1.4.4-alpha.1 && git push origin :refs/tags/v1.4.4-alpha.1
+#git tag -d v1.4.5-alpha.1 && git push origin :refs/tags/v1.4.5-alpha.1
 
 name: Publish App
 
@@ -77,14 +77,13 @@ jobs:
         #     runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
         #     packname: linux
         # ------------------------------
-        osarch:
-          [
-            windows-intel,
-            windows-arm,
-            macos-intel,
+        osarch: [
+            # windows-intel,
+            # windows-arm,
+            # macos-intel,
             macos-arm,
-            linux-intel,
-            linux-arm,
+            # linux-intel,
+            # linux-arm,
           ]
         # AceApp for MacOS x64 and arm64 is built on GitHub Actions arm64 runners
         # AceApp for Linux x64 and arm64 is built on GitHub Actions x64 runners
@@ -111,25 +110,60 @@ jobs:
         # ubuntu-20.04 is the oldest available (good for glibc compat) ... but GitHub says "The Ubuntu 20.04 runner image will be fully unsupported by April 1, 2025"
         #       https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2004-Readme.md
         include:
-          - osarch: windows-intel
-            runson: windows-2025
-            packname: win
-          - osarch: windows-arm
-            runson: windows-2025
-            packname: win
-          - osarch: macos-intel
-            runson: macos-latest #macos-14-arm64
-            packname: "mac:skip-notarize"
+          # - osarch: windows-intel
+          #   runson: windows-2025
+          #   packname: win
+          # - osarch: windows-arm
+          #   runson: windows-2025
+          #   packname: win
+          # - osarch: macos-intel
+          #   runson: macos-latest #macos-14-arm64
+          #   packname: "mac"
           - osarch: macos-arm
             runson: macos-latest #macos-14-arm64
-            packname: "mac:skip-notarize"
-          - osarch: linux-intel
-            runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
-            packname: linux
-          - osarch: linux-arm
-            runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
-            packname: linux
+            packname: "mac"
+          # - osarch: linux-intel
+          #   runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
+          #   packname: linux
+          # - osarch: linux-arm
+          #   runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
+          #   packname: linux
     steps:
+      - name: MacOS KeyChain init
+        if: startsWith(matrix.osarch, 'macos-') #runner.os == 'macOS'
+        run: |
+          CODESIGN_KEYCHAIN_PATH=$RUNNER_TEMP/codesign.keychain-db
+          echo KEYCHAIN_CREATE
+          security create-keychain -p "${{ github.run_id }}" "$CODESIGN_KEYCHAIN_PATH"
+          echo KEYCHAIN_SETTINGS
+          security set-keychain-settings -lut 21600 "$CODESIGN_KEYCHAIN_PATH"
+          echo KEYCHAIN_UNLOCK
+          security unlock-keychain -p "${{ github.run_id }}" "$CODESIGN_KEYCHAIN_PATH"
+          echo KEYCHAIN_LIST
+          security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
+          echo KEYCHAIN_FIND1
+          security find-identity -v -p codesigning -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
+          echo KEYCHAIN_FIND2
+          security find-identity -v -p codesigning || echo OK || true
+          CODESIGN_P12_PATH=$RUNNER_TEMP/code-sign.p12
+          echo KEYCHAIN_P12_B64
+          echo -n "$CODESIGN_P12_B64" | base64 --decode -o "$CODESIGN_P12_PATH"
+          echo KEYCHAIN_P12_IMPORT
+          security import "$CODESIGN_P12_PATH" -P "$CODESIGN_P12_PASS" -A -t cert -f pkcs12 -k "$CODESIGN_KEYCHAIN_PATH"
+          echo KEYCHAIN_LIST
+          security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH"
+        # echo KEYCHAIN_NOTARY_STORE_CREDS
+        # xcrun notarytool store-credentials "$APPLEIDKEYCHAIN" --apple-id "$APPLE_ID" --team-id "$APPLE_ID_TEAM" --password "$APPLE_ID_PASS" --verbose --keychain "$CODESIGN_KEYCHAIN_PATH"
+        # echo KEYCHAIN_LIST
+        # security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH"
+        env:
+          CODESIGN_P12_B64: ${{ secrets.CODESIGN_P12_B64 }} # base64 -i file.p12 -o env.txt
+          CODESIGN_P12_PASS: ${{ secrets.CODESIGN_P12_PASS }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
+          APPLE_ID_TEAM: ${{ secrets.APPLE_ID_TEAM }}
+          APPLEIDKEYCHAIN: ${{ secrets.APPLEIDKEYCHAIN }}
+        # https://www.electron.build/code-signing.html
       # graceful fail?
       - run: |-
           pwdx || echo OK || true
@@ -208,15 +242,15 @@ jobs:
       - run: yarn --version
       - run: yarn config set network-timeout 300000 || echo ok
       # - run: yarn --global install asar
-      - name: package patch 1
-        run: node build/package-ci-patch.js package.json ${{ github.run_id }} && cat package.json | grep -i VERSION && cat package.json
-        shell: bash
-      - name: package patch 2
-        run: node build/package-ci-patch.js package-asar.json ${{ github.run_id }} && cat package-asar.json | grep -i VERSION && cat package-asar.json
-        shell: bash
-      - name: package patch 3
-        run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
-        shell: bash
+      # - name: package patch 1
+      #   run: node build/package-ci-patch.js package.json ${{ github.run_id }} && cat package.json | grep -i VERSION && cat package.json
+      #   shell: bash
+      # - name: package patch 2
+      #   run: node build/package-ci-patch.js package-asar.json ${{ github.run_id }} && cat package-asar.json | grep -i VERSION && cat package-asar.json
+      #   shell: bash
+      # - name: package patch 3
+      #   run: node build/package-ci-patch.js package-asar-dev.json ${{ github.run_id }} && cat package-asar-dev.json | grep -i VERSION && cat package-asar-dev.json
+      #   shell: bash
       - run: git submodule init && git submodule update
       - run: git --no-pager diff package.json && git --no-pager diff package-asar.json && git --no-pager diff package-asar-dev.json
       - run: git --no-pager diff
@@ -264,12 +298,17 @@ jobs:
         if: startsWith(matrix.osarch, 'macos-')
         run: >
           (file node_modules/electron/dist/Electron.app/Contents/MacOS/Electron) && (node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --no-sandbox --version || echo INVALID_ARCH) && (node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --no-sandbox --abi || echo INVALID_ARCH)
-      - run: >
-          node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/"sign": true,/g, `"sign": false,`); fileStr = fileStr.replace(/"hardenedRuntime": true,/g, `"hardenedRuntime": false, "identity": null,`); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });'
-        continue-on-error: true
+      # - run: >
+      #     node -e 'const path = require("path"); const fs = require("fs"); const filePath = path.join(process.cwd(), "package.json"); let fileStr = fs.readFileSync(filePath, { encoding: "utf8" }); fileStr = fileStr.replace(/"sign": true,/g, `"sign": false,`); fileStr = fileStr.replace(/"hardenedRuntime": true,/g, `"hardenedRuntime": false, "identity": null,`); fs.writeFileSync(filePath, fileStr, { encoding: "utf8" });'
+      #   continue-on-error: true
       - name: non-PR action (build and package) ARM
         env:
           USE_HARD_LINKS: "false" # Electron Builder workaround
+          APPLEIDKEYCHAIN: ${{ secrets.APPLEIDKEYCHAIN }}
+          # CSC_KEYCHAIN: ${{ secrets.CSC_KEYCHAIN }}
+          # CSC_NAME: ${{ secrets.CSC_NAME }}
+          # CSC_LINK: ${{ secrets.CSC_LINK }}
+          # CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         #if: ${{ github.event_name != 'pull_request' && (matrix.osarch == 'linux-arm' || matrix.osarch == 'windows-arm' || matrix.osarch == 'macos-arm') }}
         if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-arm') }}
         #run: sed 's/x64/arm64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json && yarn package:${{ matrix.packname }} && sed 's/arm64/x64/g' ./package.json > ./package.json.new && mv ./package.json.new ./package.json
@@ -278,9 +317,17 @@ jobs:
       - name: non-PR action (build and package) INTEL
         env:
           USE_HARD_LINKS: "false" # Electron Builder workaround
+          APPLEIDKEYCHAIN: ${{ secrets.APPLEIDKEYCHAIN }}
+          # CSC_KEYCHAIN: ${{ secrets.CSC_KEYCHAIN }}
+          # CSC_NAME: ${{ secrets.CSC_NAME }}
+          # CSC_LINK: ${{ secrets.CSC_LINK }}
+          # CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         #if: ${{ github.event_name != 'pull_request' && (matrix.osarch == 'linux-intel' || matrix.osarch == 'windows-intel' || matrix.osarch == 'macos-intel') }}
         if: ${{ github.event_name != 'pull_request' && endsWith(matrix.osarch, '-intel') }}
         run: yarn package:${{ matrix.packname }}
+      - name: MacOS KeyChain teardown
+        if: runner.os == 'macOS' && always()
+        run: security delete-keychain $RUNNER_TEMP/codesign.keychain-db
       #- run: ls -alsR release
       #- run: npm install @octokit/rest
       # (gh release create ${{ github.ref_name }} --draft --title "Ace by DAISY App ${{ github.ref_name }}" || echo OK || true) &&
