@@ -27,7 +27,7 @@
     "classnames": "^2.5.1",
     "electron-redux": "^2.0.0",
     "electron-store": "^11.0.2",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.3.4",
     "jszip": "^3.10.1",
     "mime-types": "^3.0.2",
     "prop-types": "^15.8.1",
