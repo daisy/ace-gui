@@ -67,7 +67,7 @@ module.exports = async function afterPack(context) {
 
     // EnableCookieEncryption = 1,
     // https://www.electron.build/tutorials/adding-electron-fuses.html#enablecookieencryption
-    [FuseV1Options.EnableCookieEncryption]: true, // TODO: make this TRUE
+    [FuseV1Options.EnableCookieEncryption]: false, // TODO: make this TRUE?
 
     // EnableNodeOptionsEnvironmentVariable = 2,
     [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false, // NODE_OPTIONS + NODE_EXTRA_CA_CERTS
@@ -87,11 +87,11 @@ module.exports = async function afterPack(context) {
     // https://karol-mazurek.medium.com/cracking-electron-integrity-0a10e0d5f239
     // https://github.com/Just-Hack-For-Fun/Electron-Security
     // https://doyensec.com/resources/us-17-Carettoni-Electronegativity-A-Study-Of-Electron-Security.pdf
-    // npx electron-fuses read --app /PATH/TO/Ace.app/Contents/MacOS/Ace
+    // npm exec --no --offline electron-fuses read --app /PATH/TO/Ace.app/Contents/MacOS/Ace
     // node -e "const filePath = process.argv[1]; console.log(filePath, require('crypto').createHash('sha256').update(require('@electron/asar').getRawHeader(filePath).headerString).digest('hex'))" /PATH/TO/Ace.app/Contents/Resources/app.asar
-    // npx asar e /PATH/TO/Ace.app/Contents/Resources/app.asar /PATH/TO/ASAR-EXTRACTED/
+    // npm exec --no --offline asar e /PATH/TO/Ace.app/Contents/Resources/app.asar /PATH/TO/ASAR-EXTRACTED/
     // modify ASAR manifest, for example edit `/PATH/TO/ASAR-EXTRACTED/main.js`
-    // npx asar p /PATH/TO/ASAR-EXTRACTED/ /PATH/TO/Ace.app/Contents/Resources/app.asar
+    // npm exec --no --offline asar p /PATH/TO/ASAR-EXTRACTED/ /PATH/TO/Ace.app/Contents/Resources/app.asar
     // DOES NOT WORK ON MACOS ARM and INTEL (`strings` empty in 50KB executable binary): xxd /PATH/TO/Ace.app/Contents/MacOS/Ace | sed 's/OLD_SHA/NEW_SHA/' | xxd -r > /PATH/TO/Ace.app/Contents/MacOS/Ace
     [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
 
