@@ -1,6 +1,6 @@
-#GIT_COMMITTER_DATE="$(git show master --format=%aD | head -1)" git tag -a "v1.4.5" master -m "release tag v1.4.5" && git push --tags origin master && git --no-pager tag --list --format='%(refname)   %(taggerdate)'
+#GIT_COMMITTER_DATE="$(git show master --format=%aD | head -1)" git tag -a "v1.4.6-alpha.1" master -m "release tag v1.4.6-alpha.1" && git push --tags origin master && git --no-pager tag --list --format='%(refname)   %(taggerdate)'
 
-#git tag -d v1.4.5 && git push origin :refs/tags/v1.4.5
+#git tag -d v1.4.6-alpha.1 && git push origin :refs/tags/v1.4.6-alpha.1
 
 name: Publish App
 
@@ -78,14 +78,13 @@ jobs:
         #     runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
         #     packname: linux
         # ------------------------------
-        osarch:
-          [
+        osarch: [
             windows-intel,
             windows-arm,
-            macos-intel,
-            macos-arm,
-            linux-intel,
-            linux-arm,
+            # macos-intel,
+            # macos-arm,
+            # linux-intel,
+            # linux-arm,
           ]
         # AceApp for MacOS x64 and arm64 is built on GitHub Actions arm64 runners
         # AceApp for Linux x64 and arm64 is built on GitHub Actions x64 runners
@@ -118,18 +117,18 @@ jobs:
           - osarch: windows-arm
             runson: windows-2025
             packname: win
-          - osarch: macos-intel
-            runson: macos-latest #macos-14-arm64
-            packname: "mac"
-          - osarch: macos-arm
-            runson: macos-latest #macos-14-arm64
-            packname: "mac"
-          - osarch: linux-intel
-            runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
-            packname: linux
-          - osarch: linux-arm
-            runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
-            packname: linux
+          # - osarch: macos-intel
+          #   runson: macos-latest #macos-14-arm64
+          #   packname: "mac"
+          # - osarch: macos-arm
+          #   runson: macos-latest #macos-14-arm64
+          #   packname: "mac"
+          # - osarch: linux-intel
+          #   runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
+          #   packname: linux
+          # - osarch: linux-arm
+          #   runson: ubuntu-22.04 #ubuntu-latest is ubuntu-24.04
+          #   packname: linux
     steps:
       - name: MacOS KeyChain init
         if: startsWith(matrix.osarch, 'macos-') #runner.os == 'macOS'
