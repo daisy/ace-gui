@@ -2,6 +2,10 @@
 
 #git tag -d v1.4.6 && git push origin :refs/tags/v1.4.6
 
+#### ${{ secrets.SECRET_THING }}
+#echo "::add-mask::$SECRET_THING"
+#echo "SECRET_THING=$SECRET_THING" >> $GITHUB_ENV
+
 name: Publish App
 
 #on:
@@ -56,7 +60,8 @@ jobs:
       security-events: none
       statuses: none
     #    if: "!contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-    if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci')"
+    #if: "github.event_name == 'pull_request' || !contains(github.event.head_commit.message, 'skip ci') && github.ref_name == 'master' && github.repository_owner == 'daisy'"
+    if: "github.event_name != 'pull_request' && github.ref_name == 'master' && github.repository_owner == 'daisy'"
     runs-on: ${{ matrix.runson }}
     strategy:
       fail-fast: false
@@ -200,10 +205,10 @@ jobs:
       # "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64"
       # "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64"
       #- run: exit 1
-      - run: 'echo "GITHUB_REF_NAME: ${{ github.ref_name }}"'
-      - run: 'echo "GITHUB_RUN_NUMBER: ${{ github.run_number }}"'
-      - run: 'echo "GITHUB_RUN_ID: ${{ github.run_id }}"'
-      - run: 'echo "GITHUB_SHA: ${{ github.sha }}"'
+#      - run: 'echo "GITHUB_REF_NAME: ${{ github.ref_name }}"'
+#      - run: 'echo "GITHUB_RUN_NUMBER: ${{ github.run_number }}"'
+#      - run: 'echo "GITHUB_RUN_ID: ${{ github.run_id }}"'
+#      - run: 'echo "GITHUB_SHA: ${{ github.sha }}"'
       - run: echo "${{ matrix.osarch }} // ${{ runner.arch }}"
       - name: System arch (non Windows)
         #if: ${{ matrix.osarch != 'windows-intel' && matrix.osarch != 'windows-arm' }}
