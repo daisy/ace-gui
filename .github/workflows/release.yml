@@ -159,6 +159,8 @@ jobs:
           echo -n "$CODESIGN_P12_B64" | base64 --decode -o "$CODESIGN_P12_PATH"
           echo KEYCHAIN_P12_IMPORT
           security import "$CODESIGN_P12_PATH" -P "$CODESIGN_P12_PASS" -A -t cert -f pkcs12 -k "$CODESIGN_KEYCHAIN_PATH"
+          echo KEYCHAIN_P12_DELETE
+          rm -f "$CODESIGN_P12_PATH" || echo OK || true
           echo KEYCHAIN_LIST1
           security list-keychain || echo OK || true
           echo KEYCHAIN_LIST2
@@ -327,7 +329,9 @@ jobs:
       - name: non-PR action (build and package) ARM
         env:
           USE_HARD_LINKS: "false" # Electron Builder workaround
-          APPLEIDKEYCHAIN: ${{ secrets.APPLEIDKEYCHAIN }}
+          # APPLEIDKEYCHAIN: ${{ secrets.APPLEIDKEYCHAIN }}
+          # APPLEIDKEYCHAIN: ${{ case(startsWith(matrix.osarch, 'macos-'), secrets.APPLEIDKEYCHAIN, '*x*x*x*') }}
+          APPLEIDKEYCHAIN: ${{ case(runner.os == 'macOS', secrets.APPLEIDKEYCHAIN, '*x*x*x*') }}
           # CSC_KEYCHAIN: ${{ secrets.CSC_KEYCHAIN }}
           # CSC_NAME: ${{ secrets.CSC_NAME }}
           # CSC_LINK: ${{ secrets.CSC_LINK }}
@@ -340,7 +344,9 @@ jobs:
       - name: non-PR action (build and package) INTEL
         env:
           USE_HARD_LINKS: "false" # Electron Builder workaround
-          APPLEIDKEYCHAIN: ${{ secrets.APPLEIDKEYCHAIN }}
+          # APPLEIDKEYCHAIN: ${{ secrets.APPLEIDKEYCHAIN }}
+          # APPLEIDKEYCHAIN: ${{ case(startsWith(matrix.osarch, 'macos-'), secrets.APPLEIDKEYCHAIN, '*x*x*x*') }}
+          APPLEIDKEYCHAIN: ${{ case(runner.os == 'macOS', secrets.APPLEIDKEYCHAIN, '*x*x*x*') }}
           # CSC_KEYCHAIN: ${{ secrets.CSC_KEYCHAIN }}
           # CSC_NAME: ${{ secrets.CSC_NAME }}
           # CSC_LINK: ${{ secrets.CSC_LINK }}
@@ -351,12 +357,13 @@ jobs:
       - name: MacOS KeyChain teardown
         if: runner.os == 'macOS' && always()
         run: |
+          CODESIGN_KEYCHAIN_PATH=$RUNNER_TEMP/codesign.keychain-db
           echo KEYCHAIN_LIST1
           security list-keychain || echo OK || true
           echo KEYCHAIN_LIST2
           security list-keychain -d user -s "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
           echo KEYCHAIN_DELETE
-          security delete-keychain $RUNNER_TEMP/codesign.keychain-db || echo OK || true
+          security delete-keychain "$CODESIGN_KEYCHAIN_PATH" || echo OK || true
           echo KEYCHAIN_LIST1
           security list-keychain || echo OK || true
           echo KEYCHAIN_LIST2
